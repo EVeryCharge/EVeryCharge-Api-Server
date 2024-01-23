@@ -10,20 +10,24 @@ import ChargingServiceInfo from './components/ChargingServiceInfo';
 import ChargingStationInfo from './components/ChargingStationInfo'; 
 import EVSystem from './components/EVSystem'; 
 import StatisticsInfo from './components/StatisticsInfo'; 
+import { AuthProvider } from './components/AuthContext';
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/map" element={<MapContainer />} />
-        <Route path="/chargingServiceInfo" element={<ChargingServiceInfo />} />
-        <Route path="/chargingStationInfo" element={<ChargingStationInfo />} />
-        <Route path="/evsystem" element={<EVSystem />} />
-        <Route path="/statisticsInfo" element={<StatisticsInfo />} />
-      </Routes>
-      <Footer />
+      <AuthProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/map" element={<MapContainer />} />
+          <Route path="/chargingServiceInfo" element={<ChargingServiceInfo />} />
+          <Route path="/chargingStationInfo" element={<ChargingStationInfo />} />
+          <Route path="/evsystem" element={<EVSystem />} />
+          <Route path="/statisticsInfo" element={<StatisticsInfo />} />
+        </Routes>
+        <Footer />
+      </AuthProvider>
+
     </Router>
 
   );
