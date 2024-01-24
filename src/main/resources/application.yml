@@ -13,13 +13,13 @@ spring:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:h2:./db_dev;MODE=MYSQL
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://hyojunkim.site:3306/eitcharge_dev
+    username: root
+    password: lldj123414
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         default_batch_fetch_size: 100
