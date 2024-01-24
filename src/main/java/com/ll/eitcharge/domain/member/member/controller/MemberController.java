@@ -55,6 +55,7 @@ public class MemberController {
                 )
         );
     }
+    //작업1
 
     @PostMapping("/logout")
     public RsData<Empty> logout() {
