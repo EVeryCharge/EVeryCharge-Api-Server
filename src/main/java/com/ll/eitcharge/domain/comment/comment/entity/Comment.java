@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.report.report.entity;
+package com.ll.eitcharge.domain.comment.comment.entity;
 
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.station.station.entity.Station;
@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @Getter
 @Setter
-public class Report {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +28,10 @@ public class Report {
     private Member member;
 
     private String content;
-    private String reportType;
-    private LocalDateTime createdDate;
+    private int statId;
+    private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
+    private LocalDateTime deletedDate;
+    private boolean isDeleted;
+
 }
