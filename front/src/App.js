@@ -11,6 +11,8 @@ import ChargingStationInfo from './components/ChargingStationInfo';
 import EVSystem from './components/EVSystem'; 
 import StatisticsInfo from './components/StatisticsInfo'; 
 import { AuthProvider } from './components/AuthContext';
+import ReportList from './components/ReportList';
+import ReportDetail from './components/ReportDetail';
 function App() {
   return (
     <Router>
@@ -24,6 +26,9 @@ function App() {
           <Route path="/chargingStationInfo" element={<ChargingStationInfo />} />
           <Route path="/evsystem" element={<EVSystem />} />
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
+          <Route path="/reportList" element={<ReportList />} />
+          <Route path="/reportDetail" element={<ReportDetail />} />
+
         </Routes>
         <Footer />
       </AuthProvider>

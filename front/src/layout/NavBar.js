@@ -28,6 +28,7 @@ const Navbar = () => {
             전기차 충전 서비스
           </Typography>
         </div>
+        <Button color="inherit" component={Link} to="/reportList">신고내역 확인</Button>
         <Button color="inherit" component={Link} to="/chargingServiceInfo">서비스 안내</Button>
         <Button color="inherit" component={Link} to="/station">충전소 검색</Button>
         <Button color="inherit" component={Link} to="/map">충전소 지도</Button>
