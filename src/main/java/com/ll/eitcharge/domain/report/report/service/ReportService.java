@@ -1,16 +1,5 @@
 package com.ll.eitcharge.domain.report.report.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
@@ -20,8 +9,17 @@ import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.report.report.repository.ReportRepository;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.service.TechnicalManagerService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 작성자: 이상제
@@ -62,7 +60,7 @@ public class ReportService {
 	public ReportResponseDto create(ReportRequestDto requestDto, String username) {
 		Report report = Report.builder()
             .chargingStation(chargingStationService.findById(requestDto.getStationId()))
-            .author(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
+            .member(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
 			.title(requestDto.getTitle())
             .content(requestDto.getContent())
             .reportType(requestDto.getReportType())
@@ -76,7 +74,7 @@ public class ReportService {
 	@Transactional
 	public ReportResponseDto update(ReportRequestDto requestDto, Long reportId, String username) {
 		Report report = findById(reportId);
-		if (!report.getAuthor().getUsername().equals(username)) {
+		if (!report.getMember().getUsername().equals(username)) {
 			throw new GlobalException.E403();
 		}
 
@@ -93,7 +91,7 @@ public class ReportService {
 	@Transactional
     public void delete(Long reportId, String username) {
 		Report report = findById(reportId);
-		if (!report.getAuthor().getUsername().equals(username)) {
+		if (!report.getMember().getUsername().equals(username)) {
             throw new GlobalException.E403();
         }
 		reportRepository.delete(report);
