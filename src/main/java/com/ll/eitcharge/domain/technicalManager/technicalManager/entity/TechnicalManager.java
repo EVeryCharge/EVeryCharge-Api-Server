@@ -9,7 +9,6 @@ import com.ll.eitcharge.global.jpa.entity.BaseTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,11 +24,9 @@ import lombok.Setter;
 @Setter
 public class TechnicalManager extends BaseTime {
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
 
     // Member 엔티티의 name (username, id) == TechnicalManager의 name은 동일함으로 상정
