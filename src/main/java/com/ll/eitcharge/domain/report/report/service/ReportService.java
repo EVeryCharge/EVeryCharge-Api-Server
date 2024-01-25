@@ -105,6 +105,9 @@ public class ReportService {
 		if (!technicalManagerService.findByName(username).getChargingStation().equals(report.getChargingStation())) {
 			throw new GlobalException.E403();
 		}
+		if (report.isCompleted()) {
+			throw new GlobalException("이미 처리가 완료된 신고내용입니다.");
+        }
 
 		report.toBuilder()
 			.isCompleted(true)

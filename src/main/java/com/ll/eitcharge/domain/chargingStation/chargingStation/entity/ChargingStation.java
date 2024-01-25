@@ -39,6 +39,8 @@ public class ChargingStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
     private TechnicalManager technicalManager;
 

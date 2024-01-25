@@ -62,8 +62,9 @@ public class ReportResponseDto {
 		this.authorId = report.getAuthor().getId();
 		this.authorName = report.getAuthor().getName();
 		this.stationId = report.getChargingStation().getId();
-		this.stationName = report.getChargingStation().getStationName();
+		this.stationName = report.getChargingStation().getName();
 		this.isCompleted = report.isCompleted();
+		this.replierName = report.getReplier().getName();
 		this.reply = report.getReply();
 		this.replyCreatedDate = report.getReplyCreatedDate();
 	}
