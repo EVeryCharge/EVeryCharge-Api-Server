@@ -36,10 +36,9 @@ public class ChargingStationController {
                 chargerStateDtos);
     };
 
-    @GetMapping("/status/charger/live")
+    @GetMapping("/status/charger/test")
     public ResponseEntity< ChargingStationResponseDto > test(){
-        return chargingStationApiService.fromApi(1L);
-
+        return chargingStationApiService.findfromApi(1L);
     }
 
 }

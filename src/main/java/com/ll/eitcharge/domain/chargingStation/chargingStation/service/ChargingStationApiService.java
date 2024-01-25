@@ -28,7 +28,7 @@ public class ChargingStationApiService {
         return oc.get();
     }
 
-    public ResponseEntity< ChargingStationResponseDto > fromApi(Long id){
+    public ResponseEntity< ChargingStationResponseDto > findfromApi(Long id){
 
         String url = makeApiUrl(100, 1, "PW010580");
 
