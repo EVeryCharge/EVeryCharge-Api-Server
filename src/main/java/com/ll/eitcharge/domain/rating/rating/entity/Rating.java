@@ -1,6 +1,6 @@
 package com.ll.eitcharge.domain.rating.rating.entity;
 
-import com.ll.eitcharge.domain.comment.comment.entity.Comment;
+import com.ll.eitcharge.domain.review.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class Rating {
     private Long id;
 
     @OneToOne(fetch = LAZY)
-    private Comment comment;
+    private Review review;
 
     private int rating;
 }

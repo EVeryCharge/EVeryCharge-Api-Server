@@ -1,7 +1,7 @@
 package com.ll.eitcharge.domain.technicalManager.technicalManager.entity;
 
 
-import com.ll.eitcharge.domain.station.station.entity.Station;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +20,7 @@ public class TechnicalManager {
     private Long id;
 
     @OneToOne(fetch = LAZY)
-    private Station station;
+    private ChargingStation chargingStation;
 
     private String name;
     private String field;

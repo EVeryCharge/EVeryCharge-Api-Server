@@ -1,7 +1,7 @@
 package com.ll.eitcharge.domain.charger.charger.entity;
 
 
-import com.ll.eitcharge.domain.station.station.entity.Station;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +19,8 @@ public class Charger {
     private Long id;
 
     @ManyToOne
-    private Station station;
+    @JoinColumn(name = "station_id")
+    private ChargingStation chargingStation;
 
     private Long chargerType;
     private Long stat;

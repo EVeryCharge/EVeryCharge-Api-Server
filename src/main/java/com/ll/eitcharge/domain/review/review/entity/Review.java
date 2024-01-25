@@ -1,7 +1,7 @@
-package com.ll.eitcharge.domain.comment.comment.entity;
+package com.ll.eitcharge.domain.review.review.entity;
 
 import com.ll.eitcharge.domain.member.member.entity.Member;
-import com.ll.eitcharge.domain.station.station.entity.Station;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,13 +16,13 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @Getter
 @Setter
-public class Comment {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private Station station;
+    private ChargingStation chargingStation;
 
     @ManyToOne(fetch = LAZY)
     private Member member;

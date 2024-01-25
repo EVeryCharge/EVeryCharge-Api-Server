@@ -1,11 +1,16 @@
-package com.ll.eitcharge.domain.station.station.entity;
+package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
 import com.ll.eitcharge.domain.agency.agency.entity.Agency;
-import com.ll.eitcharge.domain.localArea.localArea.entity.LocalArea;
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.region.region.entity.Region;
+import com.ll.eitcharge.domain.report.report.entity.Report;
+import com.ll.eitcharge.domain.review.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
 import static lombok.AccessLevel.PROTECTED;
@@ -16,13 +21,23 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @Getter
 @Setter
-public class Station {
+public class ChargingStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private LocalArea localArea;
+    @JoinColumn(name = "region_code")
+    private Region region;
+
+    @OneToMany(mappedBy = "chargingStation")
+    private List< Charger > chargers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chargingStation")
+    private List< Report > reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chargingStation")
+    private List< Review > reviews = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
     private Agency agency;

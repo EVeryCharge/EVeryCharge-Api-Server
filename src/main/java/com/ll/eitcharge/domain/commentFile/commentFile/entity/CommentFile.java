@@ -1,6 +1,6 @@
 package com.ll.eitcharge.domain.commentFile.commentFile.entity;
 
-import com.ll.eitcharge.domain.comment.comment.entity.Comment;
+import com.ll.eitcharge.domain.review.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class CommentFile {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private Comment comment;
+    private Review review;
 
     private String fileName;
     private String filePath;

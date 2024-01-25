@@ -1,7 +1,7 @@
 package com.ll.eitcharge.domain.report.report.entity;
 
 import com.ll.eitcharge.domain.member.member.entity.Member;
-import com.ll.eitcharge.domain.station.station.entity.Station;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +22,8 @@ public class Report {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private Station station;
+    @JoinColumn(name = "station_id")
+    private ChargingStation chargingStation;
 
     @ManyToOne(fetch = LAZY)
     private Member member;

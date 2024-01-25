@@ -1,12 +1,12 @@
-package com.ll.eitcharge.domain.localArea.localArea.entity;
+package com.ll.eitcharge.domain.region.region.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -16,12 +16,15 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @Getter
 @Setter
-public class LocalArea {
+public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int zsCodeId;
+    @OneToMany(mappedBy = "region")
+    private List< ChargingStation > chargingStations = new ArrayList<>();
+
+    private int zsCode;
     private String name;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
