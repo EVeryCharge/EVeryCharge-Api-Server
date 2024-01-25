@@ -1,6 +1,6 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
-import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationApiService;

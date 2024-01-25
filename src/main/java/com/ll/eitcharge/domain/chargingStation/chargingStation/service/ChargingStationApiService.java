@@ -30,7 +30,7 @@ public class ChargingStationApiService {
 
     public ResponseEntity< ChargingStationResponseDto > findfromApi(Long id){
 
-        String url = makeApiUrl(100, 1, "PW010580");
+        String url = makeApiUrl(100, 1, "ME174005");
 
         ResponseEntity< ChargingStationResponseDto > test = restTemplate.getForEntity(url, ChargingStationResponseDto.class);
         ChargingStationItemDto chargingStationItemDto = test.getBody().getItems().getItem()[0];

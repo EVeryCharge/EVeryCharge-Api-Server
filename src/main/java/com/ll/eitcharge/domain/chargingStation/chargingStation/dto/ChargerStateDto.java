@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.charger.dto;
+package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
