@@ -32,6 +32,7 @@ public class TechnicalManager extends BaseTime {
     @JoinColumn(name = "charging_station_id")
     private ChargingStation chargingStation;
 
+    // Member 엔티티의 name (username, id) == TechnicalManager의 name은 동일함으로 상정
     @Column(unique = true)
     private String name;
     private String field;
