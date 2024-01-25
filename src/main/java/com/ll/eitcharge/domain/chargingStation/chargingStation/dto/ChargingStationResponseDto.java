@@ -1,5 +1,19 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
-public class ChargingStationDto {
-    
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class ChargingStationResponseDto {
+    private String resultMsg;
+    private int totalCount;
+    private ChargingStationItemsDto items;
+    private int pageNo;
+    private String resultCode;
+    private int numOfRows;
 }
+

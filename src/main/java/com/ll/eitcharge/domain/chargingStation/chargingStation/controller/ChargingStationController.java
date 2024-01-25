@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
 import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationApiService;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -36,8 +37,8 @@ public class ChargingStationController {
     };
 
     @GetMapping("/status/charger/live")
-    public ResponseEntity< String > test(){
-        return chargingStationApiService.fromApi();
+    public ResponseEntity< ChargingStationResponseDto > test(){
+        return chargingStationApiService.fromApi(1L);
 
     }
 
