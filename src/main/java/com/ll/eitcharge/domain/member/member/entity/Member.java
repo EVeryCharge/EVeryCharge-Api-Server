@@ -1,27 +1,20 @@
 package com.ll.eitcharge.domain.member.member.entity;
 
-import static jakarta.persistence.FetchType.*;
-import static lombok.AccessLevel.*;
+import com.ll.eitcharge.domain.report.report.entity.Report;
+import com.ll.eitcharge.domain.review.review.entity.Review;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
+import com.ll.eitcharge.global.jpa.entity.BaseTime;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
-import com.ll.eitcharge.global.jpa.entity.BaseTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static jakarta.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -42,7 +35,11 @@ public class Member extends BaseTime {
     @Transient
     private Boolean _isAdmin;
 
+    @OneToMany(mappedBy = "member")
+    private List<Report> reports = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
