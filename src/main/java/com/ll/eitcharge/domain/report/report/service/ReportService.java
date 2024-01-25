@@ -3,6 +3,7 @@ package com.ll.eitcharge.domain.report.report.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +57,10 @@ public class ReportService {
 	// 엔티티 조회용
 	public Report findById(Long id) {
 		return reportRepository.findById(id).orElseThrow(GlobalException.E404::new);
+	}
+
+	public Optional<Report> findByIdOptional(Long id) {
+		return reportRepository.findById(id);
 	}
 
 	@Transactional
