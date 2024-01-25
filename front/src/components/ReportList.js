@@ -110,7 +110,7 @@ const ReportList = () => {
     <Box mt={4} mb={4}>
       <h2>신고내역 확인</h2>
       <p style={{ fontWeight: "bold", color: "#008000", paddingLeft: "10px" }}>
-        ! 충전소 관련사항을 신고하는 곳입니다.
+        충전소 장애 관련내용을 신고할 수 있습니다.
       </p>
       <hr />
       <TableContainer component={Paper}>
