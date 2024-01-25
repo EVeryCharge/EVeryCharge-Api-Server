@@ -38,10 +38,10 @@ public class ReportResponseDto {
 	private String authorName;
 
 	@NonNull
-	private Long stationId;
+	private String statId;
 
 	@NonNull
-	private String stationName;
+	private String statName;
 
 	@NonNull
 	private boolean isCompleted;
@@ -59,10 +59,10 @@ public class ReportResponseDto {
 		this.reportType = report.getReportType();
 		this.createDate = report.getCreatedDate();
 		this.modifyDate = report.getModifiedDate();
-		this.authorId = report.getAuthor().getId();
-		this.authorName = report.getAuthor().getName();
-		this.stationId = report.getChargingStation().getId();
-		this.stationName = report.getChargingStation().getName();
+		this.authorId = report.getMember().getId();
+		this.authorName = report.getMember().getName();
+		this.statId = report.getChargingStation().getStatId();
+		this.statName = report.getChargingStation().getStatNm();
 		this.isCompleted = report.isCompleted();
 		this.replierName = report.getReplier().getName();
 		this.reply = report.getReply();

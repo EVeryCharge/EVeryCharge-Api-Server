@@ -1,32 +1,19 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
-import static jakarta.persistence.FetchType.*;
-import static lombok.AccessLevel.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ll.eitcharge.domain.agency.agency.entity.Agency;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.region.region.entity.Region;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static jakarta.persistence.FetchType.*;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -35,40 +22,67 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChargingStation {
+    //충전소 id
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String statId;
+    //지역코드, 지역코드 상세
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "zcode"),
+            @JoinColumn(name = "zscode")
+    })
+    private Region region;
 
-    private String name;
+    @OneToMany(mappedBy = "chargingStation")
+    private List<Charger> chargers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chargingStation")
+    private List<Report> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chargingStation")
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
     private TechnicalManager technicalManager;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "region_code")
-    private Region region;
-
-    @OneToMany(mappedBy = "chargingStation")
-    private List< Charger > chargers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "chargingStation")
-    private List< Report > reports = new ArrayList<>();
-
-    @OneToMany(mappedBy = "chargingStation")
-    private List< Review > reviews = new ArrayList<>();
-
-    @ManyToOne(fetch = LAZY)
-    private Agency agency;
-
-    private String chargerType;
-    private String state;
-    private LocalDateTime useTime;
-    private LocalDateTime startChargingDate;
-    private LocalDateTime endChargingDate;
-    private LocalDateTime nowChargingDate;
-    private String output;
-    private String method;
-    private boolean delYn;
+    //충전소명
+    private String statNm;
+    //주소
+    private String addr;
+    //상세위치
+    private String location;
+    //이용가능 시간
+    private String useTime;
+    //위도
+    private String lat;
+    //경도
+    private String lng;
+    //기관 아이디
+    private String busiId;
+    //기관명
+    private String bnm;
+    //운영기관명
+    private String busiNm;
+    //운영기관 연락처
+    private String busiCall;
+    //주차료여부
+    private String parkingFree;
+    //충전소 안내
+    private String note;
+    //이용자 제한 여부
+    private String limitYn;
+    //이용자 제한 사유
+    private String limitDetail;
+    //충전기 정보 삭제 여부 TODO 최근 삭제된 충전기 정보 제공한다고 하니 찾아볼것
+    private String delYn;
+    //충전기 정보 삭제 사유
+    private String delDetail;
+    //편의제공여부
+    private String trafficYn;
+    //충전소 구분 코드
+    private String kind;
+    //충전소 구분 상세 코드
+    private String kindDetail;
 
 
 }
