@@ -19,6 +19,7 @@ import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResultRequestDto;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.report.report.repository.ReportRepository;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.service.TechnicalManagerService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 
@@ -66,60 +67,61 @@ public class ReportService {
 	@Transactional
 	public ReportResponseDto create(ReportRequestDto requestDto, String username) {
 		Report report = Report.builder()
-            .chargingStation(chargingStationService.findById(requestDto.getStationId()))
-            .author(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
-			.title(requestDto.getTitle())
-            .content(requestDto.getContent())
-            .reportType(requestDto.getReportType())
-			.isCompleted(false)
-            .build();
-
-        reportRepository.save(report);
-		return new ReportResponseDto(report);
-	}
-
-	@Transactional
-	public ReportResponseDto update(ReportRequestDto requestDto, Long reportId, String username) {
-		Report report = findById(reportId);
-		if (!report.getAuthor().getUsername().equals(username)) {
-			throw new GlobalException.E403();
-		}
-
-		report.toBuilder()
-			.chargingStation(chargingStationService.findById(requestDto.getStationId()))
+			.chargingStation(chargingStationService.findByStatId(requestDto.getStatId()))
+			.member(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
-			.reportType(requestDto.getReportType());
+			.reportType(requestDto.getReportType())
+			.isCompleted(false)
+			.build();
 
 		reportRepository.save(report);
 		return new ReportResponseDto(report);
 	}
 
 	@Transactional
-    public void delete(Long reportId, String username) {
+	public ReportResponseDto update(ReportRequestDto requestDto, Long reportId, String username) {
 		Report report = findById(reportId);
-		if (!report.getAuthor().getUsername().equals(username)) {
-            throw new GlobalException.E403();
-        }
+		if (!report.getMember().getUsername().equals(username)) {
+			throw new GlobalException.E403();
+		}
+
+		// todo: setter → toBuilder
+		report.setChargingStation(chargingStationService.findByStatId(requestDto.getStatId()));
+		report.setTitle(requestDto.getTitle());
+		report.setContent(requestDto.getContent());
+		report.setReportType(requestDto.getReportType());
+
+		return new ReportResponseDto(report);
+	}
+
+	@Transactional
+	public void delete(Long reportId, String username) {
+		Report report = findById(reportId);
+		if (!report.getMember().getUsername().equals(username)) {
+			throw new GlobalException.E403();
+		}
 		reportRepository.delete(report);
 	}
 
 	@Transactional
 	public ReportResponseDto complete(ReportResultRequestDto requestDto, Long reportId, String username) {
 		Report report = findById(reportId);
-		if (!technicalManagerService.findByName(username).getChargingStation().equals(report.getChargingStation())) {
+		TechnicalManager manager = technicalManagerService.findByName(username);
+
+		if (!manager.getChargingStation().equals(report.getChargingStation())) {
 			throw new GlobalException.E403();
 		}
 		if (report.isCompleted()) {
 			throw new GlobalException("이미 처리가 완료된 신고내용입니다.");
-        }
+		}
 
-		report.toBuilder()
-			.isCompleted(true)
-            .reply(requestDto.getReply())
-            .replyCreatedDate(LocalDateTime.now());
+		// todo: setter → toBuilder
+		report.setCompleted(true);
+		report.setReplier(manager);
+		report.setReply(requestDto.getReply());
+		report.setReplyCreatedDate(LocalDateTime.now());
 
-        reportRepository.save(report);
 		return new ReportResponseDto(report);
 	}
 }

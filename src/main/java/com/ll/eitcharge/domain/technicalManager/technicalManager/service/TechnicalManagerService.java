@@ -27,7 +27,7 @@ public class TechnicalManagerService {
 		TechnicalManager technicalManager = TechnicalManager.builder()
 			.member(member)
 			.chargingStation(chargingStation)
-			.name("testManager")
+			.name(member.getName()) // member, Manager username은 동일하게
 			.build();
 
 		technicalManagerRepository.save(technicalManager);
