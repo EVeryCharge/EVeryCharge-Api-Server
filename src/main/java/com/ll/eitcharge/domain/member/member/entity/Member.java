@@ -2,6 +2,7 @@ package com.ll.eitcharge.domain.member.member.entity;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,8 @@ public class Member extends BaseTime {
     // 캐시 데이터
     @Transient
     private Boolean _isAdmin;
+
+
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
