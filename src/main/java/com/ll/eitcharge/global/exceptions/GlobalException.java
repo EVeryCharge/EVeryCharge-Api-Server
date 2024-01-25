@@ -25,4 +25,10 @@ public class GlobalException extends RuntimeException {
             super("404-0", "데이터를 찾을 수 없습니다.");
         }
     }
+
+    public static class E403 extends GlobalException {
+        public E403() {
+            super("403-0", "잘못된 접근입니다.");
+        }
+    }
 }

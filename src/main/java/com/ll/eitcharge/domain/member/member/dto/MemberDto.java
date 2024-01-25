@@ -1,14 +1,16 @@
 package com.ll.eitcharge.domain.member.member.dto;
 
-import com.ll.eitcharge.domain.member.member.entity.Member;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
+import static lombok.AccessLevel.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static lombok.AccessLevel.PROTECTED;
+import org.springframework.lang.NonNull;
+
+import com.ll.eitcharge.domain.member.member.entity.Member;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class MemberDto {
@@ -25,8 +27,8 @@ public class MemberDto {
 
     public MemberDto(Member member) {
         this.id = member.getId();
-        this.createDate = member.getCreateDate();
-        this.modifyDate = member.getModifyDate();
+        this.createDate = member.getCreatedDate();
+        this.modifyDate = member.getModifiedDate();
         this.username = member.getUsername();
         this.authorities = member.getAuthoritiesAsStringList();
     }
