@@ -8,11 +8,15 @@ import org.springframework.lang.NonNull;
 
 import com.ll.eitcharge.domain.report.report.entity.Report;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PROTECTED)
 public class ReportResponseDto {
 	@NonNull
 	private Long id;
@@ -41,7 +45,7 @@ public class ReportResponseDto {
 	private String statId;
 
 	@NonNull
-	private String statName;
+	private String statNm;
 
 	@NonNull
 	private boolean isCompleted;
@@ -62,10 +66,13 @@ public class ReportResponseDto {
 		this.authorId = report.getMember().getId();
 		this.authorName = report.getMember().getName();
 		this.statId = report.getChargingStation().getStatId();
-		this.statName = report.getChargingStation().getStatNm();
+		this.statNm = report.getChargingStation().getStatNm();
 		this.isCompleted = report.isCompleted();
-		this.replierName = report.getReplier().getName();
-		this.reply = report.getReply();
-		this.replyCreatedDate = report.getReplyCreatedDate();
+		// 신고 처리결과 관련 필드는 유지보수자 처리(매핑) 전까지는 null
+		if (report.getReplier() != null) {
+			this.replierName = report.getReplier().getName();
+			this.reply = report.getReply();
+			this.replyCreatedDate = report.getReplyCreatedDate();
+		}
 	}
 }

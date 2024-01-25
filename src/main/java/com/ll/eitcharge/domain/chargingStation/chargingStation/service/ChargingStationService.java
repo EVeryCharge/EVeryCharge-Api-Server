@@ -17,19 +17,20 @@ import lombok.RequiredArgsConstructor;
 public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
 
-	public ChargingStation findById(Long id) {
-		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
+	public ChargingStation findByStatId(String statId) {
+		return chargingStationRepository.findById(statId).orElseThrow(GlobalException.E404::new);
 	}
 	// temp method for execute test
-	public Optional<ChargingStation> findByIdOptional(Long id) {
-		return chargingStationRepository.findById(id);
+	public Optional<ChargingStation> findByStatIdOptional(String statId) {
+		return chargingStationRepository.findById(statId);
 	}
 
 	// temp method for execute test
 	@Transactional
-	public void create(String name) {
+	public void create(String statId, String statNm) {
 		ChargingStation chargingStation = ChargingStation.builder()
-			.name(name)
+			.statId(statId)
+			.statNm(statNm)
 			.build();
 
 		chargingStationRepository.save(chargingStation);
