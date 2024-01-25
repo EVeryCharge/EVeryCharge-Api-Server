@@ -5,6 +5,7 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationApiService;
 import com.ll.eitcharge.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chargingStation")
-public class ChargingStationApiController {
+public class ChargingStationController {
 
     private final ChargingStationApiService chargingStationApiService;
 
@@ -33,5 +34,11 @@ public class ChargingStationApiController {
                 "성공",
                 chargerStateDtos);
     };
+
+    @GetMapping("/status/charger/live")
+    public ResponseEntity< String > test(){
+        return chargingStationApiService.fromApi();
+
+    }
 
 }
