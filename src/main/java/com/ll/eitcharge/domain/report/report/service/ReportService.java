@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
@@ -22,6 +23,7 @@ import com.ll.eitcharge.domain.report.report.repository.ReportRepository;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.service.TechnicalManagerService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
+import com.ll.eitcharge.global.rq.Rq;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +38,7 @@ public class ReportService {
 	private final MemberService memberService;
 	private final ChargingStationService chargingStationService;
 	private final TechnicalManagerService technicalManagerService;
+	private final Rq rq;
 
 	public Page<ReportResponseDto> getList(int page, int pageSize) {
 		List<Sort.Order> sorts = new ArrayList<>();
@@ -72,7 +75,7 @@ public class ReportService {
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
 			.reportType(requestDto.getReportType())
-			.isCompleted(false)
+			.completed(false)
 			.build();
 
 		reportRepository.save(report);
@@ -123,5 +126,33 @@ public class ReportService {
 		report.setReplyCreatedDate(LocalDateTime.now());
 
 		return new ReportResponseDto(report);
+	}
+
+	public void loadReportAccess(ReportResponseDto dto) {
+		Member actor = rq.getMember();
+		dto.setActorCanRead(canRead(actor, dto));
+		dto.setActorCanEdit(canEdit(actor, dto));
+		dto.setActorCanComplete(canComplete(actor, dto));
+	}
+
+	public boolean canRead(Member actor, ReportResponseDto dto) {
+		if (dto == null) { return false; }
+		if (actor == null) { return true; }
+		return true;
+	}
+
+	public boolean canEdit(Member actor, ReportResponseDto dto) {
+		if (dto == null) { return false; }
+        if (actor == null) { return false; }
+        return actor.getId().equals(dto.getMemberId());
+	}
+
+	public boolean canComplete(Member actor, ReportResponseDto dto) {
+		if (dto == null) { return false; }
+		if (dto.isCompleted()) { return false; }
+        if (actor == null) { return false; }
+		if (actor.getTechnicalManager() == null) { return false; }
+		if (actor.getTechnicalManager().getChargingStation() == null) { return false;}
+		return (actor.getTechnicalManager().getChargingStation().getStatId().equals(dto.getStatId()));
 	}
 }

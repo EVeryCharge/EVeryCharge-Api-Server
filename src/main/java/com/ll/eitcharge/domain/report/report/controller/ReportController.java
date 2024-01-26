@@ -38,10 +38,14 @@ public class ReportController {
 
 	@GetMapping("/list")
 	public RsData<Page<ReportResponseDto>> getList(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int pageSize
+		@RequestParam(value="page", defaultValue = "0") int page,
+		@RequestParam(value="pageSize", defaultValue = "10") int pageSize
 	) {
-		return RsData.of("200", "ok", reportService.getList(page, pageSize));
+
+		Page<ReportResponseDto> responseDtos = reportService.getList(page, pageSize);
+		responseDtos.getContent().forEach(this::loadReportAccess);
+
+		return RsData.of("200", "ok", responseDtos);
 	}
 
 	@GetMapping("/{id}")
@@ -54,7 +58,10 @@ public class ReportController {
 	public RsData<ReportResponseDto> write(
 		@RequestBody @NonNull ReportRequestDto requestDto,
 		Principal principal) {
-		return RsData.of("200", "ok", reportService.create(requestDto, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.create(requestDto, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -63,7 +70,10 @@ public class ReportController {
 		@PathVariable Long id,
 		@RequestBody @NonNull ReportRequestDto requestDto
 		, Principal principal) {
-		return RsData.of("200", "ok", reportService.update(requestDto, id, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.update(requestDto, id, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -79,7 +89,13 @@ public class ReportController {
         @PathVariable Long id,
         @RequestBody @NonNull ReportResultRequestDto requestDto
         , Principal principal) {
-		return RsData.of("200", "ok", reportService.complete(requestDto, id, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.complete(requestDto, id, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
+	private void loadReportAccess(ReportResponseDto dto) {
+		reportService.loadReportAccess(dto);
+	}
 }
