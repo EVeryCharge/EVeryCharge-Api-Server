@@ -1,10 +1,11 @@
 package com.ll.eitcharge.global.webMvc;
 
-import com.ll.eitcharge.global.app.AppConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.ll.eitcharge.global.app.AppConfig;
 
 @Configuration
 public class CustomWebMvcConfig implements WebMvcConfigurer {
@@ -12,13 +13,11 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins(
-                        "https://cdpn.io",
-                        AppConfig.getSiteFrontUrl()
-                )
+                .allowedOrigins("http://localhost:3000")
                 .allowedMethods("*")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 
     @Override
