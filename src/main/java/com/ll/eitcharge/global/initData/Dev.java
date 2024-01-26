@@ -102,7 +102,7 @@ public class Dev {
 	public void makeTestReportResult() {
 		if (reportService.findById(1L).getReplier() != null)
 			return;
-		LongStream.rangeClosed(1L, 20L).forEach(i -> {
+		LongStream.rangeClosed(1L, 10L).forEach(i -> {
 				ReportResultRequestDto requestDto = ReportResultRequestDto.builder()
 					.reply(String.format("테스트 처리 결과 %d", i))
 					.build();
