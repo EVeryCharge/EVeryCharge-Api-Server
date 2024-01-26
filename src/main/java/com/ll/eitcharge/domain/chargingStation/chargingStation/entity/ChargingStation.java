@@ -74,6 +74,4 @@ public class ChargingStation {
     private String kind;
     //충전소 구분 상세 코드
     private String kindDetail;
-
-
 }

@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationItemDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationItemsDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
@@ -28,18 +29,22 @@ public class ChargingStationApiService {
         return oc.get();
     }
 
-    public ResponseEntity< ChargingStationResponseDto > findfromApi(Long id){
+    public ResponseEntity< ChargingStationResponseDto > findfromApi(String stateId){
 
-        String url = makeApiUrl(100, 1, "ME174005");
+//        ChargingStation findChargingStation = findById(id);
+//        String statId = findChargingStation.getStatId();
+        String url = makeApiUrl(100, 1, stateId);
 
-        ResponseEntity< ChargingStationResponseDto > test = restTemplate.getForEntity(url, ChargingStationResponseDto.class);
-        ChargingStationItemDto chargingStationItemDto = test.getBody().getItems().getItem()[0];
-        String state = chargingStationItemDto.getStat();
-        ChargingStation findChargingStation = findById(id);
+        ResponseEntity< ChargingStationResponseDto > ChargingStationResp = restTemplate.getForEntity(url, ChargingStationResponseDto.class);
+        ChargingStationItemDto[] items = ChargingStationResp.getBody().getItems().getItem();
 
-        //TODO ChargingStation 엔티티 수정, stateId받아와서 정보 넘기기, 해당 정보를 update해주기
-        System.out.println(test);
-        return test;
+
+        //TODO stateId받아와서 정보 넘기기, 해당 정보를 update해주기
+
+
+
+        System.out.println(ChargingStationResp);
+        return ChargingStationResp;
     }
 
     public String makeApiUrl(int numOfRows, int pageNo, String stateId){

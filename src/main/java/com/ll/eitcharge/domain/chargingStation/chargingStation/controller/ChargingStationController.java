@@ -38,7 +38,6 @@ public class ChargingStationController {
 
     @GetMapping("/status/charger/test")
     public ResponseEntity< ChargingStationResponseDto > test(){
-        return chargingStationApiService.findfromApi(1L);
+        return chargingStationApiService.findfromApi("PW010580");
     }
-
 }

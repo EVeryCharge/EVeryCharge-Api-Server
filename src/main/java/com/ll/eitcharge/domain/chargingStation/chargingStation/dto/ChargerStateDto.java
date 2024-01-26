@@ -6,32 +6,31 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
+
 
 public class ChargerStateDto {
-
     private Long id;
-    private Long chargerType;
-    private Long stat;
-    private String useTime;
-    private String statUpdDt;
-    private String startTsdt;
-    private String endTsdt;
-    private String nowTsdt;
+    private String chgerId;
+    private String chgerType;
+    private String stat;
+    private LocalDateTime statUpdDt;
+    private LocalDateTime lastTsdt;
+    private LocalDateTime lastTedt;
+    private LocalDateTime nowTsdt;
     private String output;
     private String method;
-    private Boolean delYn;
 
     public ChargerStateDto(Charger charger) {
         this.id = charger.getId();
-        this.chargerType = charger.getChargerType();
+        this.chgerId = charger.getChgerId();
+        this.chgerType = charger.getChgerType();
         this.stat = charger.getStat();
-        this.useTime = charger.getUseTime();
         this.statUpdDt = charger.getStatUpdDt();
-        this.startTsdt = charger.getStartTsdt();
-        this.endTsdt = charger.getEndTsdt();
+        this.lastTsdt = charger.getLastTsdt();
+        this.lastTedt = charger.getLastTedt();
         this.nowTsdt = charger.getNowTsdt();
         this.output = charger.getOutput();
         this.method = charger.getMethod();
-        this.delYn = charger.getDelYn();
     }
 }

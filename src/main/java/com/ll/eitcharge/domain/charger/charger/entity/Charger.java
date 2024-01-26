@@ -46,5 +46,4 @@ public class Charger {
     private String output;
     //충전 방식
     private String method;
-
 }

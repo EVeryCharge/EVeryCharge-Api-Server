@@ -35,7 +35,7 @@ function App() {
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
           <Route path="/report/list" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
-          <Route path="/chargingStation/" element={<ChargingStationStateTable />} />
+          <Route path="/chargingStation/" element={<ChargingStationStateTable statId="PW010580" />} />
         </Routes>
         <Footer />
       </AuthProvider>
