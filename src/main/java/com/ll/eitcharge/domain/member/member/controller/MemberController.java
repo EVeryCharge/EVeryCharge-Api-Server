@@ -44,7 +44,6 @@ public class MemberController {
         );
     }
 
-
     public record MeResponseBody(@NonNull MemberDto item) {
     }
 
@@ -62,5 +61,10 @@ public class MemberController {
         rq.setLogout();
 
         return RsData.of("로그아웃 성공");
+    }
+
+    @GetMapping("/signup")
+    public RsData<Empty> signup() {
+        return RsData.of("회원가입");
     }
 }

@@ -13,6 +13,8 @@ import StatisticsInfo from "./components/StatisticsInfo";
 import { AuthProvider } from "./components/AuthContext";
 import ReportList from "./components/ReportList";
 import ReportDetail from "./components/ReportDetail";
+
+
 function App() {
   return (
     <Router>
