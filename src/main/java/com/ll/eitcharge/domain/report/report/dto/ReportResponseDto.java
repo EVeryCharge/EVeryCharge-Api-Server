@@ -36,10 +36,10 @@ public class ReportResponseDto {
 	private LocalDateTime modifyDate;
 
 	@NonNull
-	private Long authorId;
+	private Long memberId;
 
 	@NonNull
-	private String authorName;
+	private String memberName;
 
 	@NonNull
 	private String statId;
@@ -48,13 +48,19 @@ public class ReportResponseDto {
 	private String statNm;
 
 	@NonNull
-	private boolean isCompleted;
+	private boolean completed;
 
 	private String replierName;
 
     private String reply;
 
 	private LocalDateTime replyCreatedDate;
+
+	private boolean actorCanRead;
+
+    private boolean actorCanEdit;
+
+    private boolean actorCanComplete;
 
 	public ReportResponseDto(Report report) {
 		this.id = report.getId();
@@ -63,11 +69,11 @@ public class ReportResponseDto {
 		this.reportType = report.getReportType();
 		this.createDate = report.getCreatedDate();
 		this.modifyDate = report.getModifiedDate();
-		this.authorId = report.getMember().getId();
-		this.authorName = report.getMember().getName();
+		this.memberId = report.getMember().getId();
+		this.memberName = report.getMember().getName();
 		this.statId = report.getChargingStation().getStatId();
 		this.statNm = report.getChargingStation().getStatNm();
-		this.isCompleted = report.isCompleted();
+		this.completed = report.isCompleted();
 		// 신고 처리결과 관련 필드는 유지보수자 처리(매핑) 전까지는 null
 		if (report.getReplier() != null) {
 			this.replierName = report.getReplier().getName();

@@ -37,7 +37,7 @@ public class Report extends BaseTime {
 
 	@ManyToOne(fetch = LAZY)
 	private TechnicalManager replier;
-	private boolean isCompleted;
+	private boolean completed;
 	private String reply;
 	private LocalDateTime replyCreatedDate;
 }
