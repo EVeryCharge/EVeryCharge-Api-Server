@@ -49,7 +49,7 @@ public class ReportController {
 	}
 
 	@GetMapping("/{id}")
-	public RsData<ReportResponseDto> get(@PathVariable Long id) {
+	public RsData<ReportResponseDto> get(@PathVariable(value = "id") Long id) {
 		return RsData.of("200", "ok", reportService.get(id));
 	}
 
@@ -67,7 +67,7 @@ public class ReportController {
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}")
 	public RsData<ReportResponseDto> modify(
-		@PathVariable Long id,
+		@PathVariable(value = "id") Long id,
 		@RequestBody @NonNull ReportRequestDto requestDto
 		, Principal principal) {
 
@@ -78,7 +78,10 @@ public class ReportController {
 
 	@PreAuthorize("isAuthenticated()")
 	@DeleteMapping("/{id}")
-	public RsData<ReportResponseDto> delete(@PathVariable Long id, Principal principal) {
+	public RsData<ReportResponseDto> delete(
+		@PathVariable(value = "id") Long id,
+		Principal principal) {
+
 		reportService.delete(id, principal.getName());
         return RsData.of("200", "ok");
     }
@@ -86,7 +89,7 @@ public class ReportController {
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}/complete")
     public RsData<ReportResponseDto> complete(
-        @PathVariable Long id,
+        @PathVariable(value = "id") Long id,
         @RequestBody @NonNull ReportResultRequestDto requestDto
         , Principal principal) {
 
