@@ -9,93 +9,38 @@ import {
   TablePagination,
   TableRow,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import axios from "axios";
 import * as React from "react";
 
-function createData(station, title, authorName, createdDate, isCompleted) {
-  return { station, title, authorName, createdDate, isCompleted };
-}
-
-const rows = [
-  // mock data todo: fetch
-  createData(
-    "서울시 종로구 1충전소",
-    "1번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    true
-  ),
-  createData(
-    "서울시 종로구 2충전소",
-    "2번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    false
-  ),
-  createData(
-    "서울시 종로구 3충전소",
-    "3번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    true
-  ),
-  createData(
-    "서울시 종로구 4충전소",
-    "4번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    false
-  ),
-  createData(
-    "서울시 종로구 5충전소",
-    "5번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    true
-  ),
-  createData(
-    "서울시 종로구 6충전소",
-    "6번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    false
-  ),
-  createData(
-    "서울시 종로구 7충전소",
-    "7번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    true
-  ),
-  createData(
-    "서울시 종로구 8충전소",
-    "8번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    false
-  ),
-  createData(
-    "서울시 종로구 9충전소",
-    "9번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    true
-  ),
-  createData(
-    "서울시 종로구 10충전소",
-    "10번 충전기 장애 관련 문의",
-    "user1",
-    "2024-01-24",
-    false
-  ),
-];
-
 const ReportList = () => {
+  const [data, setData] = React.useState({
+    totalPages: 0,
+    totalElements: 0,
+    size: 0,
+    content: [],
+    number: 0,
+  });
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
   const getStatusColor = (isCompleted) => {
     return isCompleted ? "#008000" : "#FFA500";
   };
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return ""; // 혹은 다른 기본값으로 설정해도 됩니다.
+    }
+
+    const formattedDate = new Date(dateString);
+    const year = formattedDate.getFullYear();
+    const month = String(formattedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(formattedDate.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -106,17 +51,41 @@ const ReportList = () => {
     setPage(0);
   };
 
+  // Fetch data from the API
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/api/v1/reports/list",
+          {
+            params: {
+              page: page,
+              size: rowsPerPage,
+            },
+          }
+        );
+
+        setData(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [page, rowsPerPage]);
+
   return (
     <Box mt={4} mb={4}>
       <h2>신고내역 확인</h2>
       <p style={{ fontWeight: "bold", color: "#008000", paddingLeft: "10px" }}>
-        충전소 장애 관련내용을 신고할 수 있습니다.
+        충전소 장애 관련 내용을 신고할 수 있습니다.
       </p>
       <hr />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>유형</TableCell>
               <TableCell>충전소</TableCell>
               <TableCell>글 제목</TableCell>
               <TableCell>신고자</TableCell>
@@ -125,28 +94,31 @@ const ReportList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row /* todo : link to report_detail */) => (
+            {data.content.map((row) => (
               <TableRow
-                key={row.station}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                key={row.id}
+                component={Link}
+                to={`/report/${row.id}`}
+                style={{
+                  textDecoration: "none",
+                }}
               >
-                <TableCell component="th" scope="row">
-                  {row.station}
-                </TableCell>
+                <TableCell>{row.reportType}</TableCell>
+                <TableCell>{row.statNm}</TableCell>
                 <TableCell>{row.title}</TableCell>
-                <TableCell>{row.authorName}</TableCell>
-                <TableCell>{row.createdDate}</TableCell>
-                <TableCell style={{ color: getStatusColor(row.isCompleted) }}>
-                  {row.isCompleted ? "완료" : "처리중"}
+                <TableCell>{row.memberName}</TableCell>
+                <TableCell>{formatDate(row.createDate)}</TableCell>
+                <TableCell style={{ color: getStatusColor(row.completed) }}>
+                  {row.completed ? "완료" : "처리중"}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <TablePagination /* todo : pagination */
+        <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
-          count={rows.length}
+          count={data.totalElements}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
