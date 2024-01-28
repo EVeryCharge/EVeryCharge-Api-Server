@@ -32,5 +32,6 @@ public class Region {
     private List<ChargingStation> chargingStations = new ArrayList<>();
 
     private String regionName;
+
     private String regionDetailName;
 }

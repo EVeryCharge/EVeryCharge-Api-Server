@@ -17,6 +17,11 @@ spring:
     username: root
     password: lldj123414
     driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:/sql/data.sql
   jpa:
     hibernate:
       ddl-auto: update
@@ -27,6 +32,7 @@ spring:
         highlight_sql: true
         use_sql_comments: true
     open-in-view: false
+    defer-datasource-initialization: true
   security:
     oauth2:
       client:
