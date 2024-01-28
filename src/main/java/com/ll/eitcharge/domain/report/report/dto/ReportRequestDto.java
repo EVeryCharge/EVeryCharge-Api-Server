@@ -23,6 +23,6 @@ public class ReportRequestDto {
 	private String reportType = ReportType.SYSTEM_ERROR.getValue();
 
 	@NonNull
-	private Long stationId;
+	private String stationId;
 	private String stationName;
 }

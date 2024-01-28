@@ -5,6 +5,7 @@ import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
@@ -21,6 +22,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 public class Report extends BaseTime {
 	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "stat_id")
 	private ChargingStation chargingStation;
 
 	//TODO author에서 member로 변경했습니다
