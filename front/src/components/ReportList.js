@@ -23,7 +23,7 @@ const ReportList = () => {
   });
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10); // 게시글 표출 행 초기값 10
 
   const getStatusColor = (isCompleted) => {
     return isCompleted ? "#008000" : "#FFA500";
@@ -31,7 +31,7 @@ const ReportList = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) {
-      return ""; // 혹은 다른 기본값으로 설정해도 됩니다.
+      return "";
     }
 
     const formattedDate = new Date(dateString);
@@ -47,31 +47,32 @@ const ReportList = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const newRowsPerPage = parseInt(event.target.value, 10);
     setPage(0);
+    setRowsPerPage(newRowsPerPage);
   };
 
-  // Fetch data from the API
+  const fetchData = async (currentPage, pageSize) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8090/api/v1/reports/list`,
+        {
+          params: {
+            page: currentPage,
+            pageSize: pageSize,
+          },
+        }
+      );
+
+      console.log("Fetch request sent to:", response.config.url);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8090/api/v1/reports/list",
-          {
-            params: {
-              page: page,
-              size: rowsPerPage,
-            },
-          }
-        );
-
-        setData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    fetchData(page, rowsPerPage);
   }, [page, rowsPerPage]);
 
   return (
