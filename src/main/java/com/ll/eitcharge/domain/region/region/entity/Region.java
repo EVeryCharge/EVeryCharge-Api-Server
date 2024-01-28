@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -33,5 +34,6 @@ public class Region {
 
     private String regionName;
 
+    @Column(unique = true)
     private String regionDetailName;
 }
