@@ -131,6 +131,7 @@ public class ReportService {
 	public void loadReportAccess(ReportResponseDto dto) {
 		Member actor = rq.getMember();
 		dto.setActorCanRead(canRead(actor, dto));
+		dto.setActorCanCreate(canCreate(actor, dto));
 		dto.setActorCanEdit(canEdit(actor, dto));
 		dto.setActorCanComplete(canComplete(actor, dto));
 	}
@@ -141,10 +142,16 @@ public class ReportService {
 		return true;
 	}
 
+	public boolean canCreate(Member actor, ReportResponseDto dto) {
+		if (actor == null) { return false; }
+		return true;
+	}
+
 	public boolean canEdit(Member actor, ReportResponseDto dto) {
 		if (dto == null) { return false; }
         if (actor == null) { return false; }
-        return actor.getId().equals(dto.getMemberId());
+		if (dto.isCompleted()) { return false; }
+		return actor.getId().equals(dto.getMemberId());
 	}
 
 	public boolean canComplete(Member actor, ReportResponseDto dto) {

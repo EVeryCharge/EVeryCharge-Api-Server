@@ -58,6 +58,8 @@ public class ReportResponseDto {
 
 	private boolean actorCanRead;
 
+	private boolean actorCanCreate;
+
     private boolean actorCanEdit;
 
     private boolean actorCanComplete;
