@@ -70,7 +70,7 @@ public class ReportService {
 	@Transactional
 	public ReportResponseDto create(ReportRequestDto requestDto, String username) {
 		Report report = Report.builder()
-			.chargingStation(chargingStationService.findByStatId(requestDto.getStatId()))
+			.chargingStation(chargingStationService.findById(requestDto.getStatId()))
 			.member(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
 			.title(requestDto.getTitle())
 			.content(requestDto.getContent())
@@ -90,7 +90,7 @@ public class ReportService {
 		}
 
 		// todo: setter → toBuilder
-		report.setChargingStation(chargingStationService.findByStatId(requestDto.getStatId()));
+		report.setChargingStation(chargingStationService.findById(requestDto.getStatId()));
 		report.setTitle(requestDto.getTitle());
 		report.setContent(requestDto.getContent());
 		report.setReportType(requestDto.getReportType());

@@ -45,7 +45,6 @@ public class Dev {
 	public ApplicationRunner initNotProd() {
 		return args -> {
 			self.makeTestUser();
-			self.makeTestChargingStation();
 			self.makeTestTechnicalManager();
 			self.makeTestReport();
 			self.makeTestReportResult();
@@ -65,25 +64,19 @@ public class Dev {
 		});
 	}
 
-	public void makeTestChargingStation() {
-		if (chargingStationService.findByStatIdOptional("99999991").isPresent())
-			return;
-		chargingStationService.create("99999991", "TestChargingStation1");
-	}
-
 	public void makeTestTechnicalManager() {
 		if (memberService.findByUsername("manager1").isPresent())
 			return;
 		RsData<Member> memberRsData = memberService.join("manager1", "123");
 
-		technicalManagerService.create(memberRsData.getData(), chargingStationService.findByStatId("99999991"));
+		technicalManagerService.create(memberRsData.getData(), chargingStationService.findById("ACAC0001"));
 	}
 
 	// 신고내역 샘플 데이터
 	public void makeTestReport() {
 		if (reportService.findByIdOptional(1L).isPresent())
 			return;
-		ChargingStation chargingStation = chargingStationService.findByStatId("99999991");
+		ChargingStation chargingStation = chargingStationService.findById("ACAC0001");
 
 		IntStream.rangeClosed(1, 20).forEach(i -> {
 				ReportRequestDto requestDto = ReportRequestDto.builder()
@@ -107,6 +100,7 @@ public class Dev {
 					.reply(String.format("테스트 처리 결과 %d", i))
 					.build();
 				 reportService.complete(requestDto, i, "manager1");
+
 			}
 		);
 	}
