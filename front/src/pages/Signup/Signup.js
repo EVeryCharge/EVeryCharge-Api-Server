@@ -20,12 +20,13 @@ const Signup = () => {
       );
 
       // 회원가입 성공시 처리
-      console.log('Signup successful:');
-      console.log('Signup new username:', response.data.data.item.username);
+      console.log('Signup successful:' , response);
+      
 
       // TODO: 성공 시 리다이렉트 또는 다른 작업 수행
       navigate('/');
     } catch (error) {
+      
       // 회원가입 실패 시 처리
       console.error('Signup failed:', error.response.data);
 
