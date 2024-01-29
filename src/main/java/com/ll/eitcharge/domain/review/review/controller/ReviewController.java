@@ -118,6 +118,7 @@ public class ReviewController {
     }
 
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{chargingStationId}/{id}")
     public RsData<ModifyReviewResponseBody> modifyReview(
             @PathVariable long id,
@@ -143,6 +144,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{chargingStationId}/{id}")
     public RsData<RemoveReviewResponseBody> removeReview(
             @PathVariable long id
