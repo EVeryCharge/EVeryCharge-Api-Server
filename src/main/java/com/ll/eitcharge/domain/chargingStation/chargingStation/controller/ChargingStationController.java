@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationItemDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationApiService;
@@ -23,21 +24,21 @@ public class ChargingStationController {
 
     private final ChargingStationApiService chargingStationApiService;
 
-    @GetMapping("/status/charger/list/{id}")
-    public RsData< List< ChargerStateDto > > getChargerState(@PathVariable("id") Long id){
-        ChargingStation findChargingStation = chargingStationApiService.findById(id);
-        List<ChargerStateDto> chargerStateDtos = findChargingStation.getChargers().stream()
-                .map(ChargerStateDto::new)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return RsData.of(
-                "200",
-                "성공",
-                chargerStateDtos);
-    };
+//    @GetMapping("/status/charger/list/{id}")
+//    public RsData< List< ChargerStateDto > > getChargerState(@PathVariable("id") Long id){
+//        ChargingStation findChargingStation = chargingStationApiService.findById(id);
+//        List<ChargerStateDto> chargerStateDtos = findChargingStation.getChargers().stream()
+//                .map(ChargerStateDto::new)
+//                .collect(Collectors.toCollection(ArrayList::new));
+//
+//        return RsData.of(
+//                "200",
+//                "성공",
+//                chargerStateDtos);
+//    };
 
     @GetMapping("/status/charger/test")
-    public ResponseEntity< ChargingStationResponseDto > test(){
+    public ChargingStationItemDto[] test(){
         return chargingStationApiService.findfromApi("PW010580");
     }
 }

@@ -7,10 +7,15 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+
 import java.util.Optional;
 
 @Service
@@ -21,35 +26,47 @@ public class ChargingStationApiService {
     private final ChargingStationRepository chargingStationRepository;
     private final RestTemplate restTemplate;
 
-    public ChargingStation findById(Long id) {
-        Optional< ChargingStation > oc = chargingStationRepository.findById(id);
-        if(oc.isEmpty()){
-            new EntityNotFoundException("id가" + id + "인 충전소는 존재하지 않습니다.");
-        }
-        return oc.get();
+//    public ChargingStation findById(Long id) {
+//        Optional< ChargingStation > oc = chargingStationRepository.findById(id);
+//        if(oc.isEmpty()){
+//            new EntityNotFoundException("id가" + id + "인 충전소는 존재하지 않습니다.");
+//        }
+//        return oc.get();
+//    }
+
+    public ChargingStationItemDto[] findfromApi(String stateId){
+
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory();
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+
+        String url = makeApiUrl("ME174018");
+
+        WebClient webClient = WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+
+        ChargingStationResponseDto responseDto = webClient.get()
+                .retrieve()
+                .bodyToMono(ChargingStationResponseDto.class)
+                .block();
+
+        ChargingStationItemDto[] item = responseDto.getItems().getItem();
+
+        return item;
+
     }
 
-    public ResponseEntity< ChargingStationResponseDto > findfromApi(String stateId){
+    public String makeApiUrl(String stateId){
+        String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo";
+        String serviceKey = "%2B61CsEc7Nmo65NvzqtjoQh0FPR0CAdc45WlyZDPkxYDqeSxUJ4E1ncpqn2H2qyN%2BHFXNqJD6JbNbghaWu9Tctw%3D%3D";
+        String numOfRows = "100";
+        String pageNo = "1";
+        String statId = stateId;
+        String dataType = "JSON";
 
-//        ChargingStation findChargingStation = findById(id);
-//        String statId = findChargingStation.getStatId();
-        String url = makeApiUrl(100, 1, stateId);
+        String url = baseUrl + "?serviceKey=" + serviceKey + "&numOfRows=" + numOfRows + "&pageNo=" + pageNo + "&statId=" + statId + "&dataType=" + dataType;
 
-        ResponseEntity< ChargingStationResponseDto > ChargingStationResp = restTemplate.getForEntity(url, ChargingStationResponseDto.class);
-        ChargingStationItemDto[] items = ChargingStationResp.getBody().getItems().getItem();
-
-
-        //TODO stateId받아와서 정보 넘기기, 해당 정보를 update해주기
-
-
-
-        System.out.println(ChargingStationResp);
-        return ChargingStationResp;
-    }
-
-    public String makeApiUrl(int numOfRows, int pageNo, String stateId){
-        String key = "%2B61CsEc7Nmo65NvzqtjoQh0FPR0CAdc45WlyZDPkxYDqeSxUJ4E1ncpqn2H2qyN%2BHFXNqJD6JbNbghaWu9Tctw%3D%3D";
-        String url = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey="+key+"&numOfRows="+numOfRows+"&pageNo="+pageNo+"&statId="+stateId+"&dataType=JSON";
         return url;
     }
 

@@ -41,12 +41,16 @@ const ChargingStationStateTable = () => {
           </tr>
         </thead>
         <tbody>
+          <tr>
             <td>급속1</td>
             <td>차데모, AC3상, 콤보</td>
             <td>최근충전일시 2024-01-24 17:48</td>
+          </tr>
         </tbody>
       </table>
     </div>
+
+    
   );
 };
 

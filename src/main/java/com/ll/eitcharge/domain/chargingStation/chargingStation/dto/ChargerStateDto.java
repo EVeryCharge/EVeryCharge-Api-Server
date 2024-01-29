@@ -5,10 +5,13 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
+@Getter
+@Setter
 public class ChargerStateDto {
     private Long id;
     private String chgerId;
