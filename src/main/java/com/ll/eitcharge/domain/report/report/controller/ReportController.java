@@ -50,10 +50,12 @@ public class ReportController {
 
 	@GetMapping("/{id}")
 	public RsData<ReportResponseDto> get(@PathVariable(value = "id") Long id) {
-		return RsData.of("200", "ok", reportService.get(id));
+
+		ReportResponseDto responseDto = reportService.get(id);
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
-	@PreAuthorize("isAuthenticated()")
 	@PostMapping("")
 	public RsData<ReportResponseDto> write(
 		@RequestBody @NonNull ReportRequestDto requestDto,
