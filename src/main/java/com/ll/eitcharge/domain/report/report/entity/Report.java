@@ -11,6 +11,7 @@ import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.Technica
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @Setter
 public class Report extends BaseTime {
 	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "stat_id")
 	private ChargingStation chargingStation;
 
 	@ManyToOne(fetch = LAZY)

@@ -13,15 +13,15 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
 
-	public ChargingStation findByStatId(String statId) {
-		return chargingStationRepository.findById(statId).orElseThrow(GlobalException.E404::new);
+	public ChargingStation findById(String id) {
+		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
 	}
+
 	// temp method for execute test
-	public Optional<ChargingStation> findByStatIdOptional(String statId) {
+	public Optional<ChargingStation> findByIdOptional(String statId) {
 		return chargingStationRepository.findById(statId);
 	}
 

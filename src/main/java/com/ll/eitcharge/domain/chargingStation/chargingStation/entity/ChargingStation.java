@@ -1,7 +1,7 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.region.region.entity.Region;
+import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
@@ -27,11 +27,8 @@ public class ChargingStation {
     private String statId;
     //지역코드, 지역코드 상세
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "zcode"),
-            @JoinColumn(name = "zscode")
-    })
-    private Region region;
+    @JoinColumn(name = "zscode")
+    private RegionDetail regionDetail;
 
     @OneToMany(mappedBy = "chargingStation")
     private List<Charger> chargers = new ArrayList<>();
