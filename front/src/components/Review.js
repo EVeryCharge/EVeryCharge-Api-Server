@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, makeStyles, TextField, Button, Grid } from '@material-ui/core';
-
+import { Typography, makeStyles, TextField, Button } from '@material-ui/core';
 
 const useStyles = makeStyles({
   reviewContainer: {
@@ -12,27 +11,28 @@ const useStyles = makeStyles({
     padding: '10px',
     borderTop: '1px solid #ddd',
     display: 'flex',
-    flexDirection: 'column',  // 추가: 컨텐츠와 작성일자를 세로로 나열
+    flexDirection: 'column',
   },
   content: {
     fontSize: '1rem',
     marginBottom: '8px',
-    whiteSpace: 'pre-line',  // 추가: 공백과 줄 바꿈 유지
+    whiteSpace: 'pre-line',
   },
   createDate: {
     fontSize: '0.8rem',
     color: '#777',
     marginTop: '4px',
-    alignSelf: 'flex-end',  // 추가: 작성일자를 우측으로 정렬
+    alignSelf: 'flex-end',
   },
   textField: {
     width: '100%',
-    marginBottom: '10px',  // 추가: 여백 추가
+    marginBottom: '10px',
   },
   deleteButton: {
-    fontSize: '0.8rem',  // 버튼의 글꼴 크기를 작게 조절합니다.
-    padding: '4px 8px',  // 버튼의 패딩을 작게 조절합니다.
-    marginLeft: 'auto',   // 우측 정렬을 위해 marginLeft: 'auto' 추가
+    fontSize: '0.8rem',
+    padding: '4px 8px',
+    marginLeft: 'auto',
+    marginTop: 0,
   },
 });
 
@@ -40,9 +40,11 @@ const Review = ({ chargingStationId }) => {
   const classes = useStyles();
   const [review, setReview] = useState({ data: { items: [] } });
   const [newReviewContent, setNewReviewContent] = useState('');
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     fetchData();
+    fetchUserId();
   }, [chargingStationId]);
 
   const fetchData = async () => {
@@ -51,6 +53,16 @@ const Review = ({ chargingStationId }) => {
       setReview(response.data || { data: { items: [] } });
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  const fetchUserId = async () => {
+    try {
+      const userResponse = await axios.get(`/api/v1/members/me`);
+      const userIdFromApi = userResponse.data.data.item.id;
+      setUserId(userIdFromApi);
+    } catch (error) {
+      console.error("유저 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
@@ -114,14 +126,16 @@ const Review = ({ chargingStationId }) => {
               {reviewItem.content || "내용이 없습니다."}
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                className={classes.deleteButton}
-                onClick={() => handleDelete(reviewItem.id)}
-              >
-                삭제
-              </Button>
+              {userId === reviewItem.userId && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  className={classes.deleteButton}
+                  onClick={() => handleDelete(reviewItem.id)}
+                >
+                  삭제
+                </Button>
+              )}
             </div>
             <Typography variant="caption" className={classes.createDate}>
               작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
