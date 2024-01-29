@@ -22,7 +22,8 @@ const useStyles = makeStyles({
     fontSize: '0.8rem',
     color: '#777',
     marginTop: '4px',
-    alignSelf: 'flex-end',
+    display: 'flex',
+    justifyContent: 'space-between',  // 추가: 작성일자와 작성자 간격 벌리기
   },
   textField: {
     width: '100%',
@@ -41,6 +42,8 @@ const Review = ({ chargingStationId }) => {
   const [review, setReview] = useState({ data: { items: [] } });
   const [newReviewContent, setNewReviewContent] = useState('');
   const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(null);  // 추가: 사용자 이름 상태 추가
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -59,14 +62,16 @@ const Review = ({ chargingStationId }) => {
   const fetchUserId = async () => {
     try {
       const userResponse = await axios.get(`/api/v1/members/me`);
-      const userIdFromApi = userResponse.data.data.item.id;
+      const { id: userIdFromApi, username } = userResponse.data.data.item;
       setUserId(userIdFromApi);
+      setUserName(username);
+      setIsLoggedIn(true);
     } catch (error) {
       console.error("유저 정보를 불러오는 중 오류 발생:", error);
+      setUserId(null);
+      setIsLoggedIn(false);
     }
   };
-
-  const isLoggedIn = !!sessionStorage.getItem("username");
 
   const handleSubmit = async () => {
     if (!isLoggedIn) {
@@ -110,7 +115,7 @@ const Review = ({ chargingStationId }) => {
           }
           variant="outlined"
           multiline
-          rows={3}
+          minRows={3}
           value={newReviewContent}
           onChange={(e) => setNewReviewContent(e.target.value)}
           className={classes.textField}
@@ -126,7 +131,7 @@ const Review = ({ chargingStationId }) => {
               {reviewItem.content || "내용이 없습니다."}
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {userId === reviewItem.userId && (
+              {isLoggedIn && userId === reviewItem.userId && (
                 <Button
                   variant="outlined"
                   color="secondary"
@@ -138,7 +143,8 @@ const Review = ({ chargingStationId }) => {
               )}
             </div>
             <Typography variant="caption" className={classes.createDate}>
-              작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
+              작성일자: {new Date(reviewItem.createDate).toLocaleDateString()} 
+              작성자: {userName || "익명"}  {/* 추가: 작성자 표시 */}
             </Typography>
           </div>
         ))
