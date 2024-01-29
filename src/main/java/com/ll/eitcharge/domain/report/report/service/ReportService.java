@@ -129,22 +129,20 @@ public class ReportService {
 	}
 
 	public void loadReportAccess(ReportResponseDto dto) {
-		Member actor = rq.getMember();
-		dto.setActorCanRead(canRead(actor, dto));
-		dto.setActorCanCreate(canCreate(actor, dto));
+		Member actor = rq.getMember(); // todo: getMember 프록시 객체 Member로 변환 (멤버 정보 안들어가는 문제)
+		dto.setActorCanRead(canRead(dto));
+		dto.setActorCanManagerSearch(canManagerSearch(actor));
+		dto.setActorCanCreate(canCreate(actor));
 		dto.setActorCanEdit(canEdit(actor, dto));
 		dto.setActorCanComplete(canComplete(actor, dto));
 	}
 
-	public boolean canRead(Member actor, ReportResponseDto dto) {
-		if (dto == null) { return false; }
-		if (actor == null) { return true; }
-		return true;
+	public boolean canRead(ReportResponseDto dto) {
+		return dto != null;
 	}
 
-	public boolean canCreate(Member actor, ReportResponseDto dto) {
-		if (actor == null) { return false; }
-		return true;
+	public boolean canCreate(Member actor) {
+		return actor != null;
 	}
 
 	public boolean canEdit(Member actor, ReportResponseDto dto) {
@@ -161,5 +159,11 @@ public class ReportService {
 		if (actor.getTechnicalManager() == null) { return false; }
 		if (actor.getTechnicalManager().getChargingStation() == null) { return false;}
 		return (actor.getTechnicalManager().getChargingStation().getStatId().equals(dto.getStatId()));
+	}
+
+	public boolean canManagerSearch(Member actor) {
+		if (actor == null) { return false; }
+		if (actor.getTechnicalManager() == null) { return false; }
+		return (actor.getTechnicalManager().getChargingStation() != null);
 	}
 }

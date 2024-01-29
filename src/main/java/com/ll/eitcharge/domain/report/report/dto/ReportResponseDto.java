@@ -58,11 +58,15 @@ public class ReportResponseDto {
 
 	private boolean actorCanRead;
 
+	private boolean actorCanManagerSearch;
+
 	private boolean actorCanCreate;
 
     private boolean actorCanEdit;
 
     private boolean actorCanComplete;
+
+
 
 	public ReportResponseDto(Report report) {
 		this.id = report.getId();
