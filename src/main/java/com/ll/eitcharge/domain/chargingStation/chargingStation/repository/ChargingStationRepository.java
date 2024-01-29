@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
 @Repository
-public interface ChargingStationRepository extends JpaRepository<ChargingStation, Long> {
+public interface ChargingStationRepository extends JpaRepository<ChargingStation, String> {
 }
