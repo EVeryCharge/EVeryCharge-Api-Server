@@ -7,25 +7,22 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const navigate = useNavigate();
-  const { setSignuped } = useAuth();
-  const { setLogined } = useAuth();
+
   const handleSignup = async () => {
     try {
-    //   const response = await axios.post(
-    //     '/api/v1/members/signup',
-    //     {
-    //       username: username,
-    //       password: password,
-    //     }
-    //   );
+      const response = await axios.post(
+        '/api/v1/members/signup',
+        {
+          username: username,
+          password1: password,
+          password2: password2
+        }
+      );
 
       // 회원가입 성공시 처리
       console.log('Signup successful:');
+      console.log('Signup new username:', response.data.data.item.username);
 
-    //   console.log('Signup successful:', response.data.data.item);
-    //   setSignuped(response.data.data.item)
-    //   console.log('username sessionStorage '+response.data.data.item.username);
-    //   sessionStorage.setItem("username", response.data.data.item.username);
       // TODO: 성공 시 리다이렉트 또는 다른 작업 수행
       navigate('/');
     } catch (error) {
