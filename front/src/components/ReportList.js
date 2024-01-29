@@ -62,6 +62,7 @@ const ReportList = () => {
             page: currentPage,
             pageSize: pageSize,
           },
+          withCredentials: true,
         }
       );
 
@@ -78,7 +79,7 @@ const ReportList = () => {
 
   React.useEffect(() => {
     console.log("Data received:", data);
-  }, [data]); // 이 부분을 추가
+  }, [data]);
 
   return (
     <Box mt={4} mb={4}>

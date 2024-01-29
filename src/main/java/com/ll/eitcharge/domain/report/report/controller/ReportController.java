@@ -56,6 +56,7 @@ public class ReportController {
 		return RsData.of("200", "ok", responseDto);
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("")
 	public RsData<ReportResponseDto> write(
 		@RequestBody @NonNull ReportRequestDto requestDto,
@@ -100,7 +101,7 @@ public class ReportController {
 		return RsData.of("200", "ok", responseDto);
 	}
 
-	private void loadReportAccess(ReportResponseDto dto) {
-		reportService.loadReportAccess(dto);
+	private void loadReportAccess(ReportResponseDto responseDto) {
+		reportService.loadReportAccess(responseDto);
 	}
 }

@@ -8,15 +8,16 @@ import ReportHeader from "./ReportHeader";
 
 const ReportDetail = () => {
   const { id } = useParams();
-  const [reportDetail, setReportDetail] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchReportDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8090/api/v1/reports/${id}`
+          `http://localhost:8090/api/v1/reports/${id}`,
+          { withCredentials: true }
         );
-        setReportDetail(response.data.data);
+        setData(response.data.data);
       } catch (error) {
         console.error("Error fetching report detail:", error);
       }
@@ -25,10 +26,14 @@ const ReportDetail = () => {
     fetchReportDetail();
   }, [id]);
 
-  if (!reportDetail) {
+  React.useEffect(() => {
+    console.log("Data received:", data);
+  }, [data]);
+
+  if (!data) {
     // 로딩 시
     // return <></>;
-    // TODO: 최종적으로 reportDetail 없을 시에는 에러페이지 반환하게끔 구현
+    // TODO: 최종적으로 data 없을 시에는 에러페이지 반환하게끔 구현
     return <ErrorPage />;
   }
 
@@ -51,17 +56,17 @@ const ReportDetail = () => {
 
       {/* 작성 정보 구역 */}
       <Box alignItems="center" my={2} pl={2}>
-        <Typography variant="subtitle1">{`[유형] 충전소: [${reportDetail.reportType}] ${reportDetail.statNm}`}</Typography>
-        <Typography variant="subtitle1">{`신고자: ${reportDetail.memberName}`}</Typography>
+        <Typography variant="subtitle1">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
+        <Typography variant="subtitle1">{`신고자: ${data.memberName}`}</Typography>
         <Typography variant="subtitle1">{`작성일: ${formatDate(
-          reportDetail.createDate
+          data.createDate
         )}`}</Typography>
       </Box>
       <hr />
 
       {/* 글 제목 및 내용 구역 */}
       <Box alignItems="center" my={2} pl={2} height={300}>
-        <Typography variant="h4">{reportDetail.title}</Typography>
+        <Typography variant="h4">{data.title}</Typography>
         <Typography
           variant="body1"
           style={{
@@ -70,7 +75,7 @@ const ReportDetail = () => {
             paddingTop: "10px",
           }}
         >
-          {reportDetail.content}
+          {data.content}
         </Typography>
       </Box>
       <hr />
@@ -81,23 +86,23 @@ const ReportDetail = () => {
           {`처리결과: `}
           <span
             style={{
-              color: reportDetail.completed ? "#008000" : "#FFA500",
+              color: data.completed ? "#008000" : "#FFA500",
               fontWeight: "bold",
             }}
           >
-            {reportDetail.completed ? "완료" : "진행중"}
+            {data.completed ? "완료" : "진행중"}
           </span>
         </Typography>
-        {reportDetail.replierName && (
-          <Typography variant="body1">{`처리자: ${reportDetail.replierName}`}</Typography>
+        {data.replierName && (
+          <Typography variant="body1">{`처리자: ${data.replierName}`}</Typography>
         )}
-        {reportDetail.replyCreatedDate && (
+        {data.replyCreatedDate && (
           <Typography variant="body1">{`처리일: ${formatDate(
-            reportDetail.replyCreatedDate
+            data.replyCreatedDate
           )}`}</Typography>
         )}
-        {reportDetail.reply && (
-          <Typography variant="body1">{`${reportDetail.reply}`}</Typography>
+        {data.reply && (
+          <Typography variant="body1">{`${data.reply}`}</Typography>
         )}
         <Box mt={1}>
           <GoBackButton />

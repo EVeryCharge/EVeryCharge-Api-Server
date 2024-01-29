@@ -129,12 +129,12 @@ public class ReportService {
 	}
 
 	public void loadReportAccess(ReportResponseDto dto) {
-		Member actor = rq.getMember(); // todo: getMember 프록시 객체 Member로 변환 (멤버 정보 안들어가는 문제)
-		dto.setActorCanRead(canRead(dto));
-		dto.setActorCanManagerSearch(canManagerSearch(actor));
-		dto.setActorCanCreate(canCreate(actor));
-		dto.setActorCanEdit(canEdit(actor, dto));
-		dto.setActorCanComplete(canComplete(actor, dto));
+		Member actor = rq.getMember();
+			dto.setActorCanRead(canRead(dto));
+			dto.setActorCanManagerSearch(canManagerSearch(actor));
+			dto.setActorCanCreate(canCreate(actor));
+			dto.setActorCanEdit(canEdit(actor, dto));
+			dto.setActorCanComplete(canComplete(actor, dto));
 	}
 
 	public boolean canRead(ReportResponseDto dto) {
