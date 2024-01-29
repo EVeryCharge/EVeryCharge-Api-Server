@@ -23,16 +23,14 @@ const useStyles = makeStyles({
     color: '#777',
     marginTop: '4px',
     display: 'flex',
-    justifyContent: 'space-between',  // 추가: 작성일자와 작성자 간격 벌리기
+    justifyContent: 'space-between',
   },
   textField: {
     width: '100%',
     marginBottom: '10px',
   },
   deleteButton: {
-    fontSize: '0.8rem',
-    padding: '4px 8px',
-    marginLeft: 'auto',
+    fontSize: '0.5rem',
     marginTop: 0,
   },
 });
@@ -42,7 +40,7 @@ const Review = ({ chargingStationId }) => {
   const [review, setReview] = useState({ data: { items: [] } });
   const [newReviewContent, setNewReviewContent] = useState('');
   const [userId, setUserId] = useState(null);
-  const [userName, setUserName] = useState(null);  // 추가: 사용자 이름 상태 추가
+  const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -76,6 +74,12 @@ const Review = ({ chargingStationId }) => {
   const handleSubmit = async () => {
     if (!isLoggedIn) {
       alert("로그인이 필요합니다.");
+      return;
+    }
+
+    // 변경: 작성 내용이 비어있을 경우 알림창 표시
+    if (!newReviewContent.trim()) {
+      alert("후기 내용을 입력해주세요.");
       return;
     }
 
@@ -144,7 +148,7 @@ const Review = ({ chargingStationId }) => {
             </div>
             <Typography variant="caption" className={classes.createDate}>
               작성일자: {new Date(reviewItem.createDate).toLocaleDateString()} 
-              작성자: {userName || "익명"}  {/* 추가: 작성자 표시 */}
+              작성자: {userName}
             </Typography>
           </div>
         ))
