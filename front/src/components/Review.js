@@ -12,6 +12,7 @@ const useStyles = makeStyles({
     borderTop: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-start', // 변경: 왼쪽 정렬
   },
   content: {
     fontSize: '1rem',
@@ -24,6 +25,7 @@ const useStyles = makeStyles({
     marginTop: '4px',
     display: 'flex',
     justifyContent: 'space-between',
+    width: '100%', // 변경: 전체 너비로 설정
   },
   textField: {
     width: '100%',
@@ -31,7 +33,7 @@ const useStyles = makeStyles({
   },
   deleteButton: {
     fontSize: '0.5rem',
-    marginTop: 0,
+    marginTop: '8px', // 변경: 삭제 버튼과의 간격 조정
   },
 });
 
@@ -77,7 +79,6 @@ const Review = ({ chargingStationId }) => {
       return;
     }
 
-    // 변경: 작성 내용이 비어있을 경우 알림창 표시
     if (!newReviewContent.trim()) {
       alert("후기 내용을 입력해주세요.");
       return;
@@ -95,11 +96,21 @@ const Review = ({ chargingStationId }) => {
     }
   };
 
-  const handleDelete = async (reviewId) => {
+  const handleDelete = async (reviewId, reviewUserId) => {
+    if (!isLoggedIn) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+  
+    if (userId !== reviewUserId) {
+      alert("자신이 작성한 후기만 삭제할 수 있습니다.");
+      return;
+    }
+  
     if (!window.confirm('삭제하시겠습니까?')) {
       return;
     }
-
+  
     try {
       await axios.delete(`/api/v1/review/${chargingStationId}/${reviewId}`);
       fetchData();
@@ -107,7 +118,6 @@ const Review = ({ chargingStationId }) => {
       console.error("후기를 삭제하는 중 오류 발생:", error);
     }
   };
-
   return (
     <div className={classes.reviewContainer}>
       <Typography variant="h5">{chargingStationId} 이용후기</Typography>
@@ -134,22 +144,24 @@ const Review = ({ chargingStationId }) => {
             <Typography variant="body2" className={classes.content}>
               {reviewItem.content || "내용이 없습니다."}
             </Typography>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {isLoggedIn && userId === reviewItem.userId && (
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  className={classes.deleteButton}
-                  onClick={() => handleDelete(reviewItem.id)}
-                >
-                  삭제
-                </Button>
-              )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+              <div>
+                작성자: Member ID: {reviewItem.userId} {/* 변경: 작성자 표시 */}
+              </div>
+              <div className={classes.createDate}>
+                작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
+              </div>
             </div>
-            <Typography variant="caption" className={classes.createDate}>
-              작성일자: {new Date(reviewItem.createDate).toLocaleDateString()} 
-              작성자: {userName}
-            </Typography>
+            {isLoggedIn && userId === reviewItem.userId && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                className={classes.deleteButton}
+                onClick={() => handleDelete(reviewItem.id, userId)}
+              >
+                삭제
+              </Button>
+            )}
           </div>
         ))
       ) : null}
