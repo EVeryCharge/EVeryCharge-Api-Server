@@ -2,6 +2,7 @@ package com.ll.eitcharge.domain.member.member.controller;
 
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
+import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rq.Rq;
 import com.ll.eitcharge.global.rsData.RsData;
 import com.ll.eitcharge.standard.base.Empty;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+
 public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
@@ -25,6 +26,9 @@ public class MemberController {
     }
 
     public record LoginResponseBody(@NonNull MemberDto item) {
+    }
+
+    public record SignupRequestBody(@NotBlank String username, @NotBlank String password1, @NotBlank String password2) {
     }
 
     @PostMapping("/login")
@@ -63,8 +67,14 @@ public class MemberController {
         return RsData.of("로그아웃 성공");
     }
 
-    @GetMapping("/signup")
-    public RsData<Empty> signup() {
-        return RsData.of("회원가입");
+    @PostMapping("/signup")
+    public RsData<Empty> signup(@Valid @RequestBody SignupRequestBody body) {
+
+        if(!body.password1.equals(body.password2))
+            return RsData.of("400-1", "두개의 비밀번호가 다릅니다");
+
+        memberService.join(body.username, body.password1);
+
+        return RsData.of("회원가입 성공");
     }
 }
