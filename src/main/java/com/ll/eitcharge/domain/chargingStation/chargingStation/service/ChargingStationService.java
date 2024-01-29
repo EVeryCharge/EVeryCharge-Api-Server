@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
 
-	public ChargingStation findById(Long id) {
+	public ChargingStation findById(String id) {
 		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
 	}
 }

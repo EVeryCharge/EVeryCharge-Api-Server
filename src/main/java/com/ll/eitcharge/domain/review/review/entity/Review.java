@@ -4,6 +4,7 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
@@ -20,6 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 public class Review extends BaseTime {
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "stat_id")
     private ChargingStation chargingStation;
 
     @ManyToOne(fetch = LAZY)

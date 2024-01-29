@@ -13,9 +13,11 @@ spring:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:mysql://hyojunkim.site:3306/eitcharge_test
+    #로컬 db에 대해서는 각자 하고싶은걸로 하시길..
+    #일단 설정은 mysql로 해놨습니다.
+    url: jdbc:mysql://localhost:3306/eitcharge #디비 생성하시길...
     username: root
-    password: lldj123414
+    password: #디비 비번
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
@@ -27,6 +29,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        #dialect: org.hibernate.dialect.MySQLDialect
+        #show variables like 'lower_case_table_names'; 이거에 대해서 검색
         default_batch_fetch_size: 100
         format_sql: true
         highlight_sql: true
