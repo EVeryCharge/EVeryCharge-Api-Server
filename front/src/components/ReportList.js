@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import * as React from "react";
+import ReportHeader from "./ReportHeader";
 
 const ReportList = () => {
   const [data, setData] = React.useState({
@@ -75,13 +76,13 @@ const ReportList = () => {
     fetchData(page, rowsPerPage);
   }, [page, rowsPerPage]);
 
+  React.useEffect(() => {
+    console.log("Data received:", data);
+  }, [data]); // 이 부분을 추가
+
   return (
     <Box mt={4} mb={4}>
-      <h2>신고내역 확인</h2>
-      <p style={{ fontWeight: "bold", color: "#008000", paddingLeft: "10px" }}>
-        충전소 장애 관련 내용을 신고할 수 있습니다.
-      </p>
-      <hr />
+      <ReportHeader />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -117,7 +118,7 @@ const ReportList = () => {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 10]}
           component="div"
           count={data.totalElements}
           rowsPerPage={rowsPerPage}
