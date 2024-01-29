@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Typography, makeStyles, TextField, Button, Grid } from '@material-ui/core';
 
+
 const useStyles = makeStyles({
   reviewContainer: {
     marginTop: '20px',
@@ -28,6 +29,11 @@ const useStyles = makeStyles({
     width: '100%',
     marginBottom: '10px',  // 추가: 여백 추가
   },
+  deleteButton: {
+    fontSize: '0.8rem',  // 버튼의 글꼴 크기를 작게 조절합니다.
+    padding: '4px 8px',  // 버튼의 패딩을 작게 조절합니다.
+    marginLeft: 'auto',   // 우측 정렬을 위해 marginLeft: 'auto' 추가
+  },
 });
 
 const Review = ({ chargingStationId }) => {
@@ -48,7 +54,14 @@ const Review = ({ chargingStationId }) => {
     }
   };
 
+  const isLoggedIn = !!sessionStorage.getItem("username");
+
   const handleSubmit = async () => {
+    if (!isLoggedIn) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     try {
       await axios.post(`/api/v1/review/${chargingStationId}`, {
         content: newReviewContent,
@@ -58,6 +71,19 @@ const Review = ({ chargingStationId }) => {
       setNewReviewContent('');
     } catch (error) {
       console.error("후기를 작성하는 중 오류 발생:", error);
+    }
+  };
+
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm('삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/v1/review/${chargingStationId}/${reviewId}`);
+      fetchData();
+    } catch (error) {
+      console.error("후기를 삭제하는 중 오류 발생:", error);
     }
   };
 
@@ -87,6 +113,16 @@ const Review = ({ chargingStationId }) => {
             <Typography variant="body2" className={classes.content}>
               {reviewItem.content || "내용이 없습니다."}
             </Typography>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                className={classes.deleteButton}
+                onClick={() => handleDelete(reviewItem.id)}
+              >
+                삭제
+              </Button>
+            </div>
             <Typography variant="caption" className={classes.createDate}>
               작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
             </Typography>
