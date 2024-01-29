@@ -26,14 +26,6 @@ public class ChargingStationApiService {
     private final ChargingStationRepository chargingStationRepository;
     private final RestTemplate restTemplate;
 
-//    public ChargingStation findById(Long id) {
-//        Optional< ChargingStation > oc = chargingStationRepository.findById(id);
-//        if(oc.isEmpty()){
-//            new EntityNotFoundException("id가" + id + "인 충전소는 존재하지 않습니다.");
-//        }
-//        return oc.get();
-//    }
-
     public ChargingStationItemDto[] findfromApi(String stateId){
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory();

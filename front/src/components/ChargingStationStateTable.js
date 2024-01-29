@@ -1,13 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import axios from 'axios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
 
-//서버에 데이터 요청해서 받아올 것
-const chargingStationDate = [
-    {
-      
-    },
-    
-  ];
 
 
 
@@ -31,26 +25,26 @@ const ChargingStationStateTable = () => {
     
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>구분</th>
-            <th>출처발신</th>
-            <th>상태정보</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>급속1</td>
-            <td>차데모, AC3상, 콤보</td>
-            <td>최근충전일시 2024-01-24 17:48</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>충전기 상태</TableCell>
+            <TableCell>충전기 타입</TableCell>
+            <TableCell>마지막 충전 시간</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {chargingStationData.map((row) => (
+            <TableRow key={row.statId}>
+              <TableCell>{row.stat}</TableCell>
+              <TableCell>{row.chgerType}</TableCell>
+              <TableCell>{row.lastTsdt}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
