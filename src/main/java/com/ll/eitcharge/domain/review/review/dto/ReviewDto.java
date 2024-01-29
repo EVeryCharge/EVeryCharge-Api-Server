@@ -23,8 +23,8 @@ public class ReviewDto {
         // todo chargestation 연결하기
         this.chargingStationId = review.getChargingStation().getStatId();
         this.createDate = review.getCreatedDate();
-        this.modifyDate = review.getModifiedDate();;
-        this.deleteDate = review.getDeletedDate();;
+        this.modifyDate = review.getModifiedDate();
+        this.deleteDate = review.getDeletedDate();
         this.isDeleted = review.isDeleted();
         this.content = review.getContent();
     }

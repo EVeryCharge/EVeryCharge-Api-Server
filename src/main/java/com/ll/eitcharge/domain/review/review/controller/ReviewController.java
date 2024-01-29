@@ -117,6 +117,7 @@ public class ReviewController {
         }
     }
 
+    @Transactional
     @PutMapping("/{chargingStationId}/{id}")
     public RsData<ModifyReviewResponseBody> modifyReview(
             @PathVariable long id,
