@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.member.member.controller;
 
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
+import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rq.Rq;
@@ -10,7 +11,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -68,13 +68,11 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public RsData<Empty> signup(@Valid @RequestBody SignupRequestBody body) {
+    public RsData<Member> signup(@Valid @RequestBody SignupRequestBody body) {
 
         if(!body.password1.equals(body.password2))
-            return RsData.of("400-1", "두개의 비밀번호가 다릅니다");
+            throw new GlobalException("400-1", "두개의 비밀번호가 일치하지 않습니다.");
 
-        memberService.join(body.username, body.password1);
-
-        return RsData.of("회원가입 성공");
+        return memberService.join(body.username, body.password1);
     }
 }
