@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
-public class ReportResultRequestDto {
+public class ReportCompleteRequestDto {
 	@NonNull
 	private String reply;
 }
