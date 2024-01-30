@@ -69,9 +69,11 @@ public class MemberController {
 
     @PostMapping("/signup")
     public RsData<Member> signup(@Valid @RequestBody SignupRequestBody body) {
-
         if(!body.password1.equals(body.password2))
             throw new GlobalException("400-1", "두개의 비밀번호가 일치하지 않습니다.");
+
+        if (memberService.findByUsername(body.username).isPresent())
+            throw new GlobalException("400-2", "이미 존재하는 회원입니다.");
 
         return memberService.join(body.username, body.password1);
     }

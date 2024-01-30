@@ -25,10 +25,6 @@ public class MemberService {
 
     @Transactional
     public RsData<Member> join(String username, String password) {
-        if (findByUsername(username).isPresent()) {
-            throw new GlobalException("400-2", "이미 존재하는 회원입니다.");
-        }
-
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
