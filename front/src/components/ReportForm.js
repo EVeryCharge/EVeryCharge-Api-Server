@@ -11,8 +11,8 @@ import {
 } from "@material-ui/core";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-import GoBackButton from "./GoBackButton";
 import ReportHeader from "./ReportHeader";
+import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
 
 const ReportForm = () => {
   const navigate = useNavigate();
@@ -94,13 +94,6 @@ const ReportForm = () => {
       } catch (error) {
         console.error("신고 생성 중 오류:", error);
       }
-
-      // 폼 필드 재설정
-      setTitle("");
-      setContent("");
-      setReportType("수리보수");
-      setSearchKw("");
-      setSearchStatId("");
     }
   };
 
@@ -176,6 +169,8 @@ const ReportForm = () => {
 
   return (
     <Box mt={4} mb={4}>
+      <RedirectIfNotLoggedIn />
+
       {/* 헤더 */}
       <ReportHeader
         headerTitle={"신고내역 작성"}
@@ -197,7 +192,7 @@ const ReportForm = () => {
               <MenuItem value="수리보수">수리보수</MenuItem>
               <MenuItem value="정보변경">정보변경</MenuItem>
               <MenuItem value="기타">기타</MenuItem>
-              {/* 추가적인 신고유형 항목들을 필요에 따라 추가 TODO enum으로 교체*/}
+              {/* 추가적인 신고유형 항목들을 필요에 따라 추가, TODO enum으로 교체*/}
             </Select>
             {error.reportType && (
               <Typography variant="caption" color="error">
