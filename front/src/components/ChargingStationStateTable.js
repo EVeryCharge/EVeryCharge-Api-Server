@@ -5,18 +5,24 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 
 
 
-const ChargingStationStateTable = (stationId) => {
+const ChargingStationStateTable = ({statId}) => {
     const[chargingStationData, setChargingStationData] = useState([]);
     
 
     useEffect(() => {
         // Axios를 사용하여 데이터를 가져옵니다.
-        axios.get(Credential,'http://localhost:8090/station/ME183219/chargers')
+        //임시데이터
+        statId = "ME19A278";
+        const url = `http://localhost:8090/station/${statId}/chargers`;
+        console.log(url);
+        axios.get(`http://localhost:8090/station/${statId}/chargers`)
           .then((response) => {
             // 요청이 성공하면 데이터를 상태에 저장합니다.
-            console.log(response.items);
-            setChargingStationData(response.data);
+            console.log(response);
             console.log(response.data);
+            const itemsArray = response.data.data[0].item;
+            setChargingStationData(itemsArray);
+            console.log(itemsArray);
           })
           .catch((error) => {
             // 오류가 발생하면 오류를 처리합니다.

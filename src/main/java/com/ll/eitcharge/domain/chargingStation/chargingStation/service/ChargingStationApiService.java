@@ -2,9 +2,7 @@ package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationItemDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ItemListDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import com.ll.eitcharge.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 @Service
@@ -104,7 +99,7 @@ public class ChargingStationApiService {
 
     }
 
-    public RsData<HashMap>  findFromApi3(String statId){
+    public RsData<Object>  findFromApi3(String statId){
         WebClient webClient = WebClient.create();
 
         String serviceKey = "%2B61CsEc7Nmo65NvzqtjoQh0FPR0CAdc45WlyZDPkxYDqeSxUJ4E1ncpqn2H2qyN%2BHFXNqJD6JbNbghaWu9Tctw%3D%3D";
@@ -135,7 +130,7 @@ public class ChargingStationApiService {
         }
 
 
-        RsData< HashMap > rsData = RsData.of(hashMap);
+        RsData< Object > rsData = RsData.of(hashMap.get("items"));
 
 
         return rsData;
