@@ -4,11 +4,11 @@ import { Typography, makeStyles, TextField, Button } from '@material-ui/core';
 
 const useStyles = makeStyles({
   reviewContainer: {
-    marginTop: '20px',
+    marginTop: '2px',
     borderBottom: '1px solid #ddd',
   },
   reviewItem: {
-    padding: '10px',
+    padding: '1px',
     borderTop: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
@@ -16,13 +16,13 @@ const useStyles = makeStyles({
   },
   content: {
     fontSize: '1rem',
-    marginBottom: '8px',
+    marginBottom: '5px',
     whiteSpace: 'pre-line',
   },
   createDate: {
-    fontSize: '0.8rem',
+    fontSize: '0.6rem',
     color: '#777',
-    marginTop: '4px',
+    marginTop: '1px',
     display: 'flex',
     justifyContent: 'space-between',
     width: '100%',
@@ -36,12 +36,16 @@ const useStyles = makeStyles({
     marginTop: '8px',
     marginRight: '8px',
   },
+  moreButton: {
+    marginTop: '10px',
+  },
 });
 
 const Review = ({ chargingStationId }) => {
   const classes = useStyles();
   const [review, setReview] = useState({ data: { items: [] } });
   const [newReviewContent, setNewReviewContent] = useState('');
+  const [newReviewRating, setNewReviewRating] = useState(0);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,6 +53,7 @@ const Review = ({ chargingStationId }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [editedReviewContent, setEditedReviewContent] = useState('');
+  const [visibleReviews, setVisibleReviews] = useState(5); // Number of reviews to initially display
 
   useEffect(() => {
     fetchData();
@@ -92,10 +97,12 @@ const Review = ({ chargingStationId }) => {
     try {
       await axios.post(`/api/v1/review/${chargingStationId}`, {
         content: newReviewContent,
+        rating: newReviewRating,
       });
 
       fetchData();
       setNewReviewContent('');
+      setNewReviewRating(0);
     } catch (error) {
       console.error("후기를 작성하는 중 오류 발생:", error);
     }
@@ -157,28 +164,41 @@ const Review = ({ chargingStationId }) => {
     }
   };
 
+  const handleMoreReviews = () => {
+    setVisibleReviews((prev) => prev + 5); // Show the next 5 reviews
+  };
+
   return (
     <div className={classes.reviewContainer}>
-    <Typography variant="h5">{chargingStationId} 이용후기</Typography>
-    <div className={classes.reviewItem}>
-      <TextField
-        label={Array.isArray(review.data.items) && review.data.items.length === 0
-          ? "첫 후기를 작성해 보세요."
-          : "후기 작성"
-        }
-        variant="outlined"
-        multiline
-        minRows={3}
-        value={newReviewContent}
-        onChange={(e) => setNewReviewContent(e.target.value)}
-        className={classes.textField}
-      />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
-        작성
-      </Button>
+      <Typography variant="h5">{chargingStationId} 이용후기</Typography>
+      <div className={classes.reviewItem}>
+        <TextField
+          label={Array.isArray(review.data.items) && review.data.items.length === 0
+            ? "첫 후기를 작성해 보세요."
+            : "후기 작성"
+          }
+          variant="outlined"
+          multiline
+          minRows={3}
+          value={newReviewContent}
+          onChange={(e) => setNewReviewContent(e.target.value)}
+          className={classes.textField}
+        />
+        <TextField
+          label="평점"
+          variant="outlined"
+          type="number"
+          InputProps={{ inputProps: { min: 0, max: 5 } }}
+          value={newReviewRating}
+          onChange={(e) => setNewReviewRating(e.target.value)}
+          className={classes.textField}
+        />
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          작성
+        </Button>
       </div>
       {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
-        review.data.items.map((reviewItem) => (
+        review.data.items.slice(0, visibleReviews).map((reviewItem) => (
           <div key={reviewItem.id} className={classes.reviewItem}>
             <Typography variant="body2" className={classes.content}>
               {isEditing && editReviewId === reviewItem.id ? (
@@ -196,8 +216,8 @@ const Review = ({ chargingStationId }) => {
               )}
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <div>
-                작성자: Member ID: {reviewItem.userId}
+              <div className={classes.createDate}>
+                ID: {reviewItem.userId}
               </div>
               <div className={classes.createDate}>
                 작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
@@ -249,6 +269,16 @@ const Review = ({ chargingStationId }) => {
           </div>
         ))
       ) : null}
+      {Array.isArray(review.data.items) && review.data.items.length > visibleReviews && (
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.moreButton}
+          onClick={handleMoreReviews}
+        >
+          더보기
+        </Button>
+      )}
     </div>
   );
 };

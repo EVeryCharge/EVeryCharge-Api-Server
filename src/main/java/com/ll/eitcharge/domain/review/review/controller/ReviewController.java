@@ -70,6 +70,7 @@ public class ReviewController {
     @Setter
     public static class WriteReviewRequestBody {
         private String content;
+        private int rating;
     }
 
     @Getter
@@ -86,11 +87,12 @@ public class ReviewController {
     @PostMapping("{chargingStationId}")
     public RsData<WriteReviewResponseBody> writeReview(
             @PathVariable String chargingStationId,
-            @RequestBody WriteReviewRequestBody content
+            @RequestBody WriteReviewRequestBody requestBody
     ) {
         Member member = rq.getMember();
+        int rating = requestBody.getRating();
 
-        Review review = reviewService.write(member, chargingStationId,content.getContent()).getData();
+        Review review = reviewService.write(member, chargingStationId, requestBody.getContent(), rating).getData();
 
 
         return RsData.of(

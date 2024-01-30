@@ -21,12 +21,13 @@ public class ReviewService {
     private final ChargingStationService chargingStationService;
 
     @Transactional
-    public RsData<Review> write(Member member, String chargingStationId, String content) {
+    public RsData<Review> write(Member member, String chargingStationId, String content, int rating) {
 
         Review review = Review.builder()
                 .chargingStation(chargingStationService.findById(chargingStationId))
                 .member(member)
                 .content(content)
+                .rating(rating)
                 .build();
 
         reviewRepository.save(review);
