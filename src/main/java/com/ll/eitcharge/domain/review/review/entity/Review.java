@@ -18,7 +18,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Setter
 public class Review extends BaseTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "stat_id")
