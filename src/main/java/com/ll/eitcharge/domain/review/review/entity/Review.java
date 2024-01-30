@@ -26,6 +26,7 @@ public class Review extends BaseTime {
     @ManyToOne(fetch = LAZY)
     private Member member;
 
+    @Setter
     private String content;
 
     private LocalDateTime deletedDate;
