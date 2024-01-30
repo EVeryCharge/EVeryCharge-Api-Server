@@ -48,6 +48,9 @@ public class ReportResponseDto {
 	private String statNm;
 
 	@NonNull
+	private String addr;
+
+	@NonNull
 	private boolean completed;
 
 	private String replierName;
@@ -66,8 +69,6 @@ public class ReportResponseDto {
 
     private boolean actorCanComplete;
 
-
-
 	public ReportResponseDto(Report report) {
 		this.id = report.getId();
 		this.title = report.getTitle();
@@ -79,6 +80,7 @@ public class ReportResponseDto {
 		this.memberName = report.getMember().getName();
 		this.statId = report.getChargingStation().getStatId();
 		this.statNm = report.getChargingStation().getStatNm();
+		this.addr = report.getChargingStation().getAddr();
 		this.completed = report.isCompleted();
 		// 신고 처리결과 관련 필드는 유지보수자 처리(매핑) 전까지는 null
 		if (report.getReplier() != null) {
