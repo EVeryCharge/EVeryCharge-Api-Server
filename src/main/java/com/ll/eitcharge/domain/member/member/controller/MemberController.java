@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-
 public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
@@ -76,5 +75,14 @@ public class MemberController {
             throw new GlobalException("400-2", "이미 존재하는 회원입니다.");
 
         return memberService.join(body.username, body.password1);
+    }
+
+    @GetMapping("/checkid/{username}")
+    public boolean checkid(@PathVariable String username){
+        if (memberService.findByUsername(username).isPresent()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

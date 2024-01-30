@@ -7,6 +7,19 @@ const Signup = () => {
   const [password2, setPassword2] = useState('');
   const navigate = useNavigate();
 
+  const handleCheckid = async () => {
+    try {
+      const response = await axios.get(`/api/v1/members/checkid/${username}`);
+      if (response.data) {
+        alert('사용 가능한 ID 입니다');
+      } else {
+        alert('이미 사용중인 ID 입니다');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSignup = async () => {
     try {
       const response = await axios.post(
@@ -36,6 +49,9 @@ const Signup = () => {
           Username : 
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         </label>
+        <button type= "button" onClick={handleCheckid}>
+          중복 확인        
+        </button>
         <br />
         <label>
           Password : 
