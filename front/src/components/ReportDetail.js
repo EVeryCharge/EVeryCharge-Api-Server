@@ -15,10 +15,9 @@ const ReportDetail = () => {
   useEffect(() => {
     const fetchReportDetail = async () => {
       try {
-        const response = await Axios.get(
-          `http://localhost:8090/api/v1/reports/${id}`,
-          { withCredentials: true }
-        );
+        const response = await Axios.get(`/api/v1/reports/${id}`, {
+          withCredentials: true,
+        });
         setData(response.data.data);
       } catch (error) {
         console.error("Error fetching report detail:", error);
@@ -39,12 +38,9 @@ const ReportDetail = () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await Axios.delete(
-          `http://localhost:8090/api/v1/reports/${id}`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await Axios.delete(`/api/v1/reports/${id}`, {
+          withCredentials: true,
+        });
 
         if (response.status === 200) {
           console.log("신고가 성공적으로 삭제되었습니다.");
@@ -158,6 +154,14 @@ const ReportDetail = () => {
                 marginTop: "-30px",
               }}
             >
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={handleDelete}
+                style={{ marginRight: "2px" }}
+              >
+                수정하기
+              </Button>
               <Button
                 variant="outlined"
                 color="secondary"

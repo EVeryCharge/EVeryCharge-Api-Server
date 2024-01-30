@@ -42,9 +42,7 @@ const ReportForm = () => {
   const fetchChargingStations = async () => {
     try {
       const response = await Axios.get(
-        `http://localhost:8090/api/v1/reports/station?kw=${encodeURIComponent(
-          searchKw
-        )}`
+        `/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
       );
       const result = response.data;
 
@@ -74,7 +72,7 @@ const ReportForm = () => {
     if (isValid) {
       try {
         const response = await Axios.post(
-          "http://localhost:8090/api/v1/reports",
+          "/api/v1/reports",
           {
             title: title,
             content: content,

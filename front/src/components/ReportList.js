@@ -55,16 +55,13 @@ const ReportList = () => {
 
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await Axios.get(
-        `http://localhost:8090/api/v1/reports/list`,
-        {
-          params: {
-            page: currentPage,
-            pageSize: pageSize,
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await Axios.get(`/api/v1/reports/list`, {
+        params: {
+          page: currentPage,
+          pageSize: pageSize,
+        },
+        withCredentials: true,
+      });
 
       console.log("Fetch request sent to:", response.config.url);
       setData(response.data.data);
