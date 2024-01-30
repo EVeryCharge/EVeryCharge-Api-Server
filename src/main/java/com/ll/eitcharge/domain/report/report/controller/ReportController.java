@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
-import com.ll.eitcharge.domain.report.report.dto.ReportResultRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportSearchStationListResponseDto;
 import com.ll.eitcharge.domain.report.report.service.ReportService;
 import com.ll.eitcharge.global.rsData.RsData;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +56,13 @@ public class ReportController {
 		ReportResponseDto responseDto = reportService.get(id);
 		loadReportAccess(responseDto);
 		return RsData.of("200", "ok", responseDto);
+	}
+
+
+	@Operation(description = "신고내역 작성 시 충전소 검색(키워드: 충전소명, 지역명, 세부지역명)")
+	@GetMapping("/station")
+	public RsData<ReportSearchStationListResponseDto> getStationList(@RequestParam(value = "kw") String kw) {
+		return RsData.of("200", "ok", reportService.getStationList(kw));
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -93,7 +102,7 @@ public class ReportController {
 	@PutMapping("/{id}/complete")
     public RsData<ReportResponseDto> complete(
         @PathVariable(value = "id") Long id,
-        @RequestBody @NonNull ReportResultRequestDto requestDto
+        @RequestBody @NonNull ReportCompleteRequestDto requestDto
         , Principal principal) {
 
 		ReportResponseDto responseDto = reportService.complete(requestDto, id, principal.getName());

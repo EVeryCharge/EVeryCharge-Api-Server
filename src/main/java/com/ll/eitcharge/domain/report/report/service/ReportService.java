@@ -15,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
-import com.ll.eitcharge.domain.report.report.dto.ReportResultRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportSearchStationListResponseDto;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.report.report.repository.ReportRepository;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
@@ -57,8 +58,11 @@ public class ReportService {
 			)
 		);
 	}
+	public ReportSearchStationListResponseDto getStationList(String keyword) {
+		return new ReportSearchStationListResponseDto(chargingStationService.findByKw(keyword), keyword);
+	}
 
-	// 엔티티 조회용
+	//서비스 레이어 간 엔티티 조회용
 	public Report findById(Long id) {
 		return reportRepository.findById(id).orElseThrow(GlobalException.E404::new);
 	}
@@ -108,7 +112,7 @@ public class ReportService {
 	}
 
 	@Transactional
-	public ReportResponseDto complete(ReportResultRequestDto requestDto, Long reportId, String username) {
+	public ReportResponseDto complete(ReportCompleteRequestDto requestDto, Long reportId, String username) {
 		Report report = findById(reportId);
 		TechnicalManager manager = technicalManagerService.findByName(username);
 
