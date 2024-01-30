@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@material-ui/core";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { Box, Button, Typography } from "@material-ui/core";
+import { useNavigate, useParams } from "react-router-dom";
+import Axios from "axios";
 import ErrorPage from "./ErrorPage";
 import ReportHeader from "./ReportHeader";
 
 const ReportDetail = () => {
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const ReportDetail = () => {
   useEffect(() => {
     const fetchReportDetail = async () => {
       try {
-        const response = await axios.get(
+        const response = await Axios.get(
           `http://localhost:8090/api/v1/reports/${id}`,
           { withCredentials: true }
         );
@@ -31,6 +33,30 @@ const ReportDetail = () => {
   React.useEffect(() => {
     console.log("Data received:", data);
   }, [data]);
+
+  // 신고 삭제 DELETE API
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        const response = await Axios.delete(
+          `http://localhost:8090/api/v1/reports/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("신고가 성공적으로 삭제되었습니다.");
+          navigate("/report/list");
+        } else {
+          console.error(`신고 삭제 실패 : ${response.msg}`);
+        }
+      } catch (error) {
+        console.error("신고 삭제 중 오류:", error);
+      }
+    }
+  };
 
   if (loading) {
     return null;
@@ -122,6 +148,25 @@ const ReportDetail = () => {
               <Typography variant="body1">{`${data.reply}`}</Typography>
             )}
           </Box>
+          {data.actorCanEdit && (
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                marginRight: "20px",
+                marginTop: "-30px",
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleDelete}
+              >
+                삭제하기
+              </Button>
+            </Box>
+          )}
         </Box>
       )}
     </>

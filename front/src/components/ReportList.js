@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import Axios from "axios";
 import * as React from "react";
 import ReportHeader from "./ReportHeader";
 
@@ -55,7 +55,7 @@ const ReportList = () => {
 
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await axios.get(
+      const response = await Axios.get(
         `http://localhost:8090/api/v1/reports/list`,
         {
           params: {
