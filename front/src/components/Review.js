@@ -34,6 +34,7 @@ const useStyles = makeStyles({
   deleteButton: {
     fontSize: '0.5rem',
     marginTop: '8px',
+    marginRight: '8px',
   },
 });
 
@@ -45,10 +46,9 @@ const Review = ({ chargingStationId }) => {
   const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 새로운 상태 추가
   const [isEditing, setIsEditing] = useState(false);
+  const [editReviewId, setEditReviewId] = useState(null);
   const [editedReviewContent, setEditedReviewContent] = useState('');
-  const [editingReviewId, setEditingReviewId] = useState(null); // 수정 중인 리뷰 아이템의 ID
 
   useEffect(() => {
     fetchData();
@@ -124,38 +124,34 @@ const Review = ({ chargingStationId }) => {
     }
   };
 
-  // 새로운 함수 추가
   const handleEdit = (reviewId, content) => {
-    setEditedReviewContent(content);
     setIsEditing(true);
-    setEditingReviewId(reviewId);
+    setEditReviewId(reviewId);
+    setEditedReviewContent(content);
   };
 
-  // 새로운 함수 추가
   const handleCancelEdit = () => {
     setIsEditing(false);
+    setEditReviewId(null);
     setEditedReviewContent('');
-    setEditingReviewId(null);
   };
 
-  // 새로운 함수 추가
-  const handleUpdate = async () => {
+  const handleUpdate = async (reviewId) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
       alert("후기 내용을 입력해주세요.");
       return;
     }
 
     try {
-      // 수정 중인 리뷰 아이템의 ID를 사용하여 수정 요청
-      await axios.put(`/api/v1/review/${chargingStationId}/${editingReviewId}`, {
+      await axios.put(`/api/v1/review/${chargingStationId}/${reviewId}`, {
         content: editedReviewContent,
       });
 
       console.log("후기 수정 성공");
       fetchData();
       setIsEditing(false);
+      setEditReviewId(null);
       setEditedReviewContent('');
-      setEditingReviewId(null);
     } catch (error) {
       console.error("후기를 수정하는 중 오류 발생:", error);
     }
@@ -163,51 +159,41 @@ const Review = ({ chargingStationId }) => {
 
   return (
     <div className={classes.reviewContainer}>
-      <Typography variant="h5">{chargingStationId} 이용후기</Typography>
-      <div className={classes.reviewItem}>
-        {isEditing ? (
-          <>
-            <TextField
-              label="후기 수정"
-              variant="outlined"
-              multiline
-              minRows={3}
-              value={editedReviewContent}
-              onChange={(e) => setEditedReviewContent(e.target.value)}
-              className={classes.textField}
-            />
-            <Button variant="contained" color="primary" onClick={handleUpdate}>
-              수정 완료
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
-              취소
-            </Button>
-          </>
-        ) : (
-          <>
-            <TextField
-              label={Array.isArray(review.data.items) && review.data.items.length === 0
-                ? "첫 후기를 작성해 보세요."
-                : "후기 작성"
-              }
-              variant="outlined"
-              multiline
-              minRows={3}
-              value={newReviewContent}
-              onChange={(e) => setNewReviewContent(e.target.value)}
-              className={classes.textField}
-            />
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              작성
-            </Button>
-          </>
-        )}
+    <Typography variant="h5">{chargingStationId} 이용후기</Typography>
+    <div className={classes.reviewItem}>
+      <TextField
+        label={Array.isArray(review.data.items) && review.data.items.length === 0
+          ? "첫 후기를 작성해 보세요."
+          : "후기 작성"
+        }
+        variant="outlined"
+        multiline
+        minRows={3}
+        value={newReviewContent}
+        onChange={(e) => setNewReviewContent(e.target.value)}
+        className={classes.textField}
+      />
+      <Button variant="contained" color="primary" onClick={handleSubmit}>
+        작성
+      </Button>
       </div>
       {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
         review.data.items.map((reviewItem) => (
           <div key={reviewItem.id} className={classes.reviewItem}>
             <Typography variant="body2" className={classes.content}>
-              {reviewItem.content || "내용이 없습니다."}
+              {isEditing && editReviewId === reviewItem.id ? (
+                <TextField
+                  label="후기 수정"
+                  variant="outlined"
+                  multiline
+                  minRows={3}
+                  value={editedReviewContent}
+                  onChange={(e) => setEditedReviewContent(e.target.value)}
+                  className={classes.textField}
+                />
+              ) : (
+                reviewItem.content || "내용이 없습니다."
+              )}
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <div>
@@ -219,22 +205,45 @@ const Review = ({ chargingStationId }) => {
             </div>
             {isLoggedIn && userId === reviewItem.userId && (
               <>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  className={classes.deleteButton}
-                  onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
-                >
-                  수정
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  className={classes.deleteButton}
-                  onClick={() => handleDelete(reviewItem.id, userId)}
-                >
-                  삭제
-                </Button>
+                {isEditing && editReviewId === reviewItem.id ? (
+                  <div>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleUpdate(editReviewId)}
+                      className={classes.deleteButton}
+                    >
+                      수정 완료
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleCancelEdit}
+                      className={classes.deleteButton}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      className={classes.deleteButton}
+                      onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      className={classes.deleteButton}
+                      onClick={() => handleDelete(reviewItem.id, userId)}
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                )}
               </>
             )}
           </div>
