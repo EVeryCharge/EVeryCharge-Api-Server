@@ -21,7 +21,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Setter
 public class Member extends BaseTime {
     @OneToOne(fetch = LAZY, mappedBy = "member")
     private TechnicalManager technicalManager;
