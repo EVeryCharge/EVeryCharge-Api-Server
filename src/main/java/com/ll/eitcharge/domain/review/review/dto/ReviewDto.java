@@ -10,6 +10,7 @@ public class ReviewDto {
     private final Long id;
     private final Long userId;
     private final String chargingStationId;
+    private final int rating;
     private final LocalDateTime createDate;
     private final LocalDateTime modifyDate;
     private final LocalDateTime deleteDate;
@@ -20,8 +21,8 @@ public class ReviewDto {
     public ReviewDto(Review review) {
         this.id = review.getId();
         this.userId = review.getMember().getId();
-        // todo chargestation 연결하기
         this.chargingStationId = review.getChargingStation().getStatId();
+        this.rating = review.getRating();
         this.createDate = review.getCreatedDate();
         this.modifyDate = review.getModifiedDate();
         this.deleteDate = review.getDeletedDate();
