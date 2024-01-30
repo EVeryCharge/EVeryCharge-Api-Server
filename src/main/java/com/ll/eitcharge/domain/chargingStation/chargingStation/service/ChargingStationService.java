@@ -20,8 +20,8 @@ public class ChargingStationService {
 		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
 	}
 
-	public List<ChargingStation> findByKeyword(String keyword) {
-		return chargingStationRepository.findByKeyword(keyword);
+	public List<ChargingStation> findByKw(String kw) {
+		return chargingStationRepository.findByKw(kw);
 	}
 
 	public Optional<ChargingStation> findByIdOptional(String statId) {
