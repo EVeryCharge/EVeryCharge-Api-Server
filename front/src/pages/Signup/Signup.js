@@ -50,7 +50,7 @@ const Signup = () => {
         <br />
         <label>
           Password Confirm : 
-          <input type="text" value={password2} onChange={(e) => setPassword2(e.target.value)} />
+          <input type="password" value={password2} onChange={(e) => setPassword2(e.target.value)} />
         </label>
         <br />
         <button type="button" onClick={handleSignup}>
