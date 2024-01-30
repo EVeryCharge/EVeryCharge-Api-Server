@@ -11,10 +11,11 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 
 @Repository
 public interface ChargingStationRepository extends JpaRepository<ChargingStation, String> {
+    List<ChargingStation> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng);
 
 	@Query("SELECT cs FROM ChargingStation cs " +
 		"WHERE cs.statNm LIKE %:kw% " +
 		"OR cs.regionDetail.regionDetailName LIKE %:kw% " +
-		"OR cs.regionDetail.zcode.regionName LIKE %:kw%")
-	List<ChargingStation> findByKw(@Param("kw") String kw);
+		"OR cs.regionDetail.zcode.regionName LIKE %:kw% ")
+	List<ChargingStation> findByReportEditKw(@Param("kw") String kw);
 }

@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.member.member.entity.Member;
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 
@@ -17,14 +19,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
 @Builder(toBuilder = true)
 @Getter
-@Setter
 public class Report extends BaseTime {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "stat_id")
@@ -42,4 +42,18 @@ public class Report extends BaseTime {
 	private boolean completed;
 	private String reply;
 	private LocalDateTime replyCreatedDate;
+
+	public void modify(ReportRequestDto requestDto, ChargingStation station) {
+		this.chargingStation = station;
+		this.title = requestDto.getTitle();
+		this.content = requestDto.getContent();
+		this.reportType = requestDto.getReportType();
+	}
+
+	public void complete(ReportCompleteRequestDto requestDto, TechnicalManager manager) {
+		this.completed = true;
+		this.replier = manager;
+		this.reply = requestDto.getReply();
+		this.replyCreatedDate = LocalDateTime.now();
+	}
 }

@@ -1,6 +1,5 @@
 package com.ll.eitcharge.domain.report.report.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class ReportService {
 		);
 	}
 	public ReportSearchStationListResponseDto getStationList(String keyword) {
-		return new ReportSearchStationListResponseDto(chargingStationService.findByKw(keyword), keyword);
+		return new ReportSearchStationListResponseDto(chargingStationService.findByReportEditKw(keyword), keyword);
 	}
 
 	//서비스 레이어 간 엔티티 조회용
@@ -93,12 +92,7 @@ public class ReportService {
 			throw new GlobalException.E403();
 		}
 
-		// todo: setter → toBuilder
-		report.setChargingStation(chargingStationService.findById(requestDto.getStatId()));
-		report.setTitle(requestDto.getTitle());
-		report.setContent(requestDto.getContent());
-		report.setReportType(requestDto.getReportType());
-
+		report.modify(requestDto, chargingStationService.findById(requestDto.getStatId()));
 		return new ReportResponseDto(report);
 	}
 
@@ -108,6 +102,7 @@ public class ReportService {
 		if (!report.getMember().getUsername().equals(username)) {
 			throw new GlobalException.E403();
 		}
+
 		reportRepository.delete(report);
 	}
 
@@ -123,12 +118,7 @@ public class ReportService {
 			throw new GlobalException("이미 처리가 완료된 신고내용입니다.");
 		}
 
-		// todo: setter → toBuilder
-		report.setCompleted(true);
-		report.setReplier(manager);
-		report.setReply(requestDto.getReply());
-		report.setReplyCreatedDate(LocalDateTime.now());
-
+		report.complete(requestDto, manager);
 		return new ReportResponseDto(report);
 	}
 
@@ -153,6 +143,7 @@ public class ReportService {
 		if (dto == null) { return false; }
         if (actor == null) { return false; }
 		if (dto.isCompleted()) { return false; }
+
 		return actor.getId().equals(dto.getMemberId());
 	}
 
@@ -162,12 +153,14 @@ public class ReportService {
         if (actor == null) { return false; }
 		if (actor.getTechnicalManager() == null) { return false; }
 		if (actor.getTechnicalManager().getChargingStation() == null) { return false;}
+
 		return (actor.getTechnicalManager().getChargingStation().getStatId().equals(dto.getStatId()));
 	}
 
 	public boolean canManagerSearch(Member actor) {
 		if (actor == null) { return false; }
 		if (actor.getTechnicalManager() == null) { return false; }
+
 		return (actor.getTechnicalManager().getChargingStation() != null);
 	}
 }

@@ -1,3 +1,7 @@
+# 의존성이 있는 질의어는 트랜잭션 단위로 묶어서 COMMIT
+# 예시 : INSERT B가 INSERT A에 의존하는(후행하는) 경우 {START TRANSACTION, INSERT A, INSERT B, COMMIT}
+START TRANSACTION;
+
 # 외래키 제약조건으로 인해 region 테이블을 먼저 생성해야 한다.
 INSERT INTO region (zcode, region_name)
 VALUES
@@ -268,3 +272,5 @@ VALUES ('11', '11110', '종로구'),
        ('51', '51810', '인제군'),
        ('51', '51820', '고성군'),
        ('51', '51830', '양양군');
+
+COMMIT;

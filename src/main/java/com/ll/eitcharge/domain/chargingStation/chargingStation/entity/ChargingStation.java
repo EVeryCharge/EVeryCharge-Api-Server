@@ -20,7 +20,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Setter
 public class ChargingStation {
     //충전소 id
     @Id
@@ -51,9 +50,9 @@ public class ChargingStation {
     //이용가능 시간
     private String useTime;
     //위도
-    private String lat;
+    private double lat;
     //경도
-    private String lng;
+    private double lng;
     //기관 아이디
     private String busiId;
     //기관명
