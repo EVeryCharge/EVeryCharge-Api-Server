@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../components/AuthContext';
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,17 +21,10 @@ const Signup = () => {
       // 회원가입 성공시 처리
       console.log('Signup successful:' , response);
       alert("회원 가입 성공!");
-      
-
-      // TODO: 성공 시 리다이렉트 또는 다른 작업 수행
       navigate('/');
     } catch (error) {
-      
       // 회원가입 실패 시 처리
       console.error('Signup failed:', error.response.data);
-      alert("회원 가입 실패!");
-
-      // TODO: 실패 시 에러 메시지 출력 또는 다른 작업 수행
     }
   };
 
