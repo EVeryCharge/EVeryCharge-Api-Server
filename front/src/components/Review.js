@@ -9,36 +9,42 @@ const useStyles = makeStyles({
   },
   reviewItem: {
     padding: '1px',
-    borderTop: '1px solid #ddd',
+    borderBottom: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
   content: {
     fontSize: '1rem',
-    marginBottom: '5px',
+    marginTop: '5px',
     whiteSpace: 'pre-line',
+  },
+  author: {
+    fontSize: '0.6rem',
+    color: '#777',
+    marginTop: '1px',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    width: '100%',
   },
   createDate: {
     fontSize: '0.6rem',
     color: '#777',
     marginTop: '1px',
+    marginLeft: '10px',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     width: '100%',
   },
   textField: {
     width: '100%',
     marginBottom: '10px',
   },
-  deleteButton: {
+  Button: {
     fontSize: '0.5rem',
-    marginTop: '8px',
-    marginRight: '8px',
+    
   },
-  moreButton: {
-    marginTop: '10px',
-  },
+
 });
 
 const Review = ({ chargingStationId }) => {
@@ -142,6 +148,10 @@ const Review = ({ chargingStationId }) => {
     setEditReviewId(null);
     setEditedReviewContent('');
   };
+  
+  const [editedReviewRating, setEditedReviewRating] = useState(0);
+
+  
 
   const handleUpdate = async (reviewId) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
@@ -152,6 +162,7 @@ const Review = ({ chargingStationId }) => {
     try {
       await axios.put(`/api/v1/review/${chargingStationId}/${reviewId}`, {
         content: editedReviewContent,
+        rating: editedReviewRating, // 수정된 평점 사용
       });
 
       console.log("후기 수정 성공");
@@ -159,6 +170,7 @@ const Review = ({ chargingStationId }) => {
       setIsEditing(false);
       setEditReviewId(null);
       setEditedReviewContent('');
+      setEditedReviewRating(0); // 수정 후 초기화
     } catch (error) {
       console.error("후기를 수정하는 중 오류 발생:", error);
     }
@@ -179,7 +191,7 @@ const Review = ({ chargingStationId }) => {
           }
           variant="outlined"
           multiline
-          minRows={3}
+          minRows={1}
           value={newReviewContent}
           onChange={(e) => setNewReviewContent(e.target.value)}
           className={classes.textField}
@@ -200,80 +212,95 @@ const Review = ({ chargingStationId }) => {
       {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
         review.data.items.slice(0, visibleReviews).map((reviewItem) => (
           <div key={reviewItem.id} className={classes.reviewItem}>
-            <Typography variant="body2" className={classes.content}>
-              {isEditing && editReviewId === reviewItem.id ? (
-                <TextField
-                  label="후기 수정"
-                  variant="outlined"
-                  multiline
-                  minRows={3}
-                  value={editedReviewContent}
-                  onChange={(e) => setEditedReviewContent(e.target.value)}
-                  className={classes.textField}
-                />
-              ) : (
-                reviewItem.content || "내용이 없습니다."
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
+              <Typography variant="body2" className={classes.content} style={{ display: 'flex' }}>
+                {isEditing && editReviewId === reviewItem.id ? (
+                  <TextField
+                    label="후기 수정"
+                    variant="outlined"
+                    multiline
+                    minRows={1}
+                    value={editedReviewContent}
+                    onChange={(e) => setEditedReviewContent(e.target.value)}
+                    className={classes.textField}
+                  />
+                ) : (
+                  reviewItem.content || "내용이 없습니다."
+                )}
+              </Typography>
+              {isLoggedIn && userId === reviewItem.userId && (
+                <div>
+                  {isEditing && editReviewId === reviewItem.id ? (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
+                      {/* 수정 완료 버튼 */}
+                      <Button
+                        color="primary"
+                        onClick={() => handleUpdate(editReviewId)}
+                        className={classes.Button}
+                      >
+                        수정 완료
+                      </Button>
+                      {/* 취소 버튼 */}
+                      <Button
+                        color="secondary"
+                        onClick={handleCancelEdit}
+                        className={classes.Button}
+                      >
+                        취소
+                      </Button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
+                      {/* 수정 버튼 */}
+                      <Button
+                        color="primary"
+                        className={classes.Button}
+                        onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
+                      >
+                        수정
+                      </Button>
+                      {/* 삭제 버튼 */}
+                      <Button
+                        color="secondary"
+                        className={classes.Button}
+                        onClick={() => handleDelete(reviewItem.id, userId)}
+                      >
+                        삭제
+                      </Button>
+                    </div>
+                  )}
+                </div>
               )}
-            </Typography>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <div className={classes.createDate}>
-                ID: {reviewItem.userId}
+              <div className={classes.author}>
+                {/* 작성자 ID 표시 */}
+                평점: {isEditing && editReviewId === reviewItem.id ? (
+                  // 수정 중에는 새로 입력한 평점을 표시
+                  <TextField
+                    variant="outlined"
+                    type="number"
+                    InputProps={{ inputProps: { min: 0, max: 5 } }}
+                    value={editedReviewRating}
+                    onChange={(e) => setEditedReviewRating(e.target.value)}
+                    className={classes.textField}
+                  />
+                ) : (
+                  // 수정 중이 아니면 리뷰의 기존 평점을 표시
+                  reviewItem.rating
+                )}
               </div>
               <div className={classes.createDate}>
-                작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
+                {/* 작성일자 표시 */}
+                {new Date(reviewItem.createDate).toLocaleString()}
               </div>
             </div>
-            {isLoggedIn && userId === reviewItem.userId && (
-              <>
-                {isEditing && editReviewId === reviewItem.id ? (
-                  <div>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleUpdate(editReviewId)}
-                      className={classes.deleteButton}
-                    >
-                      수정 완료
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={handleCancelEdit}
-                      className={classes.deleteButton}
-                    >
-                      취소
-                    </Button>
-                  </div>
-                ) : (
-                  <div>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      className={classes.deleteButton}
-                      onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
-                    >
-                      수정
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      className={classes.deleteButton}
-                      onClick={() => handleDelete(reviewItem.id, userId)}
-                    >
-                      삭제
-                    </Button>
-                  </div>
-                )}
-              </>
-            )}
           </div>
         ))
       ) : null}
       {Array.isArray(review.data.items) && review.data.items.length > visibleReviews && (
-        <Button
-          variant="outlined"
-          color="primary"
-          className={classes.moreButton}
+        <Button style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+          className={classes.Button}
           onClick={handleMoreReviews}
         >
           더보기
