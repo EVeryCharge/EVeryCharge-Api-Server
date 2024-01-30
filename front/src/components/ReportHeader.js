@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const ReportHeader = () => {
   return (
@@ -15,7 +16,7 @@ const ReportHeader = () => {
             marginTop: "5px",
           }}
         >
-          충전소 장애 관련 내용을 신고할 수 있습니다.
+          충전소 관련 내용을 신고할 수 있습니다.
         </Typography>
       </Box>
       <Box
@@ -34,7 +35,7 @@ const ReportHeader = () => {
         >
           담당 충전소 신고내역 조회하기
         </Button>
-        <Button variant="outlined" to={`/report/create`}>
+        <Button variant="outlined" component={Link} to={`/report/create`}>
           신고하기
         </Button>
       </Box>
