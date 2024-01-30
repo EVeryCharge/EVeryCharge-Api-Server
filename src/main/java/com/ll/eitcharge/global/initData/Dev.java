@@ -17,7 +17,7 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingS
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
-import com.ll.eitcharge.domain.report.report.dto.ReportResultRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
 import com.ll.eitcharge.domain.report.report.entity.ReportType;
 import com.ll.eitcharge.domain.report.report.service.ReportService;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.service.TechnicalManagerService;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 //프로필이 dev일 때만 실행하고 member를 10명 생성
 @Configuration
-@Profile("dev")
+@Profile("!dev")
 @Slf4j
 @RequiredArgsConstructor
 public class Dev {
@@ -96,7 +96,7 @@ public class Dev {
 		if (reportService.findById(1L).getReplier() != null)
 			return;
 		LongStream.rangeClosed(1L, 10L).forEach(i -> {
-				ReportResultRequestDto requestDto = ReportResultRequestDto.builder()
+				ReportCompleteRequestDto requestDto = ReportCompleteRequestDto.builder()
 					.reply(String.format("테스트 처리 결과 %d", i))
 					.build();
 				 reportService.complete(requestDto, i, "manager1");
