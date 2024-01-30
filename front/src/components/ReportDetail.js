@@ -52,7 +52,13 @@ const ReportDetail = () => {
 
   return (
     <Box mt={4} mb={4}>
-      <ReportHeader />
+      <ReportHeader
+        headerTitle={"신고내역 확인"}
+        headerDescription={"충전소 관련 내용을 신고할 수 있습니다."}
+        actorCanCreate={data.actorCanCreate}
+        actorCanManagerSearch={data.actorCanManagerSearch}
+        isEditPage={false}
+      />
 
       {/* 작성 정보 구역 */}
       <Box alignItems="center" my={2} px={2}>
@@ -105,9 +111,6 @@ const ReportDetail = () => {
         {data.reply && (
           <Typography variant="body1">{`${data.reply}`}</Typography>
         )}
-        <Box mt={1}>
-          <GoBackButton />
-        </Box>
       </Box>
     </Box>
   );

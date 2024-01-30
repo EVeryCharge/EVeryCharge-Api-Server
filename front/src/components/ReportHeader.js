@@ -1,12 +1,19 @@
 import React from "react";
 import { Box, Typography, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import GoBackButton from "./GoBackButton";
 
-const ReportHeader = () => {
+const ReportHeader = ({
+  actorCanCreate,
+  actorCanManagerSearch,
+  isEditPage,
+  headerTitle,
+  headerDescription,
+}) => {
   return (
     <Box mt={4} mb={2}>
       <Box ml={2}>
-        <Typography variant="h4">신고내역 확인</Typography>
+        <Typography variant="h4">{headerTitle}</Typography>
         <Typography
           variant="subtitle1"
           style={{
@@ -16,7 +23,7 @@ const ReportHeader = () => {
             marginTop: "5px",
           }}
         >
-          충전소 관련 내용을 신고할 수 있습니다.
+          {headerDescription}
         </Typography>
       </Box>
       <Box
@@ -24,20 +31,30 @@ const ReportHeader = () => {
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "flex-end",
-          marginRight: "10px",
-          marginTop: "-40px",
+          marginRight: "20px",
+          marginTop: "-30px",
         }}
       >
-        <Button
-          variant="outlined"
-          color="primary"
-          style={{ marginRight: "2px" }}
-        >
-          담당 충전소 신고내역 조회하기
-        </Button>
-        <Button variant="outlined" component={Link} to={`/report/create`}>
-          신고하기
-        </Button>
+        {actorCanManagerSearch && (
+          <Button
+            variant="outlined"
+            color="primary"
+            style={{ marginRight: "4px" }}
+          >
+            담당 충전소 신고내역 조회
+          </Button>
+        )}
+        {actorCanCreate && (
+          <Button
+            variant="outlined"
+            component={Link}
+            to={`/report/create`}
+            style={{ marginRight: "2px" }}
+          >
+            신고하기
+          </Button>
+        )}
+        <GoBackButton isEditPage={isEditPage} />
       </Box>
       <hr />
     </Box>

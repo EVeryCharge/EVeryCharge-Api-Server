@@ -10,10 +10,13 @@ import {
   FormControl,
 } from "@material-ui/core";
 import Axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import GoBackButton from "./GoBackButton";
+import ReportHeader from "./ReportHeader";
 
-const ReportCreateForm = () => {
+const ReportForm = () => {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [reportType, setReportType] = useState("수리보수");
@@ -84,7 +87,7 @@ const ReportCreateForm = () => {
 
         if (response.status === 200) {
           console.log("신고가 성공적으로 생성되었습니다");
-          // useHistory.push("/report/list");
+          navigate("/report/list");
         } else {
           console.error("신고 생성 실패");
         }
@@ -174,34 +177,13 @@ const ReportCreateForm = () => {
   return (
     <Box mt={4} mb={4}>
       {/* 헤더 */}
-      <Box ml={2}>
-        <Typography variant="h4" mb={2} mx={2}>
-          신고내역 작성
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          style={{
-            fontWeight: "bold",
-            color: "#008000",
-            paddingLeft: "10px",
-            marginTop: "5px",
-          }}
-        >
-          작성 내용을 유지보수자가 확인합니다.
-        </Typography>
-      </Box>
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
-          marginRight: "10px",
-          marginTop: "-40px",
-        }}
-      >
-        <GoBackButton />
-      </Box>
-      <hr />
+      <ReportHeader
+        headerTitle={"신고내역 작성"}
+        headerDescription={"작성 내용을 유지보수자가 확인합니다."}
+        actorCanCreate={false}
+        actorCanManagerSearch={false}
+        isEditPage={true}
+      />
       <Box alignItems="center" my={2} mx={2}>
         <Box display="flex" flexDirection="row">
           {/* 신고유형 콤보박스 */}
@@ -346,4 +328,4 @@ const ReportCreateForm = () => {
   );
 };
 
-export default ReportCreateForm;
+export default ReportForm;

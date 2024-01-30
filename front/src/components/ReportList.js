@@ -83,7 +83,13 @@ const ReportList = () => {
 
   return (
     <Box mt={4} mb={4}>
-      <ReportHeader />
+      <ReportHeader
+        headerTitle={"신고내역 확인"}
+        headerDescription={"충전소 관련 내용을 신고할 수 있습니다."}
+        actorCanCreate={data?.content[0]?.actorCanCreate || false}
+        actorCanManagerSearch={data?.content[0]?.actorCanManagerSearch || false}
+        isEditPage={false}
+      />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
