@@ -26,7 +26,7 @@ public class ReportRequestDto {
 
 	@NonNull
 	@Builder.Default
-	private String reportType = ReportType.SYSTEM_ERROR.getValue();
+	private String reportType = ReportType.SYSTEM_FIX.getValue();
 
 	@NonNull
 	private String statId;

@@ -82,7 +82,7 @@ public class Dev {
 				ReportRequestDto requestDto = ReportRequestDto.builder()
 					.title(String.format("테스트 신고 %d", i))
 					.content(String.format("테스트 신고 내용 %d", i))
-					.reportType(ReportType.SYSTEM_ERROR.getValue())
+					.reportType(ReportType.SYSTEM_FIX.getValue())
 					.statId(chargingStation.getStatId())
 					.statNm(chargingStation.getStatNm())
 					.build();
