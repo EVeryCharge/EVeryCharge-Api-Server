@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     borderTop: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start', // 변경: 왼쪽 정렬
+    alignItems: 'flex-start',
   },
   content: {
     fontSize: '1rem',
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     marginTop: '4px',
     display: 'flex',
     justifyContent: 'space-between',
-    width: '100%', // 변경: 전체 너비로 설정
+    width: '100%',
   },
   textField: {
     width: '100%',
@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   },
   deleteButton: {
     fontSize: '0.5rem',
-    marginTop: '8px', // 변경: 삭제 버튼과의 간격 조정
+    marginTop: '8px',
   },
 });
 
@@ -44,6 +44,11 @@ const Review = ({ chargingStationId }) => {
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 새로운 상태 추가
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedReviewContent, setEditedReviewContent] = useState('');
+  const [editingReviewId, setEditingReviewId] = useState(null); // 수정 중인 리뷰 아이템의 ID
 
   useEffect(() => {
     fetchData();
@@ -101,16 +106,16 @@ const Review = ({ chargingStationId }) => {
       alert("로그인이 필요합니다.");
       return;
     }
-  
+
     if (userId !== reviewUserId) {
       alert("자신이 작성한 후기만 삭제할 수 있습니다.");
       return;
     }
-  
+
     if (!window.confirm('삭제하시겠습니까?')) {
       return;
     }
-  
+
     try {
       await axios.delete(`/api/v1/review/${chargingStationId}/${reviewId}`);
       fetchData();
@@ -118,25 +123,85 @@ const Review = ({ chargingStationId }) => {
       console.error("후기를 삭제하는 중 오류 발생:", error);
     }
   };
+
+  // 새로운 함수 추가
+  const handleEdit = (reviewId, content) => {
+    setEditedReviewContent(content);
+    setIsEditing(true);
+    setEditingReviewId(reviewId);
+  };
+
+  // 새로운 함수 추가
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedReviewContent('');
+    setEditingReviewId(null);
+  };
+
+  // 새로운 함수 추가
+  const handleUpdate = async () => {
+    if (!editedReviewContent || !editedReviewContent.trim()) {
+      alert("후기 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      // 수정 중인 리뷰 아이템의 ID를 사용하여 수정 요청
+      await axios.put(`/api/v1/review/${chargingStationId}/${editingReviewId}`, {
+        content: editedReviewContent,
+      });
+
+      console.log("후기 수정 성공");
+      fetchData();
+      setIsEditing(false);
+      setEditedReviewContent('');
+      setEditingReviewId(null);
+    } catch (error) {
+      console.error("후기를 수정하는 중 오류 발생:", error);
+    }
+  };
+
   return (
     <div className={classes.reviewContainer}>
       <Typography variant="h5">{chargingStationId} 이용후기</Typography>
       <div className={classes.reviewItem}>
-        <TextField
-          label={Array.isArray(review.data.items) && review.data.items.length === 0
-            ? "첫 후기를 작성해 보세요."
-            : "후기 작성"
-          }
-          variant="outlined"
-          multiline
-          minRows={3}
-          value={newReviewContent}
-          onChange={(e) => setNewReviewContent(e.target.value)}
-          className={classes.textField}
-        />
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          작성
-        </Button>
+        {isEditing ? (
+          <>
+            <TextField
+              label="후기 수정"
+              variant="outlined"
+              multiline
+              minRows={3}
+              value={editedReviewContent}
+              onChange={(e) => setEditedReviewContent(e.target.value)}
+              className={classes.textField}
+            />
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              수정 완료
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
+              취소
+            </Button>
+          </>
+        ) : (
+          <>
+            <TextField
+              label={Array.isArray(review.data.items) && review.data.items.length === 0
+                ? "첫 후기를 작성해 보세요."
+                : "후기 작성"
+              }
+              variant="outlined"
+              multiline
+              minRows={3}
+              value={newReviewContent}
+              onChange={(e) => setNewReviewContent(e.target.value)}
+              className={classes.textField}
+            />
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              작성
+            </Button>
+          </>
+        )}
       </div>
       {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
         review.data.items.map((reviewItem) => (
@@ -146,21 +211,31 @@ const Review = ({ chargingStationId }) => {
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <div>
-                작성자: Member ID: {reviewItem.userId} {/* 변경: 작성자 표시 */}
+                작성자: Member ID: {reviewItem.userId}
               </div>
               <div className={classes.createDate}>
                 작성일자: {new Date(reviewItem.createDate).toLocaleDateString()}
               </div>
             </div>
             {isLoggedIn && userId === reviewItem.userId && (
-              <Button
-                variant="outlined"
-                color="secondary"
-                className={classes.deleteButton}
-                onClick={() => handleDelete(reviewItem.id, userId)}
-              >
-                삭제
-              </Button>
+              <>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  className={classes.deleteButton}
+                  onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
+                >
+                  수정
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  className={classes.deleteButton}
+                  onClick={() => handleDelete(reviewItem.id, userId)}
+                >
+                  삭제
+                </Button>
+              </>
             )}
           </div>
         ))
