@@ -35,7 +35,7 @@ function App() {
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
           <Route path="/report/list" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
-          <Route path="/report/create" element={<ReportForm />} />
+          <Route path="/report/form" element={<ReportForm />} />
         </Routes>
         <Footer />
       </AuthProvider>

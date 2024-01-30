@@ -1,5 +1,5 @@
+import { Box, Button, Typography } from "@material-ui/core";
 import React from "react";
-import { Box, Typography, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import GoBackButton from "./GoBackButton";
 
@@ -48,7 +48,7 @@ const ReportHeader = ({
           <Button
             variant="outlined"
             component={Link}
-            to={`/report/create`}
+            to={`/report/form`}
             style={{ marginRight: "2px" }}
           >
             신고하기

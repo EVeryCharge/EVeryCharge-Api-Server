@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@material-ui/core";
-import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 import ReportHeader from "./ReportHeader";
 
@@ -12,6 +12,7 @@ const ReportDetail = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 신고 세부내역 API GET
   useEffect(() => {
     const fetchReportDetail = async () => {
       try {

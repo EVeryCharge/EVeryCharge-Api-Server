@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  TextField,
-  Typography,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
-  InputLabel,
-  FormControl,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import Axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ReportHeader from "./ReportHeader";
 import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
+import ReportHeader from "./ReportHeader";
 
 const ReportForm = () => {
   const navigate = useNavigate();
@@ -171,8 +171,8 @@ const ReportForm = () => {
 
       {/* 헤더 */}
       <ReportHeader
-        headerTitle={"신고내역 작성"}
-        headerDescription={"작성 내용을 유지보수자가 확인합니다."}
+        headerTitle={"신고내역 등록"}
+        headerDescription={"등록 내용을 유지보수자가 확인합니다."}
         actorCanCreate={false}
         actorCanManagerSearch={false}
         isEditPage={true}

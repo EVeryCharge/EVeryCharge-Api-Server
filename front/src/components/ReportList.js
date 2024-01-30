@@ -9,9 +9,9 @@ import {
   TablePagination,
   TableRow,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
 import Axios from "axios";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import ReportHeader from "./ReportHeader";
 
 const ReportList = () => {
@@ -25,6 +25,32 @@ const ReportList = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10); // 게시글 표출 행 초기값 10
+
+  React.useEffect(() => {
+    fetchData(page, rowsPerPage);
+  }, [page, rowsPerPage]);
+
+  React.useEffect(() => {
+    console.log("Data received:", data);
+  }, [data]);
+
+  // 신고 리스트 API GET
+  const fetchData = async (currentPage, pageSize) => {
+    try {
+      const response = await Axios.get(`/api/v1/reports/list`, {
+        params: {
+          page: currentPage,
+          pageSize: pageSize,
+        },
+        withCredentials: true,
+      });
+
+      console.log("Fetch request sent to:", response.config.url);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getStatusColor = (isCompleted) => {
     return isCompleted ? "#008000" : "#FFA500";
@@ -52,31 +78,6 @@ const ReportList = () => {
     setPage(0);
     setRowsPerPage(newRowsPerPage);
   };
-
-  const fetchData = async (currentPage, pageSize) => {
-    try {
-      const response = await Axios.get(`/api/v1/reports/list`, {
-        params: {
-          page: currentPage,
-          pageSize: pageSize,
-        },
-        withCredentials: true,
-      });
-
-      console.log("Fetch request sent to:", response.config.url);
-      setData(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchData(page, rowsPerPage);
-  }, [page, rowsPerPage]);
-
-  React.useEffect(() => {
-    console.log("Data received:", data);
-  }, [data]);
 
   return (
     <Box mt={4} mb={4}>
