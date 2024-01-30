@@ -2,7 +2,7 @@ import React from "react";
 import { Typography } from "@material-ui/core";
 import GoBackButton from "./GoBackButton";
 
-const ErrorPage = () => {
+const ErrorPage = ({ errorCode, errorTitle, errorDescription }) => {
   return (
     <div
       style={{
@@ -13,12 +13,12 @@ const ErrorPage = () => {
       }}
     >
       <div>
-        <Typography variant="h3">404 NOT FOUND</Typography>
+        <Typography variant="h3">{errorCode}</Typography>
         <p />
         <Typography variant="h4" style={{ marginBottom: "20px" }}>
-          요청하신 페이지를 찾을 수 없습니다.
+          {errorTitle}
           <br />
-          입력하신 주소가 정확한지 확인해주세요.
+          {errorDescription}
         </Typography>
         <GoBackButton />
       </div>
