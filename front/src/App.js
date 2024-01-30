@@ -13,7 +13,7 @@ import StatisticsInfo from "./components/StatisticsInfo";
 import { AuthProvider } from "./components/AuthContext";
 import ReportList from "./components/ReportList";
 import ReportDetail from "./components/ReportDetail";
-import ReportCreateForm from "./components/ReportCreateForm";
+import ReportForm from "./components/ReportForm";
 function App() {
   return (
     <Router>
@@ -35,7 +35,7 @@ function App() {
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
           <Route path="/report/list" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
-          <Route path="/report/create" element={<ReportCreateForm />} />
+          <Route path="/report/create" element={<ReportForm />} />
         </Routes>
         <Footer />
       </AuthProvider>

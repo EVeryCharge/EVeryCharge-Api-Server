@@ -9,6 +9,9 @@ import {
   InputLabel,
   FormControl,
 } from "@material-ui/core";
+import Axios from "axios";
+import { useHistory } from "react-router-dom";
+import GoBackButton from "./GoBackButton";
 
 const ReportCreateForm = () => {
   const [title, setTitle] = useState("");
@@ -22,6 +25,7 @@ const ReportCreateForm = () => {
     content: "",
     reportType: "",
     searchKw: "",
+    searchStatId: "",
   });
 
   useEffect(() => {
@@ -31,14 +35,15 @@ const ReportCreateForm = () => {
     }
   }, [searchKw]);
 
+  // 충전소 검색 API GET
   const fetchChargingStations = async () => {
     try {
-      const response = await fetch(
+      const response = await Axios.get(
         `http://localhost:8090/api/v1/reports/station?kw=${encodeURIComponent(
           searchKw
         )}`
       );
-      const result = await response.json();
+      const result = response.data;
 
       if (result.success && result.data) {
         setChargingStations(result.data.chargingStations);
@@ -59,6 +64,43 @@ const ReportCreateForm = () => {
     }
   };
 
+  // 신고 생성 POST API
+  const handleCreateReport = async () => {
+    const isValid = validateInputs();
+
+    if (isValid) {
+      try {
+        const response = await Axios.post(
+          "http://localhost:8090/api/v1/reports",
+          {
+            title: title,
+            content: content,
+            reportType: reportType,
+            statId: searchStatId,
+            statNm: searchKw,
+          },
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          console.log("신고가 성공적으로 생성되었습니다");
+          // useHistory.push("/report/list");
+        } else {
+          console.error("신고 생성 실패");
+        }
+      } catch (error) {
+        console.error("신고 생성 중 오류:", error);
+      }
+
+      // 폼 필드 재설정
+      setTitle("");
+      setContent("");
+      setReportType("수리보수");
+      setSearchKw("");
+      setSearchStatId("");
+    }
+  };
+
   const handleTitleChange = (event) => {
     const inputValue = event.target.value;
     setTitle(inputValue);
@@ -74,7 +116,7 @@ const ReportCreateForm = () => {
   const handleSearchChange = (event) => {
     const inputValue = event.target.value;
     setSearchKw(inputValue);
-    setSearchStatId(""); // 검색어가 변경되면 statId도 초기화
+    setSearchStatId(""); // 검색어 변경시 충전소 ID 초기화
     setError((prevError) => ({ ...prevError, searchKw: "" }));
   };
 
@@ -92,7 +134,13 @@ const ReportCreateForm = () => {
   // 예외 처리
   const validateInputs = () => {
     let isValid = true;
-    const newError = { title: "", content: "", reportType: "", statId: "" };
+    const newError = {
+      title: "",
+      content: "",
+      reportType: "",
+      searchKw: "",
+      searchStatId: "",
+    };
 
     if (title.trim() === "") {
       newError.title = "제목을 입력하세요.";
@@ -123,20 +171,6 @@ const ReportCreateForm = () => {
     return isValid;
   };
 
-  const handleCreateReport = () => {
-    const isValid = validateInputs();
-
-    if (isValid) {
-      // TODO: 생성된 신고를 서버에 등록하는 로직을 추가
-
-      // 예시: 신고 생성 후, 입력 필드 초기화
-      setTitle("");
-      setContent("");
-      setReportType("fix");
-      setSearchKw("");
-    }
-  };
-
   return (
     <Box mt={4} mb={4}>
       {/* 헤더 */}
@@ -156,6 +190,17 @@ const ReportCreateForm = () => {
           작성 내용을 유지보수자가 확인합니다.
         </Typography>
       </Box>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "flex-end",
+          marginRight: "10px",
+          marginTop: "-40px",
+        }}
+      >
+        <GoBackButton />
+      </Box>
       <hr />
       <Box alignItems="center" my={2} mx={2}>
         <Box display="flex" flexDirection="row">
@@ -170,7 +215,7 @@ const ReportCreateForm = () => {
               <MenuItem value="수리보수">수리보수</MenuItem>
               <MenuItem value="정보변경">정보변경</MenuItem>
               <MenuItem value="기타">기타</MenuItem>
-              {/* 추가적인 신고유형 항목들을 필요에 따라 추가 */}
+              {/* 추가적인 신고유형 항목들을 필요에 따라 추가 TODO enum으로 교체*/}
             </Select>
             {error.reportType && (
               <Typography variant="caption" color="error">
@@ -199,7 +244,7 @@ const ReportCreateForm = () => {
                 <Box
                   position="absolute"
                   zIndex="1"
-                  bgcolor="rgb(211, 211, 211)"
+                  bgcolor="rgb(211, 211, 211, 0.95)"
                   width="490px"
                   paddingLeft="10px"
                   marginLeft="10px"
@@ -300,4 +345,5 @@ const ReportCreateForm = () => {
     </Box>
   );
 };
+
 export default ReportCreateForm;

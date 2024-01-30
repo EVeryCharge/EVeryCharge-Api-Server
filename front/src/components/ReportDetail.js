@@ -57,16 +57,17 @@ const ReportDetail = () => {
       {/* 작성 정보 구역 */}
       <Box alignItems="center" my={2} px={2}>
         <Typography variant="subtitle1">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
+        <Typography variant="subtitle1">{`위치: ${data.addr}`}</Typography>
         <Typography variant="subtitle1">{`신고자: ${data.memberName}`}</Typography>
-        <Typography variant="subtitle1">{`작성일: ${formatDate(
-          data.createDate
-        )}`}</Typography>
+        <Typography variant="subtitle1">
+          {`작성일: ${formatDate(data.createDate)}`}
+        </Typography>
       </Box>
       <hr />
 
       {/* 글 제목 및 내용 구역 */}
       <Box alignItems="center" my={2} px={2} height={300}>
-        <Typography variant="h4">{data.title}</Typography>
+        <Typography variant="h5">{data.title}</Typography>
         <Typography
           variant="body1"
           style={{
