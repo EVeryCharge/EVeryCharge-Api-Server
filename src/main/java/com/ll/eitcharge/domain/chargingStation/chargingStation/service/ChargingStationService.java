@@ -1,5 +1,6 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,10 @@ public class ChargingStationService {
 
 	public ChargingStation findById(String id) {
 		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
+	}
+
+	public List<ChargingStation> findByKeyword(String keyword) {
+		return chargingStationRepository.findByKeyword(keyword);
 	}
 
 	public Optional<ChargingStation> findByIdOptional(String statId) {
