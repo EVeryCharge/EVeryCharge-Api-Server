@@ -108,6 +108,7 @@ public class ReviewController {
     @Setter
     public static class ModifyReviewRequestBody {
         private String content;
+        private int rating;
     }
 
     @Getter
@@ -124,11 +125,12 @@ public class ReviewController {
     @PutMapping("/{chargingStationId}/{id}")
     public RsData<ModifyReviewResponseBody> modifyReview(
             @PathVariable long id,
-            @RequestBody ModifyReviewRequestBody content
+            @RequestBody ModifyReviewRequestBody requestBody
     ) {
         Review review = reviewService.findById(id).get();
 
-        reviewService.modify(review, content.getContent());
+        int rating = requestBody.getRating();
+        reviewService.modify(review, requestBody.getContent(), rating);
 
         return RsData.of(
                 "200",

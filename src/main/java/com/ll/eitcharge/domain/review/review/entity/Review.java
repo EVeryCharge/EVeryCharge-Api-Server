@@ -32,6 +32,7 @@ public class Review extends BaseTime {
     private LocalDateTime deletedDate;
     private boolean isDeleted;
 
+    @Setter
     @Builder.Default
     private int rating = 0; // 평점 속성 추가
 }

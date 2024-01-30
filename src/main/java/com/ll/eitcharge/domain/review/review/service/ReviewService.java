@@ -42,8 +42,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public void modify(Review review,String content) {
+    public void modify(Review review,String content, int rating) {
         review.setContent(content);
+        review.setRating(rating);
     }
 
     public List<Review> findAll() {
