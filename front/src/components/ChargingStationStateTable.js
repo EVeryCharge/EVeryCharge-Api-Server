@@ -5,15 +5,16 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 
 
 
-const ChargingStationStateTable = () => {
+const ChargingStationStateTable = (stationId) => {
     const[chargingStationData, setChargingStationData] = useState([]);
-    // 기본 뼈대 - 수정 필요
+    
 
     useEffect(() => {
         // Axios를 사용하여 데이터를 가져옵니다.
-        axios.get('/chargingStation/status/charger/test')
+        axios.get(Credential,'http://localhost:8090/station/ME183219/chargers')
           .then((response) => {
             // 요청이 성공하면 데이터를 상태에 저장합니다.
+            console.log(response.items);
             setChargingStationData(response.data);
             console.log(response.data);
           })
@@ -29,14 +30,16 @@ const ChargingStationStateTable = () => {
       <Table>
         <TableHead>
           <TableRow>
+          <TableCell>충전기 ID</TableCell>
             <TableCell>충전기 상태</TableCell>
             <TableCell>충전기 타입</TableCell>
             <TableCell>마지막 충전 시간</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {chargingStationData.map((row) => (
-            <TableRow key={row.statId}>
+          {chargingStationData.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell>{row.chgerId}</TableCell>
               <TableCell>{row.stat}</TableCell>
               <TableCell>{row.chgerType}</TableCell>
               <TableCell>{row.lastTsdt}</TableCell>

@@ -14,31 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chargingStation")
-public class ChargingStationController {
+public class
+ChargingStationController {
 
     private final ChargingStationApiService chargingStationApiService;
 
-//    @GetMapping("/status/charger/list/{id}")
-//    public RsData< List< ChargerStateDto > > getChargerState(@PathVariable("id") Long id){
-//        ChargingStation findChargingStation = chargingStationApiService.findById(id);
-//        List<ChargerStateDto> chargerStateDtos = findChargingStation.getChargers().stream()
-//                .map(ChargerStateDto::new)
-//                .collect(Collectors.toCollection(ArrayList::new));
-//
-//        return RsData.of(
-//                "200",
-//                "성공",
-//                chargerStateDtos);
-//    };
 
-    @GetMapping("/status/charger/test")
-    public ChargingStationItemDto[] test(){
-        return chargingStationApiService.findfromApi("PW010580");
+    @GetMapping("/station/{stationId}/chargers")
+    public RsData< HashMap > chargerState(@PathVariable("stationId") String stationId){
+          return chargingStationApiService.findFromApi3(stationId);
     }
 }

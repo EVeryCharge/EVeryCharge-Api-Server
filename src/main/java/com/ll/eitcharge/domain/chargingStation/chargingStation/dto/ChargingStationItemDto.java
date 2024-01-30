@@ -1,12 +1,16 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChargingStationItemDto {
     private String statNm;
     private String statId;
@@ -40,5 +44,4 @@ public class ChargingStationItemDto {
     private String delYn;
     private String delDetail;
     private String trafficYn;
-
 }
