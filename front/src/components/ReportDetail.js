@@ -55,7 +55,7 @@ const ReportDetail = () => {
       <ReportHeader />
 
       {/* 작성 정보 구역 */}
-      <Box alignItems="center" my={2} pl={2}>
+      <Box alignItems="center" my={2} px={2}>
         <Typography variant="subtitle1">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
         <Typography variant="subtitle1">{`신고자: ${data.memberName}`}</Typography>
         <Typography variant="subtitle1">{`작성일: ${formatDate(
@@ -65,7 +65,7 @@ const ReportDetail = () => {
       <hr />
 
       {/* 글 제목 및 내용 구역 */}
-      <Box alignItems="center" my={2} pl={2} height={300}>
+      <Box alignItems="center" my={2} px={2} height={300}>
         <Typography variant="h4">{data.title}</Typography>
         <Typography
           variant="body1"
@@ -81,7 +81,7 @@ const ReportDetail = () => {
       <hr />
 
       {/* 처리 결과 구역 */}
-      <Box my={2} pl={2}>
+      <Box my={2} px={2}>
         <Typography variant="body1">
           {`처리결과: `}
           <span
