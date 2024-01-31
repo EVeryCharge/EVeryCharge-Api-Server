@@ -14,12 +14,12 @@ const ChargerType = {
 }
 
 const ChargerState = {
-  "1":"통신이상",
-  "2":"충전대기",
-  "3":"충전중",
-  "4":"운영중지",
-  "5":"점검중",
-  "9":"상태미확인"
+  "1":{ description: "통신이상", color: "red" },
+  "2":{ description: "충전가능", color: "green" },
+  "3":{ description: "충전중", color: "red" },
+  "4":{ description: "운영중지", color: "red" },
+  "5":{ description: "점검중", color: "red" },
+  "9":{ description: "상태미확인", color: "black" }
 }
 
 
@@ -27,8 +27,6 @@ const ChargingStationStateTable = ({statId}) => {
     const[chargingStationData, setChargingStationData] = useState([]);
     useEffect(() => {
         // Axios를 사용하여 데이터를 가져옵니다.
-        //임시데이터
-        statId = "ME19A278";
         const url = `http://localhost:8090/api/v1/chargingStation/${statId}/chargers`;
         console.log(url);
         axios.get(url, {withCredentials: true})
@@ -61,8 +59,10 @@ const ChargingStationStateTable = ({statId}) => {
         <TableBody>
           {chargingStationData.map((row, index) => (
             <TableRow key={index}>
-              <TableCell>{ChargerType[row.chgerType]}</TableCell>
-              <TableCell>{ChargerState[row.stat]}</TableCell> 
+              <TableCell>{ChargerType[row.chgerType].description}</TableCell>
+              <TableCell
+                style={{ color: ChargerState[row.stat]?.color}}>
+                  {ChargerState[row.stat].description}</TableCell> 
               <TableCell>{row.output + "kW"}</TableCell>
               <TableCell>{row.useTime}</TableCell>
             </TableRow>

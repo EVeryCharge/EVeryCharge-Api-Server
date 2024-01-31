@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import ChargingStationStateTable from '../../components/ChargingStationStateTable';
 
 const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
   const [chargerStatusList, setChargerStatusList] = useState([]);
@@ -29,6 +30,7 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
       axios.get(`http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey=xfxRkd9Ntag%2BmgCGh3yh%2B9f77aTMJlLPKaU7UMGBz9LnmwW3%2BnEtYZR6GRt%2BiyknBmvdVlkdC86laKLBVVttsw%3D%3D&numOfRows=999&pageNo=1&zcode=11&dataType=JSON&statId=${item.statId}`)
         .then(response => {
           setChargerStatusList(response.data.items.item);
+          console.log(chargerStatusList[0].statId);
         })
         .catch(error => {
           console.log('Error fetching data', error);
@@ -49,6 +51,7 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
         }
       }}
     >
+      
       {chargerStatusList && chargerStatusList.map((item, index) => (
         <div key={index}>
           <h3>충전기 {item.chgerId}</h3>
