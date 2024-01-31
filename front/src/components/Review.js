@@ -183,7 +183,7 @@ const Review = ({ chargingStationId }) => {
 
   return (
     <div className={classes.reviewContainer}>
-      <Typography variant="h5">{chargingStationId} 이용후기</Typography>
+      <Typography variant="h5">이용후기</Typography>
       <div className={classes.reviewItem}>
         <TextField
           label={Array.isArray(review.data.items) && review.data.items.length === 0
