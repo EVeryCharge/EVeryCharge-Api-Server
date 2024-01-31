@@ -7,8 +7,7 @@ const GoBackButton = ({ isEditPage }) => {
 
   const goBack = () => {
     if (isEditPage) {
-      const confirmMessage =
-        "작성 중인 내용은 저장되지 않습니다.\n이전 화면으로 이동하시겠습니까?";
+      const confirmMessage = `작성 중인 내용은 저장되지 않습니다.\n이전 화면으로 이동하시겠습니까?`;
       const isConfirmed = window.confirm(confirmMessage);
 
       if (isConfirmed) {

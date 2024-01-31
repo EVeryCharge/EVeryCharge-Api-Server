@@ -24,7 +24,7 @@ const ReportList = () => {
   });
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10); // 게시글 표출 행 초기값 10
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   React.useEffect(() => {
     fetchData(page, rowsPerPage);
@@ -116,7 +116,7 @@ const ReportList = () => {
                 <TableCell>{row.memberName}</TableCell>
                 <TableCell>{formatDate(row.createDate)}</TableCell>
                 <TableCell style={{ color: getStatusColor(row.completed) }}>
-                  {row.completed ? "완료" : "처리중"}
+                  {row.completed ? "처리완료" : "처리중"}
                 </TableCell>
               </TableRow>
             ))}

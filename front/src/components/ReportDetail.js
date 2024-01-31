@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, TextField, Typography } from "@material-ui/core";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,8 @@ const ReportDetail = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reply, setReply] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchReportDetail = async () => {
@@ -28,7 +30,7 @@ const ReportDetail = () => {
     fetchReportDetail();
   }, [id]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("Data received:", data);
   }, [data]);
 
@@ -36,6 +38,7 @@ const ReportDetail = () => {
     return null;
   }
 
+  // 신고 삭제 API DELETE
   const handleDelete = async () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
     if (confirmDelete) {
@@ -56,7 +59,41 @@ const ReportDetail = () => {
     }
   };
 
-  const handleModify = () => {
+  // 신고 답변 및 완료처리 API PUT
+  const handleReplyReport = async () => {
+    const isValid = validateReplyInputs();
+    const confirmReply = window.confirm(
+      `완료처리 이후 신고내역 / 처리결과 수정, 삭제가 불가능합니다.\n신고에 대한 답변 등록 및 완료처리하시겠습니까?`
+    );
+    if (confirmReply && isValid) {
+      try {
+        const requestData = {
+          reply: reply,
+        };
+
+        const response = await Axios.put(
+          `/api/v1/reports/${id}/complete`,
+          requestData,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("신고처리 완료, 처리답변 등록이 완료되었습니다.");
+          alert("신고 처리 완료, 처리 답변 등록이 완료되었습니다");
+          navigate(`report/${id}`);
+        } else {
+          console.error(`신고처리 실패 : ${response.msg}`);
+        }
+      } catch (error) {
+        console.error("신고처리 중 오류:", error);
+      }
+    }
+  };
+
+  // 수정버튼 클릭 시 폼으로 리다이렉트
+  const navigateModify = () => {
     navigate(`/report/form`, {
       state: {
         reportType: data.reportType,
@@ -68,6 +105,37 @@ const ReportDetail = () => {
         mode: "MODIFY",
       },
     });
+  };
+
+  const handleReplyChange = (event) => {
+    const inputValue = event.target.value;
+    setReply(inputValue);
+  };
+
+  // 입력값 검증
+  const validateReplyInputs = () => {
+    let isValid = true;
+    const newError = {
+      reply: "",
+    };
+
+    if (reply.trim() === "") {
+      newError.reply = "처리 답변을 입력하세요.";
+      isValid = false;
+    }
+
+    if (reply.length > 500) {
+      newError.reply = "처리 답변을 500자 이내로 입력하세요.";
+      isValid = false;
+    }
+
+    setError(newError);
+
+    if (!isValid) {
+      alert("입력값을 확인하세요.");
+    }
+
+    return isValid;
   };
 
   const formatDate = (dateString) => {
@@ -140,18 +208,49 @@ const ReportDetail = () => {
                 {data.completed ? "처리완료" : "처리중"}
               </span>
             </Typography>
-            {data.replierName && (
-              <Typography variant="body1">{`처리자: ${data.replierName}`}</Typography>
+
+            {/* 유지보수자 신고 처리 결과 입력 */}
+            {!data.completed && data.actorCanComplete && (
+              <>
+                <TextField
+                  label="답변"
+                  placeholder="처리 후 답변을 입력해주세요.(500자 이내)"
+                  helperText={`${reply.length} / 500`}
+                  inputProps={{ maxLength: 500 }}
+                  rowsMin={13}
+                  multiline
+                  rows={13}
+                  value={reply}
+                  onChange={handleReplyChange}
+                  style={{ width: "100%", marginTop: "10px" }}
+                />
+                {error.reply && (
+                  <Typography variant="caption" color="error">
+                    {error.reply}
+                  </Typography>
+                )}
+              </>
             )}
-            {data.replyCreatedDate && (
-              <Typography variant="body1">{`처리일: ${formatDate(
-                data.replyCreatedDate
-              )}`}</Typography>
-            )}
-            {data.reply && (
-              <Typography variant="body1">{`${data.reply}`}</Typography>
+
+            {/* 신고 처리 결과 */}
+            {data.completed && (
+              <Box>
+                {data.replierName && (
+                  <Typography variant="body1">{`처리자: ${data.replierName}`}</Typography>
+                )}
+                {data.replyCreatedDate && (
+                  <Typography variant="body1">{`처리일: ${formatDate(
+                    data.replyCreatedDate
+                  )}`}</Typography>
+                )}
+                {data.reply && (
+                  <Typography variant="body1">{`${data.reply}`}</Typography>
+                )}
+              </Box>
             )}
           </Box>
+
+          {/* 등록, 수정 버튼 */}
           {data.actorCanEdit && (
             <Box
               style={{
@@ -162,10 +261,20 @@ const ReportDetail = () => {
                 marginTop: "-30px",
               }}
             >
+              {data.actorCanComplete && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleReplyReport}
+                  style={{ marginRight: "2px" }}
+                >
+                  완료 처리하기
+                </Button>
+              )}
               <Button
                 variant="outlined"
                 color="inherit"
-                onClick={handleModify}
+                onClick={navigateModify}
                 style={{ marginRight: "2px" }}
               >
                 수정하기
