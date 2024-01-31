@@ -29,7 +29,7 @@ public class ChargingStationService {
 	private final ObjectMapper objectMapper;
 
 	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng) {
-		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng);
+		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng);
 		return chargingStations.stream()
 				.map(ChargingStationSearchResponseDto::new)
 				.collect(Collectors.toList());
