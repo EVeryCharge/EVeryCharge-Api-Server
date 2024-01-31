@@ -46,11 +46,15 @@ const Navbar = () => {
               로그아웃
             </Button>
           </>
-        ) : (
-          // 로그인되지 않은 상태일 때
+        ) : ( //로그인 되지 않은 상태일 때
+        <>
+          <Button color="inherit" component={Link} to="/signup">
+            회원가입
+          </Button>
           <Button color="inherit" component={Link} to="/login">
             로그인
           </Button>
+          </>      
         )}
       </Toolbar>
     </AppBar>
