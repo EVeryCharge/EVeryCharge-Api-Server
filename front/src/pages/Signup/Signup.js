@@ -40,7 +40,15 @@ const Signup = () => {
       navigate('/login');
     } catch (error) {
       // 회원가입 실패 시 처리
-      console.error('Signup failed:', error.response.data);
+
+      if(error.response.data.resultCode === '400-1'){
+        alert("두개의 비밀번호가 일치하지 않습니다.");
+      }
+      else if(error.response.data.resultCode === '400-2'){
+        alert("이미 존재하는 회원입니다.");
+      }
+
+      console.error('Signup failed:', error.response.data);      
     }
   };
 
