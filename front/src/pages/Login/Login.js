@@ -39,6 +39,7 @@ const Login = () => {
       }
       else if(error.response.data.resultCode === '400-2'){
         alert("비밀번호가 일치하지 않습니다.");
+        setPassword('');
       }
 
       console.error('Login failed:', error.response.data);
