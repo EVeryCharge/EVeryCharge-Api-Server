@@ -40,6 +40,13 @@ const Signup = () => {
       navigate('/login');
     } catch (error) {
       // 회원가입 실패 시 처리
+      if(username === ''){
+        alert("Username은 필수 입력 항목입니다.")
+      }else if(password ===  ''){
+        alert("Password은 필수 입력 항목입니다.")
+      }else if(password2 === ''){
+        alert("Passsword Confirm은 필수 입력 항목입니다.")
+      }
 
       if(error.response.data.resultCode === '400-1'){
         alert("두개의 비밀번호가 일치하지 않습니다.");
