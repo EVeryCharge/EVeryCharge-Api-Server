@@ -9,20 +9,33 @@ import {
   Typography,
 } from "@material-ui/core";
 import Axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
 import ReportHeader from "./ReportHeader";
 
 const ReportForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [reportType, setReportType] = useState("수리보수");
-  const [searchKw, setSearchKw] = useState("");
-  const [searchStatId, setSearchStatId] = useState("");
+  // 신고 수정하기로 접근 시 신고 상세페이지에서 주입받는 props
+  const {
+    reportType: propReportType,
+    statId: propStatId,
+    statNm: propStatNm,
+    title: propTitle,
+    content: propContent,
+    id: propId,
+    mode: propMode,
+  } = location.state || {};
+
+  const [title, setTitle] = useState(propTitle || "");
+  const [content, setContent] = useState(propContent || "");
+  const [reportType, setReportType] = useState(propReportType || "수리보수");
+  const [searchKw, setSearchKw] = useState(propStatNm || "");
+  const [searchStatId, setSearchStatId] = useState(propStatId || "");
   const [chargingStations, setChargingStations] = useState([]);
+  const [mode, setMode] = useState(propMode || "CREATE");
   const [error, setError] = useState({
     title: "",
     content: "",
@@ -31,15 +44,8 @@ const ReportForm = () => {
     searchStatId: "",
   });
 
-  useEffect(() => {
-    // searchKw가 변경되었을 때 API 요청
-    if (searchKw.trim() !== "") {
-      fetchChargingStations();
-    }
-  }, [searchKw]);
-
   // 충전소 검색 API GET
-  const fetchChargingStations = async () => {
+  const fetchChargingStations = useCallback(async () => {
     try {
       const response = await Axios.get(
         `/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
@@ -63,34 +69,58 @@ const ReportForm = () => {
         searchKw: "요청 중 에러가 발생했습니다. 잠시 후에 시도해주세요",
       }));
     }
-  };
+  }, [searchKw]);
 
-  // 신고 생성 POST API
-  const handleCreateReport = async () => {
+  useEffect(() => {
+    // searchKw가 변경되었을 때 API 요청
+    if (searchKw && searchKw.trim() !== "") {
+      fetchChargingStations();
+    }
+  }, [searchKw, fetchChargingStations]);
+
+  // 신고 생성 / 수정 API 요청
+  const handleCreateModifyReport = async () => {
     const isValid = validateInputs();
 
     if (isValid) {
       try {
-        const response = await Axios.post(
-          "/api/v1/reports",
-          {
-            title: title,
-            content: content,
-            reportType: reportType,
-            statId: searchStatId,
-            statNm: searchKw,
-          },
-          { withCredentials: true }
-        );
+        const requestData = {
+          title: title,
+          content: content,
+          reportType: reportType,
+          statId: searchStatId,
+          statNm: searchKw,
+        };
+
+        const response =
+          // 수정
+          mode === "MODIFY"
+            ? await Axios.put(`/api/v1/reports/${propId}`, requestData, {
+                withCredentials: true,
+              })
+            : // 생성
+              await Axios.post("/api/v1/reports", requestData, {
+                withCredentials: true,
+              });
 
         if (response.status === 200) {
-          console.log("신고가 성공적으로 생성되었습니다");
-          navigate("/report/list");
-        } else {
-          console.error("신고 생성 실패");
+          if (mode === "MODIFY") {
+            console.log("신고가 성공적으로 수정되었습니다.");
+            navigate(`/report/${propId}`);
+            return;
+          }
+          if (mode === "CREATE") {
+            console.log("신고가 성공적으로 등록되었습니다.");
+            navigate("/report/list");
+            return;
+          }
+          console.log("신고 저장 실패");
         }
       } catch (error) {
-        console.error("신고 생성 중 오류:", error);
+        console.error(
+          mode === "MODIFY" ? "신고 수정 중 오류:" : "신고 등록 중 오류:",
+          error
+        );
       }
     }
   };
@@ -110,7 +140,7 @@ const ReportForm = () => {
   const handleSearchChange = (event) => {
     const inputValue = event.target.value;
     setSearchKw(inputValue);
-    setSearchStatId(""); // 검색어 변경시 충전소 ID 초기화
+    setSearchStatId(""); // 검색어 변경 시 충전소 ID 초기화
     setError((prevError) => ({ ...prevError, searchKw: "" }));
   };
 
@@ -123,9 +153,10 @@ const ReportForm = () => {
   const handleChargingStationSelect = (station) => {
     setSearchKw(station.statNm);
     setSearchStatId(station.statId);
+    setError((prevError) => ({ ...prevError, searchKw: "", searchStatId: "" }));
   };
 
-  // 예외 처리
+  // 입력값 검증
   const validateInputs = () => {
     let isValid = true;
     const newError = {
@@ -151,7 +182,7 @@ const ReportForm = () => {
       isValid = false;
     }
 
-    if (searchStatId === null) {
+    if (searchStatId === "") {
       newError.searchStatId = "충전소를 선택하세요.";
       isValid = false;
     }
@@ -171,7 +202,7 @@ const ReportForm = () => {
 
       {/* 헤더 */}
       <ReportHeader
-        headerTitle={"신고내역 등록"}
+        headerTitle={mode === "MODIFY" ? "신고내역 수정" : "신고내역 등록"}
         headerDescription={"등록 내용을 유지보수자가 확인합니다."}
         actorCanCreate={false}
         actorCanManagerSearch={false}
@@ -212,6 +243,7 @@ const ReportForm = () => {
                 marginLeft: "10px",
               }}
             />
+
             {/* 드롭다운에 표시할 충전소 목록 */}
             {chargingStations &&
               chargingStations.length > 0 &&
@@ -297,7 +329,7 @@ const ReportForm = () => {
           </Typography>
         )}
 
-        {/* 등록하기 버튼 */}
+        {/* 저장 버튼 */}
         <Box
           style={{
             display: "flex",
@@ -310,10 +342,10 @@ const ReportForm = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleCreateReport}
+            onClick={handleCreateModifyReport}
             style={{ marginTop: "10px" }}
           >
-            등록하기
+            {mode === "MODIFY" ? "수정하기" : "등록하기"}
           </Button>
         </Box>
       </Box>

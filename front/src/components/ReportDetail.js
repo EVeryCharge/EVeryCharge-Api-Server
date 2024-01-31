@@ -7,12 +7,10 @@ import ReportHeader from "./ReportHeader";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
-
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 신고 세부내역 API GET
   useEffect(() => {
     const fetchReportDetail = async () => {
       try {
@@ -34,7 +32,10 @@ const ReportDetail = () => {
     console.log("Data received:", data);
   }, [data]);
 
-  // 신고 삭제 DELETE API
+  if (loading) {
+    return null;
+  }
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
     if (confirmDelete) {
@@ -55,9 +56,19 @@ const ReportDetail = () => {
     }
   };
 
-  if (loading) {
-    return null;
-  }
+  const handleModify = () => {
+    navigate(`/report/form`, {
+      state: {
+        reportType: data.reportType,
+        statId: data.statId,
+        statNm: data.statNm,
+        title: data.title,
+        content: data.content,
+        id: data.id,
+        mode: "MODIFY",
+      },
+    });
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -74,7 +85,6 @@ const ReportDetail = () => {
 
   return (
     <>
-      {/* 존재하지 않는 페이지 접근 시 예외 처리 */}
       {!data && (
         <ErrorPage
           errorCode="404 NOT FOUND"
@@ -93,18 +103,16 @@ const ReportDetail = () => {
             isEditPage={false}
           />
 
-          {/* 작성 정보 구역 */}
           <Box alignItems="center" my={2} px={2}>
             <Typography variant="subtitle1">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
             <Typography variant="subtitle1">{`위치: ${data.addr}`}</Typography>
             <Typography variant="subtitle1">{`신고자: ${data.memberName}`}</Typography>
-            <Typography variant="subtitle1">
-              {`작성일: ${formatDate(data.createDate)}`}
-            </Typography>
+            <Typography variant="subtitle1">{`작성일: ${formatDate(
+              data.createDate
+            )}`}</Typography>
           </Box>
           <hr />
 
-          {/* 글 제목 및 내용 구역 */}
           <Box alignItems="center" my={2} px={2} height={300}>
             <Typography variant="h5">{data.title}</Typography>
             <Typography
@@ -120,7 +128,6 @@ const ReportDetail = () => {
           </Box>
           <hr />
 
-          {/* 처리 결과 구역 */}
           <Box my={2} px={2}>
             <Typography variant="body1">
               {`처리결과: `}
@@ -130,7 +137,7 @@ const ReportDetail = () => {
                   fontWeight: "bold",
                 }}
               >
-                {data.completed ? "완료" : "진행중"}
+                {data.completed ? "처리완료" : "처리중"}
               </span>
             </Typography>
             {data.replierName && (
@@ -158,7 +165,7 @@ const ReportDetail = () => {
               <Button
                 variant="outlined"
                 color="inherit"
-                onClick={handleDelete}
+                onClick={handleModify}
                 style={{ marginRight: "2px" }}
               >
                 수정하기
