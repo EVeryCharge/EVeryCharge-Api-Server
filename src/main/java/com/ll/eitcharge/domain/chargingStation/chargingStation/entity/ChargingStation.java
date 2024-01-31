@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
@@ -34,6 +35,9 @@ public class ChargingStation {
 
     @OneToMany(mappedBy = "chargingStation")
     private List<Review> reviews = new ArrayList<>();
+
+    @ManyToOne
+    private OperatingCompany operatingCompany;
 
     //충전소명
     private String statNm;
