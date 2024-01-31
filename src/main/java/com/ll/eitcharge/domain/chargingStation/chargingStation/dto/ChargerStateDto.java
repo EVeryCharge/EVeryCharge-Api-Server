@@ -1,14 +1,11 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
+import java.time.LocalDateTime;
+
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

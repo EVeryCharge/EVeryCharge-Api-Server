@@ -1,16 +1,23 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
+import static org.springframework.util.MimeTypeUtils.*;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.global.rsData.RsData;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
@@ -24,7 +31,6 @@ public class ChargingStationController {
     public ResponseEntity<ChargingStation> get(String id) {
         return ResponseEntity.ok(chargingStationService.findById(id));
     }
-
 
     @GetMapping("/location/search")
     public ResponseEntity<List<ChargingStationSearchResponseDto>> searchStation(

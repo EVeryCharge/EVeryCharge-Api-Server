@@ -1,18 +1,24 @@
 package com.ll.eitcharge.domain.report.report.entity;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.member.member.entity.Member;
-import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
-import com.ll.eitcharge.global.jpa.entity.BaseTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.*;
+import static jakarta.persistence.FetchType.*;
+import static lombok.AccessLevel.*;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static lombok.AccessLevel.PROTECTED;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.member.member.entity.Member;
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
+import com.ll.eitcharge.global.jpa.entity.BaseTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -24,7 +30,6 @@ public class Report extends BaseTime {
 	@JoinColumn(name = "stat_id")
 	private ChargingStation chargingStation;
 
-	//TODO author에서 member로 변경했습니다
 	@ManyToOne(fetch = LAZY)
 	private Member member;
 
@@ -34,7 +39,21 @@ public class Report extends BaseTime {
 
 	@ManyToOne(fetch = LAZY)
 	private TechnicalManager replier;
-	private boolean isCompleted;
+	private boolean completed;
 	private String reply;
 	private LocalDateTime replyCreatedDate;
+
+	public void update(ReportRequestDto requestDto, ChargingStation station) {
+		this.chargingStation = station;
+		this.title = requestDto.getTitle();
+		this.content = requestDto.getContent();
+		this.reportType = requestDto.getReportType();
+	}
+
+	public void complete(ReportCompleteRequestDto requestDto, TechnicalManager manager) {
+		this.completed = true;
+		this.replier = manager;
+		this.reply = requestDto.getReply();
+		this.replyCreatedDate = LocalDateTime.now();
+	}
 }

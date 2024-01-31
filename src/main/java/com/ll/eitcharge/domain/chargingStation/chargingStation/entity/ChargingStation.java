@@ -4,12 +4,15 @@ import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -34,6 +37,9 @@ public class ChargingStation {
 
     @OneToMany(mappedBy = "chargingStation")
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
+    private TechnicalManager technicalManager;
 
     //충전소명
     private String statNm;

@@ -9,8 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor(access = PROTECTED)
 public enum ReportType {
 
-	SYSTEM_ERROR("장애내용"),
-	GIVE_INFO("정보변경");
+	SYSTEM_FIX("수리보수"),
+	CHANGE_INFO("정보변경"),
+	ETC("기타");
 
 	private final String value;
 }
