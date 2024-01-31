@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, makeStyles, TextField, Button } from '@material-ui/core';
+import { Typography, makeStyles, TextField, Button, Select, MenuItem } from '@material-ui/core';
+
 
 const useStyles = makeStyles({
   reviewContainer: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles({
   },
   Button: {
     fontSize: '0.5rem',
-    
+
   },
 
 });
@@ -148,10 +149,10 @@ const Review = ({ chargingStationId }) => {
     setEditReviewId(null);
     setEditedReviewContent('');
   };
-  
+
   const [editedReviewRating, setEditedReviewRating] = useState(0);
 
-  
+
 
   const handleUpdate = async (reviewId) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
@@ -196,15 +197,19 @@ const Review = ({ chargingStationId }) => {
           onChange={(e) => setNewReviewContent(e.target.value)}
           className={classes.textField}
         />
-        <TextField
+        <Select
           label="평점"
           variant="outlined"
-          type="number"
-          InputProps={{ inputProps: { min: 0, max: 5 } }}
           value={newReviewRating}
           onChange={(e) => setNewReviewRating(e.target.value)}
           className={classes.textField}
-        />
+        >
+          {[0, 1, 2, 3, 4, 5].map((rating) => (
+            <MenuItem key={rating} value={rating}>
+              {rating}점
+            </MenuItem>
+          ))}
+        </Select>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           작성
         </Button>
@@ -277,14 +282,21 @@ const Review = ({ chargingStationId }) => {
                 {/* 작성자 ID 표시 */}
                 평점: {isEditing && editReviewId === reviewItem.id ? (
                   // 수정 중에는 새로 입력한 평점을 표시
-                  <TextField
+                  <Select
+                    label="평점"
                     variant="outlined"
-                    type="number"
-                    InputProps={{ inputProps: { min: 0, max: 5 } }}
                     value={editedReviewRating}
                     onChange={(e) => setEditedReviewRating(e.target.value)}
                     className={classes.textField}
-                  />
+                    style={{ width: '50%' }}
+
+                  >
+                    {[0, 1, 2, 3, 4, 5].map((rating) => (
+                      <MenuItem key={rating} value={rating}>
+                        {rating}점
+                      </MenuItem>
+                    ))}
+                  </Select>
                 ) : (
                   // 수정 중이 아니면 리뷰의 기존 평점을 표시
                   reviewItem.rating
