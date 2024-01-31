@@ -5,6 +5,7 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [checkId, setCheckId] = useState(null);
   const navigate = useNavigate();
 
   const handleCheckid = async () => {
@@ -12,8 +13,10 @@ const Signup = () => {
       const response = await axios.get(`/api/v1/members/checkid/${username}`);
       if (response.data) {
         alert('사용 가능한 ID 입니다');
+        setCheckId(true);
       } else {
         alert('이미 사용중인 ID 입니다');
+        setCheckId(false);
       }
     } catch (error) {
       console.error(error);
@@ -52,6 +55,8 @@ const Signup = () => {
         <button type= "button" onClick={handleCheckid}>
           중복 확인        
         </button>
+        {checkId === true  && <span style={{ color: 'green' }}>✔️</span>}
+        {checkId === false && <span style={{ color: 'red' }}>❌</span>}
         <br />
         <label>
           Password : 
