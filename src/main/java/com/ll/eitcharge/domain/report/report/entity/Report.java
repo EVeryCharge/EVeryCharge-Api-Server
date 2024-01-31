@@ -43,7 +43,7 @@ public class Report extends BaseTime {
 	private String reply;
 	private LocalDateTime replyCreatedDate;
 
-	public void modify(ReportRequestDto requestDto, ChargingStation station) {
+	public void update(ReportRequestDto requestDto, ChargingStation station) {
 		this.chargingStation = station;
 		this.title = requestDto.getTitle();
 		this.content = requestDto.getContent();

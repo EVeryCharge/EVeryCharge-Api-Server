@@ -92,7 +92,7 @@ public class ReportService {
 			throw new GlobalException.E403();
 		}
 
-		report.modify(requestDto, chargingStationService.findById(requestDto.getStatId()));
+		report.update(requestDto, chargingStationService.findById(requestDto.getStatId()));
 		return new ReportResponseDto(report);
 	}
 
