@@ -28,6 +28,20 @@ const Login = () => {
       navigate('/');
     } catch (error) {
       // 로그인 실패 시 처리
+      if(username === ''){
+        alert("Username은 필수 입력 항목입니다.")
+      }else if(password ===  ''){
+        alert("Password은 필수 입력 항목입니다.")
+      }
+
+      if(error.response.data.resultCode === '400-1'){
+        alert("해당 유저가 존재하지 않습니다.");
+      }
+      else if(error.response.data.resultCode === '400-2'){
+        alert("비밀번호가 일치하지 않습니다.");
+        setPassword('');
+      }
+
       console.error('Login failed:', error.response.data);
 
       // TODO: 실패 시 에러 메시지 출력 또는 다른 작업 수행
