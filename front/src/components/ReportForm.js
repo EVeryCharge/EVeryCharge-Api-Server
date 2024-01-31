@@ -172,8 +172,18 @@ const ReportForm = () => {
       isValid = false;
     }
 
+    if (title.length > 30) {
+      newError.title = "제목을 30자 이내로 입력하세요.";
+      isValid = false;
+    }
+
     if (content.trim() === "") {
       newError.content = "내용을 입력하세요.";
+      isValid = false;
+    }
+
+    if (content.length > 200) {
+      newError.content = "내용을 200자 이내로 입력하세요.";
       isValid = false;
     }
 
@@ -313,12 +323,12 @@ const ReportForm = () => {
         {/* 내용 입력란 */}
         <TextField
           label="내용"
-          placeholder="내용을 입력하세요(500자 이내)"
-          helperText={`${content.length} / 500`}
-          inputProps={{ maxLength: 500 }}
-          rowsMin={13}
+          placeholder="내용을 입력하세요(200자 이내)"
+          helperText={`${content.length} / 200`}
+          inputProps={{ maxLength: 200 }}
+          rowsMin={10}
           multiline
-          rows={13}
+          rows={10}
           value={content}
           onChange={handleContentChange}
           style={{ width: "100%", marginBottom: "10px" }}

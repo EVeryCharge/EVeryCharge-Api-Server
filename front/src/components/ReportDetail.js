@@ -13,20 +13,21 @@ const ReportDetail = () => {
   const [reply, setReply] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchReportDetail = async () => {
-      try {
-        const response = await Axios.get(`/api/v1/reports/${id}`, {
-          withCredentials: true,
-        });
-        setData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching report detail:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // 신고내역 단건조회 API GET
+  async function fetchReportDetail() {
+    try {
+      const response = await Axios.get(`/api/v1/reports/${id}`, {
+        withCredentials: true,
+      });
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching report detail:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
+  useEffect(() => {
     fetchReportDetail();
   }, [id]);
 
@@ -62,32 +63,35 @@ const ReportDetail = () => {
   // 신고 답변 및 완료처리 API PUT
   const handleReplyReport = async () => {
     const isValid = validateReplyInputs();
-    const confirmReply = window.confirm(
-      `완료처리 이후 신고내역 / 처리결과 수정, 삭제가 불가능합니다.\n신고에 대한 답변 등록 및 완료처리하시겠습니까?`
-    );
-    if (confirmReply && isValid) {
-      try {
-        const requestData = {
-          reply: reply,
-        };
+    if (isValid) {
+      const confirmReply = window.confirm(
+        `완료처리 이후 신고내역 / 처리결과 수정, 삭제가 불가능합니다.\n신고에 대한 답변 등록 및 완료 처리하시겠습니까?`
+      );
+      if (confirmReply) {
+        try {
+          const requestData = {
+            reply: reply,
+          };
 
-        const response = await Axios.put(
-          `/api/v1/reports/${id}/complete`,
-          requestData,
-          {
-            withCredentials: true,
+          const response = await Axios.put(
+            `/api/v1/reports/${id}/complete`,
+            requestData,
+            {
+              withCredentials: true,
+            }
+          );
+
+          if (response.status === 200) {
+            console.log("신고 처리 완료, 처리답변 등록이 완료되었습니다.");
+            alert("신고 처리 완료, 처리 답변 등록이 완료되었습니다");
+            await fetchReportDetail();
+            navigate(window.location.pathname);
+          } else {
+            console.error(`신고 처리 실패 : ${response.msg}`);
           }
-        );
-
-        if (response.status === 200) {
-          console.log("신고처리 완료, 처리답변 등록이 완료되었습니다.");
-          alert("신고 처리 완료, 처리 답변 등록이 완료되었습니다");
-          navigate(`report/${id}`);
-        } else {
-          console.error(`신고처리 실패 : ${response.msg}`);
+        } catch (error) {
+          console.error("신고 처리 중 오류 :", error);
         }
-      } catch (error) {
-        console.error("신고처리 중 오류:", error);
       }
     }
   };
@@ -124,8 +128,8 @@ const ReportDetail = () => {
       isValid = false;
     }
 
-    if (reply.length > 500) {
-      newError.reply = "처리 답변을 500자 이내로 입력하세요.";
+    if (reply.length > 200) {
+      newError.reply = "처리 답변을 200자 이내로 입력하세요.";
       isValid = false;
     }
 
@@ -172,19 +176,19 @@ const ReportDetail = () => {
           />
 
           <Box alignItems="center" my={2} px={2}>
-            <Typography variant="subtitle1">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
-            <Typography variant="subtitle1">{`위치: ${data.addr}`}</Typography>
-            <Typography variant="subtitle1">{`신고자: ${data.memberName}`}</Typography>
-            <Typography variant="subtitle1">{`작성일: ${formatDate(
+            <Typography variant="subtitle2">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
+            <Typography variant="subtitle2">{`위치: ${data.addr}`}</Typography>
+            <Typography variant="subtitle2">{`신고자: ${data.memberName}`}</Typography>
+            <Typography variant="subtitle2">{`작성일: ${formatDate(
               data.createDate
             )}`}</Typography>
           </Box>
           <hr />
 
-          <Box alignItems="center" my={2} px={2} height={300}>
-            <Typography variant="h5">{data.title}</Typography>
+          <Box alignItems="center" my={2} px={2} height={200}>
+            <Typography variant="body1">{data.title}</Typography>
             <Typography
-              variant="body1"
+              variant="subtitle2"
               style={{
                 paddingLeft: "3px",
                 paddingRight: "10px",
@@ -197,8 +201,8 @@ const ReportDetail = () => {
           <hr />
 
           <Box my={2} px={2}>
-            <Typography variant="body1">
-              {`처리결과: `}
+            <Typography variant="subtitle2">
+              {`신고결과: `}
               <span
                 style={{
                   color: data.completed ? "#008000" : "#FFA500",
@@ -214,12 +218,12 @@ const ReportDetail = () => {
               <>
                 <TextField
                   label="답변"
-                  placeholder="처리 후 답변을 입력해주세요.(500자 이내)"
-                  helperText={`${reply.length} / 500`}
-                  inputProps={{ maxLength: 500 }}
-                  rowsMin={13}
+                  placeholder="처리 후 답변을 입력해주세요.(200자 이내)"
+                  helperText={`${reply.length} / 200`}
+                  inputProps={{ maxLength: 200 }}
+                  rowsMin={6}
                   multiline
-                  rows={13}
+                  rows={6}
                   value={reply}
                   onChange={handleReplyChange}
                   style={{ width: "100%", marginTop: "10px" }}
@@ -236,22 +240,22 @@ const ReportDetail = () => {
             {data.completed && (
               <Box>
                 {data.replierName && (
-                  <Typography variant="body1">{`처리자: ${data.replierName}`}</Typography>
+                  <Typography variant="subtitle2">{`처리자: ${data.replierName}`}</Typography>
                 )}
                 {data.replyCreatedDate && (
-                  <Typography variant="body1">{`처리일: ${formatDate(
+                  <Typography variant="subtitle2">{`처리일: ${formatDate(
                     data.replyCreatedDate
                   )}`}</Typography>
                 )}
                 {data.reply && (
-                  <Typography variant="body1">{`${data.reply}`}</Typography>
+                  <Typography variant="subtitle2">{`${data.reply}`}</Typography>
                 )}
               </Box>
             )}
           </Box>
 
           {/* 등록, 수정 버튼 */}
-          {data.actorCanEdit && (
+          {(data.actorCanEdit || data.actorCanComplete) && (
             <Box
               style={{
                 display: "flex",
@@ -271,21 +275,25 @@ const ReportDetail = () => {
                   완료 처리하기
                 </Button>
               )}
-              <Button
-                variant="outlined"
-                color="inherit"
-                onClick={navigateModify}
-                style={{ marginRight: "2px" }}
-              >
-                수정하기
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleDelete}
-              >
-                삭제하기
-              </Button>
+              {data.actorCanEdit && (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={navigateModify}
+                  style={{ marginRight: "2px" }}
+                >
+                  수정하기
+                </Button>
+              )}
+              {data.actorCanEdit && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={handleDelete}
+                >
+                  삭제하기
+                </Button>
+              )}
             </Box>
           )}
         </Box>

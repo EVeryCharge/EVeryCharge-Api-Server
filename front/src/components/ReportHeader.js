@@ -13,9 +13,9 @@ const ReportHeader = ({
   return (
     <Box mt={4} mb={2}>
       <Box ml={2}>
-        <Typography variant="h4">{headerTitle}</Typography>
+        <Typography variant="h5">{headerTitle}</Typography>
         <Typography
-          variant="subtitle1"
+          variant="subtitle2"
           style={{
             fontWeight: "bold",
             color: "#008000",
