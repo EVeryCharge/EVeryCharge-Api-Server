@@ -34,7 +34,7 @@ const Signup = () => {
       // 회원가입 성공시 처리
       console.log('Signup successful:' , response);
       alert("회원 가입 성공!");
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       // 회원가입 실패 시 처리
       console.error('Signup failed:', error.response.data);
