@@ -26,11 +26,13 @@ public class Review extends BaseTime {
     @ManyToOne(fetch = LAZY)
     private Member member;
 
+    @Setter
     private String content;
 
     private LocalDateTime deletedDate;
     private boolean isDeleted;
 
+    @Setter
     @Builder.Default
     private int rating = 0; // 평점 속성 추가
 }
