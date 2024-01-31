@@ -1,16 +1,13 @@
-package com.ll.eitcharge.domain.chargingStation.chargingStation.Controller;
+package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -37,5 +34,10 @@ public class ChargingStationController {
             @RequestParam double neLng
     ) {
         return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
+    }
+
+    @GetMapping("/{stationId}/chargers")
+    public RsData< Object > chargerState(@PathVariable("stationId") String stationId){
+        return chargingStationService.findFromApi(stationId);
     }
 }
