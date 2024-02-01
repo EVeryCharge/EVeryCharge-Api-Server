@@ -36,6 +36,9 @@ const Navbar = () => {
         <Button color="inherit" component={Link} to="/map">
           충전소 지도
         </Button>
+        <Button color="inherit" component={Link} to="/inquiry">
+          1대1 문의
+        </Button>
         {isLogin() ? ( // 로그인된 상태일 때
           <>
             <Typography variant="body1" style={{ marginRight: "1rem" }}>

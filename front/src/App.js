@@ -16,6 +16,7 @@ import ReportDetail from "./components/ReportDetail";
 import ReportForm from "./components/ReportForm";
 import ChargingStationStateTable from "./components/ChargingStationStateTable";
 import Signup from "./pages/Signup/Signup";
+import Inquiry from "./pages/Inquiry/Inquiry";
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path="/report/:id" element={<ReportDetail />} />
           <Route path="/report/form" element={<ReportForm />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/inquiry" element={<Inquiry />} />
         </Routes>
         <Footer />
       </AuthProvider>
