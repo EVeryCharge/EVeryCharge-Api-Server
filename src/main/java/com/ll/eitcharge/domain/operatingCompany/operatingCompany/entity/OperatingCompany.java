@@ -21,7 +21,5 @@ public class OperatingCompany {
     //기관명
     private String bnm;
     //운영기관 연락처
-    private String busiCall;
-    //점유율 상위 13개 기관 여부
     private String isPrimary;
 }
