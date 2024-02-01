@@ -16,7 +16,6 @@ public class ChargingStationSearchResponseDto {
     private double lng;
     private String busiId;
     private String bnm;
-    private String busiNm;
     private String busiCall;
     private String parkingFree;
     private String note;
@@ -44,8 +43,7 @@ public class ChargingStationSearchResponseDto {
         //
         this.bnm = chargingStation.getOperatingCompany().getBnm();
 
-        this.busiNm = chargingStation.getBusiNm();
-        this.busiCall = chargingStation.getBusiCall();
+        this.busiCall = chargingStation.getOperatingCompany().getBusiCall();
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();

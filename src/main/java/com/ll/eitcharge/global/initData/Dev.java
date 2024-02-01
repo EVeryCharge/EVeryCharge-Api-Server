@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 //프로필이 dev일 때만 실행하고 member를 10명 생성
 @Configuration
-@Profile("dev")
+@Profile("!dev")
 @Slf4j
 @RequiredArgsConstructor
 public class Dev {
