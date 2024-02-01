@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import ChargingStationStateTable from '../../components/ChargingStationStateTable';
 
 const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
   const [chargerStatusList, setChargerStatusList] = useState([]);

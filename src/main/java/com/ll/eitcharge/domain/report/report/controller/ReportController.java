@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
-import com.ll.eitcharge.domain.report.report.dto.ReportResultRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportSearchStationListResponseDto;
 import com.ll.eitcharge.domain.report.report.service.ReportService;
 import com.ll.eitcharge.global.rsData.RsData;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -38,15 +40,29 @@ public class ReportController {
 
 	@GetMapping("/list")
 	public RsData<Page<ReportResponseDto>> getList(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int pageSize
+		@RequestParam(value="page", defaultValue = "0") int page,
+		@RequestParam(value="pageSize", defaultValue = "10") int pageSize
 	) {
-		return RsData.of("200", "ok", reportService.getList(page, pageSize));
+
+		Page<ReportResponseDto> responseDtos = reportService.getList(page, pageSize);
+		responseDtos.getContent().forEach(this::loadReportAccess);
+
+		return RsData.of("200", "ok", responseDtos);
 	}
 
 	@GetMapping("/{id}")
-	public RsData<ReportResponseDto> get(@PathVariable Long id) {
-		return RsData.of("200", "ok", reportService.get(id));
+	public RsData<ReportResponseDto> get(@PathVariable(value = "id") Long id) {
+
+		ReportResponseDto responseDto = reportService.get(id);
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
+	}
+
+
+	@Operation(description = "신고내역 작성 시 충전소 검색(키워드: 충전소명, 지역명, 세부지역명)")
+	@GetMapping("/station")
+	public RsData<ReportSearchStationListResponseDto> getStationList(@RequestParam(value = "kw") String kw) {
+		return RsData.of("200", "ok", reportService.getStationList(kw));
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -54,21 +70,30 @@ public class ReportController {
 	public RsData<ReportResponseDto> write(
 		@RequestBody @NonNull ReportRequestDto requestDto,
 		Principal principal) {
-		return RsData.of("200", "ok", reportService.create(requestDto, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.create(requestDto, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}")
 	public RsData<ReportResponseDto> modify(
-		@PathVariable Long id,
+		@PathVariable(value = "id") Long id,
 		@RequestBody @NonNull ReportRequestDto requestDto
 		, Principal principal) {
-		return RsData.of("200", "ok", reportService.update(requestDto, id, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.update(requestDto, id, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@DeleteMapping("/{id}")
-	public RsData<ReportResponseDto> delete(@PathVariable Long id, Principal principal) {
+	public RsData<ReportResponseDto> delete(
+		@PathVariable(value = "id") Long id,
+		Principal principal) {
+
 		reportService.delete(id, principal.getName());
         return RsData.of("200", "ok");
     }
@@ -76,10 +101,16 @@ public class ReportController {
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}/complete")
     public RsData<ReportResponseDto> complete(
-        @PathVariable Long id,
-        @RequestBody @NonNull ReportResultRequestDto requestDto
+        @PathVariable(value = "id") Long id,
+        @RequestBody @NonNull ReportCompleteRequestDto requestDto
         , Principal principal) {
-		return RsData.of("200", "ok", reportService.complete(requestDto, id, principal.getName()));
+
+		ReportResponseDto responseDto = reportService.complete(requestDto, id, principal.getName());
+		loadReportAccess(responseDto);
+		return RsData.of("200", "ok", responseDto);
 	}
 
+	private void loadReportAccess(ReportResponseDto responseDto) {
+		reportService.loadReportAccess(responseDto);
+	}
 }

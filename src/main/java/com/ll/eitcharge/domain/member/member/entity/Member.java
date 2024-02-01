@@ -22,9 +22,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @Getter
 public class Member extends BaseTime {
-    @OneToOne(fetch = LAZY, mappedBy = "member")
-    private TechnicalManager technicalManager;
-
     @Column(unique = true)
     private String username;
     private String password;
@@ -33,6 +30,9 @@ public class Member extends BaseTime {
     // 캐시 데이터
     @Transient
     private Boolean _isAdmin;
+
+    @OneToOne(fetch = LAZY, mappedBy = "member")
+    private TechnicalManager technicalManager;
 
     @OneToMany(mappedBy = "member")
     private List<Report> reports = new ArrayList<>();

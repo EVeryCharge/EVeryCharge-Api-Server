@@ -13,6 +13,7 @@ import StatisticsInfo from "./components/StatisticsInfo";
 import { AuthProvider } from "./components/AuthContext";
 import ReportList from "./components/ReportList";
 import ReportDetail from "./components/ReportDetail";
+import ReportForm from "./components/ReportForm";
 import ChargingStationStateTable from "./components/ChargingStationStateTable";
 import Signup from "./pages/Signup/Signup";
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
           <Route path="/report/list" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
+          <Route path="/report/form" element={<ReportForm />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
         <Footer />

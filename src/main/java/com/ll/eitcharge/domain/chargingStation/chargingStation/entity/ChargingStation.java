@@ -5,12 +5,17 @@ import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.Operatin
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -38,6 +43,9 @@ public class ChargingStation {
 
     @ManyToOne
     private OperatingCompany operatingCompany;
+
+    @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
+    private TechnicalManager technicalManager;
 
     //충전소명
     private String statNm;
