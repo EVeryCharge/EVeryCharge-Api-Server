@@ -40,16 +40,13 @@ public class ChargingStationSearchResponseDto {
         this.useTime = chargingStation.getUseTime();
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
-        //
+        // 변경사항
         this.busiId = chargingStation.getOperatingCompany().getBusiId();
-        //
         this.bnm = chargingStation.getOperatingCompany().getBnm();
-
         this.busiNm = chargingStation.getBusiNm();
         this.busiCall = chargingStation.getBusiCall();
-
         this.isPrimaryYn = chargingStation.getOperatingCompany().getIsPrimary();
-
+        //
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
