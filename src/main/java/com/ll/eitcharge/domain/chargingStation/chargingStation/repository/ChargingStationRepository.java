@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
 @Repository
-public interface ChargingStationRepository extends JpaRepository<ChargingStation, String> {
+public interface ChargingStationRepository extends JpaRepository<ChargingStation, String>, ChargingStationRepositoryCustom {
     List<ChargingStation> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng);
 
 	@Query("SELECT cs FROM ChargingStation cs " +

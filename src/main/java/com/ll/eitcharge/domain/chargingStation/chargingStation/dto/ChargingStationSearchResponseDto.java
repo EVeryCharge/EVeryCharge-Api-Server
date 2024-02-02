@@ -18,6 +18,7 @@ public class ChargingStationSearchResponseDto {
     private String bnm;
     private String busiNm;
     private String busiCall;
+    private String isPrimaryYn;
     private String parkingFree;
     private String note;
     private String limitYn;
@@ -39,10 +40,13 @@ public class ChargingStationSearchResponseDto {
         this.useTime = chargingStation.getUseTime();
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
-        this.busiId = chargingStation.getBusiId();
-        this.bnm = chargingStation.getBnm();
+        // 변경사항
+        this.busiId = chargingStation.getOperatingCompany().getBusiId();
+        this.bnm = chargingStation.getOperatingCompany().getBnm();
         this.busiNm = chargingStation.getBusiNm();
         this.busiCall = chargingStation.getBusiCall();
+        this.isPrimaryYn = chargingStation.getOperatingCompany().getIsPrimary();
+        //
         this.parkingFree = chargingStation.getParkingFree();
         this.note = chargingStation.getNote();
         this.limitYn = chargingStation.getLimitYn();
