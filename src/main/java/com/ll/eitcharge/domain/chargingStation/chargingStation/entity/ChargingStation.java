@@ -1,18 +1,21 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
 import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
-
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -38,6 +41,9 @@ public class ChargingStation {
     @OneToMany(mappedBy = "chargingStation")
     private List<Review> reviews = new ArrayList<>();
 
+    @ManyToOne
+    private OperatingCompany operatingCompany;
+
     @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
     private TechnicalManager technicalManager;
 
@@ -53,13 +59,9 @@ public class ChargingStation {
     private double lat;
     //경도
     private double lng;
-    //기관 아이디
-    private String busiId;
-    //기관명
-    private String bnm;
-    //운영기관명
+    //운영업체 이름
     private String busiNm;
-    //운영기관 연락처
+    //기관 전화번호
     private String busiCall;
     //주차료여부
     private String parkingFree;
