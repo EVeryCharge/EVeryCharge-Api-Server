@@ -23,7 +23,8 @@ spring:
     init:
       mode: always
       continue-on-error: true
-      data-locations: classpath:/sql/data.sql
+      # 숫자 순서대로 sql 파일 읽어 실행
+      data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql
   jpa:
     hibernate:
       ddl-auto: update
