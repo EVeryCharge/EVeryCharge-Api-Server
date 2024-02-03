@@ -46,4 +46,14 @@ public class ChargingStationController {
     public RsData< Object > chargerState(@PathVariable("stationId") String stationId){
         return chargingStationService.findFromApi(stationId);
     }
+
+    // 아래서부터 추가
+    @GetMapping("/list")
+    public ResponseEntity<List<ChargingStationSearchResponseDto>> list(
+            @RequestParam(value = "kwType", defaultValue = "") List<String> kwTypes,
+            @RequestParam(value = "kw", defaultValue = "") List<String> kws
+    ){
+        return ResponseEntity.ok(chargingStationService.search(kwTypes, kws));
+    }
+
 }
