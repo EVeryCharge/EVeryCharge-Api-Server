@@ -60,8 +60,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
         // Check if kw is not empty, and if it is not, add the necessary conditions
         if (!kw.isEmpty()) {
             return QChargingStation.chargingStation.statNm.containsIgnoreCase(kw)
-                    .or(QChargingStation.chargingStation.addr.containsIgnoreCase(kw))
-                    .or(QChargingStation.chargingStation.location.containsIgnoreCase(kw));
+                    .or(QChargingStation.chargingStation.addr.containsIgnoreCase(kw));
             // Add more conditions based on the fields you want to search
         }
         return null;

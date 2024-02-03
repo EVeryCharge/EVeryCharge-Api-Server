@@ -52,7 +52,8 @@ public class ChargingStationController {
     public ResponseEntity<List<ChargingStationSearchResponseDto>> list(
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
-            @RequestParam(value = "zcode", defaultValue = "") String zcode,
+            //todo 현위치 넣기 defaultValue에
+            @RequestParam(value = "zcode", defaultValue = "28") String zcode,
             //@RequestParam(value = "regionName", defaultValue = "") String zcode,
             @RequestParam(value = "zcodes", defaultValue = "") String zscode,
             @RequestParam(value = "busiId", defaultValue = "") String busiId,
