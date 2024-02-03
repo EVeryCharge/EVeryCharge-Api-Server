@@ -50,10 +50,16 @@ public class ChargingStationController {
     // 아래서부터 추가
     @GetMapping("/list")
     public ResponseEntity<List<ChargingStationSearchResponseDto>> list(
-            @RequestParam(value = "kwType", defaultValue = "") List<String> kwTypes,
-            @RequestParam(value = "kw", defaultValue = "") List<String> kws
+            @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
+            @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
+            @RequestParam(value = "zcode", defaultValue = "") String zcode,
+            //@RequestParam(value = "regionName", defaultValue = "") String zcode,
+            @RequestParam(value = "zcodes", defaultValue = "") String zscode,
+            @RequestParam(value = "busiId", defaultValue = "") String busiId,
+            @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
+            @RequestParam(value = "kw", defaultValue = "") String kw
     ){
-        return ResponseEntity.ok(chargingStationService.search(kwTypes, kws));
+        return ResponseEntity.ok(chargingStationService.search(limitYn,parkingFree,zcode,zscode,busiId,chgerType, kw));
     }
 
 }

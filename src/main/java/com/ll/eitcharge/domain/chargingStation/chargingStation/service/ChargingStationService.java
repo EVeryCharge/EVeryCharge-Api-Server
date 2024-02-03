@@ -82,12 +82,11 @@ public class ChargingStationService {
 		return chargingStationRepository.findById(statId);
 	}
 
-	public List<ChargingStationSearchResponseDto> search(List<String> kwTypes, List<String> kws) {
-		//return chargingStationRepository.search(kwTypes, kw);
-		//						.findByLimitYnAndParkingFreeAndRegionDetail_Zcode_regionNameAndRegionDetail_regionDetailName(kws.get(0),kws.get(1), kws.get(2), kws.get(3));
-		List<ChargingStation> chargingStations =
-				chargingStationRepository
-						.findByLimitYnAndParkingFreeAndRegionDetail_Zcode_regionNameAndRegionDetail_regionDetailNameAndOperatingCompanyBusiIdAndChargers_ChgerType(kws.get(0),kws.get(1), kws.get(2), kws.get(3), kws.get(4), kws.get(5));
+
+
+	public List<ChargingStationSearchResponseDto> search(String limitYn, String parkingFree, String zcode, String zscode, String busiId, String chgerType, String kw) {
+		List<ChargingStation> chargingStations;
+		chargingStations = chargingStationRepository.search(limitYn,parkingFree,zcode,zscode,busiId,chgerType, kw);
 		return chargingStations.stream()
 				.map(ChargingStationSearchResponseDto::new)
 				.collect(Collectors.toList());
