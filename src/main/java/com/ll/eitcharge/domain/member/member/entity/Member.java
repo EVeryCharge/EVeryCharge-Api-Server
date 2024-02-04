@@ -1,8 +1,10 @@
 package com.ll.eitcharge.domain.member.member.entity;
+
+import com.ll.eitcharge.domain.report.report.entity.Report;
+import com.ll.eitcharge.domain.review.review.entity.Review;
+import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -18,7 +21,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Setter
 public class Member extends BaseTime {
     @Column(unique = true)
     private String username;
@@ -28,6 +30,15 @@ public class Member extends BaseTime {
     // 캐시 데이터
     @Transient
     private Boolean _isAdmin;
+
+    @OneToOne(fetch = LAZY, mappedBy = "member")
+    private TechnicalManager technicalManager;
+
+    @OneToMany(mappedBy = "member")
+    private List<Report> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {

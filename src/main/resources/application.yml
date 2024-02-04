@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
     include: secret
   servlet:
     multipart:
@@ -13,20 +13,30 @@ spring:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:h2:./db_dev;MODE=MYSQL
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    #로컬 db에 대해서는 각자 하고싶은걸로 하시길..
+    #일단 설정은 mysql로 해놨습니다.
+    url: jdbc:mysql://localhost:3306/eitcharge #디비 생성하시길...
+    username: root
+    password: # custom password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      # 숫자 순서대로 sql 파일 읽어 실행
+      data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
+        #dialect: org.hibernate.dialect.MySQLDialect
         default_batch_fetch_size: 100
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
     open-in-view: false
+    defer-datasource-initialization: true
   security:
     oauth2:
       client:
@@ -53,10 +63,10 @@ logging:
 custom:
   dev:
     cookieDomain: localhost
-    frontUrl: "http://${custom.dev.cookieDomain}:5173"
+    frontUrl: "http://${custom.dev.cookieDomain}:3000"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain: www.eitcharge.site
+    cookieDomain: eitcharge.site
     frontUrl: "https://${custom.prod.cookieDomain}"
     backUrl: "https://api.${custom.prod.cookieDomain}"
   site:
