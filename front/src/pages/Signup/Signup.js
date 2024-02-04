@@ -10,7 +10,7 @@ const Signup = () => {
 
   const handleCheckid = async () => {
     try {
-      const response = await axios.get(`/api/v1/members/checkid/${username}`);
+      const response = await axios.get(`https://api.eitcharge.site/api/v1/members/checkid/${username}`);
       if (response.data) {
         alert('사용 가능한 ID 입니다');
         setCheckId(true);
@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSignup = async () => {
     try {
       const response = await axios.post(
-        '/api/v1/members/signup',
+        'https://api.eitcharge.site/api/v1/members/signup',
         {
           username: username,
           password1: password,

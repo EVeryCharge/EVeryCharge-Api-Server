@@ -37,7 +37,7 @@ const ReportList = () => {
   // 신고 리스트 API GET
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await Axios.get(`/api/v1/reports/list`, {
+      const response = await Axios.get(`https://api.eitcharge.site/api/v1/reports/list`, {
         params: {
           page: currentPage,
           pageSize: pageSize,
