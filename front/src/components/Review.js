@@ -69,7 +69,7 @@ const Review = ({ chargingStationId }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`/api/v1/review/${chargingStationId}`);
+      const response = await axios.get(`https://api.eitcharge.site/api/v1/review/${chargingStationId}`);
       setReview(response.data || { data: { items: [] } });
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
@@ -78,7 +78,7 @@ const Review = ({ chargingStationId }) => {
 
   const fetchUserId = async () => {
     try {
-      const userResponse = await axios.get(`/api/v1/members/me`);
+      const userResponse = await axios.get(`https://api.eitcharge.site/api/v1/members/me`);
       const { id: userIdFromApi, username } = userResponse.data.data.item;
       setUserId(userIdFromApi);
       setUserName(username);
@@ -102,7 +102,7 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.post(`/api/v1/review/${chargingStationId}`, {
+      await axios.post(`https://api.eitcharge.site/api/v1/review/${chargingStationId}`, {
         content: newReviewContent,
         rating: newReviewRating,
       });
@@ -131,7 +131,7 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.delete(`/api/v1/review/${chargingStationId}/${reviewId}`);
+      await axios.delete(`https://api.eitcharge.site/api/v1/review/${chargingStationId}/${reviewId}`);
       fetchData();
     } catch (error) {
       console.error("후기를 삭제하는 중 오류 발생:", error);
@@ -161,7 +161,7 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.put(`/api/v1/review/${chargingStationId}/${reviewId}`, {
+      await axios.put(`https://api.eitcharge.site/api/v1/review/${chargingStationId}/${reviewId}`, {
         content: editedReviewContent,
         rating: editedReviewRating, // 수정된 평점 사용
       });

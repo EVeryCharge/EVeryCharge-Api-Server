@@ -35,7 +35,7 @@ const MapContainer = () => {
     const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표 가져오기
     const neLatLng = bounds.getNorthEast(); // 영역의 북동쪽 좌표 가져오기
 
-    axios.get('/api/v1/chargingStation/location/search',{
+    axios.get('https://api.eitcharge.site/api/v1/chargingStation/location/search',{
       params: {
         swLat: swLatLng.getLat(),
         swLng: swLatLng.getLng(),
