@@ -27,7 +27,7 @@ const ChargingStationStateTable = ({statId}) => {
     const[chargingStationData, setChargingStationData] = useState([]);
     useEffect(() => {
         // Axios를 사용하여 데이터를 가져옵니다.
-        const url = `http://localhost:8090/api/v1/chargingStation/${statId}/chargers`;
+        const url = 'https://api.eitcharge.site/api/v1/chargingStation/${statId}/chargers';
         console.log(url);
         axios.get(url, {withCredentials: true})
           .then((response) => {

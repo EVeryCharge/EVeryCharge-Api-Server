@@ -16,7 +16,7 @@ const ReportDetail = () => {
   // 신고내역 단건조회 API GET
   async function fetchReportDetail() {
     try {
-      const response = await Axios.get(`/api/v1/reports/${id}`, {
+      const response = await Axios.get(`https://api.eitcharge.site/api/v1/reports/${id}`, {
         withCredentials: true,
       });
       setData(response.data.data);
@@ -44,7 +44,7 @@ const ReportDetail = () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await Axios.delete(`/api/v1/reports/${id}`, {
+        const response = await Axios.delete(`https://api.eitcharge.site/api/v1/reports/${id}`, {
           withCredentials: true,
         });
 
@@ -74,7 +74,7 @@ const ReportDetail = () => {
           };
 
           const response = await Axios.put(
-            `/api/v1/reports/${id}/complete`,
+            `https://api.eitcharge.site/api/v1/reports/${id}/complete`,
             requestData,
             {
               withCredentials: true,
