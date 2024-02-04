@@ -6,5 +6,5 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingSt
 import java.util.List;
 
 public interface ChargingStationRepositoryCustom {
-    List<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String busiId, String chgerType, String kw);
+    List<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode,String isPrimary, String busiId, String chgerType, String kw);
 }

@@ -4,6 +4,8 @@ import static org.springframework.util.MimeTypeUtils.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +62,8 @@ public class ChargingStationController {
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
             @RequestParam(value = "kw", defaultValue = "") String kw
     ){
-        return ResponseEntity.ok(chargingStationService.search(limitYn,parkingFree,zcode,zscode,busiId,chgerType, kw));
+        return ResponseEntity.ok(chargingStationService.search(
+                limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw));
     }
 
 }

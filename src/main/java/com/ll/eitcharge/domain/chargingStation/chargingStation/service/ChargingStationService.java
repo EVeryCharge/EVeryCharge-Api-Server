@@ -84,9 +84,9 @@ public class ChargingStationService {
 
 
 
-	public List<ChargingStationSearchResponseDto> search(String limitYn, String parkingFree, String zcode, String zscode, String busiId, String chgerType, String kw) {
+	public List<ChargingStationSearchResponseDto> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw) {
 		List<ChargingStation> chargingStations;
-		chargingStations = chargingStationRepository.search(limitYn,parkingFree,zcode,zscode,busiId,chgerType, kw);
+		chargingStations = chargingStationRepository.search(limitYn,parkingFree,zcode,zscode,isPrimary, busiId,chgerType, kw);
 		return chargingStations.stream()
 				.map(ChargingStationSearchResponseDto::new)
 				.collect(Collectors.toList());

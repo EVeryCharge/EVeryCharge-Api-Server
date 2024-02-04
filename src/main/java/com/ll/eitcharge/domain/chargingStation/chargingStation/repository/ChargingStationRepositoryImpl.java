@@ -16,7 +16,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String busiId, String chgerType, String kw) {
+    public List<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode,String isPrimary, String busiId, String chgerType, String kw) {
         return queryFactory
                 .selectFrom(QChargingStation.chargingStation)
                 .where(
@@ -24,6 +24,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
                         isParkingFree(parkingFree),
                         isZcode(zcode),
                         isZscode(zscode),
+                        isPrimary(isPrimary),
                         isBusiId(busiId),
                         isChgerType(chgerType),
                         isKw(kw)
@@ -41,19 +42,23 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
     }
 
     private BooleanExpression isZcode(String zcode) {
-        return zcode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zcode.zcode.eq(zcode);
+        return zcode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zcode.regionName.eq(zcode);
     }
 
     private BooleanExpression isZscode(String zscode) {
-        return zscode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zscode.eq(zscode);
+        return zscode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.regionDetailName.eq(zscode);
     }
 
     private BooleanExpression isBusiId(String busiId) {
-        return busiId.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.busiId.eq(busiId);
+        return busiId.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.bnm.eq(busiId);
     }
 
     private BooleanExpression isChgerType(String chgerType) {
         return chgerType.isEmpty() ? null : QChargingStation.chargingStation.chargers.any().chgerType.eq(chgerType);
+    }
+
+    private BooleanExpression isPrimary(String isPrimary) {
+        return isPrimary.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.isPrimary.eq(isPrimary);
     }
 
     private BooleanExpression isKw(String kw) {
