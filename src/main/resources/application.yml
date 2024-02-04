@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
     include: secret
   servlet:
     multipart:
@@ -66,7 +66,7 @@ custom:
     frontUrl: "http://${custom.dev.cookieDomain}:3000"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain: www.eitcharge.site
+    cookieDomain: eitcharge.site
     frontUrl: "https://${custom.prod.cookieDomain}"
     backUrl: "https://api.${custom.prod.cookieDomain}"
   site:
