@@ -22,6 +22,7 @@ public class RegionDetail {
     @ManyToOne
     @JoinColumn(name = "zcode")
     private Region zcode;
+
     private String regionDetailName;
 
     @OneToMany(mappedBy = "regionDetail")
