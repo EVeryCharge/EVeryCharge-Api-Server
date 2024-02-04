@@ -76,12 +76,14 @@ public class ChargingStationController {
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
             // 검색 키워드 (충전소명, 주소 LIKE)
             @RequestParam(value = "kw", defaultValue = "") String kw,
-            @RequestParam( defaultValue = "1") int page
+            @RequestParam( defaultValue = "1") int page,
+            @RequestParam( defaultValue = "20") int pageSize
+
 
     ){
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("statId"));
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
         return ResponseEntity.ok(chargingStationService.search(
                 limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw, pageable));
