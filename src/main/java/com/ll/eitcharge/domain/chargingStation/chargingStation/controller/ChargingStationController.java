@@ -53,9 +53,9 @@ public class ChargingStationController {
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
             //todo 현위치 넣기 defaultValue에
-            @RequestParam(value = "zcode", defaultValue = "28") String zcode,
+            @RequestParam(value = "zcode", defaultValue = "") String zcode,
             //@RequestParam(value = "regionName", defaultValue = "") String zcode,
-            @RequestParam(value = "zcodes", defaultValue = "") String zscode,
+            @RequestParam(value = "zscode", defaultValue = "") String zscode,
             @RequestParam(value = "busiId", defaultValue = "") String busiId,
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
             @RequestParam(value = "kw", defaultValue = "") String kw
