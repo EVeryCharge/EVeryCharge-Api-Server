@@ -26,7 +26,7 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
 
   useEffect(() => {
     items.forEach(item => {
-      axios.get(`http://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey=xfxRkd9Ntag%2BmgCGh3yh%2B9f77aTMJlLPKaU7UMGBz9LnmwW3%2BnEtYZR6GRt%2BiyknBmvdVlkdC86laKLBVVttsw%3D%3D&numOfRows=999&pageNo=1&zcode=11&dataType=JSON&statId=${item.statId}`)
+      axios.get(`https://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey=xfxRkd9Ntag%2BmgCGh3yh%2B9f77aTMJlLPKaU7UMGBz9LnmwW3%2BnEtYZR6GRt%2BiyknBmvdVlkdC86laKLBVVttsw%3D%3D&numOfRows=999&pageNo=1&zcode=11&dataType=JSON&statId=${item.statId}`)
         .then(response => {
           setChargerStatusList(response.data.items.item);
           console.log(chargerStatusList[0].statId);
