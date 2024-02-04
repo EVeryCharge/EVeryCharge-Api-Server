@@ -2,10 +2,14 @@ package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
 import static org.springframework.util.MimeTypeUtils.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,6 +66,10 @@ public class ChargingStationController {
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
             @RequestParam(value = "kw", defaultValue = "") String kw
     ){
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("statId"));
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
+
         return ResponseEntity.ok(chargingStationService.search(
                 limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw));
     }

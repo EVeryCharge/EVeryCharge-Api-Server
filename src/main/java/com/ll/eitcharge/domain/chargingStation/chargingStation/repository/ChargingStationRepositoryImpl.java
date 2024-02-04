@@ -2,11 +2,13 @@ package com.ll.eitcharge.domain.chargingStation.chargingStation.repository;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.QChargingStation;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.BooleanTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
@@ -15,9 +17,10 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
 
     private final JPAQueryFactory queryFactory;
 
+
     @Override
-    public List<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode,String isPrimary, String busiId, String chgerType, String kw) {
-        return queryFactory
+    public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw, Pageable pageable) {
+        List<ChargingStation> results = queryFactory
                 .selectFrom(QChargingStation.chargingStation)
                 .where(
                         isLimitYn(limitYn),
@@ -29,8 +32,26 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
                         isChgerType(chgerType),
                         isKw(kw)
                 )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        JPQLQuery<ChargingStation> countQuery = queryFactory
+                .selectFrom(QChargingStation.chargingStation)
+                .where(
+                        isLimitYn(limitYn),
+                        isParkingFree(parkingFree),
+                        isZcode(zcode),
+                        isZscode(zscode),
+                        isPrimary(isPrimary),
+                        isBusiId(busiId),
+                        isChgerType(chgerType),
+                        isKw(kw)
+                );
+
+        return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetchCount());
     }
+
 
     // Helper methods for conditions
     private BooleanExpression isLimitYn(String limitYn) {

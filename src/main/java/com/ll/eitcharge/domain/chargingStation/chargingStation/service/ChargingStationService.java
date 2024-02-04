@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -83,12 +88,33 @@ public class ChargingStationService {
 	}
 
 
+	public ChargingStationSearchResponseDtoWithExecuteTime search(
+			String limitYn,
+			String parkingFree,
+			String zcode,
+			String zscode,
+			String isPrimary,
+			String busiId,
+			String chgerType,
+			String kw,
+			Pageable pageable
+	) {
 
-	public List<ChargingStationSearchResponseDto> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw) {
-		List<ChargingStation> chargingStations;
-		chargingStations = chargingStationRepository.search(limitYn,parkingFree,zcode,zscode,isPrimary, busiId,chgerType, kw);
-		return chargingStations.stream()
-				.map(ChargingStationSearchResponseDto::new)
-				.collect(Collectors.toList());
+		// 검색 시간 측정 시작
+		long startTime = System.nanoTime();
+		
+		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn,parkingFree,zcode,zscode,isPrimary, busiId,chgerType, kw, pageable);
+
+		// 검색 시간 측정 끝
+		long endTime = System.nanoTime();
+
+		// 검색 경과시간(나노 초 단위)
+		long executionTimeInNano = endTime-startTime;
+		String executionTimeResult = String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
+				executionTimeInNano,
+				executionTimeInNano / 1_000_000,
+				(long) (executionTimeInNano / 1_000_000_000.0));
+
+		return new ChargingStationSearchResponseDtoWithExecuteTime(executionTimeResult, chargingStations.map(ChargingStationSearchResponseDto::new));
 	}
 }
