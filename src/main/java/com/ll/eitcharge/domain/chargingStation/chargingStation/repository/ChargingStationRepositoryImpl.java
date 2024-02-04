@@ -12,6 +12,10 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
+/**
+ * QueryDSL 충전소 검색 로직
+ * 작성자: 임지원, 이상제
+ */
 @RequiredArgsConstructor
 public class ChargingStationRepositoryImpl implements ChargingStationRepositoryCustom {
 

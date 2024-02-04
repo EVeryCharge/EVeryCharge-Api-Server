@@ -5,6 +5,7 @@ import static org.springframework.util.MimeTypeUtils.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,25 +54,37 @@ public class ChargingStationController {
         return chargingStationService.findFromApi(stationId);
     }
 
-    // 아래서부터 추가
-    @GetMapping("/list")
-    public ResponseEntity<List<ChargingStationSearchResponseDto>> list(
+    @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param)")
+    @GetMapping("/search")
+    public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> list(
+            // 개방여부 (Y / N)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
+            // 무료주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
-            //todo 현위치 넣기 defaultValue에
-            @RequestParam(value = "zcode", defaultValue = "") String zcode,
-            //@RequestParam(value = "regionName", defaultValue = "") String zcode,
-            @RequestParam(value = "zscode", defaultValue = "") String zscode,
-            @RequestParam(value = "busiId", defaultValue = "") String busiId,
+//            @RequestParam(value = "zcode", defaultValue = "") String zcode,
+            // 지역단위이름 (ex. 서울시, 광주시, 익산시 ...), TODO 현위치 로직 구현
+            @RequestParam(value = "regionName", defaultValue = "") String regionName,
+//            @RequestParam(value = "zscode", defaultValue = "") String zscode,
+            // 지역세부단위이름 (ex. 종로구, 서구 ...)
+            @RequestParam(value = "regionDetailName", defaultValue = "") String regionDetailName,
+            // 상위 주요 기관 여부 (Y: bnm에 따른 각 기관별 조회 / N: bnm 상관 없이 기관 전체 조회)
+            @RequestParam(value = "isPrimary", defaultValue = "") String isPrimary,
+//            @RequestParam(value = "busiId", defaultValue = "") String busiId,
+            // 운영기관명
+            @RequestParam(value = "bnm", defaultValue = "") String bnm,
+            // 충전기 타입명 (01 ~ 08)
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
-            @RequestParam(value = "kw", defaultValue = "") String kw
+            // 검색 키워드 (충전소명, 주소 LIKE)
+            @RequestParam(value = "kw", defaultValue = "") String kw,
+            @RequestParam( defaultValue = "1") int page
+
     ){
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("statId"));
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
 
         return ResponseEntity.ok(chargingStationService.search(
-                limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw));
+                limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw, pageable));
     }
 
 }
