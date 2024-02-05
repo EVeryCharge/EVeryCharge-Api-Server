@@ -1,8 +1,6 @@
 package com.ll.eitcharge.domain.region.region.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import static lombok.AccessLevel.PROTECTED;

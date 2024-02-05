@@ -59,6 +59,7 @@ public class ChargingStationController {
     public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> list(
             // 개방여부 (Y / N)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
+
             // 무료주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
 
@@ -76,17 +77,16 @@ public class ChargingStationController {
 
             // 보유 충전기 타입 (01 ~ 08)
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
+
             // 검색 키워드 (충전소명, 주소 LIKE)
             @RequestParam(value = "kw", defaultValue = "") String kw,
+
+            // 페이지 정보 (1부터 시작)
             @RequestParam( defaultValue = "1") int page,
+
+            // 페이지 사이즈
             @RequestParam( defaultValue = "20") int pageSize
-
-
     ){
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("statId"));
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
-
         return ResponseEntity.ok(chargingStationService.search(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiId, chgerType, kw, page, pageSize));
     }

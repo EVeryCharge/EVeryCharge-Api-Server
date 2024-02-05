@@ -8,7 +8,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -18,9 +21,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class ChargingStationRepositoryImpl implements ChargingStationRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
-
 
     @Override
     public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw, Pageable pageable) {
@@ -60,6 +61,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
 
 
     // Helper methods for conditions
+
     private BooleanExpression isLimitYn(String limitYn) {
         return limitYn.isEmpty() ? null : QChargingStation.chargingStation.limitYn.eq(limitYn);
     }
