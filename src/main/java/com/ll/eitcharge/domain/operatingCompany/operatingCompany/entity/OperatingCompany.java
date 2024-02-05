@@ -13,7 +13,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Table(indexes = @Index(name="idx_operating_company", columnList ="bnm"))
 public class OperatingCompany {
     @Id
     //기관 아이디

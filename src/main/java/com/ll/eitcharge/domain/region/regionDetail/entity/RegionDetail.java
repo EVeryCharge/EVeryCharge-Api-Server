@@ -16,7 +16,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@Table(indexes = @Index(name="idx_region_detail", columnList ="region_detail_name"))
 public class RegionDetail {
     @Id
     private String zscode;
