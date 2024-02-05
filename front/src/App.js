@@ -14,7 +14,6 @@ import { AuthProvider } from "./components/AuthContext";
 import ReportList from "./components/ReportList";
 import ReportDetail from "./components/ReportDetail";
 import ReportForm from "./components/ReportForm";
-import ChargingStationStateTable from "./components/ChargingStationStateTable";
 import Signup from "./pages/Signup/Signup";
 
 

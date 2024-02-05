@@ -42,6 +42,9 @@ export const AuthProvider = ({ children }) => {
 
         
     };
+    const getUserNickname = () =>{
+        return user ? user.nickname : null;
+    }
 
     const getUserName = () => {
         return user ? user.username : null;
@@ -61,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, setLogined, setLogout, isLogin, isLogout, getUserName, getUserPermissions, getUserId }}>
+        <AuthContext.Provider value={{ user, setLogined, setLogout, isLogin, isLogout, getUserName, getUserPermissions, getUserId, getUserNickname }}>
             {children}
         </AuthContext.Provider>
     );

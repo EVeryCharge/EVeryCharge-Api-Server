@@ -155,7 +155,6 @@ public class Rq {
 
 
     public Member getMember() {
-        System.out.println(member);
         if (isLogout()) return null;
 
         if (member == null) {

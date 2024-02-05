@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 @Component
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
 
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
-        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
 
         Cookie[] cookies = request.getCookies();
 
@@ -75,7 +76,9 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
             response.addCookie(cookie1);
         }
 
+        String userName = member.getName();
+        String redirectUrlWithUsername = frontUrl + "?username=" + URLEncoder.encode(userName, "UTF-8");
 
-        response.sendRedirect(frontUrl);
+        response.sendRedirect(redirectUrlWithUsername);
     }
 }

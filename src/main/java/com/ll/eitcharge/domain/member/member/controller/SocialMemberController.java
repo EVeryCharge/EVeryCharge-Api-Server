@@ -26,6 +26,7 @@ public class SocialMemberController {
     @GetMapping("/")
     public String main(){
         String redirectUrlAfterSocialLogin = rq.getCookie("redirectUrlAfterSocialLogin").getValue();
+
         return "redirect:"+ redirectUrlAfterSocialLogin;
     }
 

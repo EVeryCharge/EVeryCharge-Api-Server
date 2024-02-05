@@ -1,7 +1,7 @@
 import React from "react";
 
 const KakaoLoginButton = () =>{
-    const redirectUrl = "http://localhost:3000";
+  const redirectUrl = "http://localhost:3000";
 
   // 클릭 이벤트 핸들러
   const handleClick = () => {

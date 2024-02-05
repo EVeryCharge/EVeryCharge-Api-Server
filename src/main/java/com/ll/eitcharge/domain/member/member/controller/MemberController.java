@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
@@ -42,6 +41,11 @@ public class MemberController {
         rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRs.getData().refreshToken());
         rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().accessToken());
 
+        RsData< LoginResponseBody > loginResponseBodyRsData = authAndMakeTokensRs.newDataOf(
+                new LoginResponseBody(
+                        new MemberDto(authAndMakeTokensRs.getData().member())
+                )
+        );
         return authAndMakeTokensRs.newDataOf(
                 new LoginResponseBody(
                         new MemberDto(authAndMakeTokensRs.getData().member())
@@ -53,6 +57,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
+    @Transactional(readOnly = true)
     public RsData<MeResponseBody> getMe() {
         return RsData.of(
                 new MeResponseBody(
