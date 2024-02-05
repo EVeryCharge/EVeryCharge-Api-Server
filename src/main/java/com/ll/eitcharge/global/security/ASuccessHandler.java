@@ -75,6 +75,7 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
             response.addCookie(cookie1);
         }
 
+
         response.sendRedirect(frontUrl);
     }
 }

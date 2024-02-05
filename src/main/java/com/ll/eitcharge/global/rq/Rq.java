@@ -155,9 +155,11 @@ public class Rq {
 
 
     public Member getMember() {
+        System.out.println(member);
         if (isLogout()) return null;
 
         if (member == null) {
+            System.out.println(getUser().getId());
             // entityManager 객체로 프록시 객체 얻기
             member = entityManager.getReference(Member.class, getUser().getId());
             member.setAdmin(isAdmin());
