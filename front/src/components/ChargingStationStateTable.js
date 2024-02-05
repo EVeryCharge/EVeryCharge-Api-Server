@@ -1,5 +1,6 @@
 import React, { useEffect,useState } from 'react';
 import axios from 'axios';
+import { HttpGet, HttpPost } from '../services/HttpService';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
 
 const ChargerType = {
@@ -27,9 +28,7 @@ const ChargingStationStateTable = ({statId}) => {
     const[chargingStationData, setChargingStationData] = useState([]);
     useEffect(() => {
         // Axios를 사용하여 데이터를 가져옵니다.
-        const url = 'https://api.eitcharge.site/api/v1/chargingStation/${statId}/chargers';
-        console.log(url);
-        axios.get(url, {withCredentials: true})
+        HttpGet('/api/v1/chargingStation/${statId}/chargers')
           .then((response) => {
             // 요청이 성공하면 데이터를 상태에 저장합니다.
             console.log(response);
