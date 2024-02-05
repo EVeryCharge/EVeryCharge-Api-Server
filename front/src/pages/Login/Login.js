@@ -12,10 +12,13 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        'https://api.eitcharge.site/api/v1/members/login',
+        'http://localhost:8090/api/v1/members/login',
         {
           username: username,
           password: password,
+        },
+        {
+          withCredentials: true, // credentials include 옵션 추가
         }
       );
 

@@ -3,10 +3,13 @@ import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 
+
 const Navbar = () => {
   const navigate = useNavigate();
 
   const { isLogin, setLogout, getUserName } = useAuth();
+  console.log(isLogin);
+  console.log(getUserName);
 
   const handleLogout = () => {
     setLogout();
