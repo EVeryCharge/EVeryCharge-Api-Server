@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -19,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class RegionDetail {
     @Id
     private String zscode;
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "zcode")
     private Region zcode;
 

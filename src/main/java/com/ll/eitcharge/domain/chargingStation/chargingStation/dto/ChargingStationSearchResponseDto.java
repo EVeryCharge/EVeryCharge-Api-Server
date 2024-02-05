@@ -57,8 +57,9 @@ public class ChargingStationSearchResponseDto {
         this.kind = chargingStation.getKind();
         this.kindDetail = chargingStation.getKindDetail();
         this.zscode = chargingStation.getRegionDetail().getZscode();
-        this.zcode = chargingStation.getRegionDetail().getZcode().getZcode();
         this.regionDetailName = chargingStation.getRegionDetail().getRegionDetailName();
+        //
+        this.zcode = chargingStation.getRegionDetail().getZcode().getZcode();
         this.regionName = chargingStation.getRegionDetail().getZcode().getRegionName();
     }
 }

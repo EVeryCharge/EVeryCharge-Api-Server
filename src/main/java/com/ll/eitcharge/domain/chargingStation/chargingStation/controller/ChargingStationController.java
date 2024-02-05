@@ -61,18 +61,20 @@ public class ChargingStationController {
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             // 무료주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
-//            @RequestParam(value = "zcode", defaultValue = "") String zcode,
-            // 지역단위이름 (ex. 서울시, 광주시, 익산시 ...), TODO 현위치 로직 구현
-            @RequestParam(value = "regionName", defaultValue = "") String regionName,
-//            @RequestParam(value = "zscode", defaultValue = "") String zscode,
-            // 지역세부단위이름 (ex. 종로구, 서구 ...)
-            @RequestParam(value = "regionDetailName", defaultValue = "") String regionDetailName,
-            // 상위 주요 기관 여부 (Y: bnm에 따른 각 기관별 조회 / N: bnm 상관 없이 기관 전체 조회)
+
+            // 지역 단위 코드 (ex. 서울시 : 11 경기도 : 41 ... ), TODO 현위치 로직 구현
+            @RequestParam(value = "zcode", defaultValue = "") String zcode,
+
+            // 지역 세부단위 코드 (ex. 종로구 : 11110, 서구 : 41130 ...)
+            @RequestParam(value = "zscode", defaultValue = "") String zscode,
+
+            // 상위 주요 기관 여부 (Y: 점유율 80% 상위 15개 기관 소속 충전소, N : 하위 기타 기관 소속 충전소)
             @RequestParam(value = "isPrimary", defaultValue = "") String isPrimary,
-//            @RequestParam(value = "busiId", defaultValue = "") String busiId,
-            // 운영기관명
-            @RequestParam(value = "bnm", defaultValue = "") String bnm,
-            // 충전기 타입명 (01 ~ 08)
+
+            // 운영 기관 코드 (ex. 차지비 : PI)
+            @RequestParam(value = "busiId", defaultValue = "") String busiId,
+
+            // 보유 충전기 타입 (01 ~ 08)
             @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
             // 검색 키워드 (충전소명, 주소 LIKE)
             @RequestParam(value = "kw", defaultValue = "") String kw,
@@ -86,7 +88,7 @@ public class ChargingStationController {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
         return ResponseEntity.ok(chargingStationService.search(
-                limitYn, parkingFree, regionName, regionDetailName, isPrimary, bnm, chgerType, kw, pageable));
+                limitYn, parkingFree, zcode, zscode, isPrimary, busiId, chgerType, kw, page, pageSize));
     }
 
 }

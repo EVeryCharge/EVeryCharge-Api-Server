@@ -24,6 +24,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
 
     @Override
     public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw, Pageable pageable) {
+
         List<ChargingStation> results = queryFactory
                 .selectFrom(QChargingStation.chargingStation)
                 .where(
@@ -39,6 +40,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
 
         JPQLQuery<ChargingStation> countQuery = queryFactory
                 .selectFrom(QChargingStation.chargingStation)
@@ -67,15 +69,15 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
     }
 
     private BooleanExpression isZcode(String zcode) {
-        return zcode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zcode.regionName.eq(zcode);
+        return zcode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zcode.zcode.eq(zcode);
     }
 
     private BooleanExpression isZscode(String zscode) {
-        return zscode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.regionDetailName.eq(zscode);
+        return zscode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zscode.eq(zscode);
     }
 
     private BooleanExpression isBusiId(String busiId) {
-        return busiId.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.bnm.eq(busiId);
+        return busiId.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.busiId.eq(busiId);
     }
 
     private BooleanExpression isChgerType(String chgerType) {
