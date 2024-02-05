@@ -5,6 +5,7 @@ import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Inquiry extends BaseTime {
 
     private String title;
     private String content;
+    @ManyToOne
     private Member writer;
     private String inquiryState;
     private String inquiryType;
