@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ChargerInfoModal from './modal/ChargerInfoModal';
 import { debounce } from 'lodash';
-
+import { HttpGet, HttpPost } from '../services/HttpService';  
 const MapContainer = () => {
   const mapRef = useRef(null);
   let map; // 지도 객체를 담을 변수
@@ -35,19 +35,15 @@ const MapContainer = () => {
     const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표 가져오기
     const neLatLng = bounds.getNorthEast(); // 영역의 북동쪽 좌표 가져오기
 
-    axios.get('/api/v1/chargingStation/location/search',{
-      params: {
+    HttpGet('/api/v1/chargingStation/location/search',{
         swLat: swLatLng.getLat(),
         swLng: swLatLng.getLng(),
         neLat: neLatLng.getLat(),
         neLng: neLatLng.getLng()
-      
-      },
-      withCredentials: true 
-    })
+      })
       .then(response => {
         console.log(response);
-        const item = response.data;
+        const item = response;
         
         item.forEach((itemData) => {
           const { lat, lng } = itemData;

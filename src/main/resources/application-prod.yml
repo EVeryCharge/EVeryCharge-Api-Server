@@ -2,9 +2,9 @@ server:
   shutdown: graceful
 spring:
   datasource:
-    url: jdbc:mysql://172.17.0.1:3306/eitcharge_prod
-    username: root
-    password:
+    url: jdbc:mysql://db-1.eitcharge.site:3306/eitcharge_prod
+    username: admin
+    password: lldj123414
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
