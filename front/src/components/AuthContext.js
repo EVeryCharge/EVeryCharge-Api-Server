@@ -10,7 +10,7 @@ const setLogined = (userData) => {
 };
 
 const setLogout = async () => {
-    const data = await axios.post('/api/v1/members/logout');
+    const data = await axios.post('https://api.eitcharge.site/api/v1/members/logout');
     console.log(data);
     sessionStorage.removeItem("username");
     
@@ -32,7 +32,7 @@ const initAuth = async () => {
         return;
     }
 
-    const { data } = await axios.get("/api/v1/members/me");
+    const { data } = await axios.get("https://api.eitcharge.site/api/v1/members/me");
     if (data) {
         setLogined(data.data.item);
     }

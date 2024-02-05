@@ -48,7 +48,7 @@ const ReportForm = () => {
   const fetchChargingStations = useCallback(async () => {
     try {
       const response = await Axios.get(
-        `/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
+        `https://api.eitcharge.site/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
       );
       const result = response.data;
 
@@ -95,11 +95,11 @@ const ReportForm = () => {
         const response =
           // 수정
           mode === "MODIFY"
-            ? await Axios.put(`/api/v1/reports/${propId}`, requestData, {
+            ? await Axios.put(`https://api.eitcharge.site/api/v1/reports/${propId}`, requestData, {
                 withCredentials: true,
               })
             : // 생성
-              await Axios.post("/api/v1/reports", requestData, {
+              await Axios.post("https://api.eitcharge.site/api/v1/reports", requestData, {
                 withCredentials: true,
               });
 
