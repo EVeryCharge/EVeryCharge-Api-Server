@@ -29,10 +29,5 @@ public class SocialMemberController {
         return "redirect:"+ redirectUrlAfterSocialLogin;
     }
 
-    @GetMapping("/test")
-    @ResponseBody
-    public String test(){
-        return "이거 테스트";
-    }
 
 }
