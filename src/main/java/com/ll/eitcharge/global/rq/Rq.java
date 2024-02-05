@@ -212,4 +212,12 @@ public class Rq {
         removeCrossDomainCookie("refreshToken");
         SecurityContextHolder.getContext().setAuthentication(null);
     }
+
+    public boolean isFrontUrl(String url){
+        return url.startsWith(AppConfig.getSiteFrontUrl());
+    }
+
+    public void destroySession(){
+        req.getSession().invalidate();
+    }
 }
