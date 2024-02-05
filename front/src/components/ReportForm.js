@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
 import ReportHeader from "./ReportHeader";
+import {HttpGet, HttpPost, HttpPut} from "../services/HttpService";
 
 const ReportForm = () => {
   const navigate = useNavigate();
@@ -47,10 +48,10 @@ const ReportForm = () => {
   // 충전소 검색 API GET
   const fetchChargingStations = useCallback(async () => {
     try {
-      const response = await Axios.get(
-        `https://api.eitcharge.site/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
+      const response = await HttpGet(
+          `https://api.eitcharge.site/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
       );
-      const result = response.data;
+      const result = response.data; // response로 수정될 소요 확인
 
       if (result.success && result.data) {
         setChargingStations(result.data.chargingStations);
@@ -95,13 +96,9 @@ const ReportForm = () => {
         const response =
           // 수정
           mode === "MODIFY"
-            ? await Axios.put(`https://api.eitcharge.site/api/v1/reports/${propId}`, requestData, {
-                withCredentials: true,
-              })
+            ? await HttpPut(`https://api.eitcharge.site/api/v1/reports/${propId}`, requestData)
             : // 생성
-              await Axios.post("https://api.eitcharge.site/api/v1/reports", requestData, {
-                withCredentials: true,
-              });
+              await HttpPost("https://api.eitcharge.site/api/v1/reports", requestData);
 
         if (response.status === 200) {
           if (mode === "MODIFY") {

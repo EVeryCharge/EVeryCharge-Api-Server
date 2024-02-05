@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 import ReportHeader from "./ReportHeader";
+import {HttpDelete, HttpGet, HttpPut} from "../services/HttpService";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
@@ -16,10 +17,8 @@ const ReportDetail = () => {
   // 신고내역 단건조회 API GET
   async function fetchReportDetail() {
     try {
-      const response = await Axios.get(`https://api.eitcharge.site/api/v1/reports/${id}`, {
-        withCredentials: true,
-      });
-      setData(response.data.data);
+      const response = HttpGet(`/api/v1/reports/${id}`);
+      setData(response.data.data); // response.data 로 수정 소요 확인
     } catch (error) {
       console.error("Error fetching report detail:", error);
     } finally {
@@ -44,9 +43,7 @@ const ReportDetail = () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await Axios.delete(`https://api.eitcharge.site/api/v1/reports/${id}`, {
-          withCredentials: true,
-        });
+        const response = await HttpDelete(`/api/v1/reports/${id}`);
 
         if (response.status === 200) {
           console.log("신고가 성공적으로 삭제되었습니다.");
@@ -73,13 +70,7 @@ const ReportDetail = () => {
             reply: reply,
           };
 
-          const response = await Axios.put(
-            `https://api.eitcharge.site/api/v1/reports/${id}/complete`,
-            requestData,
-            {
-              withCredentials: true,
-            }
-          );
+          const response = await HttpPut(`/api/v1/reports/${id}/complete`, requestData);
 
           if (response.status === 200) {
             console.log("신고 처리 완료, 처리답변 등록이 완료되었습니다.");
