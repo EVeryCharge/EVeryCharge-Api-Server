@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthContext';
+import KakaoLoginButton from '../../components/KakaoLoginButton';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -66,6 +68,7 @@ const Login = () => {
           Login
         </button>
       </form>
+      <KakaoLoginButton>카카오 로그인</KakaoLoginButton>
     </div>
   );
 };
