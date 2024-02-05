@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
+import { HttpGet, HttpPost } from '../services/HttpService';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,14 +10,13 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
     };
 
-    const setLogout = async () => {
-        const data = await axios.post('http://localhost:8090/api/v1/members/logout'
-            , {},
-            {
-                withCredentials: true, // credentials include 옵션 추가
-            });
-        console.log(data);
-        sessionStorage.removeItem("username");
+const setLogout = async () => {
+    HttpPost('/api/v1/members/logout');
+    sessionStorage.removeItem("username");
+    
+    setUser(null);
+
+
 
         setUser(null);
     };
@@ -46,9 +46,14 @@ export const AuthProvider = ({ children }) => {
         return user ? user.nickname : null;
     }
 
-    const getUserName = () => {
-        return user ? user.username : null;
-    };
+    HttpGet("/api/v1/members/me")
+    .then((data) => {
+        console.log('memeber me ' + data)
+        if(data){
+            setLogined(data.item);
+        }
+    });
+
 
     const getUserPermissions = () => {
         return user ? user.authorities : [];
@@ -68,7 +73,8 @@ export const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
-};
+}
+
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
