@@ -73,10 +73,10 @@ public class ChargingStationController {
             @RequestParam(value = "isPrimary", defaultValue = "") String isPrimary,
 
             // 운영 기관 코드 (ex. 차지비 : PI)
-            @RequestParam(value = "busiId", defaultValue = "") String busiId,
+            @RequestParam(value = "busiId", defaultValue = "") List<String> busiIds,
 
             // 보유 충전기 타입 (01 ~ 08)
-            @RequestParam(value = "chgerType", defaultValue = "") String chgerType,
+            @RequestParam(value = "chgerType", defaultValue = "") List<String> chgerTypes,
 
             // 검색 키워드 (충전소명, 주소 LIKE)
             @RequestParam(value = "kw", defaultValue = "") String kw,
@@ -88,7 +88,7 @@ public class ChargingStationController {
             @RequestParam( defaultValue = "20") int pageSize
     ){
         return ResponseEntity.ok(chargingStationService.search(
-                limitYn, parkingFree, zcode, zscode, isPrimary, busiId, chgerType, kw, page, pageSize));
+                limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
 
 }

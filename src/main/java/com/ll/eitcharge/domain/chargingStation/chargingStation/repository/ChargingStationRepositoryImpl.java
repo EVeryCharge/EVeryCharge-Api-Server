@@ -8,10 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -24,7 +21,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw, Pageable pageable) {
+    public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, List<String> busiIds, List<String> chgerTypes, String kw, Pageable pageable) {
 
         List<ChargingStation> results = queryFactory
                 .selectFrom(QChargingStation.chargingStation)
@@ -34,8 +31,8 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
                         isZcode(zcode),
                         isZscode(zscode),
                         isPrimary(isPrimary),
-                        isBusiId(busiId),
-                        isChgerType(chgerType),
+                        isBusiId(busiIds),
+                        isChgerType(chgerTypes),
                         isKw(kw)
                 )
                 .offset(pageable.getOffset())
@@ -51,8 +48,8 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
                         isZcode(zcode),
                         isZscode(zscode),
                         isPrimary(isPrimary),
-                        isBusiId(busiId),
-                        isChgerType(chgerType),
+                        isBusiId(busiIds),
+                        isChgerType(chgerTypes),
                         isKw(kw)
                 );
 
@@ -78,12 +75,12 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
         return zscode.isEmpty() ? null : QChargingStation.chargingStation.regionDetail.zscode.eq(zscode);
     }
 
-    private BooleanExpression isBusiId(String busiId) {
-        return busiId.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.busiId.eq(busiId);
+    private BooleanExpression isBusiId(List<String> busiIds) {
+        return busiIds.isEmpty() ? null : QChargingStation.chargingStation.operatingCompany.busiId.in(busiIds);
     }
 
-    private BooleanExpression isChgerType(String chgerType) {
-        return chgerType.isEmpty() ? null : QChargingStation.chargingStation.chargers.any().chgerType.eq(chgerType);
+    private BooleanExpression isChgerType(List<String> chgerTypes) {
+        return chgerTypes.isEmpty() ? null : QChargingStation.chargingStation.chargers.any().chgerType.in(chgerTypes);
     }
 
     private BooleanExpression isPrimary(String isPrimary) {

@@ -96,8 +96,8 @@ public class ChargingStationService {
 			String zcode,
 			String zscode,
 			String isPrimary,
-			String busiId,
-			String chgerType,
+			List<String> busiIds,
+			List<String> chgerTypes,
 			String kw,
 			int page,
 			int pageSize
@@ -107,7 +107,7 @@ public class ChargingStationService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
 		long startTime = System.nanoTime();
-		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode, isPrimary, busiId, chgerType, kw, pageable);
+		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, pageable);
 		long endTime = System.nanoTime();
 
 		return new ChargingStationSearchResponseDtoWithExecuteTime(

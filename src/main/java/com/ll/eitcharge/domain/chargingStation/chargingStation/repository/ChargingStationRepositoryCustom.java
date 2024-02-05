@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ChargingStationRepositoryCustom {
-    Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, String busiId, String chgerType, String kw, Pageable pageable);
+    Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, List<String> busiIds, List<String> chgerType, String kw, Pageable pageable);
 
 }
