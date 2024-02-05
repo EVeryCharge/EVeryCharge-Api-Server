@@ -57,10 +57,10 @@ public class ChargingStationController {
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param)")
     @GetMapping("/search")
     public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> list(
-            // 개방여부 (Y / N)
+            // 개방 여부 (Y / N)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
 
-            // 무료주차 (Y / N)
+            // 무료 주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
 
             // 지역 단위 코드 (ex. 서울시 : 11 경기도 : 41 ... ), TODO 현위치 로직 구현
@@ -72,7 +72,7 @@ public class ChargingStationController {
             // 상위 주요 기관 여부 (Y: 점유율 80% 상위 15개 기관 소속 충전소, N : 하위 기타 기관 소속 충전소)
             @RequestParam(value = "isPrimary", defaultValue = "") String isPrimary,
 
-            // 운영 기관 코드 (ex. 차지비 : PI)
+            // 기관 코드 (ex. 차지비 : PI)
             @RequestParam(value = "busiId", defaultValue = "") List<String> busiIds,
 
             // 보유 충전기 타입 (01 ~ 08)

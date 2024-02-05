@@ -1,5 +1,6 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,17 +35,16 @@ public class ChargingStationSearchResponseDto {
         this.statId = chargingStation.getStatId();
         this.statNm = chargingStation.getStatNm();
         this.addr = chargingStation.getAddr();
-        this.location = chargingStation.getLocation();
         this.useTime = chargingStation.getUseTime();
         this.lat = chargingStation.getLat();
         this.lng = chargingStation.getLng();
-        // 변경사항
+        this.chargerTypes = chargingStation.getChargers().stream()
+                .map(Charger::getChgerType)
+                .distinct()
+                .collect(Collectors.toList());
         this.busiId = chargingStation.getOperatingCompany().getBusiId();
         this.bnm = chargingStation.getOperatingCompany().getBnm();
         this.busiNm = chargingStation.getBusiNm();
-        this.busiCall = chargingStation.getBusiCall();
-        this.isPrimaryYn = chargingStation.getOperatingCompany().getIsPrimary();
-        //
         this.parkingFree = chargingStation.getParkingFree();
         this.limitYn = chargingStation.getLimitYn();
 
