@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -50,6 +51,7 @@ public class MemberController {
     public record MeResponseBody(@NonNull MemberDto item) {
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/me")
     public RsData<MeResponseBody> getMe() {
         return RsData.of(
