@@ -9,9 +9,9 @@ import {
   TablePagination,
   TableRow,
 } from "@material-ui/core";
-import {HttpGet} from "../services/HttpService";
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { HttpGet } from "../services/HttpService";
 import ReportHeader from "./ReportHeader";
 
 const ReportList = () => {
@@ -37,15 +37,12 @@ const ReportList = () => {
   // 신고 리스트 API GET
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await HttpGet(`/api/v1/reports/list`, {
-        params: {
-          page: currentPage,
-          pageSize: pageSize,
-        },
+      const response = await HttpGet("/api/v1/reports/list", {
+        page: currentPage,
+        pageSize: pageSize,
       });
 
-      console.log("Fetch request sent to:", response.config.url);
-      setData(response.data.data); //response.data.data → response.data로 수정 소요 확인
+      setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
