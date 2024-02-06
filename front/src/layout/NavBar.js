@@ -2,11 +2,18 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import UsernameStorage from "../components/UsernameStorage";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const { isLogin, setLogout, getUserName } = useAuth();
+  const { isLogin, setLogout, getUserName, getUserNickname } = useAuth();
+  console.log('useAuth ?? ')
+  console.log(useAuth());
+
+  console.log(useAuth().getUserName());
+  
 
   const handleLogout = () => {
     setLogout();
@@ -39,7 +46,7 @@ const Navbar = () => {
         {isLogin() ? ( // 로그인된 상태일 때
           <>
             <Typography variant="body1" style={{ marginRight: "1rem" }}>
-              {getUserName()}님 환영합니다.{" "}
+              {!getUserName().startsWith("KAKAO") ? getUserName() : getUserNickname()}님 환영합니다.{" "}
               {/* 로그인된 사용자의 이름을 보여줌 */}
             </Typography>
             <Button color="inherit" onClick={handleLogout}>
