@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from 'react';
 import axios from 'axios';
-import { HttpGet, HttpPost } from '../services/HttpService';
+import { HttpGet, HttpPost } from '../../services/HttpService';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
 
 const ChargerType = {

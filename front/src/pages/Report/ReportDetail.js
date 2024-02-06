@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HttpDelete, HttpGet, HttpPut } from "../../services/HttpService";
 import ErrorPage from "../Error/ErrorPage";
-import ReportHeader from "../../components/ReportHeader";
+import ReportHeader from "./ReportHeader";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
