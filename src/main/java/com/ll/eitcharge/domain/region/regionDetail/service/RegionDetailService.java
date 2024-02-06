@@ -26,12 +26,12 @@ public class RegionDetailService {
     }
 
     public List<String> getZscodeListByZcode(String zcode) {
-        List<RegionDetail> regionDetails = regionDetailRepository.findByZcode(zcode);
+        List<RegionDetail> regionDetails = regionDetailRepository.findByFkZcode(zcode);
         return regionDetails.stream().map(RegionDetail::getZscode).toList();
     }
 
     public List<String> getRegionDetailNamesListByZcode(String zcode) {
-        List<RegionDetail> regionDetails = regionDetailRepository.findByZcode(zcode);
+        List<RegionDetail> regionDetails = regionDetailRepository.findByFkZcode(zcode);
         return regionDetails.stream().map(RegionDetail::getRegionDetailName).toList();
     }
 }
