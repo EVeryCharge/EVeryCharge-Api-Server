@@ -27,7 +27,7 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
     private final MemberService memberService;
     private final Rq rq;
 
-    @Value("${custom.dev.frontUrl}")
+    @Value("${custom.site.frontUrl}")
     private String frontUrl;
 
     @Override
