@@ -1,7 +1,6 @@
 package com.ll.eitcharge.domain.region.region.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -15,6 +14,6 @@ public class Region {
     @Id
     private String zcode;
 
+    @Column(unique = true)
     private String regionName;
-
 }

@@ -28,7 +28,7 @@ public class ChargingStation {
     @Id
     private String statId;
     //지역코드, 지역코드 상세
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "zscode")
     private RegionDetail regionDetail;
 
@@ -41,7 +41,7 @@ public class ChargingStation {
     @OneToMany(mappedBy = "chargingStation")
     private List<Review> reviews = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private OperatingCompany operatingCompany;
 
     @OneToOne(fetch = LAZY, mappedBy = "chargingStation")

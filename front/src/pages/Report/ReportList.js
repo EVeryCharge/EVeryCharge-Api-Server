@@ -9,10 +9,10 @@ import {
   TablePagination,
   TableRow,
 } from "@material-ui/core";
-import Axios from "axios";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import ReportHeader from "./ReportHeader";
+import { HttpGet } from "../../services/HttpService";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportList = () => {
   const [data, setData] = React.useState({
@@ -37,16 +37,12 @@ const ReportList = () => {
   // 신고 리스트 API GET
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await Axios.get(`https://api.eitcharge.site/api/v1/reports/list`, {
-        params: {
-          page: currentPage,
-          pageSize: pageSize,
-        },
-        withCredentials: true,
+      const response = await HttpGet("/api/v1/reports/list", {
+        page: currentPage,
+        pageSize: pageSize,
       });
 
-      console.log("Fetch request sent to:", response.config.url);
-      setData(response.data.data);
+      setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

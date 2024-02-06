@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
+import { HttpGet, HttpPost } from '../services/HttpService';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -10,8 +11,7 @@ const setLogined = (userData) => {
 };
 
 const setLogout = async () => {
-    const data = await axios.post('https://api.eitcharge.site/api/v1/members/logout');
-    console.log(data);
+    HttpPost('/api/v1/members/logout');
     sessionStorage.removeItem("username");
     
     setUser(null);
@@ -32,10 +32,13 @@ const initAuth = async () => {
         return;
     }
 
-    const { data } = await axios.get("https://api.eitcharge.site/api/v1/members/me");
-    if (data) {
-        setLogined(data.data.item);
-    }
+    HttpGet("/api/v1/members/me")
+    .then((data) => {
+        console.log('memeber me ' + data)
+        if(data){
+            setLogined(data.item);
+        }
+    });
 };
 
 const getUserName = () => {
