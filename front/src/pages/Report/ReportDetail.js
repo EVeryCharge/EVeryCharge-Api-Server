@@ -1,10 +1,9 @@
 import { Box, Button, TextField, Typography } from "@material-ui/core";
-import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ErrorPage from "./ErrorPage";
-import ReportHeader from "./ReportHeader";
-import {HttpDelete, HttpGet, HttpPut} from "../services/HttpService";
+import { HttpDelete, HttpGet, HttpPut } from "../../services/HttpService";
+import ErrorPage from "../Error/ErrorPage";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
@@ -17,8 +16,9 @@ const ReportDetail = () => {
   // 신고내역 단건조회 API GET
   async function fetchReportDetail() {
     try {
-      const response = HttpGet(`/api/v1/reports/${id}`);
-      setData(response.data.data); // response.data 로 수정 소요 확인
+      const response = await HttpGet(`/api/v1/reports/${id}`);
+
+      setData(response.data);
     } catch (error) {
       console.error("Error fetching report detail:", error);
     } finally {
@@ -45,8 +45,9 @@ const ReportDetail = () => {
       try {
         const response = await HttpDelete(`/api/v1/reports/${id}`);
 
-        if (response.status === 200) {
-          console.log("신고가 성공적으로 삭제되었습니다.");
+        if (response.statusCode === 200) {
+          alert("신고내역이 성공적으로 삭제되었습니다.");
+          console.log("신고내역이 성공적으로 삭제되었습니다.");
           navigate("/report/list");
         } else {
           console.error(`신고 삭제 실패 : ${response.msg}`);
@@ -70,11 +71,14 @@ const ReportDetail = () => {
             reply: reply,
           };
 
-          const response = await HttpPut(`/api/v1/reports/${id}/complete`, requestData);
+          const response = await HttpPut(
+            `/api/v1/reports/${id}/complete`,
+            requestData
+          );
 
-          if (response.status === 200) {
-            console.log("신고 처리 완료, 처리답변 등록이 완료되었습니다.");
-            alert("신고 처리 완료, 처리 답변 등록이 완료되었습니다");
+          if (response.statusCode === 200) {
+            console.log("신고내역 처리 완료, 처리답변 등록이 완료되었습니다.");
+            alert("신고내역 처리 완료, 처리 답변 등록이 완료되었습니다.");
             await fetchReportDetail();
             navigate(window.location.pathname);
           } else {
