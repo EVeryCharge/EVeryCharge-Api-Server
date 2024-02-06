@@ -158,6 +158,7 @@ public class Rq {
         if (isLogout()) return null;
 
         if (member == null) {
+            System.out.println(getUser().getId());
             // entityManager 객체로 프록시 객체 얻기
             member = entityManager.getReference(Member.class, getUser().getId());
             member.setAdmin(isAdmin());
@@ -211,5 +212,13 @@ public class Rq {
         removeCrossDomainCookie("accessToken");
         removeCrossDomainCookie("refreshToken");
         SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    public boolean isFrontUrl(String url){
+        return url.startsWith(AppConfig.getSiteFrontUrl());
+    }
+
+    public void destroySession(){
+        req.getSession().invalidate();
     }
 }

@@ -35,6 +35,35 @@ public class MemberService {
         return RsData.of("%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
     }
 
+    @Transactional
+    public RsData<Member> join(String username, String password, String nickname, String profileImgUrl) {
+        Member member = Member.builder()
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .refreshToken(authTokenService.genRefreshToken())
+                .nickname(nickname)
+                .profileImgUrl(profileImgUrl)
+                .build();
+        memberRepository.save(member);
+
+        return RsData.of("%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
+    }
+
+    @Transactional
+    public RsData<Member> modifyOrJoin(String username, String providerTypeCode, String nickname, String profileImgUrl){
+        Member member = findByUsername(username).orElse(null);
+        if(member == null){
+            return join(username, "", nickname, profileImgUrl);
+        }
+        return modifyNicknameAndProfile(member, nickname, profileImgUrl);
+    }
+
+    @Transactional
+    public RsData<Member> modifyNicknameAndProfile(Member member, String nickname, String profileImgUrl){
+        member.changeNickNameAndProfileImgUrl(nickname, profileImgUrl);
+        return RsData.of("200", "ok", member);
+    }
+
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
@@ -110,4 +139,6 @@ public class MemberService {
 
         return RsData.of("200-1", "토큰 갱신 성공", accessToken);
     }
+
+
 }

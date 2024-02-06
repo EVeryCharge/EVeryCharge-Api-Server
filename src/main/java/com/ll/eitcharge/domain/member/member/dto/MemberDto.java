@@ -5,6 +5,7 @@ import static lombok.AccessLevel.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.NonNull;
 
 import com.ll.eitcharge.domain.member.member.entity.Member;
@@ -24,6 +25,10 @@ public class MemberDto {
     private String username;
     @NonNull
     private List<String> authorities;
+    @NonNull
+    private String nickname;
+    @NotNull
+    private String profileImgUrl;
 
     public MemberDto(Member member) {
         this.id = member.getId();
@@ -31,5 +36,7 @@ public class MemberDto {
         this.modifyDate = member.getModifiedDate();
         this.username = member.getUsername();
         this.authorities = member.getAuthoritiesAsStringList();
+        this.nickname = member.getNickname();
+        this.profileImgUrl = member.getProfileImgUrl();
     }
 }
