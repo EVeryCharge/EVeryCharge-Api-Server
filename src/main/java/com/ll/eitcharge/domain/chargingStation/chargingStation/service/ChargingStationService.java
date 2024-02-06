@@ -1,14 +1,21 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,6 +30,7 @@ import com.ll.eitcharge.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
@@ -80,5 +88,39 @@ public class ChargingStationService {
 	// 엔티티 조회용
 	public Optional<ChargingStation> findByIdOptional(String statId) {
 		return chargingStationRepository.findById(statId);
+	}
+
+	public ChargingStationSearchResponseDtoWithExecuteTime search(
+			String limitYn,
+			String parkingFree,
+			String zcode,
+			String zscode,
+			String isPrimary,
+			List<String> busiIds,
+			List<String> chgerTypes,
+			String kw,
+			int page,
+			int pageSize
+	) {
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(Sort.Order.desc("statId"));
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
+
+		long startTime = System.nanoTime();
+		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, pageable);
+		long endTime = System.nanoTime();
+
+		return new ChargingStationSearchResponseDtoWithExecuteTime(
+				calculateExecutionTime(startTime, endTime),
+				chargingStations.map(ChargingStationSearchResponseDto::new));
+	}
+
+	// 검색 경과시간 측정(나노 초 단위)
+	private String calculateExecutionTime(long startTime, long endTime) {
+		long executionTimeInNano = endTime - startTime;
+		return String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
+				executionTimeInNano,
+				executionTimeInNano / 1_000_000,
+				(long) (executionTimeInNano / 1_000_000_000.0));
 	}
 }
