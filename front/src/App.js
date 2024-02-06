@@ -6,12 +6,6 @@ import ChargingServiceInfo from "./components/ChargingServiceInfo";
 import ChargingStationInfo from "./components/ChargingStationInfo";
 import EVSystem from "./components/EVSystem";
 import StatisticsInfo from "./components/StatisticsInfo";
-<<<<<<< HEAD
-import { AuthProvider } from "./components/AuthContext";
-import ReportList from "./components/ReportList";
-import ReportDetail from "./components/ReportDetail";
-import ReportForm from "./components/ReportForm";
-=======
 import MapContainer from "./containers/MapContainer";
 import Footer from "./layout/Footer";
 import Navbar from "./layout/NavBar";
@@ -20,7 +14,6 @@ import Login from "./pages/Login/Login";
 import ReportList from "./pages/Report/ReportList";
 import ReportDetail from "./pages/Report/ReportDetail";
 import ReportForm from "./pages/Report/ReportForm";
->>>>>>> 2e4c8a5e3fee230983280c847f64902ee47b30e3
 import Signup from "./pages/Signup/Signup";
 
 function App() {
