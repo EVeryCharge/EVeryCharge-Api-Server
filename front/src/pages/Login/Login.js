@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthContext';
+import KakaoLoginButton from '../../components/KakaoLoginButton';
 import { HttpGet, HttpPost } from '../../services/HttpService';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -10,11 +12,15 @@ const Login = () => {
   const { setLogined } = useAuth();
   const handleLogin = async () => {
     try {
+
       HttpPost(
         '/api/v1/members/login',
         {
           username: username,
           password: password,
+        },
+        {
+          withCredentials: true, // credentials include 옵션 추가
         }
       ).then((response) => {
        // 로그인 성공 시 처리
@@ -67,6 +73,7 @@ const Login = () => {
           Login
         </button>
       </form>
+      <KakaoLoginButton>카카오 로그인</KakaoLoginButton>
     </div>
   );
 };

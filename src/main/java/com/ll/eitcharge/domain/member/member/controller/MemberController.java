@@ -41,6 +41,11 @@ public class MemberController {
         rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRs.getData().refreshToken());
         rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().accessToken());
 
+        RsData< LoginResponseBody > loginResponseBodyRsData = authAndMakeTokensRs.newDataOf(
+                new LoginResponseBody(
+                        new MemberDto(authAndMakeTokensRs.getData().member())
+                )
+        );
         return authAndMakeTokensRs.newDataOf(
                 new LoginResponseBody(
                         new MemberDto(authAndMakeTokensRs.getData().member())

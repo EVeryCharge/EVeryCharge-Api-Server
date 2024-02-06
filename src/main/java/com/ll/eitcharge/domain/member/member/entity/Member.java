@@ -40,6 +40,9 @@ public class Member extends BaseTime {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    private String nickname;
+    private String profileImgUrl;
+
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getAuthoritiesAsStringList()
@@ -80,5 +83,10 @@ public class Member extends BaseTime {
     @Transient
     public void setAdmin(boolean admin) {
         this._isAdmin = admin;
+    }
+
+    public void changeNickNameAndProfileImgUrl(String nickname, String profileImgUrl) {
+        this.nickname = nickname;
+        this.profileImgUrl = profileImgUrl;
     }
 }
