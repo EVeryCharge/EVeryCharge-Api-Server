@@ -9,7 +9,10 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { isLogin, setLogout, getUserName, getUserNickname } = useAuth();
+  console.log('useAuth ?? ')
+  console.log(useAuth());
 
+  console.log(useAuth().getUserName());
   
 
   const handleLogout = () => {
@@ -49,7 +52,6 @@ const Navbar = () => {
             <Button color="inherit" onClick={handleLogout}>
               로그아웃
             </Button>
-            <UsernameStorage></UsernameStorage>
           </>
         ) : ( //로그인 되지 않은 상태일 때
         <>

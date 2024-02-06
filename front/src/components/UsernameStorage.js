@@ -7,10 +7,11 @@ const UsernameStorage = () => {
     useEffect(() => {
         //url에서 쿼리 파라미터 파싱
         const queryParams = new URLSearchParams(location.search);
-        const username = queryParams.get('username');
+        const username = queryParams.get('kakaousername');
 
         if(username){
             sessionStorage.setItem('username', username);
+            console.log('usernameStorage');
         }
     }, [location]);
 

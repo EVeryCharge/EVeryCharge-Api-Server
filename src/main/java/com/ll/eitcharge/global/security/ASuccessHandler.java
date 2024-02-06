@@ -77,7 +77,7 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
         }
 
         String userName = member.getName();
-        String redirectUrlWithUsername = frontUrl + "?username=" + URLEncoder.encode(userName, "UTF-8");
+        String redirectUrlWithUsername = frontUrl + "?kakaousername=" + URLEncoder.encode(userName, "UTF-8");
 
         response.sendRedirect(redirectUrlWithUsername);
     }
