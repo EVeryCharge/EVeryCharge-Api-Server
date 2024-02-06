@@ -8,7 +8,7 @@ const KakaoLoginButton = () =>{
   
   // 클릭 이벤트 핸들러
   const handleClick = () => {
-    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/socialLogin/kakao?redirectUrl=${encodeURIComponent(process.env.REACT_APP_FRONT_URL)}`;
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/socialLogin/kakao?redirectUrl=${encodeURIComponent(process.env.REACT_APP_FRONTEND_URL)}`;
   };
 
   return (
