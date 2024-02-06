@@ -1,5 +1,7 @@
 package com.ll.eitcharge.domain.technicalManager.technicalManager.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +19,15 @@ import lombok.RequiredArgsConstructor;
 public class TechnicalManagerService {
 	private final TechnicalManagerRepository technicalManagerRepository;
 
+	//서비스 레이어 간 엔티티 조회용
 	public TechnicalManager findByName(String name) {
-        return technicalManagerRepository.findByName(name).orElseThrow(GlobalException.E404::new);
-    }
+		return technicalManagerRepository.findByName(name).orElseThrow(GlobalException.E404::new);
+	}
+
+	//서비스 레이어 간 엔티티 조회용
+	public Optional<TechnicalManager> findByNameOptional(String name) {
+		return technicalManagerRepository.findByName(name);
+	}
 
 	// temp method for execute test
 	@Transactional

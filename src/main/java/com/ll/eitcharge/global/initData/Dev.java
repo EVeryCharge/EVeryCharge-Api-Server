@@ -24,9 +24,9 @@ import com.ll.eitcharge.domain.technicalManager.technicalManager.service.Technic
 import com.ll.eitcharge.global.rsData.RsData;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-//프로필이 dev일 때만 실행하고 member를 10명 생성
 @Configuration
 @Profile("!prod")
 @Slf4j
@@ -42,40 +42,51 @@ public class Dev {
 
 	@Bean
 	@Order(3)
+	@SneakyThrows(RuntimeException.class)
 	public ApplicationRunner initNotProd() {
 		return args -> {
-			self.makeTestUser();
-			self.makeTestTechnicalManager();
-			self.makeTestReport();
-			self.makeTestReportResult();
+			try {
+				self.makeTestUser();
+				self.makeTestTechnicalManager();
+				self.makeTestReport();
+				self.makeTestReportResult();
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error("샘플 데이터 생성 중 에러 발생");
+			}
 		};
 
 	}
 
 	@Transactional
+	@SneakyThrows(RuntimeException.class)
 	public void makeTestUser() {
 		// 이미 회원이 존재하는 경우 초기화를 수행하지 않음
 		if (memberService.findByUsername("user1").isPresent())
 			return;
-		//유저 10명 생성
-		//스트림으로 우아하게 바꿔줘
+
 		IntStream.rangeClosed(1, 10).forEach(i -> {
 			memberService.join("user" + i, "123");
 		});
 	}
 
+	// 샘플 TechnicalManager 생성
+	@Transactional
+	@SneakyThrows(RuntimeException.class)
 	public void makeTestTechnicalManager() {
-		if (memberService.findByUsername("manager1").isPresent())
+		if (technicalManagerService.findByNameOptional("manager1").isPresent())
 			return;
+
 		RsData<Member> memberRsData = memberService.join("manager1", "123");
 
 		technicalManagerService.create(memberRsData.getData(), chargingStationService.findById("ACAC0001"));
 	}
 
-	// 신고내역 샘플 데이터
+	// 신고내역 샘플 데이터 생성
+	@Transactional
+	@SneakyThrows(RuntimeException.class)
 	public void makeTestReport() {
-		if (reportService.findByIdOptional(1L).isPresent())
-			return;
+		if (reportService.findByIdOptional(1L).isPresent()) return;
 		ChargingStation chargingStation = chargingStationService.findById("ACAC0001");
 
 		IntStream.rangeClosed(1, 20).forEach(i -> {
@@ -91,16 +102,19 @@ public class Dev {
 		);
 	}
 
-	// 신고 처리결과 샘플 데이터
+	// 신고 처리결과 샘플 데이터 생성
+	@Transactional
+	@SneakyThrows(RuntimeException.class)
 	public void makeTestReportResult() {
-		if (reportService.findById(1L).getReplier() != null)
-			return;
+		if (reportService.findByIdOptional(1L).isPresent()) {
+			if (reportService.findById(1L).getReplier() != null) return;
+		}
+
 		LongStream.rangeClosed(1L, 10L).forEach(i -> {
 				ReportCompleteRequestDto requestDto = ReportCompleteRequestDto.builder()
 					.reply(String.format("테스트 처리 결과 %d", i))
 					.build();
-				 reportService.complete(requestDto, i, "manager1");
-
+				reportService.complete(requestDto, i, "manager1");
 			}
 		);
 	}
