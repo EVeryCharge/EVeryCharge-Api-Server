@@ -1,9 +1,9 @@
 import { Box, Button, TextField, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { HttpDelete, HttpGet, HttpPut } from "../services/HttpService";
-import ErrorPage from "./ErrorPage";
-import ReportHeader from "./ReportHeader";
+import { HttpDelete, HttpGet, HttpPut } from "../../services/HttpService";
+import ErrorPage from "../Error/ErrorPage";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportDetail = () => {
   const navigate = useNavigate();

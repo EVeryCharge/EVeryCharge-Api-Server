@@ -10,9 +10,9 @@ import {
 } from "@material-ui/core";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { HttpGet, HttpPost, HttpPut } from "../services/HttpService";
-import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
-import ReportHeader from "./ReportHeader";
+import { HttpGet, HttpPost, HttpPut } from "../../services/HttpService";
+import RedirectIfNotLoggedIn from "../../components/RedirectIfNotLoggedIn";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportForm = () => {
   const navigate = useNavigate();

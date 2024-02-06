@@ -11,8 +11,8 @@ import {
 } from "@material-ui/core";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { HttpGet } from "../services/HttpService";
-import ReportHeader from "./ReportHeader";
+import { HttpGet } from "../../services/HttpService";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportList = () => {
   const [data, setData] = React.useState({
