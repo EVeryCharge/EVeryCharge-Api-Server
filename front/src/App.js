@@ -7,6 +7,7 @@ import ChargingStationInfo from "./components/ChargingStationInfo";
 import EVSystem from "./components/EVSystem";
 import StatisticsInfo from "./components/StatisticsInfo";
 import MapContainer from "./containers/MapContainer";
+import StationSearch from "./containers/StationSearch";
 import Footer from "./layout/Footer";
 import Navbar from "./layout/NavBar";
 import Home from "./pages/Home/Home";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
           <Route path="/map" element={<MapContainer />} />
+          <Route path="/search" element={<StationSearch />} />
           <Route
             path="/chargingServiceInfo"
             element={<ChargingServiceInfo />}
