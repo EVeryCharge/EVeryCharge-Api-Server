@@ -1,21 +1,27 @@
-import "./App.css";
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login/Login";
-import Home from "./pages/Home/Home";
-import Navbar from "./layout/NavBar";
-import Footer from "./layout/Footer";
-import MapContainer from "./containers/MapContainer";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import "./App.css";
+import { AuthProvider } from "./components/AuthContext";
 import ChargingServiceInfo from "./components/ChargingServiceInfo";
 import ChargingStationInfo from "./components/ChargingStationInfo";
 import EVSystem from "./components/EVSystem";
 import StatisticsInfo from "./components/StatisticsInfo";
+<<<<<<< HEAD
 import { AuthProvider } from "./components/AuthContext";
 import ReportList from "./components/ReportList";
 import ReportDetail from "./components/ReportDetail";
 import ReportForm from "./components/ReportForm";
+=======
+import MapContainer from "./containers/MapContainer";
+import Footer from "./layout/Footer";
+import Navbar from "./layout/NavBar";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import ReportList from "./pages/Report/ReportList";
+import ReportDetail from "./pages/Report/ReportDetail";
+import ReportForm from "./pages/Report/ReportForm";
+>>>>>>> 2e4c8a5e3fee230983280c847f64902ee47b30e3
 import Signup from "./pages/Signup/Signup";
-
 
 function App() {
   return (

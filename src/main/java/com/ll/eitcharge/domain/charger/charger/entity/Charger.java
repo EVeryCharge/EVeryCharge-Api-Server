@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
+//@Table(indexes = @Index(name="idx_charger_type", columnList ="chger_type"))
 public class Charger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

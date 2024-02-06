@@ -56,8 +56,8 @@ public class MemberController {
     public record MeResponseBody(@NonNull MemberDto item) {
     }
 
-    @GetMapping("/me")
     @Transactional(readOnly = true)
+    @GetMapping("/me")
     public RsData<MeResponseBody> getMe() {
         return RsData.of(
                 new MeResponseBody(

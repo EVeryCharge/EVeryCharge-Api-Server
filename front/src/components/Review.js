@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Typography, makeStyles, TextField, Button, Select, MenuItem } from '@material-ui/core';
+import { HttpGet, HttpPost, HttpDelete, HttpPut } from '../services/HttpService';  // 유틸리티 파일 경로를 업데이트하세요
 
 
 const useStyles = makeStyles({
@@ -60,7 +60,7 @@ const Review = ({ chargingStationId }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [editedReviewContent, setEditedReviewContent] = useState('');
-  const [visibleReviews, setVisibleReviews] = useState(5); // Number of reviews to initially display
+  const [visibleReviews, setVisibleReviews] = useState(5); // 초기에 표시할 후기 개수
 
   useEffect(() => {
     fetchData();
@@ -69,8 +69,8 @@ const Review = ({ chargingStationId }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`https://api.eitcharge.site/api/v1/review/${chargingStationId}`);
-      setReview(response.data || { data: { items: [] } });
+      const response = await HttpGet(`api/v1/review/${chargingStationId}`);
+      setReview(response || { data: { items: [] } });
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
     }
@@ -78,8 +78,8 @@ const Review = ({ chargingStationId }) => {
 
   const fetchUserId = async () => {
     try {
-      const userResponse = await axios.get(`https://api.eitcharge.site/api/v1/members/me`);
-      const { id: userIdFromApi, username } = userResponse.data.data.item;
+      const userResponse = await HttpGet(`api/v1/members/me`);
+      const { id: userIdFromApi, username } = userResponse.data.item;
       setUserId(userIdFromApi);
       setUserName(username);
       setIsLoggedIn(true);
@@ -102,7 +102,7 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.post(`https://api.eitcharge.site/api/v1/review/${chargingStationId}`, {
+      await HttpPost(`api/v1/review/${chargingStationId}`, {
         content: newReviewContent,
         rating: newReviewRating,
       });
@@ -131,7 +131,7 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.delete(`https://api.eitcharge.site/api/v1/review/${chargingStationId}/${reviewId}`);
+      await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
       fetchData();
     } catch (error) {
       console.error("후기를 삭제하는 중 오류 발생:", error);
@@ -152,8 +152,6 @@ const Review = ({ chargingStationId }) => {
 
   const [editedReviewRating, setEditedReviewRating] = useState(0);
 
-
-
   const handleUpdate = async (reviewId) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
       alert("후기 내용을 입력해주세요.");
@@ -161,9 +159,9 @@ const Review = ({ chargingStationId }) => {
     }
 
     try {
-      await axios.put(`https://api.eitcharge.site/api/v1/review/${chargingStationId}/${reviewId}`, {
+      await HttpPut(`api/v1/review/${chargingStationId}/${reviewId}`, {
         content: editedReviewContent,
-        rating: editedReviewRating, // 수정된 평점 사용
+        rating: editedReviewRating,
       });
 
       console.log("후기 수정 성공");
@@ -171,14 +169,14 @@ const Review = ({ chargingStationId }) => {
       setIsEditing(false);
       setEditReviewId(null);
       setEditedReviewContent('');
-      setEditedReviewRating(0); // 수정 후 초기화
+      setEditedReviewRating(0);
     } catch (error) {
       console.error("후기를 수정하는 중 오류 발생:", error);
     }
   };
 
   const handleMoreReviews = () => {
-    setVisibleReviews((prev) => prev + 5); // Show the next 5 reviews
+    setVisibleReviews((prev) => prev + 5); // 다음 5개의 후기 표시
   };
 
   return (
@@ -289,7 +287,6 @@ const Review = ({ chargingStationId }) => {
                     onChange={(e) => setEditedReviewRating(e.target.value)}
                     className={classes.textField}
                     style={{ width: '50%' }}
-
                   >
                     {[0, 1, 2, 3, 4, 5].map((rating) => (
                       <MenuItem key={rating} value={rating}>

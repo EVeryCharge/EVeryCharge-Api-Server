@@ -8,11 +8,11 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import Axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import RedirectIfNotLoggedIn from "./RedirectIfNotLoggedIn";
-import ReportHeader from "./ReportHeader";
+import { HttpGet, HttpPost, HttpPut } from "../../services/HttpService";
+import RedirectIfNotLoggedIn from "../../components/RedirectIfNotLoggedIn";
+import ReportHeader from "../../components/ReportHeader";
 
 const ReportForm = () => {
   const navigate = useNavigate();
@@ -47,10 +47,10 @@ const ReportForm = () => {
   // 충전소 검색 API GET
   const fetchChargingStations = useCallback(async () => {
     try {
-      const response = await Axios.get(
-        `https://api.eitcharge.site/api/v1/reports/station?kw=${encodeURIComponent(searchKw)}`
-      );
-      const result = response.data;
+      const response = await HttpGet("/api/v1/reports/station", {
+        kw: searchKw,
+      });
+      const result = response;
 
       if (result.success && result.data) {
         setChargingStations(result.data.chargingStations);
@@ -95,26 +95,23 @@ const ReportForm = () => {
         const response =
           // 수정
           mode === "MODIFY"
-            ? await Axios.put(`https://api.eitcharge.site/api/v1/reports/${propId}`, requestData, {
-                withCredentials: true,
-              })
+            ? await HttpPut(`/api/v1/reports/${propId}`, requestData)
             : // 생성
-              await Axios.post("https://api.eitcharge.site/api/v1/reports", requestData, {
-                withCredentials: true,
-              });
+              await HttpPost("/api/v1/reports", requestData);
 
-        if (response.status === 200) {
+        if (response.statusCode === 200) {
           if (mode === "MODIFY") {
-            console.log("신고가 성공적으로 수정되었습니다.");
+            console.log("신고내역이 성공적으로 수정되었습니다.");
+            alert("신고내역이 성공적으로 수정되었습니다.");
             navigate(`/report/${propId}`);
             return;
-          }
-          if (mode === "CREATE") {
-            console.log("신고가 성공적으로 등록되었습니다.");
-            navigate("/report/list");
+          } else if (mode === "CREATE") {
+            alert("신고내역이 성공적으로 등록되었습니다.");
+            navigate(`/report/${response.data.id}`);
             return;
+          } else {
+            console.log("신고 저장 실패");
           }
-          console.log("신고 저장 실패");
         }
       } catch (error) {
         console.error(
