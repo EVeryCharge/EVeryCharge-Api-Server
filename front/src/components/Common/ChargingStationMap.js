@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ChargerInfoModal from '../UI/ChargerInfoModal';
-
-import ChargerInfoSidebar from '../UI/ChargerInfoSidebar';
-import ChargerInfoTooltip from '../UI/ChargerInfoTooltip';
-import ChargerInfoCardView from '../UI/ChargerInfoCardView';
-import ChargerInfoBottomSheet from '../UI/ChargerInfoBottomSheet';
+import  { useSelectedItems } from '../../utils/StationInfoContext';
 
 import { debounce } from 'lodash';
 import { HttpGet, HttpPost } from '../../services/HttpService';
@@ -13,9 +9,8 @@ const ChargingStationMap = () => {
   const mapRef = useRef(null);
   let map; // 지도 객체를 담을 변수
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 37.56100278, lng: 126.9996417 });  //중구
-
+  const { setSelectedItem, getStatId } = useSelectedItems();
 
   useEffect(() => {
       map = new window.kakao.maps.Map(mapRef.current, {
@@ -61,45 +56,10 @@ const ChargingStationMap = () => {
           window.kakao.maps.event.addListener(marker, 'click', function() {
             // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
             setIsOpen(false);
-            setSelectedItems([itemData]);
+            setSelectedItem(itemData);
             setIsOpen(true);
           });
 
-        });
-      })
-      .catch(error => {
-        console.log('Error fetching data', error);
-      });
-  };
-
-  const fetchDataFromServerNeighborSearch = (lat, lng) => {
-    axios.get('/api/chargingStation/location/search',{
-      params: {
-        lat: lat,
-        lng: lng
-      },
-      withCredentials: true 
-    })
-      .then(response => {
-        const { item } = response.data.items;
-
-        // 기존 마커들을 모두 제거
-        map.removeMarkers();
-
-        item.forEach((itemData) => {
-          const { lat, lng } = itemData;
-          const markerPosition = new window.kakao.maps.LatLng(lat, lng);
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition
-          });
-          marker.setMap(map);
-
-          window.kakao.maps.event.addListener(marker, 'click', function() {
-            // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-            setIsOpen(false);
-            setSelectedItems([itemData]);
-            setIsOpen(true);
-          });
         });
       })
       .catch(error => {
@@ -110,13 +70,10 @@ const ChargingStationMap = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
-
-
   const fetchDataFromServerRangeQueryDebounced = debounce(fetchDataFromServerRangeQuery, 500); //200ms마다 서버에 요청
-  const fetchDataFromServerNeighborSearchDebounced = debounce(fetchDataFromServerNeighborSearch, 200); 
 
   return (
-    <div 
+      <div 
       style={{
         textAlign: 'center',
         padding: '10px'
@@ -135,15 +92,11 @@ const ChargingStationMap = () => {
         }}
         ref={mapRef}
       />
-      <ChargerInfoModal isOpen={isOpen} onRequestClose={closeModal} items={selectedItems} />
-      {/* <ChargerInfoSidebar isOpen={isOpen} items={selectedItems} />
-      <ChargerInfoTooltip items={selectedItems} />
-      
-      <ChargerInfoCardView items={selectedItems} />
-      <ChargerInfoBottomSheet isOpen={isOpen} items={selectedItems} /> */}
+      <ChargerInfoModal isOpen={isOpen} onRequestClose={closeModal} items={getStatId()} />
       <p>지도의 위치가 변경될 때마다 실시간으로 데이터를 업데이트하며, 마커를 클릭하면 더 자세한 정보를 확인할 수 있습니다.</p>
       <p>더 많은 기능과 정보를 추가해보세요!</p>
     </div>
+    
   );
 }
 
