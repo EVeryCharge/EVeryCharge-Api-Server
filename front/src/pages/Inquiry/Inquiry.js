@@ -9,10 +9,11 @@ import {
     TablePagination,
     TableRow,
   } from "@material-ui/core";
-  import Axios from "axios";
   import * as React from "react";
   import { Link } from "react-router-dom";
   import ReportHeader from "../../components/ReportHeader";
+import { HttpGet, HttpPost } from "../../services/HttpService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Inquiry = () => {
 const [data, setData] = React.useState({
@@ -37,18 +38,21 @@ React.useEffect(() => {
 // 신고 리스트 API GET
 const fetchData = async (currentPage, pageSize) => {
   try {
-    const response = await Axios.get(`/api/v1/reports/list`, {
-      params: {
-        page: currentPage,
-        pageSize: pageSize,
-      },
-      withCredentials: true,
-    });
+    const response = await HttpGet(
+      `/api/v1/inquiry/list`,
+      {
+          page: currentPage,
+          pageSize: pageSize,
+      }
+    );
 
-    console.log("Fetch request sent to:", response.config.url);
-    setData(response.data.data);
+    
+    console.log("전송확인");
+    console.log("fetch data 확인", response);
+    setData(response);
   } catch (error) {
     console.error("Error fetching data:", error);
+    
   }
 };
 
@@ -106,19 +110,18 @@ return (
             <TableRow
               key={row.id}
               component={Link}
-              to={`/report/${row.id}`}
+              to={`/inquiry/${row.id}`}
               style={{
                 textDecoration: "none",
               }}
             >
-              <TableCell>{row.reportType}</TableCell>
-              <TableCell>{row.statNm}</TableCell>
+              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.inquiryState}</TableCell>
+              <TableCell>{row.inquiryType}</TableCell>
               <TableCell>{row.title}</TableCell>
-              <TableCell>{row.memberName}</TableCell>
-              <TableCell>{formatDate(row.createDate)}</TableCell>
-              <TableCell style={{ color: getStatusColor(row.completed) }}>
-                {row.completed ? "처리완료" : "처리중"}
-              </TableCell>
+              <TableCell>{row.writer}</TableCell>
+              <TableCell>{formatDate(row.createdDate)}</TableCell>
+              <TableCell>{row.viewCount}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -133,7 +136,13 @@ return (
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </TableContainer>
+    <Link to="/inquiry/form">
+      <button type="button">
+        새 글쓰기
+      </button>
+    </Link>
   </Box>
+  
 );
 };
 
