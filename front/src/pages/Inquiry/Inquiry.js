@@ -11,7 +11,7 @@ import {
   } from "@material-ui/core";
   import * as React from "react";
   import { Link } from "react-router-dom";
-  import ReportHeader from "../../components/ReportHeader";
+  import ReportHeader from "../Report/ReportHeader";
 import { HttpGet, HttpPost } from "../../services/HttpService";
 import { useNavigate, useParams } from "react-router-dom";
 
