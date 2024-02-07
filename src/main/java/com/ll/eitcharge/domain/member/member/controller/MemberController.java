@@ -86,6 +86,7 @@ public class MemberController {
 
     @GetMapping("/checkid/{username}")
     public boolean checkid(@PathVariable String username){
+
         if (memberService.findByUsername(username).isPresent()) {
             return false;
         } else {

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { HttpGet, HttpPost } from '../../services/HttpService';
 import {Button, TextField, Box, Typography, Container, Grid} from '@material-ui/core';
+
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,34 +13,40 @@ const Signup = () => {
 
   const handleCheckid = async () => {
     try {
-      const response = await axios.get(`https://api.eitcharge.site/api/v1/members/checkid/${username}`);
-      if (response.data) {
-        alert('사용 가능한 ID 입니다');
-        setCheckId(true);
-      } else {
-        alert('이미 사용중인 ID 입니다');
-        setCheckId(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      HttpGet(`/api/v1/members/checkid/${username}`)
+      .then((response) => {
+        console.log(response);
+        if (response) {
+          alert('사용 가능한 ID 입니다');
+          setCheckId(true);
+        } else {
+          alert('이미 사용중인 ID 입니다');
+          setCheckId(false);
+        }
+
+        console.log(checkId);
+       })
+      }catch(error){
+        console.error(error);
+       }
   };
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post(
-        'https://api.eitcharge.site/api/v1/members/signup',
+      HttpPost(
+        '/api/v1/members/signup',
         {
           username: username,
           password1: password,
           password2: password2
         }
-      );
+      ).then((response) => {
+        // 회원가입 성공시 처리
+        console.log('Signup successful:' , response);
+        alert("회원 가입 성공!");
+        navigate('/login');
+      })
 
-      // 회원가입 성공시 처리
-      console.log('Signup successful:' , response);
-      alert("회원 가입 성공!");
-      navigate('/login');
     } catch (error) {
       // 회원가입 실패 시 처리
       if(username === ''){
@@ -61,6 +69,8 @@ const Signup = () => {
   };
 
   return (
+
+  
 
     <Container component="main" maxWidth="xs">
       <Box

@@ -20,9 +20,7 @@ const Login = () => {
           username: username,
           password: password,
         },
-        {
-          withCredentials: true, // credentials include 옵션 추가
-        }
+        
       ).then((response) => {
        // 로그인 성공 시 처리
        console.log('Login successful:', response);
