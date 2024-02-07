@@ -1,13 +1,17 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
+import com.ll.eitcharge.global.exceptions.GlobalException;
+import com.ll.eitcharge.global.rsData.RsData;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
-import com.ll.eitcharge.global.exceptions.GlobalException;
-import com.ll.eitcharge.global.rsData.RsData;
-
-import lombok.RequiredArgsConstructor;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
 	private final ObjectMapper objectMapper;
-
+	private final ChargerRepository chargerRepository;
 	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng) {
 		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng);
 		return chargingStations.stream()
@@ -122,5 +123,13 @@ public class ChargingStationService {
 				executionTimeInNano,
 				executionTimeInNano / 1_000_000,
 				(long) (executionTimeInNano / 1_000_000_000.0));
+	}
+
+	public List<ChargerStateDto> chargerStateSearch(String statId) {
+
+		List<Charger> chargerStates = chargerRepository.findByChargingStationStatId(statId);
+		return chargerStates.stream()
+				.map(ChargerStateDto::new)
+				.collect(Collectors.toList());
 	}
 }

@@ -3,7 +3,6 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./utils/AuthContext";
 import ChargingServiceInfo from "./components/ChargingServiceInfo";
-import ChargingStationInfo from "./components/ChargingStationInfo";
 import EVSystem from "./components/EVSystem";
 import StatisticsInfo from "./components/StatisticsInfo";
 import ChargingStationMap from "./components/Common/ChargingStationMap";
@@ -15,11 +14,14 @@ import ReportList from "./pages/Report/ReportList";
 import ReportDetail from "./pages/Report/ReportDetail";
 import ReportForm from "./pages/Report/ReportForm";
 import Signup from "./pages/Signup/Signup";
+import {SelectedItemsProvider} from "./utils/StationInfoContext";
+
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <SelectedItemsProvider>
         <Navbar />
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -29,10 +31,6 @@ function App() {
             path="/chargingServiceInfo"
             element={<ChargingServiceInfo />}
           />
-          <Route
-            path="/chargingStationInfo"
-            element={<ChargingStationInfo />}
-          />
           <Route path="/evsystem" element={<EVSystem />} />
           <Route path="/statisticsInfo" element={<StatisticsInfo />} />
           <Route path="/report/list" element={<ReportList />} />
@@ -41,6 +39,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
         <Footer />
+        </SelectedItemsProvider>
       </AuthProvider>
     </Router>
   );
