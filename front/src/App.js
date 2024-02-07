@@ -17,6 +17,7 @@ import ReportForm from "./pages/Report/ReportForm";
 import Signup from "./pages/Signup/Signup";
 import Inquiry from "./pages/Inquiry/Inquiry";
 import InquiryForm from "./pages/Inquiry/InquiryForm";
+import InquiryDetail from "./pages/Inquiry/InquiryDetail"; 
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/inquiry" element={<Inquiry />} />
           <Route path="/inquiry/form" element={<InquiryForm />} />
+          <Route path="/inquiry/:id" element={<InquiryDetail/>}/> 
         </Routes>
         <Footer />
       </AuthProvider>
