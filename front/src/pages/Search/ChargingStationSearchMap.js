@@ -1,22 +1,21 @@
-// ChargingStationSearchMap.js
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const ChargingStationSearchMap = () => {
     const mapRef = useRef(null);
-    let map; // Áöµµ °´Ã¼¸¦ ´ãÀ» º¯¼ö
+    const map = useRef(null); // ì§€ë„ ê°ì²´ë¥¼ useRefë¡œ ì„ ì–¸
     const [mapCenter, setMapCenter] = useState({
         lat: 36.39213160000001,
         lng: 127.02977109999999,
     });
 
     const initMap = () => {
-        const container = document.getElementById("map");
+        const container = mapRef.current; // mapRef.currentë¥¼ í†µí•´ container ì°¸ì¡°
         const options = {
             center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
             level: 3,
         };
 
-        map = new window.kakao.maps.Map(container, options);
+        map.current = new window.kakao.maps.Map(container, options); // useRefë¡œ ì„ ì–¸í•œ mapì— í• ë‹¹
     };
 
     useMemo(() => {
@@ -36,16 +35,16 @@ const ChargingStationSearchMap = () => {
                 lat: 36.483034,
                 lng: 126.902435,
             });
-            console.log("À§Ä¡ ¹Þ±â ½ÇÆÐ");
+            console.log("ìœ„ì¹˜ ë°›ê¸° ì‹¤íŒ¨");
         }
     }, []);
 
     useEffect(() => {
         window.kakao.maps.load(() => initMap());
-    }, []);
+    }, [mapCenter]); // mapCenter ë³€ê²½ ì‹œì—ë„ initMap í˜¸ì¶œ
 
-    const handleAdjustPosition = () => {
-        initMap(); // ÇÔ¼ö¸¦ È£ÃâÇÏµµ·Ï ¼öÁ¤
+    const handleResetMap = () => {
+        initMap(); // í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ë„ë¡ ìˆ˜ì •
     };
 
     return (
@@ -63,9 +62,9 @@ const ChargingStationSearchMap = () => {
             />
             <button
                 style={{ position: "relative", zIndex: "2" }}
-                onClick={handleAdjustPosition} // ÇÔ¼ö¸¦ È£ÃâÇÏµµ·Ï ¼öÁ¤
+                onClick={handleResetMap} // í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ë„ë¡ ìˆ˜ì •
             >
-                À§Ä¡ Á¶Á¤
+                ìœ„ì¹˜ ì¡°ì •
             </button>
         </div>
     );
