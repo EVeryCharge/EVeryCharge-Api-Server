@@ -5,10 +5,10 @@ import ChargingStationSearchMap from "./ChargingStationSearchMap";
 const ChargingStationSearch = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ }}>
         <ChargingStationSearchBar />
       </Box>
-      <Box sx={{ display: "flex-1" }}>
+      <Box sx={{ flexGrow: 1 }}>
         <ChargingStationSearchMap />
       </Box>
     </Box>
