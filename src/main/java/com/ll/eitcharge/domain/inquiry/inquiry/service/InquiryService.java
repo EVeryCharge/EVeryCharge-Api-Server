@@ -51,6 +51,12 @@ public class InquiryService {
                 .build();
         inquiryRepository.save(inquiry);
         return new InquiryResponseDto(inquiry);
+    }
 
+    public InquiryResponseDto getInquiryById(Long id) {
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 문의사항이 없습니다. id=" + id));
+
+        return new InquiryResponseDto(inquiry);
     }
 }

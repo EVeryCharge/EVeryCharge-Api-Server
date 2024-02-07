@@ -2,6 +2,7 @@ package com.ll.eitcharge.domain.inquiry.inquiry.controller;
 
 import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryRequestDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryResponseDto;
+import com.ll.eitcharge.domain.inquiry.inquiry.entity.Inquiry;
 import com.ll.eitcharge.domain.inquiry.inquiry.service.InquiryService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
@@ -50,7 +51,22 @@ public class InquiryController {
         inquiryService.create(requestDto, principal.getName());
 
         return ResponseEntity.ok(requestDto);
-
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InquiryResponseDto> getInquiry(@PathVariable Long id) {
+        InquiryResponseDto inquiry = inquiryService.getInquiryById(id);
+
+
+        return ResponseEntity.ok(inquiry);
+    }
+
+//    @GetMapping("/{id}")
+//    public RsData<ReportResponseDto> get(@PathVariable(value = "id") Long id) {
+//
+//        ReportResponseDto responseDto = reportService.get(id);
+//        loadReportAccess(responseDto);
+//        return RsData.of("200", "ok", responseDto);
+//    }
 
 }
