@@ -11,7 +11,6 @@ const UsernameStorage = () => {
 
         if(username){
             sessionStorage.setItem('username', username);
-            console.log('usernameStorage');
         }
     }, [location]);
 
