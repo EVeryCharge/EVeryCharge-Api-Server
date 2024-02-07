@@ -11,8 +11,8 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HttpGet, HttpPost, HttpPut } from "../../services/HttpService";
-import RedirectIfNotLoggedIn from "../../components/RedirectIfNotLoggedIn";
-import ReportHeader from "../../components/ReportHeader";
+import RedirectIfNotLoggedIn from "../../utils/RedirectIfNotLoggedIn";
+import ReportHeader from "./ReportHeader";
 
 const ReportForm = () => {
   const navigate = useNavigate();

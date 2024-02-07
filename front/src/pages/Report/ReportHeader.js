@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@material-ui/core";
 import React from "react";
 import { Link } from "react-router-dom";
-import GoBackButton from "./GoBackButton";
+import GoBackButton from "../../components/Common/GoBackButton";
 
 const ReportHeader = ({
   actorCanCreate,

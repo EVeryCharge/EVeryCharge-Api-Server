@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, makeStyles, TextField, Button, Select, MenuItem } from '@material-ui/core';
-import { HttpGet, HttpPost, HttpDelete, HttpPut } from '../services/HttpService';  // 유틸리티 파일 경로를 업데이트하세요
+import { HttpGet, HttpPost, HttpDelete, HttpPut } from '../../services/HttpService';  // 유틸리티 파일 경로를 업데이트하세요
 
 
 const useStyles = makeStyles({

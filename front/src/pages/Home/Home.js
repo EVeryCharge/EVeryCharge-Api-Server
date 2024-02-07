@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Button, Container, Divider, Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Navbar from '../../layout/NavBar'; // Navbar 컴포넌트를 import
+import Navbar from '../../components/Layout/NavBar'; // Navbar 컴포넌트를 import
 import ChargingServiceInfo from '../../components/ChargingServiceInfo';
 import StatisticsInfo from '../../components/StatisticsInfo';
 import ChargingStationInfo from '../../components/ChargingStationInfo';
