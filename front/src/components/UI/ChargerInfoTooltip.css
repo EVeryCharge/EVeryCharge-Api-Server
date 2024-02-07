@@ -1,0 +1,31 @@
+.tooltip {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .tooltip-item {
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .tooltip-item h3 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .tooltip-item p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
