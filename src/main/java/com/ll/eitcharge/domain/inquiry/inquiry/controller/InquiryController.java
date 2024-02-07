@@ -5,6 +5,7 @@ import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryResponseDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.service.InquiryService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
+import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,10 +44,10 @@ public class InquiryController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     public ResponseEntity<InquiryRequestDto> create(
-            @RequestBody @NonNull InquiryRequestDto requestDto,
+            @RequestBody @Valid InquiryRequestDto requestDto,
             Principal principal
     ) {
-        InquiryResponseDto responseDto = inquiryService.create(requestDto, principal.getName());
+        inquiryService.create(requestDto, principal.getName());
 
         return ResponseEntity.ok(requestDto);
 
