@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { HttpGet,HttpPost } from '../../services/HttpService';
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -10,8 +10,9 @@ const Signup = () => {
 
   const handleCheckid = async () => {
     try {
-      const response = await axios.get(`https://api.eitcharge.site/api/v1/members/checkid/${username}`);
-      if (response.data) {
+      const response = await HttpGet(
+        `/api/v1/members/checkid/${username}`);
+      if (response) {
         alert('사용 가능한 ID 입니다');
         setCheckId(true);
       } else {
@@ -25,8 +26,8 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post(
-        'https://api.eitcharge.site/api/v1/members/signup',
+      const response = await HttpPost(
+        '/api/v1/members/signup',
         {
           username: username,
           password1: password,
