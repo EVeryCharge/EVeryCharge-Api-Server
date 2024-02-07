@@ -1,54 +1,76 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import axios from 'axios';
 import ChargerInfoModal from './modal/ChargerInfoModal';
 import { debounce } from 'lodash';
-import { HttpGet, HttpPost } from '../services/HttpService';  
-const MapContainer = () => {
+import { HttpGet, HttpPost } from '../services/HttpService';
+const SearchMap = () => {
   const mapRef = useRef(null);
   let map; // 지도 객체를 담을 변수
   // const map = useRef(null);  
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 35.49213160000001, lng: 127.02977109999999 });
+  const [mapCenter, setMapCenter] = useState({ lat: 36.39213160000001, lng: 127.02977109999999 });
+
+
+  const initMap = () => {
+    const container = document.getElementById("map");
+    const options = {
+      center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
+      level: 3
+    };
+
+    map = new window.kakao.maps.Map(container, options);
+  }
+
+  useMemo(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+    function success(position) {
+      setMapCenter({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      });
+    }
+
+    function error() {
+      setMapCenter({
+        latitude: 36.483034,
+        longitude: 126.902435
+      });
+      console.log("위치 받기 실패");
+    }
+  }, [navigator.geolocation.getCurrentPosition]);
 
 
   useEffect(() => {
-      map = new window.kakao.maps.Map(mapRef.current, {
-      center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
-      level: 1
-    });
-
-    // 이벤트 리스너를 등록하여 지도의 중심 좌표가 변경될 때마다 서버에 데이터 요청
-    window.kakao.maps.event.addListener(map, 'center_changed', function() {
-      const newCenter = map.getCenter();
-      setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
-
-    });
-
-
-  }, []);
+    window.kakao.maps.load(()=>initMap());
+  }, [mapRef]);
 
 
 
   return (
     <div >
-      
-        
-      <div 
-        id="map" 
+
+
+      <div
+        id="map"
         style={{
           marginTop: '20px',
-          width: '70%', 
+          width: '70%',
           height: 'calc(100vh - 165px)',
-          border: '1px solid #ccc', 
-          overflow: 'hidden' 
+          border: '1px solid #ccc',
+          overflow: 'hidden'
         }}
         ref={mapRef}
+        
       />
+      <button
+        style={{ position: "relative", zIndex: "2" }}
+        onClick={() => initMap}
+      >위치 조정</button>
 
-  
     </div>
   );
 }
 
-export default MapContainer;
+export default SearchMap;
