@@ -3,6 +3,8 @@ package com.ll.eitcharge.domain.inquiry.inquiry.dto;
 import com.ll.eitcharge.domain.inquiry.inquiry.entity.Inquiry;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -17,6 +19,7 @@ public class InquiryResponseDto {
     private String inquiryState;
     private String inquiryType;
     private int viewCount;
+    private LocalDateTime createdDate;
 
     public InquiryResponseDto(Inquiry entity) {
         this.id = entity.getId();
@@ -26,5 +29,6 @@ public class InquiryResponseDto {
         this.inquiryState = entity.getInquiryState();
         this.inquiryType = entity.getInquiryType();
         this.viewCount = entity.getViewCount();
+        this.createdDate = entity.getCreatedDate();
     }
 }
