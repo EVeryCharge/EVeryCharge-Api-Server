@@ -1,30 +1,23 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
-import static org.springframework.util.MimeTypeUtils.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
-import com.ll.eitcharge.global.rsData.RsData;
+import java.util.List;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
@@ -40,6 +33,7 @@ public class ChargingStationController {
     }
 
     @GetMapping("/location/search")
+    @Operation(summary = "충전소 검색", description = "위도 경도 기반 충전소 검색")
     public ResponseEntity<List<ChargingStationSearchResponseDto>> searchStation(
             @RequestParam double swLat,
             @RequestParam double swLng,
@@ -49,9 +43,16 @@ public class ChargingStationController {
         return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
     }
 
-    @GetMapping("/{stationId}/chargers")
-    public RsData< Object > chargerState(@PathVariable("stationId") String stationId){
-        return chargingStationService.findFromApi(stationId);
+    @GetMapping("/chargerStatus/fromApi")
+    @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(공공데이터 포탈 api)")
+    public RsData< Object > chargerStateApi(@RequestParam String statId){
+        return chargingStationService.findFromApi(statId);
+    }
+
+    @GetMapping("/chargerStatus")
+    @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(데이터 베이스)")
+    public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId){
+        return ResponseEntity.ok(chargingStationService.chargerStateSearch(statId));
     }
 
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param)")
@@ -90,5 +91,6 @@ public class ChargingStationController {
         return ResponseEntity.ok(chargingStationService.search(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
+
 
 }
