@@ -1,11 +1,11 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
 import { HttpGet, HttpPost } from '../services/HttpService';
+import UsernameStorage from './UsernameStorage';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 const [user, setUser] = useState(null);
-
 const setLogined = (userData) => {
     setUser(userData);
 };
@@ -13,14 +13,12 @@ const setLogined = (userData) => {
 const setLogout = async () => {
     HttpPost('/api/v1/members/logout');
     sessionStorage.removeItem("username");
-    
+
     setUser(null);
 };
-
 const isLogin = () => {
     return user !== null;
 };
-
 const isLogout = () => {
     return user === null;   
 };
@@ -36,7 +34,7 @@ const initAuth = async () => {
     .then((data) => {
         console.log('memeber me ' + data)
         if(data){
-            setLogined(data.item);
+            setLogined(data.data.item);
         }
     });
 };
@@ -44,27 +42,30 @@ const initAuth = async () => {
 const getUserName = () => {
     return user ? user.username : null;
 };
-
 const getUserPermissions = () => {
 return user ? user.authorities : [];
 };
-
 const getUserId = () => {
     return user ? user.id : null;
 };
+
+const getUserNickname = () => {
+    return user ? user.nickname : null;
+}
 
 //useEffect는 컴포넌트 마운트 될때 한번 실행됨
 useEffect(() => {
     initAuth();
 }, []);
-
 return (
-    <AuthContext.Provider value={{ user, setLogined, setLogout, isLogin, isLogout, getUserName, getUserPermissions, getUserId  }}>
+    <>
+    <UsernameStorage></UsernameStorage>
+    <AuthContext.Provider value={{ user, setLogined, setLogout, isLogin, isLogout, getUserName, getUserPermissions, getUserId, getUserNickname  }}>
         {children}
     </AuthContext.Provider>
+    </>
     );
 };
-
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (context === undefined) {

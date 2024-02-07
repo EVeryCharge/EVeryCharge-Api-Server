@@ -1,14 +1,14 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./utils/AuthContext";
 import ChargingServiceInfo from "./components/ChargingServiceInfo";
 import ChargingStationInfo from "./components/ChargingStationInfo";
 import EVSystem from "./components/EVSystem";
 import StatisticsInfo from "./components/StatisticsInfo";
-import MapContainer from "./containers/MapContainer";
-import Footer from "./layout/Footer";
-import Navbar from "./layout/NavBar";
+import ChargingStationMap from "./components/Common/ChargingStationMap";
+import Footer from "./components/Layout/Footer";
+import Navbar from "./components/Layout/NavBar";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import ReportList from "./pages/Report/ReportList";
@@ -26,7 +26,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
-          <Route path="/map" element={<MapContainer />} />
+          <Route path="/map" element={<ChargingStationMap />} />
           <Route
             path="/chargingServiceInfo"
             element={<ChargingServiceInfo />}

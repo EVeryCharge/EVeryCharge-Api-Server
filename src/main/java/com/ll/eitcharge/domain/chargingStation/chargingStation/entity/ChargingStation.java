@@ -42,6 +42,7 @@ public class ChargingStation {
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "busiId")
     private OperatingCompany operatingCompany;
 
     @OneToOne(fetch = LAZY, mappedBy = "chargingStation")

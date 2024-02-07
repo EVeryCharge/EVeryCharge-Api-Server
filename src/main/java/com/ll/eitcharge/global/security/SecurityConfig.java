@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ASuccessHandler aSuccessHandler;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -25,6 +26,8 @@ public class SecurityConfig {
             .authorizeRequests(authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/gen/**")
+                    .permitAll()
+                    .anyRequest()
                     .permitAll()
             )
             .csrf(
@@ -35,6 +38,12 @@ public class SecurityConfig {
                     .sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS
                     )
+            )
+            .oauth2Login(
+                    oauth2Login ->
+                            oauth2Login
+                                    .successHandler(aSuccessHandler)
+
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
