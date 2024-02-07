@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -6,21 +6,41 @@ import {
   TextField,
   makeStyles,
   MenuItem,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import ToggleButton from "@mui/material/ToggleButton";
 import Select from "@mui/material/Select";
+import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearchBar = () => {
   const classes = useStyles();
-  const [chargable, setChargable] = React.useState(true);
-  const [parkingFree, setParkingFree] = React.useState(false);
-  const [limit, setLimit] = React.useState(true);
+  const [chargable, setChargable] = useState(true);
+  const [parkingFree, setParkingFree] = useState(false);
+  const [limit, setLimit] = useState(true);
 
-  const [zcode, setZcode] = React.useState("");
-  const [zscode, setZscode] = React.useState("");
-  const [busiId, setBusiId] = React.useState("");
-  const [chgerId, setChgerId] = React.useState("");
+  const [zcode, setZcode] = useState("");
+  const [zscode, setZscode] = useState("");
+  const [busiIds, setBusiIds] = useState([]);
+  const [chgerId, setChgerId] = useState([]);
+
+  const [baseItem, setBaseItem] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await HttpGet("/api/v1/chargingStation/search/item");
+        setBaseItem(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChargableChange = () => {
     setChargable(!chargable);
@@ -42,8 +62,8 @@ const ChargingStationSearchBar = () => {
     setZscode(event.target.value);
   };
 
-  const handleBusiIdChange = (event) => {
-    setBusiId(event.target.value);
+  const handleBusiIdsChange = (event) => {
+    setBusiIds(event.target.value);
   };
 
   const handleChgerIdChange = (event) => {
@@ -102,58 +122,115 @@ const ChargingStationSearchBar = () => {
 
       {/* 콤보박스 */}
       <Box className={classes.comboContainer}>
-        <Select
-          size="small"
-          sx={{ fontSize: "11px", mr: "10px" }}
-          value={zcode}
-          onChange={handleZcodeChange}
-          displayEmpty
-          className={classes.selectEmpty}
-          inputProps={{ "aria-label": "지역단위" }}
-        >
-          <MenuItem value="" disabled>
-            지역단위
-          </MenuItem>
-        </Select>
-        <Select
-          size="small"
-          sx={{ fontSize: "11px", mr: "10px" }}
-          value={zscode}
-          onChange={handleZscodeChange}
-          displayEmpty
-          className={classes.selectEmpty}
-          inputProps={{ "aria-label": "세부지역" }}
-        >
-          <MenuItem value="" disabled>
-            세부지역
-          </MenuItem>
-        </Select>
-        <Select
-          size="small"
-          sx={{ fontSize: "11px", mr: "10px" }}
-          value={busiId}
-          onChange={handleBusiIdChange}
-          displayEmpty
-          className={classes.selectEmpty}
-          inputProps={{ "aria-label": "운영기관" }}
-        >
-          <MenuItem value="" disabled>
-            운영기관
-          </MenuItem>
-        </Select>
-        <Select
-          size="small"
-          sx={{ fontSize: "11px", mr: "10px" }}
-          value={chgerId}
-          onChange={handleChgerIdChange}
-          displayEmpty
-          className={classes.selectEmpty}
-          inputProps={{ "aria-label": "충전기타입" }}
-        >
-          <MenuItem value="" disabled>
-            충전기타입
-          </MenuItem>
-        </Select>
+        {baseItem && (
+          <>
+            {/* 지역단위  */}
+            <Box>
+              <InputLabel className={classes.inputLabelStyle}>
+                지역 단위
+              </InputLabel>
+              <Select
+                size="small"
+                sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
+                value={zcode}
+                onChange={handleZcodeChange}
+                displayEmpty
+                className={classes.selectEmpty}
+              >
+                <MenuItem value="">현 위치</MenuItem>
+                {baseItem.zcodes.map((code, index) => (
+                  <MenuItem key={index} value={code}>
+                    {baseItem.regionNames[index]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+            {/* 세부지역 */}
+            <Box>
+              <InputLabel className={classes.inputLabelStyle}>
+                세부 지역
+              </InputLabel>
+              <Select
+                size="small"
+                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                value={zscode}
+                onChange={handleZscodeChange}
+                displayEmpty
+                className={classes.selectEmpty}
+                inputProps={{ "aria-label": "세부지역" }}
+                disabled={!baseItem || baseItem.zscodes === null}
+              >
+                <MenuItem value="" disabled>
+                  세부지역
+                </MenuItem>
+                {baseItem &&
+                  baseItem.zscodes &&
+                  baseItem.zscodes.map((code, index) => (
+                    <MenuItem key={index} value={code}>
+                      {baseItem.regionDetailNames[index]}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Box>
+            {/* 운영기관 */}
+            <Box>
+              <InputLabel className={classes.inputLabelStyle}>
+                운영기관
+              </InputLabel>
+              <Select
+                size="small"
+                multiple
+                value={busiIds}
+                onChange={handleBusiIdsChange}
+                displayEmpty
+                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                className={classes.selectEmpty}
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.length === 0
+                      ? "전체"
+                      : `${selected.length}개 선택됨`}
+                  </div>
+                )}
+              >
+                {baseItem.busiIds.map((code, index) => (
+                  <MenuItem key={index} value={code}>
+                    {baseItem.bnms[index]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+            {/* 충전기 타입 */}
+            <Box>
+              <InputLabel className={classes.inputLabelStyle}>
+                충전기 타입
+              </InputLabel>
+              <Select
+                size="small"
+                multiple
+                value={chgerId}
+                onChange={handleChgerIdChange}
+                displayEmpty
+                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                className={classes.selectEmpty}
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.length === 0
+                      ? "전체"
+                      : `${selected.length}개 선택됨`}
+                  </div>
+                )}
+              >
+                <MenuItem value="">전체</MenuItem>
+                {baseItem.chgerIds.map((code, index) => (
+                  <MenuItem key={index} value={code}>
+                    {baseItem.chgerTypes[index]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+          </>
+        )}
       </Box>
       {/* TODO 가나다 순 / 거리 순 */}
       <hr />
@@ -167,8 +244,8 @@ export default ChargingStationSearchBar;
 const useStyles = makeStyles({
   baseLayer: {
     backgroundColor: "#EFF8FB",
-    width: "400px",
-    height: "100%",
+    width: "500px",
+    height: "calc(100vh - 205px)",
     padding: "20px",
     borderRadius: "10px",
   },
@@ -192,5 +269,11 @@ const useStyles = makeStyles({
     alignItems: "center",
     marginTop: "30px",
     marginBottom: "40px",
+  },
+
+  inputLabelStyle: {
+    marginLeft: "2px",
+    marginBottom: "5px",
+    fontSize: "10px",
   },
 });
