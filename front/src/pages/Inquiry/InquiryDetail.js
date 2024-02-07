@@ -1,7 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { HttpGet } from '../../services/HttpService';
 import { useParams } from 'react-router-dom';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent, Typography, Grid, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+    type: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 10,
+        fontWeight: 'bold',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    content: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 20,
+        whiteSpace: 'pre-line',
+    },
+    writer: {
+        fontSize: 14,
+        color: '#999',
+    },
+});
 
 const InquiryDetail = ({  }) => {
     const [inquiry, setInquiry] = useState({});
@@ -26,20 +50,22 @@ const InquiryDetail = ({  }) => {
         }
     }
 
+    const classes = useStyles();
+
     return (
         <Card>
             <CardContent>
-                <Typography variant="h5" component="h2">
-                    {inquiry.title}
+                <Typography className={classes.type}>
+                    문의 유형 : {inquiry.inquiryType}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                    {inquiry.content}
+                <Typography className={classes.title} component="h2">
+                    제목 : {inquiry.title}
                 </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                    {inquiry.inquiryType}
+                <Typography className={classes.content} component="p">
+                    내용 : {inquiry.content}
                 </Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                    {inquiry.writer}
+                <Typography className={classes.writer} align="right">
+                    작성자 : {inquiry.writer}
                 </Typography>
             </CardContent>
         </Card>
