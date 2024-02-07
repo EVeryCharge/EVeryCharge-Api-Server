@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ChargerInfoModal from '../UI/ChargerInfoModal';
+
 import ChargerInfoSidebar from '../UI/ChargerInfoSidebar';
 import ChargerInfoTooltip from '../UI/ChargerInfoTooltip';
 import ChargerInfoCardView from '../UI/ChargerInfoCardView';
@@ -105,9 +106,11 @@ const ChargingStationMap = () => {
         console.log('Error fetching data', error);
       });
   };
+
   const closeModal = () => {
     setIsOpen(false);
   };
+
 
   const fetchDataFromServerRangeQueryDebounced = debounce(fetchDataFromServerRangeQuery, 500); //200ms마다 서버에 요청
   const fetchDataFromServerNeighborSearchDebounced = debounce(fetchDataFromServerNeighborSearch, 200); 

@@ -23,10 +23,12 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
         return "알 수 없음";
     }
   };
+
   const closeModal = () => {
     // 모달을 닫는 로직을 여기에 작성
     onRequestClose();
   };
+
   useEffect(() => {
     items.forEach(item => {
       axios.get(`https://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey=xfxRkd9Ntag%2BmgCGh3yh%2B9f77aTMJlLPKaU7UMGBz9LnmwW3%2BnEtYZR6GRt%2BiyknBmvdVlkdC86laKLBVVttsw%3D%3D&numOfRows=999&pageNo=1&zcode=11&dataType=JSON&statId=${item.statId}`)
