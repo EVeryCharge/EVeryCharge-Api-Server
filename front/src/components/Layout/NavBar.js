@@ -9,10 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { isLogin, setLogout, getUserName, getUserNickname } = useAuth();
-  console.log('useAuth ?? ')
-  console.log(useAuth());
-
-  console.log(useAuth().getUserName());
+  
   
 
   const handleLogout = () => {

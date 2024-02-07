@@ -24,6 +24,11 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
     }
   };
 
+  const closeModal = () => {
+    // 모달을 닫는 로직을 여기에 작성
+    onRequestClose();
+  };
+
   useEffect(() => {
     items.forEach(item => {
       axios.get(`https://apis.data.go.kr/B552584/EvCharger/getChargerInfo?serviceKey=xfxRkd9Ntag%2BmgCGh3yh%2B9f77aTMJlLPKaU7UMGBz9LnmwW3%2BnEtYZR6GRt%2BiyknBmvdVlkdC86laKLBVVttsw%3D%3D&numOfRows=999&pageNo=1&zcode=11&dataType=JSON&statId=${item.statId}`)
@@ -40,12 +45,15 @@ const ChargerInfoModal = ({ isOpen, onRequestClose, items }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={closeModal}
       contentLabel="Selected Marker"
       style={{
+        overlay: {
+          zIndex: 1000, // 모달 배경의 z-index
+        },
         content: {
-          width: '60%',  // 모달의 너비를 조절합니다.
-          height: '60%',  // 모달의 높이를 조절합니다.
+          width: '40%',  // 모달의 너비를 조절합니다.
+          height: '30%',  // 모달의 높이를 조절합니다.
           margin: 'auto'  // 모달을 화면 중앙에 위치시킵니다.
         }
       }}

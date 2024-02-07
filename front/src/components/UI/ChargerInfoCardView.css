@@ -1,0 +1,29 @@
+.cardView {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .card {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    width: calc(33.333% - 20px);
+    box-sizing: border-box;
+  }
+  
+  .card h3 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .card p {
+    margin: 10px 0 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
