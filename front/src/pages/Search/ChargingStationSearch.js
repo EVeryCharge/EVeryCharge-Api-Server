@@ -1,13 +1,16 @@
 import { Box } from "@material-ui/core";
-import React, { useEffect, useMemo, useRef, useState } from "react";
 import ChargingStationSearchBar from "./ChargingStationSearchBar";
 import ChargingStationSearchMap from "./ChargingStationSearchMap";
 
 const ChargingStationSearch = () => {
   return (
-    <Box sx={{ flexWrap: "wrap" }}>
-      <ChargingStationSearchBar />
-      <ChargingStationSearchMap />
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ display: "flex" }}>
+        <ChargingStationSearchBar />
+      </Box>
+      <Box sx={{ display: "flex-1" }}>
+        <ChargingStationSearchMap />
+      </Box>
     </Box>
   );
 };
