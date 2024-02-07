@@ -15,6 +15,9 @@ import ReportList from "./pages/Report/ReportList";
 import ReportDetail from "./pages/Report/ReportDetail";
 import ReportForm from "./pages/Report/ReportForm";
 import Signup from "./pages/Signup/Signup";
+import Inquiry from "./pages/Inquiry/Inquiry";
+import InquiryForm from "./pages/Inquiry/InquiryForm";
+import InquiryDetail from "./pages/Inquiry/InquiryDetail"; 
 
 function App() {
   return (
@@ -39,6 +42,9 @@ function App() {
           <Route path="/report/:id" element={<ReportDetail />} />
           <Route path="/report/form" element={<ReportForm />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/inquiry" element={<Inquiry />} />
+          <Route path="/inquiry/form" element={<InquiryForm />} />
+          <Route path="/inquiry/:id" element={<InquiryDetail/>}/> 
         </Routes>
         <Footer />
       </AuthProvider>
