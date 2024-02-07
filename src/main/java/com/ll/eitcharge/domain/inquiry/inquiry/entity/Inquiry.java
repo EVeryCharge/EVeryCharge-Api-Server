@@ -29,6 +29,5 @@ public class Inquiry extends BaseTime {
     private String inquiryState;
     private String inquiryType;
     private int viewCount;
-    private boolean isPublished;
-    private LocalDateTime createdDate;
+    private Boolean isPublished;
 }

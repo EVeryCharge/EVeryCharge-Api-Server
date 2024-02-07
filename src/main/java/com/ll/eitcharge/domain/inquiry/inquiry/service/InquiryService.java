@@ -31,7 +31,7 @@ public class InquiryService {
 
     public Page<InquiryResponseDto> getList(int page, int pageSize) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
+        sorts.add(Sort.Order.desc("createdDate"));
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
 
         Page<Inquiry> inquiryPage = inquiryRepository.findAll(pageable);
@@ -39,33 +39,18 @@ public class InquiryService {
         return inquiryPage.map(InquiryResponseDto::new);
     }
 
-        @Transactional
-        public InquiryResponseDto create(InquiryRequestDto requestDto, String username) {
-            Inquiry inquiry = Inquiry.builder()
-                    .content(requestDto.getContent())
-                    .title(requestDto.getTitle())
-                    .inquiryType(requestDto.getInquiryType())
-                    .isPublished(requestDto.isPublished())
-                    .writer(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
-                    .createdDate(LocalDateTime.now())
-                    .build();
-            inquiryRepository.save(inquiry);
-            return new InquiryResponseDto(inquiry);
+    @Transactional
+    public InquiryResponseDto create(InquiryRequestDto requestDto, String username) {
+        Inquiry inquiry = Inquiry.builder()
+                .content(requestDto.getContent())
+                .title(requestDto.getTitle())
+                .inquiryType(requestDto.getInquiryType())
+                .isPublished(requestDto.getIsPublished())
+                .writer(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
+                .inquiryState("답변대기")
+                .build();
+        inquiryRepository.save(inquiry);
+        return new InquiryResponseDto(inquiry);
 
-        }
+    }
 }
-
-//    @Transactional
-//    public ReportResponseDto create(ReportRequestDto requestDto, String username) {
-//        Report report = Report.builder()
-//                .chargingStation(chargingStationService.findById(requestDto.getStatId()))
-//                .member(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
-//                .title(requestDto.getTitle())
-//                .content(requestDto.getContent())
-//                .reportType(requestDto.getReportType())
-//                .completed(false)
-//                .build();
-//
-//        reportRepository.save(report);
-//        return new ReportResponseDto(report);
-//    }
