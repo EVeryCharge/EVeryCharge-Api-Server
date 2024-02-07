@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
-import GoBackButton from "../../components/GoBackButton";
+import GoBackButton from "../../components/Common/GoBackButton";
 
 const ErrorPage = ({ errorCode, errorTitle, errorDescription }) => {
   return (

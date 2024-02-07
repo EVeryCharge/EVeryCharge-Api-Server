@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../components/AuthContext';
-import KakaoLoginButton from '../../components/KakaoLoginButton';
+import { useAuth } from '../../utils/AuthContext';
+import KakaoLoginButton from './KakaoLoginButton';
 import { HttpGet, HttpPost } from '../../services/HttpService';
 
 const Login = () => {

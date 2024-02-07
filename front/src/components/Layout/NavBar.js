@@ -1,8 +1,8 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
-import UsernameStorage from "../components/UsernameStorage";
+import { useAuth } from "../../utils/AuthContext";
+import UsernameStorage from "../../utils/UsernameStorage";
 
 
 const Navbar = () => {
