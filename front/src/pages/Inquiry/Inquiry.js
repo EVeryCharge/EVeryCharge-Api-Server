@@ -87,11 +87,13 @@ return (
   <Box mt={4} mb={4}>
     <ReportHeader
       headerTitle={"1대1 문의하기"}
-      headerDescription={"1대1 문의 게시판입니다."}
-      // actorCanCreate={data?.content[0]?.actorCanCreate || false}
-      // actorCanManagerSearch={data?.content[0]?.actorCanManagerSearch || false}
-      // isEditPage={false}
-    />
+      headerDescription={"1대1 문의 게시판입니다."}      
+    />    
+    <Link to="/inquiry/form">
+      <button type="button">
+        새 글쓰기
+      </button>
+    </Link>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -136,13 +138,7 @@ return (
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </TableContainer>
-    <Link to="/inquiry/form">
-      <button type="button">
-        새 글쓰기
-      </button>
-    </Link>
-  </Box>
-  
+  </Box>   
 );
 };
 
