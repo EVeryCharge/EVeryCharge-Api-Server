@@ -12,7 +12,7 @@ import {
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { HttpGet } from "../../services/HttpService";
-import ReportHeader from "../../components/ReportHeader";
+import ReportHeader from "./ReportHeader";
 
 const ReportList = () => {
   const [data, setData] = React.useState({

@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 @Component
@@ -30,6 +32,18 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
     @Value("${custom.site.frontUrl}")
     private String frontUrl;
 
+    public String extractDomainFromFrontUrl(String frontUrl) {
+        URI uri = null;
+        try {
+            uri = new URI(frontUrl);
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+        }
+
+        String domain = uri.getHost();
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -37,21 +51,21 @@ public class ASuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = authTokenService.genAccessToken(member);
         String refreshToken = member.getRefreshToken();
 
-
         String redirectUrlAfterSocialLogin = rq.getCookieValue("redirectUrlAfterSocialLogin", "");
+        String domain = extractDomainFromFrontUrl(frontUrl);
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
                 .path("/")
-                .domain("localhost")
-                .sameSite("Strict")
+                .domain(domain)
+                .sameSite("None")
                 .secure(true)
                 .httpOnly(true)
                 .build();
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .path("/")
-                .domain("localhost")
-                .sameSite("Strict")
+                .domain(domain)
+                .sameSite("None")
                 .secure(true)
                 .httpOnly(true)
                 .build();

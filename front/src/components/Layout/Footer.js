@@ -2,7 +2,8 @@
 
 import React from 'react';
 import './Footer.css';
-import githubLogo from '../assets/github-logo.png'; // 깃허브 로고 이미지를 적절한 경로에서 불러와주세요.
+import githubLogo from '../../assets/image/github-logo.png'; // 깃허브 로고 이미지를 적절한 경로에서 불러와주세요.
+
 
 const Footer = () => {
   return (
