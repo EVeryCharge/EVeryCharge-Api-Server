@@ -1,11 +1,10 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
-import java.time.LocalDateTime;
-
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +19,7 @@ public class ChargerStateDto {
     private LocalDateTime nowTsdt;
     private String output;
     private String method;
+    private String useTime;
 
     public ChargerStateDto(Charger charger) {
         this.id = charger.getId();
@@ -32,5 +32,6 @@ public class ChargerStateDto {
         this.nowTsdt = charger.getNowTsdt();
         this.output = charger.getOutput();
         this.method = charger.getMethod();
+        this.useTime = charger.getChargingStation().getUseTime();
     }
 }
