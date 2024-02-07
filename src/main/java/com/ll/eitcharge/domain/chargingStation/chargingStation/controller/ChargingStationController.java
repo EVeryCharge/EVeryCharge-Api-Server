@@ -40,7 +40,7 @@ public class ChargingStationController {
             @RequestParam double neLat,
             @RequestParam double neLng
     ) {
-        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
+        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng));
     }
 
     @GetMapping("/chargerStatus/fromApi")
@@ -83,14 +83,56 @@ public class ChargingStationController {
             @RequestParam(value = "kw", defaultValue = "") String kw,
 
             // 페이지 정보 (1부터 시작)
-            @RequestParam( defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int page,
 
             // 페이지 사이즈
-            @RequestParam( defaultValue = "20") int pageSize
+            @RequestParam(defaultValue = "20") int pageSize
     ){
         return ResponseEntity.ok(chargingStationService.search(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
 
+    //ST_Distance_Sphere를 JPA에서 지원하지 않는다...
+    @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 나의 위치기준")
+    @GetMapping("/searchBaseDistance")
+    public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> Searchlist(
+            // 개방 여부 (Y / N)
+            @RequestParam(value = "limitYn", required = false) String limitYn,
+
+            // 무료 주차 (Y / N)
+            @RequestParam(value = "parkingFree", required = false) String parkingFree,
+
+            // 지역 단위 코드 (ex. 서울시 : 11 경기도 : 41 ... ), TODO 현위치 로직 구현
+            @RequestParam(value = "zcode", required = false) String zcode,
+
+            // 지역 세부단위 코드 (ex. 종로구 : 11110, 서구 : 41130 ...)
+            @RequestParam(value = "zscode", required = false) String zscode,
+
+            // 상위 주요 기관 여부 (Y: 점유율 80% 상위 15개 기관 소속 충전소, N : 하위 기타 기관 소속 충전소)
+            @RequestParam(value = "isPrimary", required = false) String isPrimary,
+
+            // 기관 코드 (ex. 차지비 : PI)
+            @RequestParam(value = "busiId", required = false) List<String> busiIds,
+
+            // 보유 충전기 타입 (01 ~ 08)
+            @RequestParam(value = "chgerType", required = false) List<String> chgerTypes,
+
+            // 검색 키워드 (충전소명, 주소 LIKE)
+            @RequestParam(value = "kw", required = false) String kw,
+
+            // 페이지 정보 (1부터 시작)
+            @RequestParam(defaultValue = "1") int page,
+
+            // 페이지 사이즈
+            @RequestParam(defaultValue = "20") int pageSize,
+
+            // 경도 디폴트 서울시 중구
+            @RequestParam(value = "lng", defaultValue = "126.9784") double lng,
+            // 위도 디폴트 서울시 중구
+            @RequestParam(value = "lat", defaultValue = "37.5665") double lat
+    ){
+        return ResponseEntity.ok(chargingStationService.searchlist(
+                limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat));
+    }
 
 }

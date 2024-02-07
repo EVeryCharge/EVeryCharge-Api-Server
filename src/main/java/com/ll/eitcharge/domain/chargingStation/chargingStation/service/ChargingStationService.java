@@ -37,7 +37,7 @@ public class ChargingStationService {
 	private final ChargingStationRepository chargingStationRepository;
 	private final ObjectMapper objectMapper;
 	private final ChargerRepository chargerRepository;
-	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng) {
+	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double neLat, double swLng, double neLng) {
 		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng);
 		return chargingStations.stream()
 				.map(ChargingStationSearchResponseDto::new)
@@ -131,5 +131,37 @@ public class ChargingStationService {
 		return chargerStates.stream()
 				.map(ChargerStateDto::new)
 				.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public ChargingStationSearchResponseDtoWithExecuteTime searchlist(
+			String limitYn,
+			String parkingFree,
+			String zcode,
+			String zscode,
+			String isPrimary,
+			List<String> busiIds,
+			List<String> chgerTypes,
+			String kw,
+			int page,
+			int pageSize,
+			double lng,
+			double lat
+	) {
+
+            Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+            long startTime = System.nanoTime();
+            Page<ChargingStation> chargingStations = chargingStationRepository.searchList(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat ,lng, pageable);
+            long endTime = System.nanoTime();
+
+            return new ChargingStationSearchResponseDtoWithExecuteTime(
+                    calculateExecutionTime(startTime, endTime),
+                    chargingStations.map(ChargingStationSearchResponseDto::new)
+            );
+
+
+
+
 	}
 }
