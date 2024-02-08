@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -10,7 +11,6 @@ import {
 import { Search } from "@material-ui/icons";
 import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
-import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearchBar = () => {
@@ -23,7 +23,6 @@ const ChargingStationSearchBar = () => {
   const [zscode, setZscode] = useState("");
   const [busiIds, setBusiIds] = useState([]);
   const [chgerId, setChgerId] = useState([]);
-
   const [baseItem, setBaseItem] = useState(null);
 
   useEffect(() => {
@@ -35,7 +34,6 @@ const ChargingStationSearchBar = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -51,8 +49,25 @@ const ChargingStationSearchBar = () => {
     setLimit(!limit);
   };
 
-  const handleZcodeChange = (event) => {
-    setZcode(event.target.value);
+  const handleZcodeChange = async (event) => {
+    const selectedZcode = event.target.value;
+    setZcode(selectedZcode);
+
+    try {
+      const regionDetailItem = await HttpGet(
+        "/api/v1/chargingStation/search/region",
+        { zcode: selectedZcode }
+      );
+
+      setBaseItem((prevBaseItem) => ({
+        ...prevBaseItem,
+        zscodes: regionDetailItem.zscodes,
+        regionDetailNames: regionDetailItem.regionDetialNames,
+      }));
+      setZscode("");
+    } catch (error) {
+      console.error("Error fetching region detail data:", error);
+    }
   };
 
   const handleZscodeChange = (event) => {
@@ -69,7 +84,6 @@ const ChargingStationSearchBar = () => {
 
   return (
     <Card variant="outlined" className={classes.baseLayer}>
-      {/* 검색 */}
       <Box className={classes.searchBarAndToggleContainer}>
         <TextField
           size="small"
@@ -85,7 +99,6 @@ const ChargingStationSearchBar = () => {
             ),
           }}
         />
-        {/* 충전가능, 무료주차, 개방여부 토글버튼 */}
         <Box className={classes.toggleContainer}>
           <ToggleButton
             size="small"
@@ -117,11 +130,9 @@ const ChargingStationSearchBar = () => {
         </Box>
       </Box>
 
-      {/* 콤보박스 */}
       <Box className={classes.comboContainer}>
         {baseItem && (
           <>
-            {/* 지역단위  */}
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 지역 단위
@@ -133,8 +144,15 @@ const ChargingStationSearchBar = () => {
                 onChange={handleZcodeChange}
                 displayEmpty
                 className={classes.selectEmpty}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 190,
+                    },
+                  },
+                }}
               >
-                <MenuItem value="">현 위치</MenuItem>
+                <MenuItem value="">전체</MenuItem>
                 {baseItem.zcodes.map((code, index) => (
                   <MenuItem key={index} value={code}>
                     {baseItem.regionNames[index]}
@@ -142,7 +160,6 @@ const ChargingStationSearchBar = () => {
                 ))}
               </Select>
             </Box>
-            {/* 세부지역 */}
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 세부 지역
@@ -154,12 +171,18 @@ const ChargingStationSearchBar = () => {
                 onChange={handleZscodeChange}
                 displayEmpty
                 className={classes.selectEmpty}
-                inputProps={{ "aria-label": "세부지역" }}
-                disabled={!baseItem || baseItem.zscodes === null}
+                disabled={
+                  !baseItem || baseItem.zscodes === null || zcode === ""
+                }
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 190,
+                    },
+                  },
+                }}
               >
-                <MenuItem value="" disabled>
-                  세부지역
-                </MenuItem>
+                <MenuItem value="">전체</MenuItem>
                 {baseItem &&
                   baseItem.zscodes &&
                   baseItem.zscodes.map((code, index) => (
@@ -169,7 +192,6 @@ const ChargingStationSearchBar = () => {
                   ))}
               </Select>
             </Box>
-            {/* 운영기관 */}
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 운영기관
@@ -183,12 +205,19 @@ const ChargingStationSearchBar = () => {
                 sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
-                  <div className={classes.chips}>
+                  <div>
                     {selected.length === 0
                       ? "전체"
                       : `${selected.length}개 선택됨`}
                   </div>
                 )}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 190,
+                    },
+                  },
+                }}
               >
                 {baseItem.busiIds.map((code, index) => (
                   <MenuItem key={index} value={code}>
@@ -197,7 +226,6 @@ const ChargingStationSearchBar = () => {
                 ))}
               </Select>
             </Box>
-            {/* 충전기 타입 */}
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 충전기 타입
@@ -211,12 +239,19 @@ const ChargingStationSearchBar = () => {
                 sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
-                  <div className={classes.chips}>
+                  <div>
                     {selected.length === 0
                       ? "전체"
                       : `${selected.length}개 선택됨`}
                   </div>
                 )}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 190,
+                    },
+                  },
+                }}
               >
                 <MenuItem value="">전체</MenuItem>
                 {baseItem.chgerIds.map((code, index) => (
@@ -229,7 +264,6 @@ const ChargingStationSearchBar = () => {
           </>
         )}
       </Box>
-      {/* TODO 가나다 순 / 거리 순 */}
       <hr />
       <Box>{/* 충전소 리스트 */}</Box>
     </Card>
@@ -246,7 +280,6 @@ const useStyles = makeStyles({
     padding: "20px",
     borderRadius: "10px",
   },
-
   searchBarAndToggleContainer: {
     display: "flex",
     flexDirection: "column",
@@ -254,23 +287,24 @@ const useStyles = makeStyles({
     alignItems: "flex-start",
     width: "100%",
   },
-
   toggleContainer: {
     display: "flex",
     marginTop: "10px",
   },
-
   comboContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flext-start",
     alignItems: "center",
     marginTop: "30px",
     marginBottom: "40px",
   },
-
   inputLabelStyle: {
     marginLeft: "2px",
     marginBottom: "5px",
     fontSize: "10px",
+  },
+  selectMenu: {
+    maxHeight: "50px",
+    fontSize: "11pt", // 폰트 크기 설정
   },
 });
