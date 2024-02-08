@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   TextField,
   makeStyles,
-  MenuItem,
-  FormHelperText,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
-import ToggleButton from "@mui/material/ToggleButton";
 import Select from "@mui/material/Select";
+import ToggleButton from "@mui/material/ToggleButton";
+import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearchBar = () => {
