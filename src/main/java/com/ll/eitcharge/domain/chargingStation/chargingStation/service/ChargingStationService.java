@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -141,15 +142,6 @@ public class ChargingStationService {
 				calculateExecutionTime(startTime, endTime),
 				chargingStations.map(ChargingStationSearchResponseDto::new));
 	}
-
-	public List<ChargerStateDto> chargerStateSearch(String statId) {
-
-		List<Charger> chargerStates = chargerRepository.findByChargingStationStatId(statId);
-		return chargerStates.stream()
-				.map(ChargerStateDto::new)
-				.toList();
-	}
-
 	private String calculateExecutionTime(long startTime, long endTime) {
 		long executionTimeInNano = endTime - startTime;
 		return String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
@@ -182,19 +174,16 @@ public class ChargingStationService {
 			double lat
 	) {
 
-            Pageable pageable = PageRequest.of(page - 1, pageSize);
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-            long startTime = System.nanoTime();
-            Page<ChargingStation> chargingStations = chargingStationRepository.searchList(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat ,lng, pageable);
-            long endTime = System.nanoTime();
+		long startTime = System.nanoTime();
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchList(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat ,lng, pageable);
+		long endTime = System.nanoTime();
 
-            return new ChargingStationSearchResponseDtoWithExecuteTime(
-                    calculateExecutionTime(startTime, endTime),
-                    chargingStations.map(ChargingStationSearchResponseDto::new)
-            );
-
-
-
+		return new ChargingStationSearchResponseDtoWithExecuteTime(
+				calculateExecutionTime(startTime, endTime),
+				chargingStations.map(ChargingStationSearchResponseDto::new)
+		);
 
 	}
 }
