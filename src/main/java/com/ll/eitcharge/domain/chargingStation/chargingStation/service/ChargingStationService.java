@@ -1,22 +1,5 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
@@ -33,8 +16,24 @@ import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.eitcharge.domain.region.service.RegionService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -143,20 +142,48 @@ public class ChargingStationService {
 				calculateExecutionTime(startTime, endTime),
 				chargingStations.map(ChargingStationSearchResponseDto::new));
 	}
-
-	public List<ChargerStateDto> chargerStateSearch(String statId) {
-
-		List<Charger> chargerStates = chargerRepository.findByChargingStationStatId(statId);
-		return chargerStates.stream()
-				.map(ChargerStateDto::new)
-				.toList();
-	}
-
 	private String calculateExecutionTime(long startTime, long endTime) {
 		long executionTimeInNano = endTime - startTime;
 		return String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
 			executionTimeInNano,
 			executionTimeInNano / 1_000_000,
 			(long) (executionTimeInNano / 1_000_000_000.0));
+	}
+
+	public List<ChargerStateDto> chargerStateSearch(String statId) {
+
+		List<Charger> chargerStates = chargerRepository.findByChargingStationStatId(statId);
+		return chargerStates.stream()
+				.map(ChargerStateDto::new)
+				.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public ChargingStationSearchResponseDtoWithExecuteTime searchlist(
+			String limitYn,
+			String parkingFree,
+			String zcode,
+			String zscode,
+			String isPrimary,
+			List<String> busiIds,
+			List<String> chgerTypes,
+			String kw,
+			int page,
+			int pageSize,
+			double lng,
+			double lat
+	) {
+
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+		long startTime = System.nanoTime();
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchList(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat ,lng, pageable);
+		long endTime = System.nanoTime();
+
+		return new ChargingStationSearchResponseDtoWithExecuteTime(
+				calculateExecutionTime(startTime, endTime),
+				chargingStations.map(ChargingStationSearchResponseDto::new)
+		);
+
 	}
 }
