@@ -167,19 +167,19 @@ public class ChargingStationService {
 	}
 
 	@Transactional(readOnly = true)
-	public ChargingStationSearchResponseDtoWithExecuteTime searchlist(
-			String limitYn,
-			String parkingFree,
-			String zcode,
-			String zscode,
-			String isPrimary,
-			List<String> busiIds,
-			List<String> chgerTypes,
-			String kw,
-			int page,
-			int pageSize,
-			double lng,
-			double lat
+	public WithExecTime<Page<ChargingStationSearchResponseDto>> searchlist(
+		String limitYn,
+		String parkingFree,
+		String zcode,
+		String zscode,
+		String isPrimary,
+		List<String> busiIds,
+		List<String> chgerTypes,
+		String kw,
+		int page,
+		int pageSize,
+		double lng,
+		double lat
 	) {
 
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
@@ -194,5 +194,12 @@ public class ChargingStationService {
 			chargingStations.map(this::convertToSearchResponseDto)
 		);
 
+	}
+
+	public ChargingStationSearchResponseDto convertToSearchResponseDto(
+		ChargingStationWithDistanceDto chargingStationDto) {
+		return (
+			new ChargingStationSearchWithDistanceResponseDto(
+				findById(chargingStationDto.getId()), chargingStationDto.getDistance()));
 	}
 }
