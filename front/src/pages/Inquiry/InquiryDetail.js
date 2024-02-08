@@ -31,6 +31,7 @@ const InquiryDetail = ({  }) => {
     const [inquiry, setInquiry] = useState({});
     const {id} = useParams();
     const navigate = useNavigate();
+    const sessionUsername = sessionStorage.getItem("username");
 
     const handleUpdate = () => {
         navigate(`/modify/${id}`, { 
@@ -97,10 +98,12 @@ const InquiryDetail = ({  }) => {
             <Typography className={classes.writer} align="right">
                 작성자 : {inquiry.writer}
             </Typography>
-            <div>
-                <Button onClick={handleUpdate}>수정</Button>
-                <Button onClick={handleDelete}>삭제</Button>
-            </div>
+            {sessionUsername === inquiry.writer && (
+                <div>
+                    <Button onClick={handleUpdate}>수정</Button>
+                    <Button onClick={handleDelete}>삭제</Button>
+                </div>
+            )}
         </CardContent>
     </Card>
     );

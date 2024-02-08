@@ -21,7 +21,6 @@ public class InquiryResponseDto {
     private Boolean isPublished;
     private int viewCount;
     private LocalDateTime createdDate;
-    private String loginMember;
 
     public InquiryResponseDto(Inquiry entity) {
         this.id = entity.getId();
