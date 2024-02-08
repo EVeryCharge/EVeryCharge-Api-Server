@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Card,
+  Chip,
+  FormControl,
   InputAdornment,
   InputLabel,
+  List,
+  ListItem,
   MenuItem,
   TextField,
+  Typography,
   makeStyles,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
+import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearchBar = () => {
@@ -85,20 +91,29 @@ const ChargingStationSearchBar = () => {
   return (
     <Card variant="outlined" className={classes.baseLayer}>
       <Box className={classes.searchBarAndToggleContainer}>
-        <TextField
-          size="small"
-          sx={{ fontSize: "11px", width: "100%" }}
-          label="충전소 검색"
-          placeholder="검색어를 입력해주세요."
-          variant="outlined"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search color="action" />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
+          <FormControl fullWidth>
+            <TextField
+              size="small"
+              sx={{ fontSize: "11px" }}
+              label="충전소 검색"
+              placeholder="검색어를 입력해주세요."
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+          <FormControl sx={{ m: 1 }}>
+            <Button variant="contained" color="primary" sx={{ marginLeft: 1 }}>
+              검색
+            </Button>
+          </FormControl>
+        </Box>
         <Box className={classes.toggleContainer}>
           <ToggleButton
             size="small"
@@ -265,7 +280,90 @@ const ChargingStationSearchBar = () => {
         )}
       </Box>
       <hr />
-      <Box>{/* 충전소 리스트 */}</Box>
+      {/* 검색 결과 리스트 */}
+      <Box className={classes.ListContainer}>
+        <List>
+          <ListItem className={classes.ListItemContainer}>
+            <div className={classes.ListItemInfo}>
+              <Typography
+                variant="h6"
+                style={{ fontWeight: "bold", color: "blue" }}
+              >
+                충전소명
+              </Typography>
+              <Typography variant="subtitle2">운영기관</Typography>
+              <div style={{ display: "flex" }}>
+                <Typography
+                  variant="subtitle2"
+                  style={{ fontWeight: "bold", marginRight: "5px" }}
+                >
+                  0km
+                </Typography>
+                <Typography variant="subtitle2">주소</Typography>
+              </div>
+              <div className={classes.ListItemYnContainer}>
+                <Chip label="충전가능" color="primary" variant="outlined" />
+                <Chip label="개방" color="primary" variant="outlined" />
+                <Chip label="무료주차" color="primary" variant="outlined" />
+              </div>
+            </div>
+            <Chip label="이동" color="secondary" clickable />
+          </ListItem>
+
+          <ListItem className={classes.ListItemContainer}>
+            <div className={classes.ListItemInfo}>
+              <Typography
+                variant="h6"
+                style={{ fontWeight: "bold", color: "blue" }}
+              >
+                충전소명
+              </Typography>
+              <Typography variant="subtitle2">운영기관</Typography>
+              <div style={{ display: "flex" }}>
+                <Typography
+                  variant="subtitle2"
+                  style={{ fontWeight: "bold", marginRight: "5px" }}
+                >
+                  0km
+                </Typography>
+                <Typography variant="subtitle2">주소</Typography>
+              </div>
+              <div className={classes.ListItemYnContainer}>
+                <Chip label="충전가능" color="primary" variant="outlined" />
+                <Chip label="개방" color="primary" variant="outlined" />
+                <Chip label="무료주차" color="primary" variant="outlined" />
+              </div>
+            </div>
+            <Chip label="이동" color="secondary" clickable />
+          </ListItem>
+          <ListItem className={classes.ListItemContainer}>
+            <div className={classes.ListItemInfo}>
+              <Typography
+                variant="h6"
+                style={{ fontWeight: "bold", color: "blue" }}
+              >
+                충전소명
+              </Typography>
+              <Typography variant="subtitle2">운영기관</Typography>
+              <div style={{ display: "flex" }}>
+                <Typography
+                  variant="subtitle2"
+                  style={{ fontWeight: "bold", marginRight: "5px" }}
+                >
+                  0km
+                </Typography>
+                <Typography variant="subtitle2">주소</Typography>
+              </div>
+              <div className={classes.ListItemYnContainer}>
+                <Chip label="충전가능" color="primary" variant="outlined" />
+                <Chip label="개방" color="primary" variant="outlined" />
+                <Chip label="무료주차" color="primary" variant="outlined" />
+              </div>
+            </div>
+            <Chip label="이동" color="secondary" clickable />
+          </ListItem>
+        </List>
+      </Box>
     </Card>
   );
 };
@@ -276,7 +374,6 @@ const useStyles = makeStyles({
   baseLayer: {
     backgroundColor: "#EFF8FB",
     width: "500px",
-    height: "calc(100vh - 205px)",
     padding: "20px",
     borderRadius: "10px",
   },
@@ -285,6 +382,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
+    maxWidth: "100%",
     width: "100%",
   },
   toggleContainer: {
@@ -303,8 +401,29 @@ const useStyles = makeStyles({
     marginBottom: "5px",
     fontSize: "10px",
   },
-  selectMenu: {
-    maxHeight: "50px",
-    fontSize: "11pt", // 폰트 크기 설정
+  ListContainer: {
+    overflowY: "auto",
+    maxHeight: "300px",
+  },
+  ListItemContainer: {
+    borderBottom: "1px groove grey",
+    marginBottom: "15px",
+    padding: "2px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    fontSize: "11px",
+  },
+  ListItemInfo: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  ListItemYnContainer: {
+    display: "flex",
+    marginTop: "5px",
+    marginBottom: "10px",
+    "& > *": {
+      marginRight: "5px",
+    },
   },
 });
