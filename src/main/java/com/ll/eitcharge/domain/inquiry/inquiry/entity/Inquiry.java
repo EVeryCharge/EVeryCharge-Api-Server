@@ -38,4 +38,8 @@ public class Inquiry extends BaseTime {
         this.inquiryType = inquiryRequestDto.getInquiryType();
         this.isPublished = inquiryRequestDto.getIsPublished();
     }
+
+    public void increaseViewCount(){
+        this.viewCount +=1;
+    }
 }
