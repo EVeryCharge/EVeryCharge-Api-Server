@@ -1,5 +1,6 @@
 package com.ll.eitcharge.domain.inquiry.inquiry.entity;
 
+import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryRequestDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.Entity;
@@ -30,4 +31,11 @@ public class Inquiry extends BaseTime {
     private String inquiryType;
     private int viewCount;
     private Boolean isPublished;
+
+    public void update(InquiryRequestDto inquiryRequestDto) {
+        this.title = inquiryRequestDto.getTitle();
+        this.content = inquiryRequestDto.getContent();
+        this.inquiryType = inquiryRequestDto.getInquiryType();
+        this.isPublished = inquiryRequestDto.getIsPublished();
+    }
 }

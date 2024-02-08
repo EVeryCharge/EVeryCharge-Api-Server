@@ -57,16 +57,26 @@ public class InquiryController {
     public ResponseEntity<InquiryResponseDto> getInquiry(@PathVariable Long id) {
         InquiryResponseDto inquiry = inquiryService.getInquiryById(id);
 
-
         return ResponseEntity.ok(inquiry);
     }
 
-//    @GetMapping("/{id}")
-//    public RsData<ReportResponseDto> get(@PathVariable(value = "id") Long id) {
-//
-//        ReportResponseDto responseDto = reportService.get(id);
-//        loadReportAccess(responseDto);
-//        return RsData.of("200", "ok", responseDto);
-//    }
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public ResponseEntity<InquiryResponseDto> modify(
+            @PathVariable Long id,
+            @RequestBody InquiryRequestDto inquiryRequestDto,
+            Principal principal) {
+
+        return ResponseEntity.ok(inquiryService.modify(id, inquiryRequestDto, principal.getName()));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public void delete(
+            @PathVariable Long id,
+            Principal principal) {
+        inquiryService.delete(id, principal.getName());
+    }
+
 
 }

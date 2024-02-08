@@ -57,6 +57,37 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 문의사항이 없습니다. id=" + id));
 
+
         return new InquiryResponseDto(inquiry);
+    }
+
+    @Transactional
+    public InquiryResponseDto modify(Long id, InquiryRequestDto inquiryRequestDto, String username) {
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 글이 없습니다. id=" + id));
+
+        if (!inquiry.getWriter().getUsername().equals(username)) {
+            throw new GlobalException("수정권한이 없습니다.");
+        }
+        System.out.println(inquiryRequestDto.getTitle());
+        System.out.println(inquiryRequestDto.getContent());
+        System.out.println(inquiryRequestDto.getInquiryType());
+        System.out.println(inquiryRequestDto.getIsPublished());
+        System.out.println(inquiry.getId());
+
+        inquiry.update(inquiryRequestDto);
+        return new InquiryResponseDto(inquiry);
+    }
+
+    @Transactional
+    public void delete(Long id, String username){
+        Inquiry inquiry = inquiryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 글이 없습니다. id=" + id));
+
+        if (!inquiry.getWriter().getUsername().equals(username)) {
+            throw new GlobalException("삭제권한이 없습니다.");
+        }
+
+        inquiryRepository.delete(inquiry);
     }
 }
