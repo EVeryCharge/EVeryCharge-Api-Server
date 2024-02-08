@@ -1,22 +1,12 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
-import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
-import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
-import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
-import com.ll.eitcharge.domain.region.service.RegionService;
-import com.ll.eitcharge.global.exceptions.GlobalException;
-import com.ll.eitcharge.global.rsData.RsData;
-import lombok.RequiredArgsConstructor;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +18,27 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
+import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationWithDistanceDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.WithExecTime;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
+import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
+import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
+import com.ll.eitcharge.domain.region.service.RegionService;
+import com.ll.eitcharge.global.exceptions.GlobalException;
+import com.ll.eitcharge.global.rsData.RsData;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -45,6 +50,7 @@ public class ChargingStationService {
 	private final RegionDetailService regionDetailService;
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
+	private final ChargingStationSearchRepository chargingStationSearchRepository;
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -118,30 +124,32 @@ public class ChargingStationService {
 		);
 	}
 
-	public ChargingStationSearchResponseDtoWithExecuteTime search(
-			String limitYn,
-			String parkingFree,
-			String zcode,
-			String zscode,
-			String isPrimary,
-			List<String> busiIds,
-			List<String> chgerTypes,
-			String kw,
-			int page,
-			int pageSize
+	public WithExecTime<Page<ChargingStationSearchResponseDto>> search(
+		String limitYn,
+		String parkingFree,
+		String zcode,
+		String zscode,
+		String isPrimary,
+		List<String> busiIds,
+		List<String> chgerTypes,
+		String kw,
+		int page,
+		int pageSize
 	) {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("statId"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
 		long startTime = System.nanoTime();
-		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, pageable);
+		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode,
+			isPrimary, busiIds, chgerTypes, kw, pageable);
 		long endTime = System.nanoTime();
 
-		return new ChargingStationSearchResponseDtoWithExecuteTime(
-				calculateExecutionTime(startTime, endTime),
-				chargingStations.map(ChargingStationSearchResponseDto::new));
+		return WithExecTime.of(
+			calculateExecutionTime(startTime, endTime),
+			chargingStations.map(ChargingStationSearchResponseDto::new));
 	}
+
 	private String calculateExecutionTime(long startTime, long endTime) {
 		long executionTimeInNano = endTime - startTime;
 		return String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
@@ -159,31 +167,39 @@ public class ChargingStationService {
 	}
 
 	@Transactional(readOnly = true)
-	public ChargingStationSearchResponseDtoWithExecuteTime searchlist(
-			String limitYn,
-			String parkingFree,
-			String zcode,
-			String zscode,
-			String isPrimary,
-			List<String> busiIds,
-			List<String> chgerTypes,
-			String kw,
-			int page,
-			int pageSize,
-			double lng,
-			double lat
+	public WithExecTime<Page<ChargingStationSearchResponseDto>> searchlist(
+		String limitYn,
+		String parkingFree,
+		String zcode,
+		String zscode,
+		String isPrimary,
+		List<String> busiIds,
+		List<String> chgerTypes,
+		String kw,
+		int page,
+		int pageSize,
+		double lng,
+		double lat
 	) {
 
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
 		long startTime = System.nanoTime();
-		Page<ChargingStation> chargingStations = chargingStationRepository.searchList(limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat ,lng, pageable);
+		Page<ChargingStationWithDistanceDto> chargingStations = chargingStationSearchRepository.searchList(limitYn, parkingFree, zcode,
+			zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, pageable);
 		long endTime = System.nanoTime();
 
-		return new ChargingStationSearchResponseDtoWithExecuteTime(
-				calculateExecutionTime(startTime, endTime),
-				chargingStations.map(ChargingStationSearchResponseDto::new)
+		return WithExecTime.of(
+			calculateExecutionTime(startTime, endTime),
+			chargingStations.map(this::convertToSearchResponseDto)
 		);
 
+	}
+
+	public ChargingStationSearchResponseDto convertToSearchResponseDto(
+		ChargingStationWithDistanceDto chargingStationDto) {
+		return (
+			new ChargingStationSearchWithDistanceResponseDto(
+				findById(chargingStationDto.getId()), chargingStationDto.getDistance()));
 	}
 }

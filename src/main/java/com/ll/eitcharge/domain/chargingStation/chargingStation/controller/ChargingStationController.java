@@ -1,24 +1,27 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDtoWithExecuteTime;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
-import com.ll.eitcharge.global.rsData.RsData;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.util.MimeTypeUtils.*;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.WithExecTime;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.global.rsData.RsData;
 
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
@@ -70,7 +73,7 @@ public class ChargingStationController {
 
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param)")
     @GetMapping("/search")
-    public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> list(
+    public ResponseEntity<WithExecTime<Page<ChargingStationSearchResponseDto>>> list(
             // 개방 여부 (Y / N)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
 
@@ -108,7 +111,7 @@ public class ChargingStationController {
     //ST_Distance_Sphere를 JPA에서 지원하지 않는다...
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 나의 위치기준")
     @GetMapping("/searchBaseDistance")
-    public ResponseEntity<ChargingStationSearchResponseDtoWithExecuteTime> Searchlist(
+    public ResponseEntity<WithExecTime<Page<ChargingStationSearchResponseDto>>> Searchlist(
             // 개방 여부 (Y / N)
             @RequestParam(value = "limitYn", required = false) String limitYn,
 

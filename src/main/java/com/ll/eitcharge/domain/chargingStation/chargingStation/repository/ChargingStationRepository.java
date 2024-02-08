@@ -20,8 +20,6 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
 		"OR cs.regionDetail.zcode.regionName LIKE %:kw% ")
 	List<ChargingStation> findByReportEditKw(@Param("kw") String kw);
 
-	List<ChargingStation> findByLimitYnAndParkingFreeAndRegionDetail_Zcode_regionNameAndRegionDetail_regionDetailNameAndOperatingCompanyBusiIdAndChargers_ChgerType(String kw,String kww, String kwww, String kwwww, String kwwwww, String kwwwwww);
-
 
 	@Query(nativeQuery = true, value = """
     SELECT CS.*, ST_DISTANCE_SPHERE (CS.po1, POINT (:lng, :lat)) AS distance
