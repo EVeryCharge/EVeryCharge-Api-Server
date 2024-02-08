@@ -1,17 +1,17 @@
 import React, { useEffect,useState } from 'react';
 import axios from 'axios';
 import { HttpGet, HttpPost } from '../../services/HttpService';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@material-ui/core';
 
 const ChargerType = {
-  "01":"DC차데모",
-  "02":"AC완속",
-  "03":"DC차데모+AC3상",
-  "04":"DC콤보",
-  "05":"DC차데모+DC콤보",
-  "06":"DC차데모+AC상+DC콤보",
-  "07":"AC상",
-  "08":"DC콤보(완속)"
+  "1":"DC차데모",
+  "2":"AC완속",
+  "3":"DC차데모+AC3상",
+  "4":"DC콤보",
+  "5":"DC차데모+DC콤보",
+  "6":"DC차데모+AC상+DC콤보",
+  "7":"AC상",
+  "8":"DC콤보(완속)"
 }
 
 const ChargerState = {
@@ -24,18 +24,20 @@ const ChargerState = {
 }
 
 
+
 const ChargingStationStateTable = ({statId}) => {
     const[chargingStationData, setChargingStationData] = useState([]);
+    const availableChargersCount = chargingStationData.filter(row => row.stat === "2").length;
     useEffect(() => {
+        console.log('ChargingStationStateTable 마운트')
         // Axios를 사용하여 데이터를 가져옵니다.
-        HttpGet('/api/v1/chargingStation/${statId}/chargers')
+        HttpGet('/api/v1/chargingStation/chargerStatus',
+        {statId: statId})
           .then((response) => {
-            // 요청이 성공하면 데이터를 상태에 저장합니다.
             console.log(response);
-            console.log(response.data);
-            const itemsArray = response.data.data[0].item;
-            setChargingStationData(itemsArray);
-            console.log(itemsArray);
+            
+            setChargingStationData(response);
+            
           })
           .catch((error) => {
             // 오류가 발생하면 오류를 처리합니다.
@@ -45,6 +47,10 @@ const ChargingStationStateTable = ({statId}) => {
     
 
   return (
+    <div>
+    <Typography variant="subtitle1">
+      충전기 전체 {chargingStationData.length}대 | 충전가능 <span style={{ color: 'green' }}>{availableChargersCount}</span>대 
+    </Typography>
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
@@ -58,7 +64,7 @@ const ChargingStationStateTable = ({statId}) => {
         <TableBody>
           {chargingStationData.map((row, index) => (
             <TableRow key={index}>
-              <TableCell>{ChargerType[row.chgerType].description}</TableCell>
+              <TableCell>{ChargerType[row.chgerType]}</TableCell>
               <TableCell
                 style={{ color: ChargerState[row.stat]?.color}}>
                   {ChargerState[row.stat].description}</TableCell> 
@@ -69,6 +75,8 @@ const ChargingStationStateTable = ({statId}) => {
         </TableBody>
       </Table>
     </TableContainer>
+    </div>
+    
   );
 };
 

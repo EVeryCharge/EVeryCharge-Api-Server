@@ -23,6 +23,7 @@ public class ChargingStationSearchResponseDto {
     private String busiNm; // 운영기관명
     private String parkingFree; // 무료주차 여부
     private String limitYn; // 개방 여부
+    private String limitDetail;
 
     // API TEST 용 필드(백업)
     //    private String regionName;
@@ -47,6 +48,7 @@ public class ChargingStationSearchResponseDto {
         this.busiNm = chargingStation.getBusiNm();
         this.parkingFree = chargingStation.getParkingFree();
         this.limitYn = chargingStation.getLimitYn();
+        this.limitDetail = chargingStation.getLimitDetail();
 
         // API TEST 용 필드(백업)
         //        this.isPrimary = chargingStation.getOperatingCompany().getIsPrimary();
