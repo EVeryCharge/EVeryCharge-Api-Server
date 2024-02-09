@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReviewDto {
     private final Long id;
+    private final Long userId;
     private final String userName;
     private final String chargingStationId;
     private final int rating;
@@ -20,6 +21,7 @@ public class ReviewDto {
 
     public ReviewDto(Review review) {
         this.id = review.getId();
+        this.userId = review.getMember().getId();
         this.userName = review.getMember().getUsername();
         this.chargingStationId = review.getChargingStation().getStatId();
         this.rating = review.getRating();
