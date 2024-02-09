@@ -17,6 +17,8 @@ public class ChargingStationSearchItemResponseDto {
 	private List<String> bnms;
 	private List<String> chgerIds;
 	private List<String> chgerTypes;
+	private List<String> ranges;
+	private List<String> rangeNames;
 
 	public ChargingStationSearchItemResponseDto(
 		List<String> zcodes,
@@ -35,7 +37,10 @@ public class ChargingStationSearchItemResponseDto {
 		this.chgerTypes = Arrays.stream(chgerTypes)
 			.map(ChargerType::getValue)
 			.toList();
+		this.ranges = List.of("2000", "3000", "5000", "10000", "30000", "50000");
+		this.rangeNames = List.of("2km", "3km", "5km", "10km", "30km",	"50km");
 	}
+
 
 	public ChargingStationSearchItemResponseDto(List<String> zscodes, List<String> regionDetialNames) {
 		this.zscodes = zscodes;

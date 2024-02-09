@@ -129,7 +129,7 @@ public class ChargingStationController {
             // 위도 디폴트 서울시 중구
             @RequestParam(value = "lat", defaultValue = "37.5665") double lat,
             // 반경 제한 (m 단위, 디폴트 50km)
-            @RequestParam(value = "range", defaultValue = "50000") int range
+            @RequestParam(value = "range", defaultValue = "2000000") int range
     ){
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));

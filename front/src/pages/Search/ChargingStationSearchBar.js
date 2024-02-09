@@ -24,7 +24,7 @@ const ChargingStationSearchBar = () => {
   const [chargable, setChargable] = useState(true);
   const [parkingFree, setParkingFree] = useState(false);
   const [limit, setLimit] = useState(true);
-
+  const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
   const [zscode, setZscode] = useState("");
   const [busiIds, setBusiIds] = useState([]);
@@ -55,8 +55,17 @@ const ChargingStationSearchBar = () => {
     setLimit(!limit);
   };
 
+  const handleRangeChange = (event) => {
+    const selectedRange = event.target.value;
+
+    setZcode("");
+    setRange(selectedRange);
+  };
+
   const handleZcodeChange = async (event) => {
     const selectedZcode = event.target.value;
+
+    setRange("");
     setZcode(selectedZcode);
 
     try {
@@ -88,6 +97,17 @@ const ChargingStationSearchBar = () => {
     setChgerId(event.target.value);
   };
 
+  const handleReset = () => {
+    setChargable(true);
+    setParkingFree(false);
+    setLimit(true);
+    setRange(3000);
+    setZcode("");
+    setZscode("");
+    setBusiIds([]);
+    setChgerId([]);
+  };
+
   return (
     <Card variant="outlined" className={classes.baseLayer}>
       <Box className={classes.searchBarAndToggleContainer}>
@@ -99,6 +119,7 @@ const ChargingStationSearchBar = () => {
               label="충전소 검색"
               placeholder="검색어를 입력해주세요."
               variant="outlined"
+              color="primary"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -108,13 +129,26 @@ const ChargingStationSearchBar = () => {
               }}
             />
           </FormControl>
-          <FormControl sx={{ m: 1 }}>
-            <Button variant="contained" color="primary" sx={{ marginLeft: 1 }}>
+          <FormControl>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: "3px" }}
+            >
               검색
             </Button>
           </FormControl>
         </Box>
         <Box className={classes.toggleContainer}>
+          <Button
+            size="small"
+            variant="outlined"
+            style={{ fontSize: "11px", marginRight: "10px" }}
+            color="secondary"
+            onClick={handleReset}
+          >
+            조건 초기화
+          </Button>
           <ToggleButton
             size="small"
             sx={{ fontSize: "11px", mr: "10px" }}
@@ -148,6 +182,33 @@ const ChargingStationSearchBar = () => {
       <Box className={classes.comboContainer}>
         {baseItem && (
           <>
+            <Box>
+              <InputLabel className={classes.inputLabelStyle}>
+                반경 단위
+              </InputLabel>
+              <Select
+                size="small"
+                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                value={range}
+                displayEmpty
+                onChange={handleRangeChange}
+                className={classes.selectEmpty}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 190,
+                    },
+                  },
+                }}
+              >
+                <MenuItem value="">전국</MenuItem>
+                {baseItem.ranges.map((code, index) => (
+                  <MenuItem key={index} value={code}>
+                    {baseItem.rangeNames[index]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 지역 단위
@@ -207,6 +268,12 @@ const ChargingStationSearchBar = () => {
                   ))}
               </Select>
             </Box>
+          </>
+        )}
+      </Box>
+      <Box className={classes.comboContainer}>
+        {baseItem && (
+          <>
             <Box>
               <InputLabel className={classes.inputLabelStyle}>
                 운영기관
@@ -217,7 +284,7 @@ const ChargingStationSearchBar = () => {
                 value={busiIds}
                 onChange={handleBusiIdsChange}
                 displayEmpty
-                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
                   <div>
@@ -251,7 +318,7 @@ const ChargingStationSearchBar = () => {
                 value={chgerId}
                 onChange={handleChgerIdChange}
                 displayEmpty
-                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                sx={{ fontSize: "11px", mr: "10px", width: "210px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
                   <div>
@@ -279,6 +346,7 @@ const ChargingStationSearchBar = () => {
           </>
         )}
       </Box>
+
       <hr />
       {/* 검색 결과 리스트 */}
       <Box className={classes.ListContainer}>
@@ -302,61 +370,9 @@ const ChargingStationSearchBar = () => {
                 <Typography variant="subtitle2">주소</Typography>
               </div>
               <div className={classes.ListItemYnContainer}>
-                <Chip label="충전가능" color="primary" variant="outlined" />
+                <Chip label="비개방" variant="outlined" />
                 <Chip label="개방" color="primary" variant="outlined" />
-                <Chip label="무료주차" color="primary" variant="outlined" />
-              </div>
-            </div>
-            <Chip label="이동" color="secondary" clickable />
-          </ListItem>
-
-          <ListItem className={classes.ListItemContainer}>
-            <div className={classes.ListItemInfo}>
-              <Typography
-                variant="h6"
-                style={{ fontWeight: "bold", color: "blue" }}
-              >
-                충전소명
-              </Typography>
-              <Typography variant="subtitle2">운영기관</Typography>
-              <div style={{ display: "flex" }}>
-                <Typography
-                  variant="subtitle2"
-                  style={{ fontWeight: "bold", marginRight: "5px" }}
-                >
-                  0km
-                </Typography>
-                <Typography variant="subtitle2">주소</Typography>
-              </div>
-              <div className={classes.ListItemYnContainer}>
-                <Chip label="충전가능" color="primary" variant="outlined" />
-                <Chip label="개방" color="primary" variant="outlined" />
-                <Chip label="무료주차" color="primary" variant="outlined" />
-              </div>
-            </div>
-            <Chip label="이동" color="secondary" clickable />
-          </ListItem>
-          <ListItem className={classes.ListItemContainer}>
-            <div className={classes.ListItemInfo}>
-              <Typography
-                variant="h6"
-                style={{ fontWeight: "bold", color: "blue" }}
-              >
-                충전소명
-              </Typography>
-              <Typography variant="subtitle2">운영기관</Typography>
-              <div style={{ display: "flex" }}>
-                <Typography
-                  variant="subtitle2"
-                  style={{ fontWeight: "bold", marginRight: "5px" }}
-                >
-                  0km
-                </Typography>
-                <Typography variant="subtitle2">주소</Typography>
-              </div>
-              <div className={classes.ListItemYnContainer}>
-                <Chip label="충전가능" color="primary" variant="outlined" />
-                <Chip label="개방" color="primary" variant="outlined" />
+                <Chip label="유료주차" variant="outlined" />
                 <Chip label="무료주차" color="primary" variant="outlined" />
               </div>
             </div>
@@ -373,7 +389,7 @@ export default ChargingStationSearchBar;
 const useStyles = makeStyles({
   baseLayer: {
     backgroundColor: "#EFF8FB",
-    width: "500px",
+    width: "400px",
     padding: "20px",
     borderRadius: "10px",
   },
@@ -393,8 +409,8 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "flext-start",
     alignItems: "center",
-    marginTop: "30px",
-    marginBottom: "40px",
+    marginTop: "10px",
+    marginBottom: "10px",
   },
   inputLabelStyle: {
     marginLeft: "2px",
