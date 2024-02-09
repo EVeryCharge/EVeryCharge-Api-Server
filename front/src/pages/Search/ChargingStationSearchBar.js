@@ -18,6 +18,7 @@ import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
 import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
+import ElectricCarIcon from "@mui/icons-material/ElectricCar";
 
 const ChargingStationSearchBar = () => {
   const classes = useStyles();
@@ -27,8 +28,11 @@ const ChargingStationSearchBar = () => {
   const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
   const [zscode, setZscode] = useState("");
-  const [busiIds, setBusiIds] = useState([]);
+  const [busiId, setBusiId] = useState([]);
   const [chgerId, setChgerId] = useState([]);
+  const [kw, setKw] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [baseItem, setBaseItem] = useState(null);
 
   useEffect(() => {
@@ -89,12 +93,16 @@ const ChargingStationSearchBar = () => {
     setZscode(event.target.value);
   };
 
-  const handleBusiIdsChange = (event) => {
-    setBusiIds(event.target.value);
+  const handleBusiIdChange = (event) => {
+    setBusiId(event.target.value);
   };
 
   const handleChgerIdChange = (event) => {
     setChgerId(event.target.value);
+  };
+
+  const handleKwChange = (event) => {
+    setKw(event.target.value);
   };
 
   const handleReset = () => {
@@ -104,8 +112,9 @@ const ChargingStationSearchBar = () => {
     setRange(3000);
     setZcode("");
     setZscode("");
-    setBusiIds([]);
+    setBusiId([]);
     setChgerId([]);
+    setKw("");
   };
 
   return (
@@ -120,6 +129,8 @@ const ChargingStationSearchBar = () => {
               placeholder="검색어를 입력해주세요."
               variant="outlined"
               color="primary"
+              value={kw}
+              onChange={handleKwChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -281,8 +292,8 @@ const ChargingStationSearchBar = () => {
               <Select
                 size="small"
                 multiple
-                value={busiIds}
-                onChange={handleBusiIdsChange}
+                value={busiId}
+                onChange={handleBusiIdChange}
                 displayEmpty
                 sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
                 className={classes.selectEmpty}
@@ -375,6 +386,13 @@ const ChargingStationSearchBar = () => {
                 <Chip label="유료주차" variant="outlined" />
                 <Chip label="무료주차" color="primary" variant="outlined" />
               </div>
+              <div className={classes.ListChargerTypeContainer}>
+                <Chip
+                  icon={<ElectricCarIcon />}
+                  label="충전기 타입"
+                  variant="outlined"
+                />
+              </div>
             </div>
             <Chip label="이동" color="secondary" clickable />
           </ListItem>
@@ -437,9 +455,13 @@ const useStyles = makeStyles({
   ListItemYnContainer: {
     display: "flex",
     marginTop: "5px",
-    marginBottom: "10px",
     "& > *": {
       marginRight: "5px",
     },
+  },
+  ListChargerTypeContainer: {
+    display: "flex",
+    marginTop: "5px",
+    marginBottom: "10px",
   },
 });
