@@ -152,7 +152,7 @@ public class ChargingStationService {
 
 	private String calculateExecutionTime(long startTime, long endTime) {
 		long executionTimeInNano = endTime - startTime;
-		return String.format("실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
+		return String.format("[네이티브 쿼리] 실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
 			executionTimeInNano,
 			executionTimeInNano / 1_000_000,
 			(long) (executionTimeInNano / 1_000_000_000.0));
