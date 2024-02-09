@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -77,7 +78,7 @@ public class ChargingStationController {
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             // 무료 주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
-            // 지역 단위 코드 (ex. 서울시 : 11 경기도 : 41 ... ), TODO 현위치 로직 구현
+            // 지역 단위 코드 (ex. 서울시 : 11 경기도 : 41 ... )
             @RequestParam(value = "zcode", defaultValue = "") String zcode,
             // 지역 세부단위 코드 (ex. 종로구 : 11110, 서구 : 41130 ...)
             @RequestParam(value = "zscode", defaultValue = "") String zscode,
@@ -100,7 +101,7 @@ public class ChargingStationController {
 
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 위치 기준 거리순 정렬")
     @GetMapping("/searchBaseDistance")
-    public ResponseEntity<Page<ChargingStationSearchResponseDto>> searchOrderByDistance(
+    public ResponseEntity<Page<ChargingStationSearchWithDistanceResponseDto>> searchOrderByDistance(
             // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
             @RequestParam(value= "stat", required = false) String stat,
             // 개방 여부 (Y / N)
@@ -126,10 +127,12 @@ public class ChargingStationController {
             // 경도 디폴트 서울시 중구
             @RequestParam(value = "lng", defaultValue = "126.9784") double lng,
             // 위도 디폴트 서울시 중구
-            @RequestParam(value = "lat", defaultValue = "37.5665") double lat
+            @RequestParam(value = "lat", defaultValue = "37.5665") double lat,
+            // 반경 제한 (m 단위, 디폴트 50km)
+            @RequestParam(value = "range", defaultValue = "50000") int range
     ){
         return ResponseEntity.ok(chargingStationService.searchOrderByDistance(
-                stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat));
+                stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
 
 }

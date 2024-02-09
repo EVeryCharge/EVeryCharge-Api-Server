@@ -27,7 +27,6 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateD
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationWithDistanceDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
@@ -156,7 +155,7 @@ public class ChargingStationService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ChargingStationSearchResponseDto> searchOrderByDistance(
+	public Page<ChargingStationSearchWithDistanceResponseDto> searchOrderByDistance(
 		String stat,
 		String limitYn,
 		String parkingFree,
@@ -169,23 +168,13 @@ public class ChargingStationService {
 		int page,
 		int pageSize,
 		double lng,
-		double lat
+		double lat,
+		int range
 	) {
-
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-		Page<ChargingStationWithDistanceDto> chargingStations = chargingStationSearchRepository.searchList(limitYn,
-			parkingFree, zcode,
-			zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, pageable);
-
-		return chargingStations.map(this::convertToSearchResponseDto);
-
-	}
-
-	public ChargingStationSearchResponseDto convertToSearchResponseDto(
-		ChargingStationWithDistanceDto chargingStationDto) {
-		return (
-			new ChargingStationSearchWithDistanceResponseDto(
-				findById(chargingStationDto.getId()), chargingStationDto.getDistance()));
+		return chargingStationSearchRepository.searchOrderByDistance(
+			stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
+		);
 	}
 }
