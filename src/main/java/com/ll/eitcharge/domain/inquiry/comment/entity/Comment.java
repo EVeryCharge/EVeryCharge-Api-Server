@@ -35,8 +35,4 @@ public class Comment extends BaseTime {
         this.content = content;
     }
 
-
-
-
-
 }
