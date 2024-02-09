@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { HttpGet } from '../../services/HttpService';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, Typography } from '@material-ui/core';
+import InqueryComment from './InqueryComment';
 
 const InquiryDetail = ({  }) => {
     const [inquiry, setInquiry] = useState({});
@@ -27,6 +28,7 @@ const InquiryDetail = ({  }) => {
     }
 
     return (
+        <>
         <Card>
             <CardContent>
                 <Typography variant="h5" component="h2">
@@ -43,6 +45,8 @@ const InquiryDetail = ({  }) => {
                 </Typography>
             </CardContent>
         </Card>
+        <InqueryComment inquiryId={id}></InqueryComment>
+        </>
     );
 }
 
