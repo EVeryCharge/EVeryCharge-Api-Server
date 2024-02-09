@@ -60,15 +60,16 @@ public class ChargingStationSearchRepository {
 			.setParameter("zscode", zscode)
 			.setParameter("isPrimary", isPrimary)
 			.setParameter("busiIds", busiIds)
-			.setParameter("chgerTypes", chgerTypes);
+			.setParameter("chgerTypes", chgerTypes)
+			.setParameter("lat", lat)
+			.setParameter("lng", lng);
 
 		// kw가 null이 아닌 경우에만 파라미터로 추가
 		if (kw != null) {
 			query.setParameter("kw", kw + "%");
 		}
 
-		query.setParameter("lat", lat)
-			.setParameter("lng", lng);
+
 
 		// 결과 가져오기
 		List<ChargingStationWithDistanceDto> resultList = query.getResultList();

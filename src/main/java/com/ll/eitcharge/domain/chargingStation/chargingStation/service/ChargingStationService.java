@@ -28,7 +28,6 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStati
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationWithDistanceDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.WithExecTime;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
@@ -62,11 +61,13 @@ public class ChargingStationService {
 		return chargingStationRepository.findById(statId);
 	}
 
-	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double swLng, double neLat, double neLng) {
-		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng);
+	public List<ChargingStationSearchResponseDto> findByLatBetweenAndLngBetween(double swLat, double swLng,
+		double neLat, double neLng) {
+		List<ChargingStation> chargingStations = chargingStationRepository.findByLatBetweenAndLngBetween(swLat, neLat,
+			swLng, neLng);
 		return chargingStations.stream()
-				.map(ChargingStationSearchResponseDto::new)
-				.toList();
+			.map(ChargingStationSearchResponseDto::new)
+			.toList();
 	}
 
 	public List<ChargingStation> findByReportEditKw(String kw) {
@@ -124,7 +125,7 @@ public class ChargingStationService {
 		);
 	}
 
-	public WithExecTime<Page<ChargingStationSearchResponseDto>> search(
+	public Page<ChargingStationSearchResponseDto> search(
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -145,29 +146,19 @@ public class ChargingStationService {
 			isPrimary, busiIds, chgerTypes, kw, pageable);
 		long endTime = System.nanoTime();
 
-		return WithExecTime.of(
-			calculateExecutionTime(startTime, endTime),
-			chargingStations.map(ChargingStationSearchResponseDto::new));
-	}
-
-	private String calculateExecutionTime(long startTime, long endTime) {
-		long executionTimeInNano = endTime - startTime;
-		return String.format("[네이티브 쿼리] 실행 시간 (ns): %d , 실행시간 (ms): %d , 실행시간 : %d 초",
-			executionTimeInNano,
-			executionTimeInNano / 1_000_000,
-			(long) (executionTimeInNano / 1_000_000_000.0));
+		return chargingStations.map(ChargingStationSearchResponseDto::new);
 	}
 
 	public List<ChargerStateDto> chargerStateSearch(String statId) {
 
 		List<Charger> chargerStates = chargerRepository.findByChargingStationStatId(statId);
 		return chargerStates.stream()
-				.map(ChargerStateDto::new)
-				.collect(Collectors.toList());
+			.map(ChargerStateDto::new)
+			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public WithExecTime<Page<ChargingStationSearchResponseDto>> searchlist(
+	public Page<ChargingStationSearchResponseDto> searchlist(
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -185,14 +176,12 @@ public class ChargingStationService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
 		long startTime = System.nanoTime();
-		Page<ChargingStationWithDistanceDto> chargingStations = chargingStationSearchRepository.searchList(limitYn, parkingFree, zcode,
+		Page<ChargingStationWithDistanceDto> chargingStations = chargingStationSearchRepository.searchList(limitYn,
+			parkingFree, zcode,
 			zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, pageable);
 		long endTime = System.nanoTime();
 
-		return WithExecTime.of(
-			calculateExecutionTime(startTime, endTime),
-			chargingStations.map(this::convertToSearchResponseDto)
-		);
+		return chargingStations.map(this::convertToSearchResponseDto);
 
 	}
 
