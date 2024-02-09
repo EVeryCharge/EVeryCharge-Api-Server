@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { propTest } from './propTest';
 import { HttpGet, HttpPost, HttpDelete, HttpPut } from '../../services/HttpService';  // 유틸리티 파일 경로를 업데이트하세요
-import axios from 'axios';
-import { debounce } from 'lodash';
 
-const ChargingStationSearchMap = () => {
+const ChargingStationSearchMap = ({}) => {
     const mapRef = useRef(null);
     const map = useRef(null); // 지도 객체를 useRef로 선언
-    const [selectedItems, setSelectedItems] = useState([]);
     const [mapCenter, setMapCenter] = useState({
         lat: 36.39213160000001,
         lng: 127.02977109999999,
     });
+    const [myLocation, setMyLocation] = useState({})
+    const [keyword, setKeyword] = useState("서울시");
+    const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
+
 
     const initMap = () => {
         const container = mapRef.current; // mapRef.current를 통해 container 참조
@@ -22,62 +24,99 @@ const ChargingStationSearchMap = () => {
         map.current = new window.kakao.maps.Map(container, options); // useRef로 선언한 map에 할당
     };
 
-    const fetchDataFromServerRangeQuery = (lat, lng) => {
-        HttpGet(`/api/v1/chargingStation/search?pageSize=10&kw=안양시`)
-            .then(response => {
-                console.log(response);
-                const items = response.chargingStationResponseDtoPage.content; // content 배열 추출
-
-                items.forEach((itemData) => {
-                    const { lat, lng } = itemData; // lat와 lng 값 추출
-                    const markerPosition = new window.kakao.maps.LatLng(lat, lng);
-                    const marker = new window.kakao.maps.Marker({
-                        position: markerPosition
-                    });
-                    marker.setMap(map.current);
-
-                    window.kakao.maps.event.addListener(marker, 'click', function() {
-                        // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-                        setSelectedItems([itemData]);
-                    });
-
+    const fetchDataFromServerRangeQuery = () => {
+        HttpGet(`/api/v1/chargingStation/search?pageSize=10&kw=${keyword}`)
+        .then(response => {
+            console.log(response);
+            const items = response.dto.content;
+            console.log('Received latLngArray:', items);
+    
+            // 기존 마커를 모두 삭제
+            markers.forEach(marker => marker.setMap(null));
+    
+            if (items.length > 0) {
+                const firstItem = items[0];
+                setMapCenter({
+                    lat: firstItem.lat,
+                    lng: firstItem.lng
                 });
-            })
-            .catch(error => {
-                console.log('Error fetching data', error);
-            });
+    
+                const newMarkers = items.map(item => {
+                    const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+                    const marker = new window.kakao.maps.Marker({
+                        position: markerPosition,
+                        map: map.current
+                    });
+                    return marker;
+                });
+                setMarkers(newMarkers);
+            } else {
+                console.log('latLngArray is empty');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     };
 
     useEffect(() => {
+        window.kakao.maps.load(() => {
+            initMap();
+        });
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(success, error);
         }
 
         function success(position) {
-            setMapCenter({
+            setMyLocation({
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
             });
+            console.log("내" + mapCenter.lng);
+
         }
 
         function error() {
-            setMapCenter({
+            setMyLocation({
                 lat: 36.483034,
                 lng: 126.902435,
             });
             console.log("위치 받기 실패");
         }
-    }, []);
+    }, []); // 최초 렌더링 시에만 initMap 호출
 
     useEffect(() => {
-        window.kakao.maps.load(() => {
-            initMap();
-            fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
-        });
-    }, [mapCenter]); // mapCenter 변경 시에도 initMap 호출
+        if (map.current) {
+            map.current.setCenter(new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng));
+        }
+    }, [mapCenter]); 
 
     const handleResetMap = () => {
-        initMap(); // 함수를 호출하도록 수정
+        map.current.setCenter(new window.kakao.maps.LatLng(myLocation.lat, myLocation.lng));
+
+    };
+    const handleResetMap2 = () => {
+        fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
+
+    };
+
+    const handleResetMap3 = () => {
+        setMyLocation({
+            lat: 36.483034,
+            lng: 126.902435,
+        });
+        console.log("llll" + mapCenter.lng);
+
+    };
+
+    const handleInputChange = (event) => {
+        setKeyword(event.target.value);
+    };
+    const handleInputKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            fetchDataFromServerRangeQuery();
+        }
     };
 
     return (
@@ -87,19 +126,39 @@ const ChargingStationSearchMap = () => {
                 style={{
                     margin: "20px",
                     width: "97%",
-                    height: "calc(100vh - 205px)",
+                    // height: "calc(100vh - 205px)",
+                    height: "calc(100vh - 225px)",
                     border: "1px solid #ccc",
                     overflow: "hidden",
                 }}
                 ref={mapRef}
-                items={selectedItems}
             />
             <button
                 style={{ position: "relative", zIndex: "2" }}
                 onClick={handleResetMap} // 함수를 호출하도록 수정
             >
-                위치 조정
+                내위치로 돌아가기
             </button>
+            <button
+                style={{ position: "relative", zIndex: "2" }}
+                onClick={handleResetMap2} // 함수를 호출하도록 수정
+            >
+                test
+            </button>
+            <button
+                style={{ position: "relative", zIndex: "2" }}
+                onClick={handleResetMap3} // 함수를 호출하도록 수정
+            >
+                setlocation
+            </button>
+            <input
+                type="text"
+                value={keyword}
+                onChange={handleInputChange}
+                onKeyPress={handleInputKeyPress}  // 엔터 키 입력을 처리하는 핸들러 추가
+                placeholder="Enter keyword"
+            />
+            
         </div>
     );
 };
