@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,7 +24,7 @@ public class ChargingStationSearchRepository {
 	 * ChargingStationRepository의 네이티브 쿼리 현재 미작동 (엔티티에 없는 칼럼을 리턴하는 것이 원인으로 추정됨)
 	 * @return statId 와 현 위치 기준 거리(m) 를 가진 DTO
 	 */
-	public Page<ChargingStationSearchWithDistanceResponseDto> searchOrderByDistance(
+	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(
 		String stat,
 		String limitYn,
 		String parkingFree,
@@ -74,7 +74,7 @@ public class ChargingStationSearchRepository {
 		nativeQuery += "GROUP BY CS.stat_id "
 			+ "ORDER BY distance ASC";
 
-		Query query = entityManager.createNativeQuery(nativeQuery, ChargingStationSearchWithDistanceResponseDto.class)
+		Query query = entityManager.createNativeQuery(nativeQuery, ChargingStationSearchBaseDistanceResponseDto.class)
 			.setParameter("stat", stat)
 			.setParameter("limitYn", limitYn)
 			.setParameter("parkingFree", parkingFree)
@@ -93,12 +93,12 @@ public class ChargingStationSearchRepository {
 		}
 
 		// 결과 가져오기
-		List<ChargingStationSearchWithDistanceResponseDto> resultList = query.getResultList();
+		List<ChargingStationSearchBaseDistanceResponseDto> resultList = query.getResultList();
 
 		// 페이지 생성
 		int start = (int)pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), resultList.size());
-		Page<ChargingStationSearchWithDistanceResponseDto> page = new PageImpl<>(resultList.subList(start, end), pageable,
+		Page<ChargingStationSearchBaseDistanceResponseDto> page = new PageImpl<>(resultList.subList(start, end), pageable,
 			resultList.size());
 
 		return page;

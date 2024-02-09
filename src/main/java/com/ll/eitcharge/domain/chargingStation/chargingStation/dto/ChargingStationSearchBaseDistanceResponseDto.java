@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Immutable
-public class ChargingStationSearchWithDistanceResponseDto {
+public class ChargingStationSearchBaseDistanceResponseDto {
 
 	private String statId;
 	private String distance;
@@ -23,7 +23,7 @@ public class ChargingStationSearchWithDistanceResponseDto {
 	private boolean limitYn;
 	private List<String> chgerTypes;
 
-	public ChargingStationSearchWithDistanceResponseDto(
+	public ChargingStationSearchBaseDistanceResponseDto(
 		String statId, double distance, String statNm, String addr, double lat, double lng, String bnm,
 		String parkingFree, String limitYn, String chgerTypes
 	) {

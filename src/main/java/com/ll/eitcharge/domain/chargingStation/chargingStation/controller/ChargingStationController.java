@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -73,7 +73,7 @@ public class ChargingStationController {
 
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 충전소 이름 순 정렬")
     @GetMapping("/searchBaseStatNm")
-    public ResponseEntity<Page<ChargingStationSearchResponseDto>> searchOrderByStatNm(
+    public ResponseEntity<Page<ChargingStationSearchResponseDto>> searchBaseStatNm(
             // 개방 여부 (Y / N)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             // 무료 주차 (Y / N)
@@ -95,13 +95,13 @@ public class ChargingStationController {
             // 페이지 사이즈
             @RequestParam(defaultValue = "20") int pageSize
     ){
-        return ResponseEntity.ok(chargingStationService.searchOrderByStatNm(
+        return ResponseEntity.ok(chargingStationService.searchBaseStatNm(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
 
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 위치 기준 거리순 정렬")
     @GetMapping("/searchBaseDistance")
-    public ResponseEntity<Page<ChargingStationSearchWithDistanceResponseDto>> searchOrderByDistance(
+    public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
             // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
             @RequestParam(value= "stat", required = false) String stat,
             // 개방 여부 (Y / N)
@@ -131,7 +131,7 @@ public class ChargingStationController {
             // 반경 제한 (m 단위, 디폴트 50km)
             @RequestParam(value = "range", defaultValue = "50000") int range
     ){
-        return ResponseEntity.ok(chargingStationService.searchOrderByDistance(
+        return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
 

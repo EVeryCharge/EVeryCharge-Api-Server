@@ -26,7 +26,7 @@ import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchWithDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
@@ -124,7 +124,7 @@ public class ChargingStationService {
 		);
 	}
 
-	public Page<ChargingStationSearchResponseDto> searchOrderByStatNm(
+	public Page<ChargingStationSearchResponseDto> searchBaseStatNm(
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -140,7 +140,7 @@ public class ChargingStationService {
 		sorts.add(Sort.Order.desc("statNm"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
-		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode,
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(limitYn, parkingFree, zcode, zscode,
 			isPrimary, busiIds, chgerTypes, kw, pageable);
 
 		return chargingStations.map(ChargingStationSearchResponseDto::new);
@@ -155,7 +155,7 @@ public class ChargingStationService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ChargingStationSearchWithDistanceResponseDto> searchOrderByDistance(
+	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(
 		String stat,
 		String limitYn,
 		String parkingFree,
@@ -173,7 +173,7 @@ public class ChargingStationService {
 	) {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-		return chargingStationSearchRepository.searchOrderByDistance(
+		return chargingStationSearchRepository.searchBaseDistance(
 			stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
 		);
 	}
