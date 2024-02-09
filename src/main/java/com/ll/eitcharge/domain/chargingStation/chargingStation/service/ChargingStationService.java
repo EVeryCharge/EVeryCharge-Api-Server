@@ -125,7 +125,7 @@ public class ChargingStationService {
 		);
 	}
 
-	public Page<ChargingStationSearchResponseDto> search(
+	public Page<ChargingStationSearchResponseDto> searchOrderByStatNm(
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -138,13 +138,11 @@ public class ChargingStationService {
 		int pageSize
 	) {
 		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("statId"));
+		sorts.add(Sort.Order.desc("statNm"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
-		long startTime = System.nanoTime();
 		Page<ChargingStation> chargingStations = chargingStationRepository.search(limitYn, parkingFree, zcode, zscode,
 			isPrimary, busiIds, chgerTypes, kw, pageable);
-		long endTime = System.nanoTime();
 
 		return chargingStations.map(ChargingStationSearchResponseDto::new);
 	}
@@ -158,7 +156,8 @@ public class ChargingStationService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ChargingStationSearchResponseDto> searchlist(
+	public Page<ChargingStationSearchResponseDto> searchOrderByDistance(
+		String stat,
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -175,11 +174,9 @@ public class ChargingStationService {
 
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-		long startTime = System.nanoTime();
 		Page<ChargingStationWithDistanceDto> chargingStations = chargingStationSearchRepository.searchList(limitYn,
 			parkingFree, zcode,
 			zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, pageable);
-		long endTime = System.nanoTime();
 
 		return chargingStations.map(this::convertToSearchResponseDto);
 
