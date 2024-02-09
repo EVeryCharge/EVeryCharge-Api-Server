@@ -23,7 +23,6 @@ public class ChargingStationSearchRepository {
 	 * 작성자 : 이상제
 	 * ChargingStationRepository의 네이티브 쿼리 현재 미작동 (엔티티에 없는 칼럼을 리턴하는 것이 원인으로 추정됨)
 	 * @return statId 와 현 위치 기준 거리(m) 를 가진 DTO
-	 * todo 충전소 상태 정보도 param 및 검색 조건 포함
 	 */
 	public Page<ChargingStationWithDistanceDto> searchList(String limitYn, String parkingFree, String zcode,
 		String zscode, String isPrimary, List<String> busiIds, List<String> chgerTypes, String kw, double lat,
@@ -65,7 +64,7 @@ public class ChargingStationSearchRepository {
 
 		// kw가 null이 아닌 경우에만 파라미터로 추가
 		if (kw != null) {
-			query.setParameter("kw", "%" + kw + "%");
+			query.setParameter("kw", kw + "%");
 		}
 
 		query.setParameter("lat", lat)
