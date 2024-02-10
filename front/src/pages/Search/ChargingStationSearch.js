@@ -10,7 +10,11 @@ const ChargingStationSearch = () => {
   const [userLat, setUserLat] = useState(null);
   const [userLng, setUserLng] = useState(null);
 
-  const fetchSearchResult = (searchParam) => {
+  useEffect(() => {
+    console.log("검색 결과(리스트): ", searchResult);
+  }, [searchResult]);
+
+  const fetchSearchResult = async (searchParam) => {
     try {
       console.log(
         "검색 조건: ",
@@ -20,25 +24,15 @@ const ChargingStationSearch = () => {
         userLng
       );
 
-      // List로 바인딩 param 별도 정제 (chgerType, busiId)
-      const chgerTypeParam = searchParam.chgerType
-        ? searchParam.chgerType.map((type) => `${type}`).join("&")
-        : "";
-      const busiIdParam = searchParam.busiId
-        ? searchParam.busiId.map((id) => `${id}`).join("&")
-        : "";
-      const { chgerType, busiId, ...restParam } = searchParam;
-
-      const response = HttpGet("/api/v1/chargingStation/searchBaseDistance", {
-        ...restParam,
-        chgerType: chgerTypeParam,
-        busiId: busiIdParam,
-        lat: userLat,
-        lng: userLng,
-      });
-
+      const response = await HttpGet(
+        "/api/v1/chargingStation/searchBaseDistance",
+        {
+          ...searchParam,
+          lat: userLat,
+          lng: userLng,
+        }
+      );
       setSearchResult(response);
-      console.log("검색 결과(리스트): ", searchResult);
     } catch (error) {
       console.error("검색 결과 로딩 중 오류, error");
     }
