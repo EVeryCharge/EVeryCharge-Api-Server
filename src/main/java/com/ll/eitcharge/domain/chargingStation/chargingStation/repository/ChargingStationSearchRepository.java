@@ -58,18 +58,22 @@ public class ChargingStationSearchRepository {
 				+ "JOIN operating_company AS OC ON OC.busi_id = CS.busi_id "
 				+ "WHERE (:parkingFree is null or CS.parking_free = :parkingFree) "
 				+ "AND (:limitYn is null or CS.limit_yn = :limitYn) "
-				+ "AND (:chgerTypes is null or C.chger_type IN (:chgerTypes)) "
 				+ "AND EXISTS ("
 				+ 		"SELECT 1 FROM charger AS C2 WHERE C2.stat = :stat OR :stat is null) "
 				+ "AND (:zscode is null or RD.zscode = :zscode) " + "AND (:zcode is null or R.zcode = :zcode) "
 				+ "AND (:isPrimary is null or OC.is_primary = :isPrimary) "
-				+ "AND (:busiIds is null or OC.busi_id IN (:busiIds)) "
 				+ "AND (ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) <= :range) ";
 
-		// 만약 kw가 null이 아닌 경우에만 LIKE 절 추가
-		if (kw != null) {
-			nativeQuery += "AND (CS.stat_nm LIKE :kw OR CS.addr LIKE :kw) ";
-		}
+			// null에 따른 쿼리 추가
+			if (kw != null) {
+				nativeQuery += "AND (CS.stat_nm LIKE :kw OR CS.addr LIKE :kw) ";
+			}
+			if (chgerTypes != null && !chgerTypes.isEmpty()) {
+				nativeQuery += "AND (C.chger_type IN (:chgerTypes)) ";
+			}
+			if (busiIds != null && !busiIds.isEmpty()) {
+				nativeQuery += "AND (OC.busi_id IN (:busiIds)) ";
+			}
 
 		nativeQuery += "GROUP BY CS.stat_id "
 			+ "ORDER BY distance ASC";
@@ -81,15 +85,19 @@ public class ChargingStationSearchRepository {
 			.setParameter("zcode", zcode)
 			.setParameter("zscode", zscode)
 			.setParameter("isPrimary", isPrimary)
-			.setParameter("busiIds", busiIds)
-			.setParameter("chgerTypes", chgerTypes)
 			.setParameter("lat", lat)
 			.setParameter("lng", lng)
 			.setParameter("range", range);
 
-		// kw가 null이 아닌 경우에만 파라미터로 추가
+		// null 에 따른 파라미터 추가
 		if (kw != null) {
-			query.setParameter("kw", kw + "%");
+			query.setParameter("kw", "%"+ kw + "%");
+		}
+		if (chgerTypes != null && !chgerTypes.isEmpty()) {
+			query.setParameter("chgerTypes", chgerTypes);
+		}
+		if (busiIds != null && !busiIds.isEmpty()) {
+			query.setParameter("busiIds", busiIds);
 		}
 
 		// 결과 가져오기
