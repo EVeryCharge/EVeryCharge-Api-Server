@@ -20,11 +20,11 @@ import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
 
-const ChargingStationSearchBar = () => {
+const ChargingStationSearchBar = ({ onSearch }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
-  const [parkingFree, setParkingFree] = useState(false);
-  const [limit, setLimit] = useState(true);
+  const [parkingFree, setParkingFree] = useState(true);
+  const [isOpen, setOpen] = useState(true);
   const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
   const [zscode, setZscode] = useState("");
@@ -55,8 +55,8 @@ const ChargingStationSearchBar = () => {
     setParkingFree(!parkingFree);
   };
 
-  const handleLimitChange = () => {
-    setLimit(!limit);
+  const handleOpenChange = () => {
+    setOpen(!isOpen);
   };
 
   const handleRangeChange = (event) => {
@@ -105,10 +105,27 @@ const ChargingStationSearchBar = () => {
     setKw(event.target.value);
   };
 
+  const handleSearch = () => {
+    onSearch({
+      stat: chargable ? 2 : undefined,
+      parkingFree: parkingFree ? "Y" : undefined,
+      limitYn: isOpen ? "N" : undefined,
+      zcode: zcode || undefined,
+      zscode: zscode || undefined,
+      isPrimary: busiId.length > 0 ? "Y" : undefined,
+      busiId: busiId.length > 0 ? busiId : undefined,
+      chgerType: chgerId.length > 0 ? chgerId : undefined,
+      kw: kw || undefined,
+      page: page || undefined,
+      pageSize: pageSize || undefined,
+      range: range || undefined,
+    });
+  };
+
   const handleReset = () => {
     setChargable(true);
     setParkingFree(false);
-    setLimit(true);
+    setOpen(true);
     setRange(3000);
     setZcode("");
     setZscode("");
@@ -145,6 +162,7 @@ const ChargingStationSearchBar = () => {
               variant="contained"
               color="primary"
               style={{ marginLeft: "3px" }}
+              onClick={handleSearch}
             >
               검색
             </Button>
@@ -181,9 +199,9 @@ const ChargingStationSearchBar = () => {
           <ToggleButton
             size="small"
             sx={{ fontSize: "11px", mr: "10px" }}
-            value="limit"
-            selected={limit}
-            onChange={handleLimitChange}
+            value="isOpen"
+            selected={isOpen}
+            onChange={handleOpenChange}
           >
             개방여부
           </ToggleButton>
@@ -346,7 +364,6 @@ const ChargingStationSearchBar = () => {
                   },
                 }}
               >
-                <MenuItem value="">전체</MenuItem>
                 {baseItem.chgerIds.map((code, index) => (
                   <MenuItem key={index} value={code}>
                     {baseItem.chgerTypes[index]}
@@ -387,11 +404,7 @@ const ChargingStationSearchBar = () => {
                 <Chip label="무료주차" color="primary" variant="outlined" />
               </div>
               <div className={classes.ListChargerTypeContainer}>
-                <Chip
-                  icon={<ElectricCarIcon />}
-                  label="충전기 타입"
-                  variant="outlined"
-                />
+                <Chip icon={<ElectricCarIcon />} label="충전기 타입" />
               </div>
             </div>
             <Chip label="이동" color="secondary" clickable />
