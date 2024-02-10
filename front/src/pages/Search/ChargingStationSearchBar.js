@@ -20,7 +20,7 @@ import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
 
-const ChargingStationSearchBar = ({ onSearch }) => {
+const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
   const [parkingFree, setParkingFree] = useState(true);
@@ -379,36 +379,62 @@ const ChargingStationSearchBar = ({ onSearch }) => {
       {/* 검색 결과 리스트 */}
       <Box className={classes.ListContainer}>
         <List>
-          <ListItem className={classes.ListItemContainer}>
-            <div className={classes.ListItemInfo}>
-              <Typography
-                variant="h6"
-                style={{ fontWeight: "bold", color: "blue" }}
-              >
-                충전소명
-              </Typography>
-              <Typography variant="subtitle2">운영기관</Typography>
-              <div style={{ display: "flex" }}>
-                <Typography
-                  variant="subtitle2"
-                  style={{ fontWeight: "bold", marginRight: "5px" }}
-                >
-                  0km
-                </Typography>
-                <Typography variant="subtitle2">주소</Typography>
-              </div>
-              <div className={classes.ListItemYnContainer}>
-                <Chip label="비개방" variant="outlined" />
-                <Chip label="개방" color="primary" variant="outlined" />
-                <Chip label="유료주차" variant="outlined" />
-                <Chip label="무료주차" color="primary" variant="outlined" />
-              </div>
-              <div className={classes.ListChargerTypeContainer}>
-                <Chip icon={<ElectricCarIcon />} label="충전기 타입" />
-              </div>
-            </div>
-            <Chip label="이동" color="secondary" clickable />
-          </ListItem>
+          {/* searchResult가 존재하고 content가 비어 있지 않을 때만 리스트 아이템 렌더링 */}
+          {searchResult &&
+            searchResult.content &&
+            searchResult.content.map((baseItem, index) => (
+              <ListItem key={index} className={classes.ListItemContainer}>
+                <div className={classes.ListItemInfo}>
+                  <Typography
+                    variant="h6"
+                    style={{ fontWeight: "bold", color: "blue" }}
+                  >
+                    {baseItem.statNm} {/* 충전소명 */}
+                  </Typography>
+                  <Typography variant="subtitle2">{baseItem.bnm}</Typography>{" "}
+                  {/* 운영기관 */}
+                  <div style={{ display: "flex" }}>
+                    <Typography
+                      variant="subtitle2"
+                      style={{ fontWeight: "bold", marginRight: "5px" }}
+                    >
+                      {baseItem.distance} {/* 0km */}
+                    </Typography>
+                    <Typography variant="subtitle2">{baseItem.addr}</Typography>{" "}
+                    {/* 주소 */}
+                  </div>
+                  <div className={classes.ListItemYnContainer}>
+                    {/* parkingFree가 true인 경우 무료주차 Chip, false인 경우 유료주차 Chip 표시 */}
+                    {baseItem.parkingFree ? (
+                      <Chip
+                        label="무료주차"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    ) : (
+                      <Chip label="유료주차" variant="outlined" />
+                    )}
+                    {/* limitYn이 true인 경우 비개방 Chip, false인 경우 개방 Chip 표시 */}
+                    {baseItem.limitYn ? (
+                      <Chip label="비개방" variant="outlined" />
+                    ) : (
+                      <Chip label="개방" color="primary" variant="outlined" />
+                    )}
+                  </div>
+                  <div className={classes.ListChargerTypeContainer}>
+                    {/* chgerTypes에 따라서 ElectricCarIcon과 해당하는 충전기 타입 라벨 표시 */}
+                    {baseItem.chgerTypes.map((chgerType, index) => (
+                      <Chip
+                        key={index}
+                        icon={<ElectricCarIcon />}
+                        label={`충전기 타입 ${chgerType}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <Chip label="이동" color="secondary" clickable />
+              </ListItem>
+            ))}
         </List>
       </Box>
     </Card>

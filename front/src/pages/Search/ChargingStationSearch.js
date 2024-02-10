@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearch = () => {
-  // useState로 searchParam에 대한 변화 감지
   const [searchResult, setSearchResult] = useState(null);
   const [userLat, setUserLat] = useState(null);
   const [userLng, setUserLng] = useState(null);
@@ -41,7 +40,10 @@ const ChargingStationSearch = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{}}>
-        <ChargingStationSearchBar onSearch={fetchSearchResult} />
+        <ChargingStationSearchBar
+          onSearch={fetchSearchResult}
+          searchResult={searchResult}
+        />
       </Box>
       <Box sx={{ flexGrow: 1 }}>
         <ChargingStationSearchMap />
