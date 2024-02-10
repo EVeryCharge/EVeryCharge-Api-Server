@@ -1,12 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  HttpGet,
-  HttpPost,
-  HttpDelete,
-  HttpPut,
-} from "../../services/HttpService"; // 유틸리티 파일 경로를 업데이트하세요
 
-const ChargingStationSearchMap = ({}) => {
+
+const ChargingStationSearchMap = ({ temporaryArray }) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
   const [mapCenter, setMapCenter] = useState({
@@ -16,53 +11,56 @@ const ChargingStationSearchMap = ({}) => {
   const [myLocation, setMyLocation] = useState({});
   const [keyword, setKeyword] = useState("서울시");
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
+  const [searchData, setSearchData] = useState([]);
+
 
   const initMap = () => {
     const container = mapRef.current; // mapRef.current를 통해 container 참조
     const options = {
       center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
       level: 3,
+      maxLevel: 8
     };
 
     map.current = new window.kakao.maps.Map(container, options); // useRef로 선언한 map에 할당
   };
 
-  const fetchDataFromServerRangeQuery = () => {
-    HttpGet(`/api/v1/chargingStation/search?pageSize=10&kw=${keyword}`)
-      .then((response) => {
-        console.log(response);
-        const items = response.dto.content;
-        console.log("Received latLngArray:", items);
-
-        // 기존 마커를 모두 삭제
-        markers.forEach((marker) => marker.setMap(null));
-
-        if (items.length > 0) {
-          const firstItem = items[0];
-          setMapCenter({
-            lat: firstItem.lat,
-            lng: firstItem.lng,
+  const fetchDataFromServerRangeQuery = async () => {
+    
+    if (!temporaryArray || !temporaryArray.content) {
+      console.log("temporaryArray is undefined or does not contain 'content'");
+      return;
+    }
+    map.current.setLevel(3);
+      const items = temporaryArray ? temporaryArray.content : []; 
+  
+      // 기존 마커를 모두 삭제
+      markers.forEach((marker) => marker.setMap(null));
+  
+      if (items.length > 0) {
+        const firstItem = items[0];
+        setMapCenter({
+          lat: firstItem.lat,
+          lng: firstItem.lng,
+        });
+  
+        const newMarkers = items.map((item) => {
+          const markerPosition = new window.kakao.maps.LatLng(
+            item.lat,
+            item.lng
+          );
+          const marker = new window.kakao.maps.Marker({
+            position: markerPosition,
+            map: map.current,
           });
-
-          const newMarkers = items.map((item) => {
-            const markerPosition = new window.kakao.maps.LatLng(
-              item.lat,
-              item.lng
-            );
-            const marker = new window.kakao.maps.Marker({
-              position: markerPosition,
-              map: map.current,
-            });
-            return marker;
-          });
-          setMarkers(newMarkers);
-        } else {
-          console.log("latLngArray is empty");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+          return marker;
+        });
+        setMarkers(newMarkers);
+        console.log(items);
+      } else {
+        console.log("latLngArray is empty");
+      }
+  
   };
 
   useEffect(() => {
@@ -105,7 +103,7 @@ const ChargingStationSearchMap = ({}) => {
     );
   };
   const handleResetMap2 = () => {
-    fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
+    fetchDataFromServerRangeQuery();
   };
 
   const handleResetMap3 = () => {
