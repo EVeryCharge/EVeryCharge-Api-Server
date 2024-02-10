@@ -6,12 +6,8 @@ import { HttpGet } from "../../services/HttpService";
 
 const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
-  const [userLat, setUserLat] = useState(null);
-  const [userLng, setUserLng] = useState([null]);
-  
-  //지도를 위해 추가
-  const [temporaryArray, setTemporaryArray] = useState([]);
   const [myLoc, setMyLoc] = useState(null);
+  const [temporaryArray, setTemporaryArray] = useState([]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -27,35 +23,29 @@ const ChargingStationSearch = () => {
     }
 
     function error() {
-      console.log("너");
+      setMyLoc({
+        lat: 36.483034,
+        lng: 126.902435,
+      });
     }
   }, []);
 
   useEffect(() => {
     console.log("검색 결과(리스트): ", searchResult);
-    // 검색 결과가 변경될 때마다 temporaryArray 업데이트
     if (searchResult) {
-      setTemporaryArray(searchResult); // 검색 결과를 temporaryArray에 저장
+      setTemporaryArray(searchResult);
     }
   }, [searchResult]);
-  // 추가 끝
 
   const fetchSearchResult = async (searchParam) => {
     try {
-      console.log(
-        "검색 조건: ",
-        searchParam,
-        "사용자 위도 / 경도: ",
-        userLat,
-        userLng
-      );
+      console.log("검색 조건: ", searchParam, "사용자 위도 / 경도: ", myLoc);
 
       const response = await HttpGet(
         "/api/v1/chargingStation/searchBaseDistance",
         {
           ...searchParam,
-          lat: userLat,
-          lng: userLng,
+          ...myLoc,
         }
       );
       setSearchResult(response);
@@ -73,7 +63,10 @@ const ChargingStationSearch = () => {
         />
       </Box>
       <Box sx={{ flexGrow: 1 }}>
-        <ChargingStationSearchMap temporaryArray={temporaryArray} myLoc={myLoc} />
+        <ChargingStationSearchMap
+          temporaryArray={temporaryArray}
+          myLoc={myLoc}
+        />
       </Box>
     </Box>
   );
