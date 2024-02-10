@@ -8,6 +8,7 @@ const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
   const [myLoc, setMyLoc] = useState(null);
   const [temporaryArray, setTemporaryArray] = useState([]);
+  const [mapCenter, setMapCenter] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -54,18 +55,24 @@ const ChargingStationSearch = () => {
     }
   };
 
+  const handleMapMove = (lat, lng) => {
+    setMapCenter({ lat, lng });
+  };
+
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{}}>
         <ChargingStationSearchBar
           onSearch={fetchSearchResult}
           searchResult={searchResult}
+          onMapMove={handleMapMove}
         />
       </Box>
       <Box sx={{ flexGrow: 1 }}>
         <ChargingStationSearchMap
           temporaryArray={temporaryArray}
           myLoc={myLoc}
+          propsMapCenter={mapCenter}
         />
       </Box>
     </Box>

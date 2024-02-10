@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@material-ui/core";
 
-const ChargingStationSearchMap = ({ temporaryArray, myLoc }) => {
+const ChargingStationSearchMap = ({
+  temporaryArray,
+  myLoc,
+  propsMapCenter,
+}) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
   const [mapCenter, setMapCenter] = useState({
@@ -54,6 +58,16 @@ const ChargingStationSearchMap = ({ temporaryArray, myLoc }) => {
       console.log("latLngArray is empty");
     }
   };
+
+  // props로 mapCenter를 전달받을 시 mapCenter를 수정한다. (이상제)
+  useEffect(() => {
+    if (propsMapCenter) {
+      setMapCenter({
+        lat: propsMapCenter.lat,
+        lng: propsMapCenter.lng,
+      });
+    }
+  }, [propsMapCenter]);
 
   useEffect(() => {
     fetchDataFromServerRangeQuery();

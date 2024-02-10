@@ -13,14 +13,19 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
+import { ErrorOutline, Search } from "@material-ui/icons";
 import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
 import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
+import { Pagination } from "@mui/material";
 
-const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
+/**
+ * 작성자 : 이상제
+ * 전기차 충전소 검색 바 / 콘솔 구현
+ * */
+const ChargingStationSearchBar = ({ onSearch, searchResult, onMapMove }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
   const [parkingFree, setParkingFree] = useState(true);
@@ -32,7 +37,7 @@ const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
   const [chgerId, setChgerId] = useState([]);
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [baseItem, setBaseItem] = useState(null);
 
   useEffect(() => {
@@ -120,6 +125,10 @@ const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
       pageSize: pageSize || undefined,
       range: range || undefined,
     });
+  };
+
+  const handleMapMove = (lat, lng) => {
+    onMapMove(lat, lng);
   };
 
   const handleReset = () => {
@@ -379,33 +388,38 @@ const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
       {/* 검색 결과 리스트 */}
       <Box className={classes.ListContainer}>
         <List>
-          {/* searchResult가 존재하고 content가 비어 있지 않을 때만 리스트 아이템 렌더링 */}
+          {searchResult && searchResult.content.length === 0 && (
+            <Box className={classes.NoSearchResultContainer}>
+              <ErrorOutline style={{ marginRight: "5px" }} />
+              <Typography variant="body1">검색 결과가 없습니다.</Typography>
+            </Box>
+          )}
+
           {searchResult &&
             searchResult.content &&
-            searchResult.content.map((baseItem, index) => (
+            searchResult.content.map((data, index) => (
               <ListItem key={index} className={classes.ListItemContainer}>
                 <div className={classes.ListItemInfo}>
                   <Typography
                     variant="h6"
                     style={{ fontWeight: "bold", color: "blue" }}
                   >
-                    {baseItem.statNm} {/* 충전소명 */}
+                    {data.statNm}
                   </Typography>
-                  <Typography variant="subtitle2">{baseItem.bnm}</Typography>{" "}
-                  {/* 운영기관 */}
+                  <Typography variant="subtitle2">{data.bnm}</Typography>{" "}
                   <div style={{ display: "flex" }}>
                     <Typography
                       variant="subtitle2"
                       style={{ fontWeight: "bold", marginRight: "5px" }}
                     >
-                      {baseItem.distance} {/* 0km */}
+                      {data.distance} {/* 0km */}
                     </Typography>
-                    <Typography variant="subtitle2">{baseItem.addr}</Typography>{" "}
+                    <Typography variant="subtitle2">{data.addr}</Typography>{" "}
                     {/* 주소 */}
                   </div>
                   <div className={classes.ListItemYnContainer}>
                     {/* parkingFree가 true인 경우 무료주차 Chip, false인 경우 유료주차 Chip 표시 */}
-                    {baseItem.parkingFree ? (
+                    {data.parkingFree ? (
                       <Chip
                         label="무료주차"
                         color="primary"
@@ -414,8 +428,7 @@ const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
                     ) : (
                       <Chip label="유료주차" variant="outlined" />
                     )}
-                    {/* limitYn이 true인 경우 비개방 Chip, false인 경우 개방 Chip 표시 */}
-                    {baseItem.limitYn ? (
+                    {data.limitYn ? (
                       <Chip label="비개방" variant="outlined" />
                     ) : (
                       <Chip label="개방" color="primary" variant="outlined" />
@@ -423,19 +436,34 @@ const ChargingStationSearchBar = ({ onSearch, searchResult }) => {
                   </div>
                   <div className={classes.ListChargerTypeContainer}>
                     {/* chgerTypes에 따라서 ElectricCarIcon과 해당하는 충전기 타입 라벨 표시 */}
-                    {baseItem.chgerTypes.map((chgerType, index) => (
+                    {data.chgerTypes.map((chgerType, index) => (
                       <Chip
                         key={index}
                         icon={<ElectricCarIcon />}
-                        label={`충전기 타입 ${chgerType}`}
+                        label={`${baseItem.chgerTypes[chgerType]}`}
+                        style={{ marginRight: "5px" }}
                       />
                     ))}
                   </div>
                 </div>
-                <Chip label="이동" color="secondary" clickable />
+                <Chip
+                  label="이동"
+                  color="secondary"
+                  clickable
+                  onClick={() => handleMapMove(data.lat, data.lng)}
+                />
               </ListItem>
             ))}
         </List>
+        {searchResult && searchResult.content.length > 0 && (
+          <Box className={classes.PaginationContainer}>
+            <Pagination
+              count={searchResult.totalPages}
+              page={page}
+              color="primary"
+            />
+          </Box>
+        )}
       </Box>
     </Card>
   );
@@ -502,5 +530,17 @@ const useStyles = makeStyles({
     display: "flex",
     marginTop: "5px",
     marginBottom: "10px",
+  },
+  NoSearchResultContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+    color: "gray",
+  },
+  PaginationContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "20px",
   },
 });
