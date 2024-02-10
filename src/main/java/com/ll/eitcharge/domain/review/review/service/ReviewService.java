@@ -62,6 +62,7 @@ public class ReviewService {
         return reviewRepository.findFirst10ByOrderByIdDesc();
     }
 
+
     public List<Review> findByStatId(String statId) {
         return reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
     }

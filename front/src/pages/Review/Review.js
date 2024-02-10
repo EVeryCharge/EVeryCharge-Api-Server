@@ -1,72 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, makeStyles, TextField, Button, Select, MenuItem } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Button } from '@material-ui/core';
+import Rating from '@mui/material/Rating';
+import { useAuth } from "../../utils/AuthContext";
 import { HttpGet, HttpPost, HttpDelete, HttpPut } from '../../services/HttpService';  // 유틸리티 파일 경로를 업데이트하세요
 
 
-const useStyles = makeStyles({
-  reviewContainer: {
-    marginTop: '2px',
-    borderBottom: '1px solid #ddd',
-  },
-  reviewItem: {
-    padding: '1px',
-    borderBottom: '1px solid #ddd',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  content: {
-    fontSize: '1rem',
-    marginTop: '5px',
-    whiteSpace: 'pre-line',
-  },
-  author: {
-    fontSize: '0.6rem',
-    color: '#777',
-    marginTop: '1px',
-    display: 'flex',
-    justifyContent: 'flex-start',
-    width: '100%',
-  },
-  createDate: {
-    fontSize: '0.6rem',
-    color: '#777',
-    marginTop: '1px',
-    marginLeft: '10px',
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%',
-  },
-  textField: {
-    width: '100%',
-    marginBottom: '10px',
-  },
-  Button: {
-    fontSize: '0.5rem',
-
-  },
-
-});
-
 const Review = ({ chargingStationId }) => {
-  const classes = useStyles();
+  //접속자 userName
+  const { getUserName } = useAuth();
+  //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
-  const [newReviewContent, setNewReviewContent] = useState('');
-  const [newReviewRating, setNewReviewRating] = useState(0);
-  const [userId, setUserId] = useState(null);
-  const [userName, setUserName] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editReviewId, setEditReviewId] = useState(null);
-  const [editedReviewContent, setEditedReviewContent] = useState('');
-  const [visibleReviews, setVisibleReviews] = useState(5); // 초기에 표시할 후기 개수
-
-  useEffect(() => {
-    fetchData();
-    fetchUserId();
-  }, [chargingStationId]);
-
   const fetchData = async () => {
     try {
       const response = await HttpGet(`api/v1/review/${chargingStationId}`);
@@ -76,82 +19,8 @@ const Review = ({ chargingStationId }) => {
     }
   };
 
-  const fetchUserId = async () => {
-    try {
-      const userResponse = await HttpGet(`api/v1/members/me`);
-      const { id: userIdFromApi, username } = userResponse.data.item;
-      setUserId(userIdFromApi);
-      setUserName(username);
-      setIsLoggedIn(true);
-    } catch (error) {
-      console.error("유저 정보를 불러오는 중 오류 발생:", error);
-      setUserId(null);
-      setIsLoggedIn(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!isLoggedIn) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    if (!newReviewContent.trim()) {
-      alert("후기 내용을 입력해주세요.");
-      return;
-    }
-
-    try {
-      await HttpPost(`api/v1/review/${chargingStationId}`, {
-        content: newReviewContent,
-        rating: newReviewRating,
-      });
-
-      fetchData();
-      setNewReviewContent('');
-      setNewReviewRating(0);
-    } catch (error) {
-      console.error("후기를 작성하는 중 오류 발생:", error);
-    }
-  };
-
-  const handleDelete = async (reviewId, reviewUserId) => {
-    if (!isLoggedIn) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    if (userId !== reviewUserId) {
-      alert("자신이 작성한 후기만 삭제할 수 있습니다.");
-      return;
-    }
-
-    if (!window.confirm('삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
-      fetchData();
-    } catch (error) {
-      console.error("후기를 삭제하는 중 오류 발생:", error);
-    }
-  };
-
-  const handleEdit = (reviewId, content) => {
-    setIsEditing(true);
-    setEditReviewId(reviewId);
-    setEditedReviewContent(content);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditReviewId(null);
-    setEditedReviewContent('');
-  };
-
-  const [editedReviewRating, setEditedReviewRating] = useState(0);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [editReviewId, setEditReviewId] = useState(null);
   const handleUpdate = async (reviewId) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
       alert("후기 내용을 입력해주세요.");
@@ -169,20 +38,173 @@ const Review = ({ chargingStationId }) => {
       setIsEditing(false);
       setEditReviewId(null);
       setEditedReviewContent('');
-      setEditedReviewRating(0);
     } catch (error) {
       console.error("후기를 수정하는 중 오류 발생:", error);
     }
   };
+  const handleDelete = async (reviewId, loginUserName, reviewUserName) => {
+    if (!window.confirm('삭제하시겠습니까?')) {
+      return;
+    }
+    if (loginUserName == reviewUserName) {
+      await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
+      console.log("삭제")
 
-  const handleMoreReviews = () => {
-    setVisibleReviews((prev) => prev + 5); // 다음 5개의 후기 표시
+      fetchData();
+    }
+  };
+  const [editedReviewContent, setEditedReviewContent] = useState('');
+  const [editedReviewRating, setEditedReviewRating] = useState('');
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditReviewId(null);
+    setEditedReviewContent('');
+  };
+  const handleEdit = (reviewId, content) => {
+    setIsEditing(true);
+    setEditReviewId(reviewId);
+    setEditedReviewContent(content);
+  };
+  const [newReviewContent, setNewReviewContent] = useState('');
+  const { isLogin } = useAuth();
+  const handleSubmit = async () => {
+
+
+    if (!newReviewContent.trim()) {
+      alert("후기 내용을 입력해주세요.");
+      return;
+    }
+
+    if (!isLogin()) {
+      alert("로그인 해주세요.");
+      return;
+    }
+
+
+    try {
+      await HttpPost(`api/v1/review/${chargingStationId}`, {
+        content: newReviewContent,
+        rating: newReviewRating,
+      });
+
+      fetchData();
+      setNewReviewContent('');
+    } catch (error) {
+      console.error("후기를 작성하는 중 오류 발생:", error);
+    }
   };
 
+  const [newReviewRating, setNewReviewRating] = React.useState(0); // 평점 state 추가
+
+  useEffect(() => {
+    fetchData();
+  }, [chargingStationId]);
+
   return (
-    <div className={classes.reviewContainer}>
+    <div>
       <Typography variant="subtitle1">이용후기</Typography>
-      <div className={classes.reviewItem}>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+
+            {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
+              review.data.items.slice(0, review.data.items.length).map((reviewItem) => (
+                <TableRow>
+                  <TableCell style={{ width: '100px', paddingLeft: '25px', textAlign: 'center' }}>
+                    <div >{reviewItem.userName}</div>
+                    {isEditing && editReviewId === reviewItem.id ? (
+                      <Rating name="size-small" value={reviewItem.rating} size="small"
+                        onChange={(event, newValue) => {
+                          setEditedReviewRating(newValue);
+                          reviewItem.rating = newValue;
+                        }}
+                      />
+                    ) : (
+                      <Rating name="read-only" value={reviewItem.rating} readOnly size="small" />
+                    )}
+                  </TableCell>
+                  <TableCell style={{ width: '500px', wordWrap: 'break-word' }}>
+                    {isEditing && editReviewId === reviewItem.id ? (
+                      <TextField
+                        label="후기 수정"
+                        variant="outlined"
+                        multiline
+                        minRows={1}
+                        value={editedReviewContent}
+                        onChange={(e) => setEditedReviewContent(e.target.value)}
+                        fullWidth
+                        size="small"
+                      />
+                    ) : (
+                      reviewItem.content || "내용이 없습니다."
+                    )}
+                  </TableCell>
+                  <TableCell style={{ width: '50px' }}>
+                    <div style={{ fontSize: '11px' }}>
+                      {new Date(reviewItem.createDate).toLocaleString()}
+                    </div>
+                    {getUserName() == reviewItem.userName && (
+                      <div>
+                        {isEditing && editReviewId === reviewItem.id ? (
+                          <div style={{ display: 'flex', justifyContent: 'flex-center', width: '100%', marginBottom: '1px' }}>
+                            {/* 수정 완료 버튼 */}
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => handleUpdate(editReviewId)}
+                              style={{ fontSize: '12px' }}
+                            >
+                              완료
+                            </Button>
+                            {/* 취소 버튼 */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={handleCancelEdit}
+                              style={{ fontSize: '12px' }}
+                            >
+                              취소
+                            </Button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', justifyContent: 'flex-center', width: '100%', marginBottom: '1px' }}>
+                            {/* 수정 버튼 */}
+                            <Button
+                              variant="contained"
+                              color=""
+                              onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
+                              style={{ fontSize: '12px' }}
+                            >
+                              수정
+                            </Button>
+                            {/* 삭제 버튼 */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => handleDelete(reviewItem.id, getUserName(), reviewItem.userName)}
+                              style={{ fontSize: '12px' }}
+                            >
+                              삭제
+                            </Button>
+                          </div>
+                        )}
+                        <div>
+                        </div>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : null}
+            <TableRow >
+            </TableRow>
+          </TableHead>
+        </Table>
+      </TableContainer>
+      <div style={{ height: '10px' }}>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
+
         <TextField
           label={Array.isArray(review.data.items) && review.data.items.length === 0
             ? "첫 후기를 작성해 보세요."
@@ -193,129 +215,24 @@ const Review = ({ chargingStationId }) => {
           minRows={1}
           value={newReviewContent}
           onChange={(e) => setNewReviewContent(e.target.value)}
-          className={classes.textField}
+          fullWidth
         />
-        <Select
-          label="평점"
-          variant="outlined"
-          value={newReviewRating}
-          onChange={(e) => setNewReviewRating(e.target.value)}
-          className={classes.textField}
-        >
-          {[0, 1, 2, 3, 4, 5].map((rating) => (
-            <MenuItem key={rating} value={rating}>
-              {rating}점
-            </MenuItem>
-          ))}
-        </Select>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          작성
-        </Button>
-      </div>
-      {Array.isArray(review.data.items) && review.data.items.length > 0 ? (
-        review.data.items.slice(0, visibleReviews).map((reviewItem) => (
-          <div key={reviewItem.id} className={classes.reviewItem}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
-              <Typography variant="body2" className={classes.content} style={{ display: 'flex' }}>
-                {isEditing && editReviewId === reviewItem.id ? (
-                  <TextField
-                    label="후기 수정"
-                    variant="outlined"
-                    multiline
-                    minRows={1}
-                    value={editedReviewContent}
-                    onChange={(e) => setEditedReviewContent(e.target.value)}
-                    className={classes.textField}
-                  />
-                ) : (
-                  reviewItem.content || "내용이 없습니다."
-                )}
-              </Typography>
-              {isLoggedIn && userId === reviewItem.userId && (
-                <div>
-                  {isEditing && editReviewId === reviewItem.id ? (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
-                      {/* 수정 완료 버튼 */}
-                      <Button
-                        color="primary"
-                        onClick={() => handleUpdate(editReviewId)}
-                        className={classes.Button}
-                      >
-                        수정 완료
-                      </Button>
-                      {/* 취소 버튼 */}
-                      <Button
-                        color="secondary"
-                        onClick={handleCancelEdit}
-                        className={classes.Button}
-                      >
-                        취소
-                      </Button>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1px' }}>
-                      {/* 수정 버튼 */}
-                      <Button
-                        color="primary"
-                        className={classes.Button}
-                        onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
-                      >
-                        수정
-                      </Button>
-                      {/* 삭제 버튼 */}
-                      <Button
-                        color="secondary"
-                        className={classes.Button}
-                        onClick={() => handleDelete(reviewItem.id, userId)}
-                      >
-                        삭제
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <div className={classes.author}>
-                {/* 작성자 ID 표시 */}
-                평점: {isEditing && editReviewId === reviewItem.id ? (
-                  // 수정 중에는 새로 입력한 평점을 표시
-                  <Select
-                    label="평점"
-                    variant="outlined"
-                    value={editedReviewRating}
-                    onChange={(e) => setEditedReviewRating(e.target.value)}
-                    className={classes.textField}
-                    style={{ width: '50%' }}
-                  >
-                    {[0, 1, 2, 3, 4, 5].map((rating) => (
-                      <MenuItem key={rating} value={rating}>
-                        {rating}점
-                      </MenuItem>
-                    ))}
-                  </Select>
-                ) : (
-                  // 수정 중이 아니면 리뷰의 기존 평점을 표시
-                  reviewItem.rating
-                )}
-              </div>
-              <div className={classes.createDate}>
-                {/* 작성일자 표시 */}
-                {new Date(reviewItem.createDate).toLocaleString()}
-              </div>
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignContent: 'center', width: '160px' }}>
+          <div>
+            <Rating name="size-small" defaultValue={3} size="small"
+              onChange={(event, newValue) => {
+                setNewReviewRating(newValue);
+              }}
+            />
           </div>
-        ))
-      ) : null}
-      {Array.isArray(review.data.items) && review.data.items.length > visibleReviews && (
-        <Button style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
-          className={classes.Button}
-          onClick={handleMoreReviews}
-        >
-          더보기
-        </Button>
-      )}
+
+          <Button variant="contained" color="primary" onClick={handleSubmit} size="small">
+            작성
+          </Button>
+        </div>
+      </div>
     </div>
+
   );
 };
 

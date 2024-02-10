@@ -149,6 +149,7 @@ public class ReviewController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Transactional
     @DeleteMapping("/{chargingStationId}/{id}")
     public RsData<RemoveReviewResponseBody> removeReview(
             @PathVariable long id
