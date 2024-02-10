@@ -74,7 +74,7 @@ public class ChargingStationController {
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 충전소 이름 순 정렬")
     @GetMapping("/searchBaseStatNm")
     public ResponseEntity<Page<ChargingStationSearchResponseDto>> searchBaseStatNm(
-            // 개방 여부 (Y / N)
+            // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", defaultValue = "") String limitYn,
             // 무료 주차 (Y / N)
             @RequestParam(value = "parkingFree", defaultValue = "") String parkingFree,
@@ -104,7 +104,7 @@ public class ChargingStationController {
     public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
             // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
             @RequestParam(value= "stat", required = false) String stat,
-            // 개방 여부 (Y / N)
+            // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", required = false) String limitYn,
             // 무료 주차 (Y / N)
             @RequestParam(value = "parkingFree", required = false) String parkingFree,
@@ -121,9 +121,9 @@ public class ChargingStationController {
             // 검색 키워드 (충전소명, 주소 LIKE)
             @RequestParam(value = "kw", required = false) String kw,
             // 페이지 정보 (1부터 시작)
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             // 페이지 사이즈
-            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
             // 경도 디폴트 서울시 중구
             @RequestParam(value = "lng", defaultValue = "126.9784") double lng,
             // 위도 디폴트 서울시 중구
