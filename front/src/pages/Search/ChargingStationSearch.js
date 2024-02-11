@@ -85,7 +85,6 @@ const ChargingStationSearch = () => {
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {loading && (
           <CircularProgress
-            size="large"
             style={{
               position: "fixed",
               top: "50%",
