@@ -444,13 +444,12 @@ const ChargingStationSearchBar = ({
                     )}
                   </div>
                   <div className={classes.ListChargerTypeContainer}>
-                    {/* chgerTypes에 따라서 ElectricCarIcon과 해당하는 충전기 타입 라벨 표시 */}
                     {data.chgerTypes.map((chgerType, index) => (
                       <Chip
                         key={index}
                         icon={<ElectricCarIcon />}
                         label={`${baseItem.chgerTypes[chgerType]}`}
-                        style={{ marginRight: "5px" }}
+                        style={{ marginBottom: "5px" }}
                       />
                     ))}
                   </div>
@@ -537,7 +536,6 @@ const useStyles = makeStyles({
     },
   },
   ListChargerTypeContainer: {
-    display: "flex",
     marginTop: "5px",
     marginBottom: "10px",
   },
