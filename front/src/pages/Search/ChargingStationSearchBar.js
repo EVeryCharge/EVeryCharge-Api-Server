@@ -25,7 +25,12 @@ import { Pagination } from "@mui/material";
  * 작성자 : 이상제
  * 전기차 충전소 검색 바 / 콘솔 구현
  * */
-const ChargingStationSearchBar = ({ onSearch, searchResult, onMapMove }) => {
+const ChargingStationSearchBar = ({
+  onSearch,
+  searchResult,
+  onMapMove,
+  hidden,
+}) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
   const [parkingFree, setParkingFree] = useState(true);
@@ -144,7 +149,11 @@ const ChargingStationSearchBar = ({ onSearch, searchResult, onMapMove }) => {
   };
 
   return (
-    <Card variant="outlined" className={classes.baseLayer}>
+    <Card
+      variant="outlined"
+      className={classes.baseLayer}
+      style={{ visibility: hidden ? "hidden" : "visible" }}
+    >
       <Box className={classes.searchBarAndToggleContainer}>
         <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
           <FormControl fullWidth>
@@ -474,7 +483,8 @@ export default ChargingStationSearchBar;
 const useStyles = makeStyles({
   baseLayer: {
     backgroundColor: "#EFF8FB",
-    width: "400px",
+    width: "420px",
+    height: "70vh",
     padding: "20px",
     borderRadius: "10px",
   },
@@ -504,7 +514,7 @@ const useStyles = makeStyles({
   },
   ListContainer: {
     overflowY: "auto",
-    maxHeight: "300px",
+    maxHeight: "40vh",
   },
   ListItemContainer: {
     borderBottom: "1px groove grey",
