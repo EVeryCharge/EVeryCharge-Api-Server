@@ -21,7 +21,7 @@ public class ChargingStationRepositoryImpl implements ChargingStationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ChargingStation> search(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, List<String> busiIds, List<String> chgerTypes, String kw, Pageable pageable) {
+    public Page<ChargingStation> searchBaseStatNm(String limitYn, String parkingFree, String zcode, String zscode, String isPrimary, List<String> busiIds, List<String> chgerTypes, String kw, Pageable pageable) {
 
         List<ChargingStation> results = queryFactory
                 .selectFrom(QChargingStation.chargingStation)

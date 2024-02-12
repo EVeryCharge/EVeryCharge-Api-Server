@@ -171,7 +171,6 @@ const Review = ({ chargingStationId }) => {
                             {/* 수정 버튼 */}
                             <Button
                               variant="contained"
-                              color=""
                               onClick={() => handleEdit(reviewItem.id, reviewItem.content)}
                               style={{ fontSize: '12px' }}
                             >
