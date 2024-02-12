@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
+import { GpsFixedOutlined } from "@material-ui/icons";
+import React, { useEffect, useRef, useState } from "react";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
@@ -109,19 +110,25 @@ const ChargingStationSearchMap = ({
         }}
         ref={mapRef}
       />
-      <Button
-        style={{
-          position: "absolute",
-          zIndex: "2",
-          bottom: "10px",
-          right: "40px",
-        }}
-        variant="contained"
-        color="primary"
-        onClick={handleResetMap}
-      >
-        내 위치 기준 지도 정렬
-      </Button>
+      <Tooltip title="접속 위치로 지도 이동" placement="left-start">
+        <Button
+          style={{
+            position: "absolute",
+            zIndex: "2",
+            backgroundColor: "white",
+            color: "black",
+            bottom: "10px",
+            right: "40px",
+            justifyContent: "center",
+            borderRadius: "20px",
+          }}
+          variant="contained"
+          color="primary"
+          onClick={handleResetMap}
+        >
+          <GpsFixedOutlined />
+        </Button>
+      </Tooltip>
     </div>
   );
 };

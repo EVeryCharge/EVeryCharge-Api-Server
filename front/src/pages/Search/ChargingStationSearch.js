@@ -1,9 +1,9 @@
-import { Box, CircularProgress, Fab } from "@material-ui/core";
-import ChargingStationSearchBar from "./ChargingStationSearchBar";
-import ChargingStationSearchMap from "./ChargingStationSearchMap";
+import { Box, CircularProgress, Fab, Tooltip } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 import { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
-import { Search } from "@material-ui/icons";
+import ChargingStationSearchBar from "./ChargingStationSearchBar";
+import ChargingStationSearchMap from "./ChargingStationSearchMap";
 
 const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
@@ -68,19 +68,21 @@ const ChargingStationSearch = () => {
 
   return (
     <Box style={{ overflow: "hidden" }}>
-      <Fab
-        color="primary"
-        aria-label="search"
-        style={{
-          bottom: "100px",
-          left: "10px",
-          position: "fixed",
-          zIndex: 9999,
-        }}
-        onClick={toggleSearchBar}
-      >
-        <Search />
-      </Fab>
+      <Tooltip title="검색 창 열기 / 닫기" placement="right-end">
+        <Fab
+          color="primary"
+          aria-label="search"
+          style={{
+            bottom: "100px",
+            left: "10px",
+            position: "fixed",
+            zIndex: 9999,
+          }}
+          onClick={toggleSearchBar}
+        >
+          <Search />
+        </Fab>
+      </Tooltip>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {loading && (
           <CircularProgress
@@ -92,7 +94,7 @@ const ChargingStationSearch = () => {
             }}
           />
         )}
-        <Box sx={{ zIndex: 9997, position: "fixed" }}>
+        <Box sx={{ zIndex: 2, position: "fixed" }}>
           <ChargingStationSearchBar
             onSearch={fetchSearchResult}
             searchResult={searchResult}
