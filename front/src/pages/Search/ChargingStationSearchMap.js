@@ -1,6 +1,10 @@
 import { Button, Tooltip } from "@material-ui/core";
 import { GpsFixedOutlined } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
+import ChargerInfoModal from '../../components/UI/ChargerInfoModal';
+import { useSelectedItems } from '../../utils/StationInfoContext';
+
+
 
 const ChargingStationSearchMap = ({
   temporaryArray,
@@ -9,6 +13,11 @@ const ChargingStationSearchMap = ({
 }) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
+  const { setSelectedItem, getStatId } = useSelectedItems();
+  const [isOpen, setIsOpen] = useState(false);
+
+
+
   const [mapCenter, setMapCenter] = useState({
     lat: 36.483034,
     lng: 126.902435,
@@ -38,6 +47,7 @@ const ChargingStationSearchMap = ({
     // 기존 마커를 모두 삭제
     markers.forEach((marker) => marker.setMap(null));
 
+
     if (items.length > 0) {
       const firstItem = items[0];
       setMapCenter({
@@ -51,6 +61,13 @@ const ChargingStationSearchMap = ({
           position: markerPosition,
           map: map.current,
         });
+        window.kakao.maps.event.addListener(marker, 'click', function () {
+          // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+          setIsOpen(false);
+          setSelectedItem(item);
+          setIsOpen(true);
+        });
+
         return marker;
       });
       setMarkers(newMarkers);
@@ -93,6 +110,10 @@ const ChargingStationSearchMap = ({
     map.current.setLevel(3);
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div
       style={{
@@ -110,6 +131,8 @@ const ChargingStationSearchMap = ({
         }}
         ref={mapRef}
       />
+      <ChargerInfoModal isOpen={isOpen} onRequestClose={closeModal} items={getStatId()} />
+
       <Tooltip title="접속 위치로 지도 이동" placement="left-start">
         <Button
           style={{
