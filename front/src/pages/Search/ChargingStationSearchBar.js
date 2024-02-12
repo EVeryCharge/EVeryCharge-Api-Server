@@ -28,6 +28,7 @@ import { Pagination } from "@mui/material";
 const ChargingStationSearchBar = ({
   onSearch,
   searchResult,
+  setSearchResult,
   onMapMove,
   hidden,
 }) => {
@@ -42,7 +43,6 @@ const ChargingStationSearchBar = ({
   const [chgerId, setChgerId] = useState([]);
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
   const [baseItem, setBaseItem] = useState(null);
 
   useEffect(() => {
@@ -56,6 +56,11 @@ const ChargingStationSearchBar = ({
     };
     fetchData();
   }, []);
+
+  // 검색 조건이 변경될 때마다 검색 결과를 언마운트
+  useEffect(() => {
+    setSearchResult(null);
+  }, [chargable, parkingFree, isOpen, zcode, zscode, busiId, chgerId, kw]);
 
   const handleChargableChange = () => {
     setChargable(!chargable);
@@ -115,7 +120,14 @@ const ChargingStationSearchBar = ({
     setKw(event.target.value);
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const handleSearch = () => {
+    setPage(1);
     onSearch({
       stat: chargable ? 2 : undefined,
       parkingFree: parkingFree ? "Y" : undefined,
@@ -126,9 +138,25 @@ const ChargingStationSearchBar = ({
       busiId: busiId.length > 0 ? busiId.join(", ") : undefined,
       chgerType: chgerId.length > 0 ? chgerId.join(", ") : undefined,
       kw: kw || undefined,
-      page: page || undefined,
-      pageSize: pageSize || undefined,
       range: range || undefined,
+      page: 1 || undefined,
+    });
+  };
+
+  const handlePageMove = (event, newPage) => {
+    setPage(newPage);
+    onSearch({
+      stat: chargable ? 2 : undefined,
+      parkingFree: parkingFree ? "Y" : undefined,
+      limitYn: isOpen ? "N" : undefined,
+      zcode: zcode || undefined,
+      zscode: zscode || undefined,
+      isPrimary: busiId.length > 0 ? "Y" : undefined,
+      busiId: busiId.length > 0 ? busiId.join(", ") : undefined,
+      chgerType: chgerId.length > 0 ? chgerId.join(", ") : undefined,
+      kw: kw || undefined,
+      range: range || undefined,
+      page: newPage || undefined,
     });
   };
 
@@ -165,6 +193,7 @@ const ChargingStationSearchBar = ({
               variant="outlined"
               color="primary"
               value={kw}
+              onKeyPress={handleKeyPress}
               onChange={handleKwChange}
               InputProps={{
                 startAdornment: (
@@ -421,13 +450,11 @@ const ChargingStationSearchBar = ({
                       variant="subtitle2"
                       style={{ fontWeight: "bold", marginRight: "5px" }}
                     >
-                      {data.distance} {/* 0km */}
+                      {data.distance}
                     </Typography>
                     <Typography variant="subtitle2">{data.addr}</Typography>{" "}
-                    {/* 주소 */}
                   </div>
                   <div className={classes.ListItemYnContainer}>
-                    {/* parkingFree가 true인 경우 무료주차 Chip, false인 경우 유료주차 Chip 표시 */}
                     {data.parkingFree ? (
                       <Chip
                         label="무료주차"
@@ -449,7 +476,7 @@ const ChargingStationSearchBar = ({
                         key={index}
                         icon={<ElectricCarIcon />}
                         label={`${baseItem.chgerTypes[chgerType]}`}
-                        style={{ marginBottom: "5px" }}
+                        style={{ marginBottom: "5px", marginRight: "5px" }}
                       />
                     ))}
                   </div>
@@ -467,6 +494,7 @@ const ChargingStationSearchBar = ({
           <Box className={classes.PaginationContainer}>
             <Pagination
               count={searchResult.totalPages}
+              onChange={handlePageMove}
               page={page}
               color="primary"
             />

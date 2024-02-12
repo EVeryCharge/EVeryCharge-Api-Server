@@ -43,6 +43,8 @@ const ChargingStationSearch = () => {
   const fetchSearchResult = async (searchParam) => {
     try {
       setLoading(true);
+      // console.log("검색 조건: ", searchParam);
+
       const response = await HttpGet(
         "/api/v1/chargingStation/searchBaseDistance",
         {
@@ -52,7 +54,7 @@ const ChargingStationSearch = () => {
       );
       setSearchResult(response);
     } catch (error) {
-      console.error("검색 결과 로딩 중 오류:", error);
+      // console.error("검색 결과 로딩 중 오류:", error);
     } finally {
       setLoading(false);
     }
@@ -64,7 +66,6 @@ const ChargingStationSearch = () => {
 
   const toggleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
-    console.log("toggle", showSearchBar);
   };
 
   return (
@@ -96,6 +97,7 @@ const ChargingStationSearch = () => {
         <ChargingStationSearchBar
           onSearch={fetchSearchResult}
           searchResult={searchResult}
+          setSearchResult={setSearchResult}
           onMapMove={handleMapMove}
           hidden={!showSearchBar}
         />

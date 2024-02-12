@@ -28,7 +28,7 @@ const ChargingStationSearchMap = ({
 
   const fetchDataFromServerRangeQuery = async () => {
     if (!temporaryArray || !temporaryArray.content) {
-      console.log("temporaryArray is undefined or does not contain 'content'");
+      // console.log("temporaryArray is undefined or does not contain 'content'");
       return;
     }
     map.current.setLevel(3);
@@ -53,9 +53,9 @@ const ChargingStationSearchMap = ({
         return marker;
       });
       setMarkers(newMarkers);
-      console.log(items);
+      // console.log(items);
     } else {
-      console.log("latLngArray is empty");
+      // console.log("latLngArray is empty");
     }
   };
 
