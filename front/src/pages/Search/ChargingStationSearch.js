@@ -43,8 +43,6 @@ const ChargingStationSearch = () => {
   const fetchSearchResult = async (searchParam) => {
     try {
       setLoading(true);
-      // console.log("검색 조건: ", searchParam);
-
       const response = await HttpGet(
         "/api/v1/chargingStation/searchBaseDistance",
         {
@@ -54,7 +52,7 @@ const ChargingStationSearch = () => {
       );
       setSearchResult(response);
     } catch (error) {
-      // console.error("검색 결과 로딩 중 오류:", error);
+      console.error("검색 결과 로딩 중 오류:", error);
     } finally {
       setLoading(false);
     }
@@ -94,21 +92,22 @@ const ChargingStationSearch = () => {
             }}
           />
         )}
-        <ChargingStationSearchBar
-          onSearch={fetchSearchResult}
-          searchResult={searchResult}
-          setSearchResult={setSearchResult}
-          onMapMove={handleMapMove}
-          hidden={!showSearchBar}
-        />
+        <Box sx={{ zIndex: 9997, position: "fixed" }}>
+          <ChargingStationSearchBar
+            onSearch={fetchSearchResult}
+            searchResult={searchResult}
+            setSearchResult={setSearchResult}
+            onMapMove={handleMapMove}
+            showSearchBar={showSearchBar}
+          />
+        </Box>
         <Box
           sx={{
             flexGrow: 1,
-            marginLeft: showSearchBar ? 0 : "-460px",
             zIndex: 1,
           }}
         >
-          <ChargingStationSearchMap // TODO : 오른쪽 지도 여백 문제 확인
+          <ChargingStationSearchMap
             temporaryArray={temporaryArray}
             myLoc={myLoc}
             propsMapCenter={mapCenter}

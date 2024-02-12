@@ -75,7 +75,6 @@ const ChargingStationSearchMap = ({
 
   useEffect(() => {
     if (myLoc) {
-      // myLoc이 null이 아닐 때만 initMap 호출
       initMap();
     }
   }, [myLoc]); // 최초 렌더링 시에만 initMap 호출
@@ -94,9 +93,11 @@ const ChargingStationSearchMap = ({
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      {" "}
-      {/* 부모 요소를 relative로 설정 */}
+    <div
+      style={{
+        position: "relative",
+      }}
+    >
       <div
         id="map"
         style={{
@@ -117,7 +118,7 @@ const ChargingStationSearchMap = ({
         }}
         variant="contained"
         color="primary"
-        onClick={handleResetMap} // 함수를 호출하도록 수정
+        onClick={handleResetMap}
       >
         내 위치 기준 지도 정렬
       </Button>

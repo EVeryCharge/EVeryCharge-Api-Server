@@ -30,7 +30,7 @@ const ChargingStationSearchBar = ({
   searchResult,
   setSearchResult,
   onMapMove,
-  hidden,
+  showSearchBar,
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
@@ -180,7 +180,9 @@ const ChargingStationSearchBar = ({
     <Card
       variant="outlined"
       className={classes.baseLayer}
-      style={{ visibility: hidden ? "hidden" : "visible" }}
+      style={{
+        transform: !showSearchBar ? "translateX(-100%)" : "translateX(0)",
+      }}
     >
       <Box className={classes.searchBarAndToggleContainer}>
         <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
@@ -513,7 +515,8 @@ const useStyles = makeStyles({
     width: "420px",
     height: "70vh",
     padding: "20px",
-    borderRadius: "10px",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)",
+    transition: "transform 0.3s ease",
   },
   searchBarAndToggleContainer: {
     display: "flex",
