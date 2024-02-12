@@ -229,6 +229,7 @@ const ChargingStationSearchBar = ({
           </Button>
           <ToggleButton
             size="small"
+            color="primary"
             sx={{ fontSize: "11px", mr: "10px" }}
             value="chargable"
             selected={chargable}
@@ -238,6 +239,7 @@ const ChargingStationSearchBar = ({
           </ToggleButton>
           <ToggleButton
             size="small"
+            color="primary"
             sx={{ fontSize: "11px", mr: "10px" }}
             value="parkingFree"
             selected={parkingFree}
@@ -247,6 +249,7 @@ const ChargingStationSearchBar = ({
           </ToggleButton>
           <ToggleButton
             size="small"
+            color="primary"
             sx={{ fontSize: "11px", mr: "10px" }}
             value="isOpen"
             selected={isOpen}
@@ -365,7 +368,11 @@ const ChargingStationSearchBar = ({
                 sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
-                  <div>
+                  <div
+                    style={{
+                      color: selected.length === 0 ? "black" : "blue",
+                    }}
+                  >
                     {selected.length === 0
                       ? "전체"
                       : `${selected.length}개 선택됨`}
@@ -399,7 +406,11 @@ const ChargingStationSearchBar = ({
                 sx={{ fontSize: "11px", mr: "10px", width: "210px" }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
-                  <div>
+                  <div
+                    style={{
+                      color: selected.length === 0 ? "black" : "blue",
+                    }}
+                  >
                     {selected.length === 0
                       ? "전체"
                       : `${selected.length}개 선택됨`}
@@ -477,7 +488,11 @@ const ChargingStationSearchBar = ({
                       <Chip
                         key={index}
                         icon={<ElectricCarIcon />}
-                        label={`${baseItem.chgerTypes[chgerType]}`}
+                        label={`${
+                          baseItem.chgerTypes[
+                            baseItem.chgerIds.indexOf(chgerType)
+                          ]
+                        }`}
                         style={{ marginBottom: "5px", marginRight: "5px" }}
                       />
                     ))}
