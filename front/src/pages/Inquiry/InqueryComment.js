@@ -99,7 +99,7 @@ const InqueryComment = ({inquiryId}) => {
                                 >삭제</Button>
                                 </>  
                             )}
-                            
+                         
                         </>
                         )}
                     </ListItem>                 

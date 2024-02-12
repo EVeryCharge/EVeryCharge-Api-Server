@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -37,7 +38,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDtoList);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("#commentModifyRequestDto.writer == authentication.principal.username")
     @PutMapping("/modify")
     public ResponseEntity<CommentModifyResponseDto> modifyComment(@Valid @RequestBody CommentModifyRequestDto commentModifyRequestDto){
         CommentModifyResponseDto responseDto = commentService.modify(commentModifyRequestDto);
@@ -46,7 +47,9 @@ public class CommentController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete")
-    public ResponseEntity< List< CommentResponseDto>> deleteComment(@RequestParam Long commentId, @RequestParam Long inquiryId){
+    public ResponseEntity< List< CommentResponseDto>> deleteComment(@RequestParam Long commentId, @RequestParam Long inquiryId, Principal principal){
+        CommentResponseDto responseDto = commentService.findById(commentId);
+        if(!responseDto.getWriter().equals(principal.getName())) throw new RuntimeException("삭제 권한이 없습니다.");
         commentService.delete(commentId);
         return ResponseEntity.status(HttpStatus.OK).body(commentService.findAll(inquiryId));
     }

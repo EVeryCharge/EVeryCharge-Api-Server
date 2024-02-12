@@ -12,9 +12,12 @@ public class CommentModifyRequestDto {
     private String content;
     @NotNull
     private Long commentId;
+    @NotNull
+    private String writer;
 
-    public CommentModifyRequestDto(String content, Long commentId) {
+    public CommentModifyRequestDto(String content, Long commentId, String writer) {
         this.content = content;
         this.commentId = commentId;
+        this.writer = writer;
     }
 }
