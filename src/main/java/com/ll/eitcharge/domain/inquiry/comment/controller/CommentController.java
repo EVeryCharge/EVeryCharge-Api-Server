@@ -18,7 +18,7 @@ import java.util.List;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/v1/comment", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/inquiry/comment", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "CommentController", description = "문의게시판 댓글 API")
 @RequiredArgsConstructor
 public class CommentController {

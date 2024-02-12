@@ -18,7 +18,7 @@ const InqueryComment = ({inquiryId}) => {
     useEffect(() => {
         console.log('isLogin : ', isLogin());
         console.log('getUserName : ', getUserName());
-        HttpGet('/api/v1/comment/all',
+        HttpGet('/api/v1/inquiry/comment/all',
         {
             inquiryId: Number(inquiryId)
         })
@@ -36,7 +36,7 @@ const InqueryComment = ({inquiryId}) => {
         const isConfirmed = window.confirm("정말로 댓글을 삭제하시겠습니까? ");
 
         if(isConfirmed){
-            HttpDelete('/api/v1/comment/delete',{
+            HttpDelete('/api/v1/inquiry/comment/delete',{
                 commentId: Number(commentId),
                 inquiryId: Number(inquiryId)
             })
@@ -51,7 +51,7 @@ const InqueryComment = ({inquiryId}) => {
     const handleAddComment = () => {
         setCommentInput(''); // 입력 필드 초기화
 
-        HttpPost('/api/v1/comment/create'
+        HttpPost('/api/v1/inquiry/comment/create'
         ,{
             inquiryId: Number(inquiryId),
             content: commentInput,
@@ -106,17 +106,22 @@ const InqueryComment = ({inquiryId}) => {
                     </>
                 ))}
             </List>
-            <TextField
+            {isLogin() ? (
+                <>
+                <TextField
                 label="Write a comment..."
                 fullWidth
                 variant="outlined"
                 value={commentInput}
                 onChange={(e) => setCommentInput(e.target.value)}
                 style={{ marginBottom: '20px' }}
-            />
-            <Button variant="contained" color="primary" onClick={handleAddComment}>
-                Add Comment
-            </Button>
+                />
+                <Button variant="contained" color="primary" onClick={handleAddComment}>
+                    Add Comment
+                 </Button>
+                </> 
+            ) : null}
+            
         </Paper>
     );
 

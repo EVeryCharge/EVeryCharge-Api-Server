@@ -10,7 +10,7 @@ const InquiryCommentForm = ({onCancel, commentId}) => {
     
 
     useEffect(() => {
-      HttpGet('/api/v1/comment/find',{
+      HttpGet('/api/v1/inquiry/comment/find',{
         commentId: Number(commentId)
       })
       .then((response) => {
@@ -20,7 +20,7 @@ const InquiryCommentForm = ({onCancel, commentId}) => {
 
     //수정
     const handleModifyComment = () => {
-        HttpPut('/api/v1/comment/modify',{
+        HttpPut('/api/v1/inquiry/comment/modify',{
           content: content,
           commentId: Number(commentId)
         })
