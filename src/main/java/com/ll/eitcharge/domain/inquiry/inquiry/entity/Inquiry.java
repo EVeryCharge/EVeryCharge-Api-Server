@@ -43,4 +43,8 @@ public class Inquiry extends BaseTime {
     public void increaseViewCount(){
         this.viewCount +=1;
     }
+
+    public void updateComplete() {
+        this.inquiryState = "답변완료";
+    }
 }

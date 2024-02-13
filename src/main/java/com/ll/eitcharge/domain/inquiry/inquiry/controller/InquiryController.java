@@ -38,6 +38,7 @@ public class InquiryController {
             @RequestParam(value="page", defaultValue = "0") int page,
             @RequestParam(value="pageSize", defaultValue = "10") int pageSize
     ) {
+        inquiryService.updateStatus();
         Page<InquiryResponseDto> inquiryList = inquiryService.getList(page, pageSize);
         return ResponseEntity.ok(inquiryList);
     }
