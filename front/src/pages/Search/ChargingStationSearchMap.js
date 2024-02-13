@@ -18,6 +18,7 @@ const ChargingStationSearchMap = ({
   const map = useRef(null); // 지도 객체를 useRef로 선언
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
+  const [items, setItems] = useState([]);
 
   const [mapCenter, setMapCenter] = useState({
     lat: 37.5665,
@@ -44,14 +45,25 @@ const ChargingStationSearchMap = ({
     map.current = new window.kakao.maps.Map(container, options); // useRef로 선언한 map에 할당
   };
 
+
   const fetchDataFromServerRangeQuery = async () => {
     if (!temporaryArray || !temporaryArray.content) {
       // console.log("temporaryArray is undefined or does not contain 'content'");
       return;
     }
     map.current.setLevel(3);
-    const items = temporaryArray ? temporaryArray.content : [];
+    const newItems = temporaryArray ? temporaryArray.content : [];
+    setSelectedMarker({
+      lat:null,
+      lng:null
+    });
+    setItems(newItems); // 상태 값 업데이트
+  }
+  useEffect(() => {
+    marker(items);
+  }, [items]);
 
+  const marker = (items) => {
     // 기존 마커를 모두 삭제
     markers.forEach((marker) => marker.setMap(null));
 
@@ -65,17 +77,17 @@ const ChargingStationSearchMap = ({
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
-        const markerImage = (item.lat === mapCenter.lat && item.lng === mapCenter.lng) ?  
-        new window.kakao.maps.MarkerImage(
+        const markerImage = (item.lat === selectedMarker.lat && item.lng === selectedMarker.lng) ?
+          new window.kakao.maps.MarkerImage(
             selectMarker,
-            new window.kakao.maps.Size(70, 70), 
+            new window.kakao.maps.Size(70, 70),
             new window.kakao.maps.Point(13, 34)
-        ) : 
-        new window.kakao.maps.MarkerImage(
+          ) :
+          new window.kakao.maps.MarkerImage(
             normalMarker,
-            new window.kakao.maps.Size(70, 70), 
+            new window.kakao.maps.Size(70, 70),
             new window.kakao.maps.Point(13, 34)
-        );
+          );
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
@@ -90,13 +102,12 @@ const ChargingStationSearchMap = ({
         return marker;
       });
       setMarkers(newMarkers);
-      
+
       // console.log(items);
     } else {
       // console.log("latLngArray is empty");
     }
   };
-
   // props로 mapCenter를 전달받을 시 mapCenter를 수정한다. (이상제)
   useEffect(() => {
     if (propsMapCenter) {
@@ -104,14 +115,22 @@ const ChargingStationSearchMap = ({
         lat: propsMapCenter.lat,
         lng: propsMapCenter.lng,
       });
-      setMapCenter({
-        lat: propsMapCenter.lat,
-        lng: propsMapCenter.lng,
-      });
+
+
       map.current.setLevel(1);
     }
-    console.log(selectedMarker)
   }, [propsMapCenter]);
+
+  useEffect(() => {
+    if (selectedMarker.lng!=null) {
+      marker(items);
+      console.log("select")
+      setMapCenter({
+        lat: selectedMarker.lat,
+        lng: selectedMarker.lng,
+      });
+    }
+  }, [selectedMarker]);
 
   useEffect(() => {
     fetchDataFromServerRangeQuery();
