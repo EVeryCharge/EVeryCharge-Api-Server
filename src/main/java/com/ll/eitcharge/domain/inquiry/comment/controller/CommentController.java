@@ -33,12 +33,13 @@ public class CommentController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity< List< CommentResponseDto>> createComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
+    public ResponseEntity< List< CommentResponseDto>> createComment(@Valid @RequestBody CommentRequestDto commentRequestDto, Principal principal){
+        if(!(principal.getName().equals("admin")  || principal.getName().equals("system"))) throw new RuntimeException("삭제 권한이 없습니다.");
         List< CommentResponseDto > responseDtoList = commentService.save(commentRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDtoList);
     }
 
-    @PreAuthorize("#commentModifyRequestDto.writer == authentication.principal.username")
+    @PreAuthorize("#commentModifyRequestDto.writer == 'system' or #commentModifyRequestDto.writer == 'admin'")
     @PutMapping("/modify")
     public ResponseEntity<CommentModifyResponseDto> modifyComment(@Valid @RequestBody CommentModifyRequestDto commentModifyRequestDto){
         CommentModifyResponseDto responseDto = commentService.modify(commentModifyRequestDto);
@@ -47,10 +48,14 @@ public class CommentController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete")
-    public ResponseEntity< List< CommentResponseDto>> deleteComment(@RequestParam Long commentId, @RequestParam Long inquiryId, Principal principal){
+    public ResponseEntity< List< CommentResponseDto>> deleteComment(@RequestParam Long commentId, @RequestParam Long inquiryId){
         CommentResponseDto responseDto = commentService.findById(commentId);
-        if(!responseDto.getWriter().equals(principal.getName())) throw new RuntimeException("삭제 권한이 없습니다.");
-        commentService.delete(commentId);
+        if(responseDto.getWriter().equals("admin") || responseDto.getWriter().equals("system")){
+            commentService.delete(commentId);
+        }else{
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(commentService.findAll(inquiryId));
     }
 
