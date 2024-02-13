@@ -14,6 +14,7 @@ import {
   import ReportHeader from "../Report/ReportHeader";
 import { HttpGet, HttpPost } from "../../services/HttpService";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../utils/AuthContext";
 
 const Inquiry = () => {
 const [data, setData] = React.useState({
@@ -26,6 +27,8 @@ const [data, setData] = React.useState({
 
 const [page, setPage] = React.useState(0);
 const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const {getUserId, getUserName, isLogin} = useAuth();   
+const navigate = useNavigate(); 
 
 React.useEffect(() => {
   fetchData(page, rowsPerPage);
@@ -110,13 +113,24 @@ return (
         <TableBody>
           {data.content.map((row) => (
             <TableRow
-              key={row.id}
-              component={Link}
-              to={`/inquiry/${row.id}`}
-              style={{
-                textDecoration: "none",
-              }}
-            >
+            key={row.id}
+            style={{
+              textDecoration: "none",
+            }}
+            onClick={(e) => {
+              // 조건 검사 로직
+              console.log("공개여부:", row.isPublished);
+
+              if (row.isPublished == false && getUserName() !== "admin" && getUserName() !== row.writer) {
+                alert("작성자와 관리자만 볼 수 있습니다");
+                console.log("현재 사용자:", getUserName());
+                console.log("글 작성자:", row.writer);
+              } else {
+                // 조건이 충족될 때만 이동
+                navigate(`/inquiry/${row.id}`);
+              }
+            }}
+          >
               <TableCell>{row.id}</TableCell>
               <TableCell>{row.inquiryState}</TableCell>
               <TableCell>{row.inquiryType}</TableCell>
