@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HttpPost } from '../../services/HttpService';
 import { useNavigate } from 'react-router-dom';
+import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 
 function InquiryForm() {
   const [title, setTitle] = useState(null);
@@ -41,36 +42,44 @@ function InquiryForm() {
 
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        문의 유형: {/* 콤보박스 추가 */}
-        <select value={inquiryType} onChange={e => setInquiryType(e.target.value)}>
-          <option value ="null">선택하세요</option>
-          <option value="홈페이지 오류">홈페이지 오류</option>
-          <option value="전기충전소 문의">전기충전소 문의</option>
-          <option value="전기충전기 문의">전기충전기 문의</option>
-          <option value="나문희">나문희</option>
-        </select>
-      </label>
-      <br />
-      <label>
-        제목:
-        <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
-      </label>
-      <br />
-      <label>
-        내용:
-        <textarea value={content} onChange={e => setContent(e.target.value)} />
-      </label>
-      <br />
-      <label>
-        공개:
-        <input type="checkbox" checked={isPublished} onChange={e => setIsPublished(e.target.checked)} />
-      </label>
-      <br />
-      <button type="button" onClick={handleSubmit}>
-          등록
-      </button>
+    <form onSubmit={handleSubmit} style={{maxWidth: '95%', margin: 'auto', display: 'block'}}>
+      <FormControl fullWidth margin="normal">
+        <InputLabel>문의 유형</InputLabel>
+        <Select
+          value={inquiryType}
+          label="문의 유형"
+          onChange={e => setInquiryType(e.target.value)}
+        >
+          <MenuItem value="홈페이지 오류">홈페이지 오류</MenuItem>
+          <MenuItem value="회원가입 및 로그인">회원가입 및 로그인 문의</MenuItem>
+          <MenuItem value="전기충전소 문의">전기충전소 문의</MenuItem>
+          <MenuItem value="전기충전기 문의">전기충전기 문의</MenuItem>            
+          <MenuItem value="기타 문의">기타 문의</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        fullWidth
+        margin="normal"
+        label="제목"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+      />
+      <TextField
+        fullWidth
+        margin="normal"
+        label="내용"
+        multiline
+        rows={4}
+        value={content}
+        onChange={e => setContent(e.target.value)}
+      />
+      <FormControlLabel
+        control={<Checkbox checked={isPublished} onChange={e => setIsPublished(e.target.checked)} />}
+        label="공개"
+      />
+      <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>
+        등록
+      </Button>
     </form>
   );
 }
