@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
-@Builder
+@Builder(toBuilder = true)
 @Getter
 //@Table(indexes = @Index(name="idx_charger_type", columnList ="chger_type"))
 public class Charger {
