@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Paper,
     Table,
     TableBody,
@@ -8,17 +9,38 @@ import {
     TableHead,
     TablePagination,
     TableRow,
-    Button,
   } from "@material-ui/core";
-import * as React from "react";
-import { Link } from "react-router-dom";
-import ReportHeader from "../Report/ReportHeader";
+  import * as React from "react";
+  import { Link } from "react-router-dom";
+  import ReportHeader from "../Report/ReportHeader";
 import { HttpGet, HttpPost } from "../../services/HttpService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
-import LockIcon from '@mui/icons-material/Lock'; // Lock 아이콘 임포트
+import { makeStyles } from "@material-ui/styles"; // 'makeStyles' 임포트
 
-const Inquiry = () => {
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+  },
+  tableHeader: {
+    backgroundColor: "#f5f5f5",
+    fontWeight: "bold",
+  },
+  tableBody: {
+    "& tr:hover": {
+      backgroundColor: "#fafafa",
+    },
+  },
+  tableCell: {
+    padding: "16px",
+  },
+});
+
+function Inquiry() {
+  const classes = useStyles();
 const [data, setData] = React.useState({
   totalPages: 0,
   totalElements: 0,
@@ -88,71 +110,88 @@ const handleChangeRowsPerPage = (event) => {
   setRowsPerPage(newRowsPerPage);
 };
 
+
 return (
   <Box mt={4} mb={4}>
     <ReportHeader
       headerTitle={"1대1 문의하기"}
-      headerDescription={"1대1 문의 게시판입니다."}      
-    />    
-    <Link to="/inquiry/form">
-      <button type="button">
-        새 글쓰기
-      </button>
-    </Link>
+      headerDescription={"1대1 문의 게시판입니다."}
+    />
+
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
+        <TableHead classes={{ root: classes.tableHeader }}>
           <TableRow>
-            <TableCell>글 번호</TableCell>
-            <TableCell>상태 </TableCell>
-            <TableCell>문의 유형</TableCell>
-            <TableCell>글 제목</TableCell>
-            <TableCell>작성자</TableCell>
-            <TableCell>등록 일시</TableCell>
-            <TableCell>조회수</TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              글 번호
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              상태
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              문의 유형
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              글 제목
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              작성자
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              등록 일시
+            </TableCell>
+            <TableCell classes={{ root: classes.tableCell }}>
+              조회수
+            </TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody classes={{ root: classes.tableBody }}>
           {data.content.map((row) => (
             <TableRow
-            key={row.id}
-            style={{
-              textDecoration: "none",
-            }}
-            onClick={(e) => {
-              // 조건 검사 로직
-              console.log("공개여부:", row.isPublished);
+              key={row.id}
+              onClick={(e) => {
+                // 조건 검사 로직
+                console.log("공개여부:", row.isPublished);
 
-              if (row.isPublished == false && getUserName() !== "admin" && getUserName() !== row.writer) {
-                alert("작성자와 관리자만 볼 수 있습니다");
-                console.log("현재 사용자:", getUserName());
-                console.log("글 작성자:", row.writer);
-              } else {
-                // 조건이 충족될 때만 이동
-                navigate(`/inquiry/${row.id}`);
-              }
-            }}
-          >
-              <TableCell>{row.id}</TableCell>
-              <TableCell
-                style={{
-                  color: row.inquiryState === "답변완료" ? "blue" : row.inquiryState === "답변대기" ? "red" : "black",
-                }}
-              >{row.inquiryState}</TableCell>
-              <TableCell>{row.inquiryType}</TableCell>
-              <TableCell>
-              {row.title}
-              {!row.isPublished && <LockIcon fontSize="small" style={{ verticalAlign: "middle", marginRight: 5 }} />}
+                if (row.isPublished == false && getUserName() !== "admin" && getUserName() !== row.writer) {
+                  alert("작성자와 관리자만 볼 수 있습니다");
+                  console.log("현재 사용자:", getUserName());
+                  console.log("글 작성자:", row.writer);
+                } else {
+                  // 조건이 충족될 때만 이동
+                  navigate(`/inquiry/${row.id}`);
+                }
+              }}
+            >
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.id}
               </TableCell>
-              <TableCell>{row.writer}</TableCell>
-              <TableCell>{formatDate(row.createdDate)}</TableCell>
-              <TableCell>{row.viewCount}</TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.inquiryState}
+              </TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.inquiryType}
+              </TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.title}
+              </TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.writer}
+              </TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {formatDate(row.createdDate)}
+              </TableCell>
+              <TableCell classes={{ root: classes.tableCell }}>
+                {row.viewCount}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      </TableContainer>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+    </TableContainer>
+
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+
       <TablePagination
         rowsPerPageOptions={[5, 10]}
         component="div"
@@ -163,16 +202,16 @@ return (
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/inquiry/form"
-          style={{ marginLeft: 'auto' }} // 이 부분은 필요에 따라 조정
-        >
-          새 글쓰기
-     </Button>
-      </Box>
-  </Box>   
+        variant="contained"
+        color="primary"
+        size="medium"
+        sx={{ marginLeft: "auto" }}
+        href="/inquiry/form"
+      >
+        새 글쓰기
+      </Button>
+    </Box>
+  </Box>
 );
 };
 
