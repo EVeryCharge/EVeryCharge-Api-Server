@@ -1,15 +1,9 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
-import com.ll.eitcharge.global.rsData.RsData;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.util.MimeTypeUtils.*;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.global.rsData.RsData;
 
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
@@ -28,6 +30,8 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class ChargingStationController {
 
     private final ChargingStationService chargingStationService;
+    private static final String DEFAULT_LAT = "37.5665"; // 종로구 서울 시청
+    private static final String DEFAULT_LNG = "126.9780"; // 종로구 서울 시청
 
     @GetMapping("/{id}")
     public ResponseEntity<ChargingStation> get(String id) {
@@ -122,11 +126,11 @@ public class ChargingStationController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             // 페이지 사이즈
             @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-            // 경도 디폴트 서울시 중구
-            @RequestParam(value = "lng", defaultValue = "126.9784") double lng,
-            // 위도 디폴트 서울시 중구
-            @RequestParam(value = "lat", defaultValue = "37.5665") double lat,
-            // 반경 제한 (m 단위, 디폴트 50km)
+            // 현 지도 중심 경도
+            @RequestParam(value = "lng", defaultValue = DEFAULT_LNG) double lng,
+            // 현 지도 중심 위도
+            @RequestParam(value = "lat", defaultValue = DEFAULT_LAT) double lat,
+            // 반경 제한 (m 단위, defaultValue: 2000km (전국 단위))
             @RequestParam(value = "range", defaultValue = "2000000") int range
     ) {
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
