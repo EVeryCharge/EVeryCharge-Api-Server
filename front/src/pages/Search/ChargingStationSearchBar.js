@@ -36,7 +36,7 @@ const ChargingStationSearchBar = ({
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
   const [parkingFree, setParkingFree] = useState(false);
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
   const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
   const [zscode, setZscode] = useState("");
@@ -169,7 +169,7 @@ const ChargingStationSearchBar = ({
   const handleReset = () => {
     setChargable(true);
     setParkingFree(false);
-    setOpen(true);
+    setOpen(false);
     setRange(3000);
     setZcode("");
     setZscode("");
