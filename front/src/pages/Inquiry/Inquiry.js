@@ -8,6 +8,7 @@ import {
     TableHead,
     TablePagination,
     TableRow,
+    Button,
   } from "@material-ui/core";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -150,6 +151,8 @@ return (
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
       <TablePagination
         rowsPerPageOptions={[5, 10]}
         component="div"
@@ -159,7 +162,16 @@ return (
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </TableContainer>
+      <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to="/inquiry/form"
+          style={{ marginLeft: 'auto' }} // 이 부분은 필요에 따라 조정
+        >
+          새 글쓰기
+     </Button>
+      </Box>
   </Box>   
 );
 };
