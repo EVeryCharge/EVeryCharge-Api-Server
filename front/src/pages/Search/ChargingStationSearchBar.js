@@ -79,6 +79,7 @@ const ChargingStationSearchBar = ({
     const selectedRange = event.target.value;
 
     setZcode("");
+    setZscode("");
     setRange(selectedRange);
   };
 
