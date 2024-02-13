@@ -16,9 +16,12 @@ const ChargingStationSearchMap = ({
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
 
-
-
   const [mapCenter, setMapCenter] = useState({
+    lat: 37.5665,
+    lng: 126.9784,
+  });
+
+  const [mapCenterLoc, setMapCenterLoc] = useState({
     lat: 37.5665,
     lng: 126.9784,
   });
@@ -110,10 +113,17 @@ const ChargingStationSearchMap = ({
     map.current.setLevel(3);
   };
 
+  useEffect(() => {
+    console.log(mapCenterLoc);
+  }, [mapCenterLoc]);
+
   const researchMapCenter = () => {
-    console.log(map.current.getCenter());
-    console.log(map.current.getCenter().getLat());
-    console.log(map.current.getCenter().getLng());
+    const centerLat = map.current.getCenter().getLat();
+    const centerLng = map.current.getCenter().getLng();
+    setMapCenterLoc({
+      lat: centerLat,
+      lng: centerLng
+    })
   };
 
   const closeModal = () => {
