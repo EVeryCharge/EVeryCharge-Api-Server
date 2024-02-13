@@ -2,6 +2,7 @@ package com.ll.eitcharge.domain.charger.charger.entity;
 
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.global.jpa.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,14 +14,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
-@Builder
+@Builder(toBuilder = true)
 @Getter
 //@Table(indexes = @Index(name="idx_charger_type", columnList ="chger_type"))
-public class Charger {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Charger extends BaseTime {
     @ManyToOne
     @JoinColumn(name = "stat_id")
     private ChargingStation chargingStation;
