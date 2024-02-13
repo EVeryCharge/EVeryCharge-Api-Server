@@ -88,6 +88,7 @@ const ChargingStationSearchMap = ({
         lat: propsMapCenter.lat,
         lng: propsMapCenter.lng,
       });
+      map.current.setLevel(1);
     }
   }, [propsMapCenter]);
 
