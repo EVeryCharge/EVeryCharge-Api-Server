@@ -1,16 +1,12 @@
+import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
 import React from "react";
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
-import UsernameStorage from "../../utils/UsernameStorage";
-
 
 const Navbar = () => {
   const navigate = useNavigate();
 
   const { isLogin, setLogout, getUserName, getUserNickname } = useAuth();
-  
-  
 
   const handleLogout = () => {
     setLogout();
@@ -34,7 +30,7 @@ const Navbar = () => {
         <Button color="inherit" component={Link} to="/chargingServiceInfo">
           서비스 안내
         </Button>
-        <Button color="inherit" component={Link} to="/station">
+        <Button color="inherit" component={Link} to="/search">
           충전소 검색
         </Button>
         <Button color="inherit" component={Link} to="/map">
@@ -46,22 +42,25 @@ const Navbar = () => {
         {isLogin() ? ( // 로그인된 상태일 때
           <>
             <Typography variant="body1" style={{ marginRight: "1rem" }}>
-              {!getUserName().startsWith("KAKAO") ? getUserName() : getUserNickname()}님 환영합니다.{" "}
-              {/* 로그인된 사용자의 이름을 보여줌 */}
+              {!getUserName().startsWith("KAKAO")
+                ? getUserName()
+                : getUserNickname()}
+              님 환영합니다. {/* 로그인된 사용자의 이름을 보여줌 */}
             </Typography>
             <Button color="inherit" onClick={handleLogout}>
               로그아웃
             </Button>
           </>
-        ) : ( //로그인 되지 않은 상태일 때
-        <>
-          <Button color="inherit" component={Link} to="/signup">
-            회원가입
-          </Button>
-          <Button color="inherit" component={Link} to="/login">
-            로그인
-          </Button>
-          </>      
+        ) : (
+          //로그인 되지 않은 상태일 때
+          <>
+            <Button color="inherit" component={Link} to="/signup">
+              회원가입
+            </Button>
+            <Button color="inherit" component={Link} to="/login">
+              로그인
+            </Button>
+          </>
         )}
       </Toolbar>
     </AppBar>
