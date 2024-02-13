@@ -116,6 +116,7 @@ const ChargingStationSearch = () => {
             setSearchResult={setSearchResult}
             onMapMove={handleMapMove}
             showSearchBar={showSearchBar}
+            mapLoc={mapLoc}
           />
         </Box>
         <Box
