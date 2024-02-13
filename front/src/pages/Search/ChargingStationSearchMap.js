@@ -19,8 +19,8 @@ const ChargingStationSearchMap = ({
 
 
   const [mapCenter, setMapCenter] = useState({
-    lat: 36.483034,
-    lng: 126.902435,
+    lat: 37.5665,
+    lng: 126.9784,
   });
 
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
@@ -110,6 +110,12 @@ const ChargingStationSearchMap = ({
     map.current.setLevel(3);
   };
 
+  const researchMapCenter = () => {
+    console.log(map.current.getCenter());
+    console.log(map.current.getCenter().getLat());
+    console.log(map.current.getCenter().getLng());
+  };
+
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -148,10 +154,30 @@ const ChargingStationSearchMap = ({
           variant="contained"
           color="primary"
           onClick={handleResetMap}
+          size="large"
         >
           <GpsFixedOutlined />
         </Button>
       </Tooltip>
+
+      <Button
+        style={{
+          position: "absolute",
+          zIndex: "2",
+          color: "white",
+          justifyContent: "center",
+          borderRadius: "20px",
+          bottom: "30px",
+          right: "50%",
+          transform: "translate(50%, 50%)",
+        }}
+        variant="contained"
+        color="primary"
+        size="large" // 이 부분을 수정
+        onClick={researchMapCenter}
+      >
+        현 위치에서 재검색
+      </Button>
     </div>
   );
 };
