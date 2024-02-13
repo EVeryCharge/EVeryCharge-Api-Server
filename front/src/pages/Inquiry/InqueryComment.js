@@ -16,8 +16,6 @@ const InqueryComment = ({inquiryId}) => {
     };
 
     useEffect(() => {
-        console.log('isLogin : ', isLogin());
-        console.log('getUserName : ', getUserName());
         HttpGet('/api/v1/inquiry/comment/all',
         {
             inquiryId: Number(inquiryId)
@@ -50,7 +48,6 @@ const InqueryComment = ({inquiryId}) => {
     //댓글 작성
     const handleAddComment = () => {
         setCommentInput(''); // 입력 필드 초기화
-
         HttpPost('/api/v1/inquiry/comment/create'
         ,{
             inquiryId: Number(inquiryId),
@@ -106,7 +103,7 @@ const InqueryComment = ({inquiryId}) => {
                     </>
                 ))}
             </List>
-            {isLogin() ? (
+            {(getUserName() == "admin") || (getUserName() == "system") ? (
                 <>
                 <TextField
                 label="Write a comment..."
@@ -118,7 +115,7 @@ const InqueryComment = ({inquiryId}) => {
                 />
                 <Button variant="contained" color="primary" onClick={handleAddComment}>
                     Add Comment
-                 </Button>
+                </Button>
                 </> 
             ) : null}
             
