@@ -132,7 +132,11 @@ return (
             }}
           >
               <TableCell>{row.id}</TableCell>
-              <TableCell>{row.inquiryState}</TableCell>
+              <TableCell
+                style={{
+                  color: row.inquiryState === "답변완료" ? "blue" : row.inquiryState === "답변대기" ? "red" : "black",
+                }}
+              >{row.inquiryState}</TableCell>
               <TableCell>{row.inquiryType}</TableCell>
               <TableCell>{row.title}</TableCell>
               <TableCell>{row.writer}</TableCell>

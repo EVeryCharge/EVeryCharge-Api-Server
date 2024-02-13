@@ -17,10 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +85,14 @@ public class InquiryService {
         }
 
         inquiryRepository.delete(inquiry);
+    }
+
+    @Transactional
+    public void updateStatus(){
+        List< Inquiry > all = inquiryRepository.findAll();
+        for (int i = 0; i < all.size(); i++) {
+            Inquiry inquiry = all.get(i);
+            if(!inquiry.getComments().isEmpty()) inquiry.updateComplete();
+        }
     }
 }
