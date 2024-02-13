@@ -9,12 +9,13 @@ import {
     TablePagination,
     TableRow,
   } from "@material-ui/core";
-  import * as React from "react";
-  import { Link } from "react-router-dom";
-  import ReportHeader from "../Report/ReportHeader";
+import * as React from "react";
+import { Link } from "react-router-dom";
+import ReportHeader from "../Report/ReportHeader";
 import { HttpGet, HttpPost } from "../../services/HttpService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
+import LockIcon from '@mui/icons-material/Lock'; // Lock 아이콘 임포트
 
 const Inquiry = () => {
 const [data, setData] = React.useState({
@@ -138,7 +139,10 @@ return (
                 }}
               >{row.inquiryState}</TableCell>
               <TableCell>{row.inquiryType}</TableCell>
-              <TableCell>{row.title}</TableCell>
+              <TableCell>
+              {row.title}
+              {!row.isPublished && <LockIcon fontSize="small" style={{ verticalAlign: "middle", marginRight: 5 }} />}
+              </TableCell>
               <TableCell>{row.writer}</TableCell>
               <TableCell>{formatDate(row.createdDate)}</TableCell>
               <TableCell>{row.viewCount}</TableCell>
