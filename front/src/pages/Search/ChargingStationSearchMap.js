@@ -10,6 +10,7 @@ const ChargingStationSearchMap = ({
   temporaryArray,
   myLoc,
   propsMapCenter,
+  setMapLoc
 }) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
@@ -115,7 +116,11 @@ const ChargingStationSearchMap = ({
 
   useEffect(() => {
     console.log(mapCenterLoc);
-  }, [mapCenterLoc]);
+    setMapLoc({
+      lat: mapCenterLoc.lat,
+      lng: mapCenterLoc.lng
+    });
+  }, [mapCenterLoc, setMapLoc]);
 
   const researchMapCenter = () => {
     const centerLat = map.current.getCenter().getLat();

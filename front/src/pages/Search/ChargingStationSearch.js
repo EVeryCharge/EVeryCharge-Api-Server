@@ -12,6 +12,11 @@ const ChargingStationSearch = () => {
   const [mapCenter, setMapCenter] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(true);
+  const [mapLoc, setMapLoc] = useState({});
+
+  useEffect(() => {
+    console.log("map " + mapLoc.lat +" "+ mapLoc.lng);
+  }, [mapLoc]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -23,10 +28,20 @@ const ChargingStationSearch = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
+      setMapLoc
+      ({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
     }
 
     function error() {
       setMyLoc({
+        lat: 37.5665,
+        lng: 126.9784,
+      });
+      setMapLoc
+      ({
         lat: 37.5665,
         lng: 126.9784,
       });
@@ -47,7 +62,7 @@ const ChargingStationSearch = () => {
         "/api/v1/chargingStation/searchBaseDistance",
         {
           ...searchParam,
-          ...myLoc,
+          ...mapLoc,
         }
       );
       setSearchResult(response);
@@ -113,6 +128,7 @@ const ChargingStationSearch = () => {
             temporaryArray={temporaryArray}
             myLoc={myLoc}
             propsMapCenter={mapCenter}
+            setMapLoc={setMapLoc}
           />
         </Box>
       </Box>
