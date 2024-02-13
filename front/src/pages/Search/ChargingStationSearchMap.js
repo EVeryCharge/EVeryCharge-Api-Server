@@ -3,6 +3,8 @@ import { GpsFixedOutlined } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
 import ChargerInfoModal from '../../components/UI/ChargerInfoModal';
 import { useSelectedItems } from '../../utils/StationInfoContext';
+import normalMarker from '../../assets/image/marker.png';
+import selectMarker from '../../assets/image/selectMarker.png';
 
 
 
@@ -28,6 +30,8 @@ const ChargingStationSearchMap = ({
   });
 
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
+  const [selectedMarker, setSelectedMarker] = useState([]); // 마커 배열을 상태로 관리
+
 
   const initMap = () => {
     const container = mapRef.current; // mapRef.current를 통해 container 참조
@@ -61,20 +65,24 @@ const ChargingStationSearchMap = ({
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+        const markerImage =  new window.kakao.maps.MarkerImage(
+          selectMarker,
+          new window.kakao.maps.Size(70, 70), new window.kakao.maps.Point(13, 34));
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
         });
+        marker.setImage(markerImage)
         window.kakao.maps.event.addListener(marker, 'click', function () {
           // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
           setIsOpen(false);
           setSelectedItem(item);
           setIsOpen(true);
         });
-
         return marker;
       });
       setMarkers(newMarkers);
+      
       // console.log(items);
     } else {
       // console.log("latLngArray is empty");
@@ -84,12 +92,17 @@ const ChargingStationSearchMap = ({
   // props로 mapCenter를 전달받을 시 mapCenter를 수정한다. (이상제)
   useEffect(() => {
     if (propsMapCenter) {
+      setSelectedMarker({
+        lat: propsMapCenter.lat,
+        lng: propsMapCenter.lng,
+      });
       setMapCenter({
         lat: propsMapCenter.lat,
         lng: propsMapCenter.lng,
       });
       map.current.setLevel(1);
     }
+    console.log(selectedMarker)
   }, [propsMapCenter]);
 
   useEffect(() => {
