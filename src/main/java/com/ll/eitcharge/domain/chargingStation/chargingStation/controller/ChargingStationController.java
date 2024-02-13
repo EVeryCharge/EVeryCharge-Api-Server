@@ -1,9 +1,15 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.controller;
 
-import static org.springframework.util.MimeTypeUtils.*;
-
-import java.util.List;
-
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
+import com.ll.eitcharge.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,17 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
-import com.ll.eitcharge.global.rsData.RsData;
+import java.util.List;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
@@ -29,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChargingStationController {
 
-	private final ChargingStationService chargingStationService;
+    private final ChargingStationService chargingStationService;
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ChargingStation> get(String id) {
-		return ResponseEntity.ok(chargingStationService.findById(id));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<ChargingStation> get(String id) {
+        return ResponseEntity.ok(chargingStationService.findById(id));
+    }
 
     @GetMapping("/location/search")
     @Operation(summary = "충전소 검색", description = "위도 경도 기반 충전소 검색")
@@ -44,18 +42,18 @@ public class ChargingStationController {
             @RequestParam double neLat,
             @RequestParam double neLng
     ) {
-        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng));
+        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
     }
 
     @GetMapping("/chargerStatus/fromApi")
     @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(공공데이터 포탈 api)")
-    public RsData< Object > chargerStateApi(@RequestParam String statId){
+    public RsData<Object> chargerStateApi(@RequestParam String statId) {
         return chargingStationService.findFromApi(statId);
     }
 
     @GetMapping("/chargerStatus")
     @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(데이터 베이스)")
-    public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId){
+    public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId) {
         return ResponseEntity.ok(chargingStationService.chargerStateSearch(statId));
     }
 
@@ -66,7 +64,7 @@ public class ChargingStationController {
 
     @GetMapping("/search/region")
     public ResponseEntity<ChargingStationSearchItemResponseDto> getSearchMenuRegionDetailItem(
-        @RequestParam(value = "zcode") String zcode
+            @RequestParam(value = "zcode") String zcode
     ) {
         return ResponseEntity.ok(chargingStationService.getSearchMenuRegionDetailItem(zcode));
     }
@@ -94,7 +92,7 @@ public class ChargingStationController {
             @RequestParam(defaultValue = "1") int page,
             // 페이지 사이즈
             @RequestParam(defaultValue = "20") int pageSize
-    ){
+    ) {
         return ResponseEntity.ok(chargingStationService.searchBaseStatNm(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
@@ -103,7 +101,7 @@ public class ChargingStationController {
     @GetMapping("/searchBaseDistance")
     public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
             // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
-            @RequestParam(value= "stat", required = false) String stat,
+            @RequestParam(value = "stat", required = false) String stat,
             // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", required = false) String limitYn,
             // 무료 주차 (Y / N)
@@ -130,7 +128,7 @@ public class ChargingStationController {
             @RequestParam(value = "lat", defaultValue = "37.5665") double lat,
             // 반경 제한 (m 단위, 디폴트 50km)
             @RequestParam(value = "range", defaultValue = "2000000") int range
-    ){
+    ) {
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
