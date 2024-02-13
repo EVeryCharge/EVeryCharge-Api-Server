@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { HttpDelete, HttpGet, HttpPut } from '../../services/HttpService';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, Typography, Grid, makeStyles } from '@material-ui/core';
+import InqueryComment from '../Inquiry/InqueryComment';
 
 const useStyles = makeStyles({
     type: {
@@ -105,6 +106,7 @@ const InquiryDetail = ({  }) => {
                 </div>
             )}
         </CardContent>
+        <InqueryComment inquiryId={id}></InqueryComment>
     </Card>
     );
 }
