@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
-import com.ll.eitcharge.global.exceptions.GlobalException;
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,9 +19,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ll.eitcharge.global.app.AppConfig.apiServiceKey;
 import static com.ll.eitcharge.global.app.AppConfig.objectMapper;
@@ -33,24 +34,16 @@ public class ChargerService {
     private final ChargerRepository chargerRepository;
     private final ChargingStationRepository chargingStationRepository;
 
-
-
     public void updateChargerStatus() {
         chargerStatusUpdate();
-    }
 
-    public void chargerStatusUpdate() {
-        String serviceKey = apiServiceKey;
-        //현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
-        //하지만 추후에 10000개 이상일경우, 리팩토링 필요함
-        int numOfRows = 10;
-        int pageNo = 1;
-        String jsonType = "JSON";
-        URI uri = UriComponentsBuilder.fromUriString("https://apis.data.go.kr/B552584/EvCharger/getChargerStatus")
+    }
+    public HashMap webClientApiGetChargerStatus(String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int priod){
+        URI uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("numOfRows", numOfRows)
                 .queryParam("pageNo", pageNo)
-                .queryParam("dataType", jsonType)
+                .queryParam("dataType", type)
                 .build(true)
                 .toUri();
 
@@ -63,7 +56,6 @@ public class ChargerService {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
 
-
         String response = webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -71,27 +63,54 @@ public class ChargerService {
                 .bodyToMono(String.class)
                 .block();
 
-        System.out.println(response);
-
         HashMap hashMap = null;
         try {
             hashMap = objectMapper.readValue(response, HashMap.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("JSON 파싱 오류", e);
         }
-        int totalCount = (int) hashMap.get("totalCount");
-        System.out.println(totalCount);
+        return hashMap;
+    }
+
+    public void chargerStatusUpdate() {
+        String key = apiServiceKey;
+        String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
+        //현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
+        //하지만 추후에 10000개 이상일경우, 리팩토링 필요함
+        int numOfRows = 10000;
+        int pageNo = 1;
+        String jsonType = "JSON";
+        int priod = 10;
+        HashMap hashMap = webClientApiGetChargerStatus(baseUrl, key, numOfRows, pageNo, jsonType, priod);
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         List<Map<String, Object>> items = (List<Map<String, Object>>) ((Map<String, Object>) hashMap.get("items")).get("item");
         for (Map<String, Object> item : items) {
+
             String busiId = (String) item.get("busiId");
             String statId = (String) item.get("statId");
-            String chgerId = (String) item.get("chgerId");
+            String casting = (String) item.get("chgerId");
+            int numberInt = Integer.parseInt(casting);
+            String chgerId = String.valueOf(numberInt);
             String stat = (String) item.get("stat");
-            String statUpdDt = (String) item.get("statUpdDt");
-            String lastTsdt = (String) item.get("lastTsdt");
-            String lastTedt = (String) item.get("lastTedt");
-            String nowTsdt = (String) item.get("nowTsdt");
+            LocalDateTime statUpdDt = Optional.ofNullable((String) item.get("statUpdDt"))
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> LocalDateTime.parse(s, formatter))
+                    .orElse(null);
+            LocalDateTime lastTsdt = Optional.ofNullable((String) item.get("lastTsdt"))
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> LocalDateTime.parse(s, formatter))
+                    .orElse(null);
+            LocalDateTime lastTedt = Optional.ofNullable((String) item.get("lastTedt"))
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> LocalDateTime.parse(s, formatter))
+                    .orElse(null);
+            LocalDateTime nowTsdt = Optional.ofNullable((String) item.get("nowTsdt"))
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> LocalDateTime.parse(s, formatter))
+                    .orElse(null);
 
             chargingStationRepository.findById(statId)
                     //충전소가 존재할때
@@ -101,10 +120,10 @@ public class ChargerService {
                                 .map(charger -> {
                                     charger.toBuilder()
                                             .stat(stat)
-                                            .statUpdDt(LocalDateTime.parse(statUpdDt))
-                                            .lastTsdt(LocalDateTime.parse(lastTsdt))
-                                            .lastTedt(LocalDateTime.parse(lastTedt))
-                                            .nowTsdt(LocalDateTime.parse(nowTsdt))
+                                            .statUpdDt(statUpdDt)
+                                            .lastTsdt(lastTsdt)
+                                            .lastTedt(lastTedt)
+                                            .nowTsdt(nowTsdt)
                                             .build();
                                     System.out.println("충전소 업데이트 성공 1-1");
                                     return chargerRepository.save(charger);
@@ -116,16 +135,16 @@ public class ChargerService {
                                             .chargingStation(chargingStation)
                                             .stat(stat)
                                             .chgerId(chgerId)
-                                            .statUpdDt(LocalDateTime.parse(statUpdDt))
-                                            .lastTsdt(LocalDateTime.parse(lastTsdt))
-                                            .lastTedt(LocalDateTime.parse(lastTedt))
-                                            .nowTsdt(LocalDateTime.parse(nowTsdt))
+                                            .statUpdDt(statUpdDt)
+                                            .lastTsdt(lastTsdt)
+                                            .lastTedt(lastTedt)
+                                            .nowTsdt(nowTsdt)
                                             .build();
                                     // 파일에 로그 메시지를 저장
                                     // 아마 기존의 충전소에 새롭게 충전기가 설치될경우 이 로직을 타게될듯
-                                    // 거의 없을것같으니 파일로 확인
-                                    String logMessage = "Scheduler executed at " + LocalDateTime.now();
-                                    try (BufferedWriter writer = new BufferedWriter(new FileWriter("schedulerlog.txt", true))) {
+                                    // 해당 파일은 배치를 통해 api요청으로
+                                    String logMessage = charger.getChargingStation().getStatId() + "," + charger.getChgerId() + "," + charger.getStat();
+                                    try (BufferedWriter writer = new BufferedWriter(new FileWriter("batch/NoCharger.txt", true))) {
                                         writer.write(logMessage);
                                         writer.newLine();
                                     } catch (IOException e) {
@@ -137,16 +156,31 @@ public class ChargerService {
                                 });
                     })
                     //충전소가 존재하지 않을때
-                    .orElseThrow(GlobalException.STATION_NOT_FOUND::new);
+                    .orElseGet(()->{
+                        String logMessage = statId;
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("batch/NoChargingStation.txt", true))) {
+                            writer.write(logMessage);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            // 파일 쓰기 실패 시 예외 처리
+                            e.printStackTrace();
+                        }
+                        return null;
+                        }
+
+
+                    );
 
         }
+        String logMessage = LocalDateTime.now() + "충전기 상태 업데이트 스케줄러 작업 완료";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("log/schedulerCompletLog.txt", true))) {
+            writer.write(logMessage);
+            writer.newLine();
+        } catch (IOException e) {
+            // 파일 쓰기 실패 시 예외 처리
+            e.printStackTrace();
+        }
+
 
     }
 }
-//<OpenAPI_ServiceResponse>
-//	<cmmMsgHeader>
-//		<errMsg>SERVICE ERROR</errMsg>
-//		<returnAuthMsg>HTTP ROUTING ERROR</returnAuthMsg>
-//		<returnReasonCode>04</returnReasonCode>
-//	</cmmMsgHeader>
-//</OpenAPI_ServiceResponse>

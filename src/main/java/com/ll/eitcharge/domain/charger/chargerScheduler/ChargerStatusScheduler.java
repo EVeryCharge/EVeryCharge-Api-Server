@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class ChargerStatusScheduler {
 
     private final ChargerService chargerService;
-//     3 * 60 * 1000 3분
-    @Scheduled(fixedRate =  10000) // 1초마다 실행
+
+    @Scheduled(initialDelay = 5 * 60 * 1000, fixedRate = 3 * 60 * 1000) // 초기 지연 시간 5분, 그 후 3분마다 실행
     public void updateChargerStatus() {
         chargerService.updateChargerStatus();
     }
