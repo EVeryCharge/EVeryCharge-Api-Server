@@ -32,7 +32,7 @@ const ChargingStationSearchBar = ({
   setSearchResult,
   onMapMove,
   showSearchBar,
-  mapLoc
+  mapLoc,
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
@@ -205,7 +205,7 @@ const ChargingStationSearchBar = ({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search color="action" />
+                    <Search color="primary" />
                   </InputAdornment>
                 ),
               }}
