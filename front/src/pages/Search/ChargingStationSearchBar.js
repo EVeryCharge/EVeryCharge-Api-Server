@@ -34,7 +34,7 @@ const ChargingStationSearchBar = ({
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
-  const [parkingFree, setParkingFree] = useState(true);
+  const [parkingFree, setParkingFree] = useState(false);
   const [isOpen, setOpen] = useState(true);
   const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
@@ -255,7 +255,7 @@ const ChargingStationSearchBar = ({
             selected={isOpen}
             onChange={handleOpenChange}
           >
-            개방여부
+            상시개방
           </ToggleButton>
         </Box>
       </Box>
@@ -449,11 +449,15 @@ const ChargingStationSearchBar = ({
           {searchResult &&
             searchResult.content &&
             searchResult.content.map((data, index) => (
-              <ListItem key={index} className={classes.ListItemContainer}>
+              <ListItem
+                key={index}
+                className={classes.ListItemContainer}
+                onClick={() => handleMapMove(data.lat, data.lng)}
+              >
                 <div className={classes.ListItemInfo}>
                   <Typography
-                    variant="h6"
-                    style={{ fontWeight: "bold", color: "blue" }}
+                    variant="subtitle1"
+                    style={{ fontWeight: "bold" }}
                   >
                     {data.statNm}
                   </Typography>
@@ -559,15 +563,21 @@ const useStyles = makeStyles({
   },
   ListContainer: {
     overflowY: "auto",
-    maxHeight: "40vh",
+    maxHeight: "40%",
   },
   ListItemContainer: {
     borderBottom: "1px groove grey",
-    marginBottom: "15px",
+    paddingTop: "10px",
+    paddingBottom: "3px",
     padding: "2px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    cursor: "pointer",
+    transition: "background-color 0.1s",
+    "&:hover": {
+      backgroundColor: "#f0f0f0",
+    },
     fontSize: "11px",
   },
   ListItemInfo: {
