@@ -1,14 +1,18 @@
 package com.ll.eitcharge.domain.inquiry.inquiry.entity;
 
-import com.ll.eitcharge.domain.inquiry.comment.entity.Comment;
+import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryRequestDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.List;
+
+import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -28,6 +32,14 @@ public class Inquiry extends BaseTime {
     private int viewCount;
     private Boolean isPublished;
 
-    @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    public void update(InquiryRequestDto inquiryRequestDto) {
+        this.title = inquiryRequestDto.getTitle();
+        this.content = inquiryRequestDto.getContent();
+        this.inquiryType = inquiryRequestDto.getInquiryType();
+        this.isPublished = inquiryRequestDto.getIsPublished();
+    }
+
+    public void increaseViewCount(){
+        this.viewCount +=1;
+    }
 }

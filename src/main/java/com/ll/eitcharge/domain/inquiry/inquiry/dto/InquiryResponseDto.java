@@ -18,6 +18,7 @@ public class InquiryResponseDto {
     private String writer;
     private String inquiryState;
     private String inquiryType;
+    private Boolean isPublished;
     private int viewCount;
     private LocalDateTime createdDate;
 
@@ -28,6 +29,7 @@ public class InquiryResponseDto {
         this.writer = entity.getWriter().getUsername();
         this.inquiryState = entity.getInquiryState();
         this.inquiryType = entity.getInquiryType();
+        this.isPublished = entity.getIsPublished();
         this.viewCount = entity.getViewCount();
         this.createdDate = entity.getCreatedDate();
     }
