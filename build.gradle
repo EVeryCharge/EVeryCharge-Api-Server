@@ -75,6 +75,8 @@ dependencies {
     //WebFlux
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    // XML
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
 
 }
 

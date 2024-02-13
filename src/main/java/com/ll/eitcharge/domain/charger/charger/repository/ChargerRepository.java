@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface ChargerRepository extends JpaRepository<Charger, Long> {
     List<Charger> findByChargingStationStatId(String statId);
+
+
+
 }
