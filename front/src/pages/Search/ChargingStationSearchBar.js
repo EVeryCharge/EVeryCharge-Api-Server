@@ -32,6 +32,7 @@ const ChargingStationSearchBar = ({
   setSearchResult,
   onMapMove,
   showSearchBar,
+  mapLoc
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
@@ -45,7 +46,6 @@ const ChargingStationSearchBar = ({
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
   const [baseItem, setBaseItem] = useState(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,6 +57,9 @@ const ChargingStationSearchBar = ({
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    handleSearch();
+  }, [mapLoc]);
 
   // 검색 조건이 변경될 때마다 검색 결과를 언마운트
   useEffect(() => {
