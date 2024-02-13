@@ -9,7 +9,7 @@ const ChargingStationMap = () => {
   const mapRef = useRef(null);
   let map; // 지도 객체를 담을 변수
   const [isOpen, setIsOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState({ lat: 37.56100278, lng: 126.9996417 });  //중구
+  const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.9784 });  //중구
   const { setSelectedItem, getStatId } = useSelectedItems();
 
   useEffect(() => {

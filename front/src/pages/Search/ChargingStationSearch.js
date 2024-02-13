@@ -27,8 +27,8 @@ const ChargingStationSearch = () => {
 
     function error() {
       setMyLoc({
-        lat: 36.483034,
-        lng: 126.902435,
+        lat: 37.5665,
+        lng: 126.9784,
       });
     }
   }, []);
