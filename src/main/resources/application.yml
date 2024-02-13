@@ -82,3 +82,5 @@ custom:
     dirPath: c:/temp/eitcharge_dev/temp
   genFile:
     dirPath: c:/temp/eitcharge_dev
+  api:
+    serviceKey: ON_SECRET
