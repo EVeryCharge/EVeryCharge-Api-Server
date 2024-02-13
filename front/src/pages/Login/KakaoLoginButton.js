@@ -1,6 +1,6 @@
 import React from "react";
 import {Button} from '@material-ui/core';
-import kakaoLoginImage from '../../assets/kakao_login.png';
+import kakaoLoginImage from '../../assets/image/kakao_login.png';
 
 const KakaoLoginButton = () =>{
   const url = `${process.env.REACT_APP_BACKEND_URL}/socialLogin/kakao?redirectUrl=${process.env.REACT_APP_FRONTEND_URL}`;

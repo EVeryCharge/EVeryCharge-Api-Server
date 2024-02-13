@@ -65,9 +65,17 @@ const ChargingStationSearchMap = ({
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
-        const markerImage =  new window.kakao.maps.MarkerImage(
-          selectMarker,
-          new window.kakao.maps.Size(70, 70), new window.kakao.maps.Point(13, 34));
+        const markerImage = (item.lat === mapCenter.lat && item.lng === mapCenter.lng) ?  
+        new window.kakao.maps.MarkerImage(
+            selectMarker,
+            new window.kakao.maps.Size(70, 70), 
+            new window.kakao.maps.Point(13, 34)
+        ) : 
+        new window.kakao.maps.MarkerImage(
+            normalMarker,
+            new window.kakao.maps.Size(70, 70), 
+            new window.kakao.maps.Point(13, 34)
+        );
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
