@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Chip,
+  Divider,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -434,8 +435,7 @@ const ChargingStationSearchBar = ({
           </>
         )}
       </Box>
-
-      <hr />
+      <Divider />
       {/* 검색 결과 리스트 */}
       <Box className={classes.ListContainer}>
         <List>
@@ -530,6 +530,8 @@ export default ChargingStationSearchBar;
 
 const useStyles = makeStyles({
   baseLayer: {
+    display: "flex",
+    flexDirection: "column",
     backgroundColor: "#EFF8FB",
     width: "420px",
     height: "70vh",
@@ -563,7 +565,6 @@ const useStyles = makeStyles({
   },
   ListContainer: {
     overflowY: "auto",
-    maxHeight: "40%",
   },
   ListItemContainer: {
     borderBottom: "1px groove grey",
