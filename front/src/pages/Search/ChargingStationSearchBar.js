@@ -47,6 +47,8 @@ const ChargingStationSearchBar = ({
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
   const [baseItem, setBaseItem] = useState(null);
+ 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,9 +62,7 @@ const ChargingStationSearchBar = ({
   }, []);
   useEffect(() => {
     if (check === true) {
-      console.log("ttt");
       handleSearch();
-
     }
   }, [mapLoc]);
 
@@ -590,7 +590,7 @@ const ChargingStationSearchBar = ({
                         icon={<ElectricCarIcon />}
                         label={`${baseItem.chgerTypes[
                           baseItem.chgerIds.indexOf(chgerType)
-                          ]
+                        ]
                           }`}
                         style={{ marginBottom: "5px", marginRight: "5px" }}
                       />
