@@ -15,7 +15,7 @@ const ChargingStationMap = () => {
   useEffect(() => {
       map = new window.kakao.maps.Map(mapRef.current, {
       center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
-      level: 6
+      level: 2
     });
 
     // 이벤트 리스너를 등록하여 지도의 중심 좌표가 변경될 때마다 서버에 데이터 요청
@@ -42,7 +42,7 @@ const ChargingStationMap = () => {
         neLng: neLatLng.getLng()
       })
       .then(response => {
-        console.log(response);
+        console.log('내가뭔잘못 : ' + response);
         const item = response;
         
         item.forEach((itemData) => {

@@ -31,4 +31,10 @@ public class GlobalException extends RuntimeException {
             super("403-0", "잘못된 접근입니다.");
         }
     }
+
+    public static class STATION_NOT_FOUND extends GlobalException {
+        public STATION_NOT_FOUND() {
+            super("STATION_NOT_FOUND", "충전소가 존재하지 않습니다.");
+        }
+    }
 }
