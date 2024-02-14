@@ -19,15 +19,17 @@ const ChargingStationSearchMap = ({
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
+  const [check, setCheck] = useState(false);
+
 
   const [mapCenter, setMapCenter] = useState({
-    lat: 37.5665,
-    lng: 126.9784,
+    lat: null,
+    lng: null,
   });
 
   const [mapCenterLoc, setMapCenterLoc] = useState({
-    lat: 37.5665,
-    lng: 126.9784,
+    lat: null,
+    lng: null,
   });
 
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
@@ -51,13 +53,14 @@ const ChargingStationSearchMap = ({
       // console.log("temporaryArray is undefined or does not contain 'content'");
       return;
     }
-    map.current.setLevel(3);
     const newItems = temporaryArray ? temporaryArray.content : [];
     setSelectedMarker({
-      lat:null,
-      lng:null
+      lat: null,
+      lng: null
     });
     setItems(newItems); // 상태 값 업데이트
+    map.current.setLevel(3);
+
   }
   useEffect(() => {
     marker(items);
@@ -122,7 +125,7 @@ const ChargingStationSearchMap = ({
   }, [propsMapCenter]);
 
   useEffect(() => {
-    if (selectedMarker.lng!=null) {
+    if (selectedMarker.lng != null) {
       marker(items);
       console.log("select")
       setMapCenter({
@@ -156,11 +159,13 @@ const ChargingStationSearchMap = ({
   };
 
   useEffect(() => {
-    console.log(mapCenterLoc);
-    setMapLoc({
-      lat: mapCenterLoc.lat,
-      lng: mapCenterLoc.lng
-    });
+    if (mapCenterLoc.lat != null ) {
+      console.log("mapCenterLoc" + mapCenterLoc.lat);
+      setMapLoc({
+        lat: mapCenterLoc.lat,
+        lng: mapCenterLoc.lng
+      });
+    }
   }, [mapCenterLoc, setMapLoc]);
 
   const researchMapCenter = () => {

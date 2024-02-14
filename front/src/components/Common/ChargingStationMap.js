@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ChargerInfoModal from "../UI/ChargerInfoModal";
 import { useSelectedItems } from "../../utils/StationInfoContext";
+import normalMarker from '../../assets/image/marker.png';
 
 import { debounce } from "lodash";
 import { HttpGet, HttpPost } from "../../services/HttpService";
@@ -65,6 +66,12 @@ const ChargingStationMap = () => {
           const marker = new window.kakao.maps.Marker({
             position: markerPosition,
           });
+          const markerImage = new window.kakao.maps.MarkerImage(
+            normalMarker,
+            new window.kakao.maps.Size(70, 70),
+            new window.kakao.maps.Point(13, 34)
+          );
+          marker.setImage(markerImage)
           marker.setMap(map);
 
           window.kakao.maps.event.addListener(marker, "click", function () {

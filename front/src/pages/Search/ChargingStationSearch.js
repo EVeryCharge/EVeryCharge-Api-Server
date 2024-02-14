@@ -13,10 +13,9 @@ const ChargingStationSearch = () => {
   const [loading, setLoading] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [mapLoc, setMapLoc] = useState({});
+  const [check, setCheck] = useState(false);
 
-  useEffect(() => {
-    console.log("map " + mapLoc.lat +" "+ mapLoc.lng);
-  }, [mapLoc]);
+ 
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -46,7 +45,14 @@ const ChargingStationSearch = () => {
         lng: 126.9784,
       });
     }
+    setCheck(true);
+
   }, []);
+
+  useEffect(() => {
+    console.log("map " + mapLoc.lat +" "+ mapLoc.lng);
+    console.log(check);
+  }, [mapLoc]);
 
   useEffect(() => {
     if (searchResult) {
@@ -117,6 +123,7 @@ const ChargingStationSearch = () => {
             onMapMove={handleMapMove}
             showSearchBar={showSearchBar}
             mapLoc={mapLoc}
+            check={check}
           />
         </Box>
         <Box

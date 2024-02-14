@@ -33,6 +33,7 @@ const ChargingStationSearchBar = ({
   onMapMove,
   showSearchBar,
   mapLoc,
+  check
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
@@ -58,7 +59,11 @@ const ChargingStationSearchBar = ({
     fetchData();
   }, []);
   useEffect(() => {
-    handleSearch();
+    if (check === true) {
+      console.log("ttt");
+      handleSearch();
+
+    }
   }, [mapLoc]);
 
   // 검색 조건이 변경될 때마다 검색 결과를 언마운트
@@ -583,11 +588,10 @@ const ChargingStationSearchBar = ({
                       <Chip
                         key={index}
                         icon={<ElectricCarIcon />}
-                        label={`${
-                          baseItem.chgerTypes[
-                            baseItem.chgerIds.indexOf(chgerType)
+                        label={`${baseItem.chgerTypes[
+                          baseItem.chgerIds.indexOf(chgerType)
                           ]
-                        }`}
+                          }`}
                         style={{ marginBottom: "5px", marginRight: "5px" }}
                       />
                     ))}
