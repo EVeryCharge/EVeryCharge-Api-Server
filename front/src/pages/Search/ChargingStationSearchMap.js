@@ -1,29 +1,36 @@
 import { Button, Tooltip } from "@material-ui/core";
-import { GpsFixedOutlined } from "@material-ui/icons";
+import { GpsFixedOutlined, Refresh } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
-import ChargerInfoModal from '../../components/UI/ChargerInfoModal';
-import { useSelectedItems } from '../../utils/StationInfoContext';
-
-
+import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
+import { useSelectedItems } from "../../utils/StationInfoContext";
+import normalMarker from "../../assets/image/marker.png";
+import selectMarker from "../../assets/image/selectMarker.png";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
   myLoc,
   propsMapCenter,
+  setMapLoc,
 }) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
-
-
+  const [items, setItems] = useState([]);
+  const [check, setCheck] = useState(false);
 
   const [mapCenter, setMapCenter] = useState({
-    lat: 36.483034,
-    lng: 126.902435,
+    lat: null,
+    lng: null,
+  });
+
+  const [mapCenterLoc, setMapCenterLoc] = useState({
+    lat: null,
+    lng: null,
   });
 
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
+  const [selectedMarker, setSelectedMarker] = useState([]); // 마커 배열을 상태로 관리
 
   const initMap = () => {
     const container = mapRef.current; // mapRef.current를 통해 container 참조
@@ -41,12 +48,21 @@ const ChargingStationSearchMap = ({
       // console.log("temporaryArray is undefined or does not contain 'content'");
       return;
     }
+    const newItems = temporaryArray ? temporaryArray.content : [];
+    setSelectedMarker({
+      lat: null,
+      lng: null,
+    });
+    setItems(newItems); // 상태 값 업데이트
     map.current.setLevel(3);
-    const items = temporaryArray ? temporaryArray.content : [];
+  };
+  useEffect(() => {
+    marker(items);
+  }, [items]);
 
+  const marker = (items) => {
     // 기존 마커를 모두 삭제
     markers.forEach((marker) => marker.setMap(null));
-
 
     if (items.length > 0) {
       const firstItem = items[0];
@@ -57,35 +73,60 @@ const ChargingStationSearchMap = ({
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+        const markerImage =
+          item.lat === selectedMarker.lat && item.lng === selectedMarker.lng
+            ? new window.kakao.maps.MarkerImage(
+                selectMarker,
+                new window.kakao.maps.Size(70, 70),
+                new window.kakao.maps.Point(13, 34)
+              )
+            : new window.kakao.maps.MarkerImage(
+                normalMarker,
+                new window.kakao.maps.Size(70, 70),
+                new window.kakao.maps.Point(13, 34)
+              );
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
         });
-        window.kakao.maps.event.addListener(marker, 'click', function () {
+        marker.setImage(markerImage);
+        window.kakao.maps.event.addListener(marker, "click", function () {
           // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
           setIsOpen(false);
           setSelectedItem(item);
           setIsOpen(true);
         });
-
         return marker;
       });
       setMarkers(newMarkers);
+
       // console.log(items);
     } else {
       // console.log("latLngArray is empty");
     }
   };
-
   // props로 mapCenter를 전달받을 시 mapCenter를 수정한다. (이상제)
   useEffect(() => {
     if (propsMapCenter) {
-      setMapCenter({
+      setSelectedMarker({
         lat: propsMapCenter.lat,
         lng: propsMapCenter.lng,
       });
+
+      map.current.setLevel(1);
     }
   }, [propsMapCenter]);
+
+  useEffect(() => {
+    if (selectedMarker.lng != null) {
+      marker(items);
+      console.log("select");
+      setMapCenter({
+        lat: selectedMarker.lat,
+        lng: selectedMarker.lng,
+      });
+    }
+  }, [selectedMarker]);
 
   useEffect(() => {
     fetchDataFromServerRangeQuery();
@@ -110,6 +151,25 @@ const ChargingStationSearchMap = ({
     map.current.setLevel(3);
   };
 
+  useEffect(() => {
+    if (mapCenterLoc.lat != null) {
+      console.log("mapCenterLoc" + mapCenterLoc.lat);
+      setMapLoc({
+        lat: mapCenterLoc.lat,
+        lng: mapCenterLoc.lng,
+      });
+    }
+  }, [mapCenterLoc, setMapLoc]);
+
+  const researchMapCenter = () => {
+    const centerLat = map.current.getCenter().getLat();
+    const centerLng = map.current.getCenter().getLng();
+    setMapCenterLoc({
+      lat: centerLat,
+      lng: centerLng,
+    });
+  };
+
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -124,14 +184,17 @@ const ChargingStationSearchMap = ({
         id="map"
         style={{
           width: "100%",
-          // height: "calc(100vh - 205px)",
-          height: "calc(100vh - 195px)",
+          height: "calc(100vh - 145px)",
           border: "1px solid #ccc",
           overflow: "hidden",
         }}
         ref={mapRef}
       />
-      <ChargerInfoModal isOpen={isOpen} onRequestClose={closeModal} items={getStatId()} />
+      <ChargerInfoModal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        items={getStatId()}
+      />
 
       <Tooltip title="접속 위치로 지도 이동" placement="left-start">
         <Button
@@ -148,10 +211,30 @@ const ChargingStationSearchMap = ({
           variant="contained"
           color="primary"
           onClick={handleResetMap}
+          size="large"
         >
           <GpsFixedOutlined />
         </Button>
       </Tooltip>
+
+      <Button
+        style={{
+          position: "absolute",
+          zIndex: "2",
+          color: "white",
+          justifyContent: "center",
+          borderRadius: "20px",
+          bottom: "30px",
+          right: "50%",
+          transform: "translate(50%, 50%)",
+        }}
+        variant="contained"
+        color="primary"
+        size="large" // 이 부분을 수정
+        onClick={researchMapCenter}
+      >
+        <Refresh style={{ marginRight: "3px" }} />현 위치에서 재검색
+      </Button>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Chip,
+  Divider,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -31,11 +32,13 @@ const ChargingStationSearchBar = ({
   setSearchResult,
   onMapMove,
   showSearchBar,
+  mapLoc,
+  check,
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
-  const [parkingFree, setParkingFree] = useState(true);
-  const [isOpen, setOpen] = useState(true);
+  const [parkingFree, setParkingFree] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const [range, setRange] = useState(3000);
   const [zcode, setZcode] = useState("");
   const [zscode, setZscode] = useState("");
@@ -56,6 +59,11 @@ const ChargingStationSearchBar = ({
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    if (check === true) {
+      handleSearch();
+    }
+  }, [mapLoc]);
 
   // 검색 조건이 변경될 때마다 검색 결과를 언마운트
   useEffect(() => {
@@ -78,6 +86,7 @@ const ChargingStationSearchBar = ({
     const selectedRange = event.target.value;
 
     setZcode("");
+    setZscode("");
     setRange(selectedRange);
   };
 
@@ -167,7 +176,7 @@ const ChargingStationSearchBar = ({
   const handleReset = () => {
     setChargable(true);
     setParkingFree(false);
-    setOpen(true);
+    setOpen(false);
     setRange(3000);
     setZcode("");
     setZscode("");
@@ -200,7 +209,7 @@ const ChargingStationSearchBar = ({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search color="action" />
+                    <Search color="primary" />
                   </InputAdornment>
                 ),
               }}
@@ -221,7 +230,7 @@ const ChargingStationSearchBar = ({
           <Button
             size="small"
             variant="outlined"
-            style={{ fontSize: "11px", marginRight: "10px" }}
+            style={{ fontSize: "12px", marginRight: "10px" }}
             color="secondary"
             onClick={handleReset}
           >
@@ -230,7 +239,16 @@ const ChargingStationSearchBar = ({
           <ToggleButton
             size="small"
             color="primary"
-            sx={{ fontSize: "11px", mr: "10px" }}
+            sx={{
+              fontSize: "12px",
+              mr: "10px",
+              "&.Mui-selected": {
+                borderColor: "blue",
+                borderWidth: "1px",
+                color: "blue",
+                fontWeight: "bold",
+              },
+            }}
             value="chargable"
             selected={chargable}
             onChange={handleChargableChange}
@@ -240,7 +258,16 @@ const ChargingStationSearchBar = ({
           <ToggleButton
             size="small"
             color="primary"
-            sx={{ fontSize: "11px", mr: "10px" }}
+            sx={{
+              fontSize: "12px",
+              mr: "10px",
+              "&.Mui-selected": {
+                borderColor: "blue",
+                borderWidth: "1px",
+                color: "blue",
+                fontWeight: "bold",
+              },
+            }}
             value="parkingFree"
             selected={parkingFree}
             onChange={handleParkingFreeChange}
@@ -250,12 +277,21 @@ const ChargingStationSearchBar = ({
           <ToggleButton
             size="small"
             color="primary"
-            sx={{ fontSize: "11px", mr: "10px" }}
+            sx={{
+              fontSize: "12px",
+              mr: "10px",
+              "&.Mui-selected": {
+                borderColor: "blue",
+                borderWidth: "1px",
+                color: "blue",
+                fontWeight: "bold",
+              },
+            }}
             value="isOpen"
             selected={isOpen}
             onChange={handleOpenChange}
           >
-            개방여부
+            상시개방
           </ToggleButton>
         </Box>
       </Box>
@@ -264,12 +300,24 @@ const ChargingStationSearchBar = ({
         {baseItem && (
           <>
             <Box>
-              <InputLabel className={classes.inputLabelStyle}>
+              <InputLabel
+                className={classes.inputLabelStyle}
+                style={{
+                  color: range !== "" ? "blue" : undefined,
+                }}
+              >
                 반경 단위
               </InputLabel>
               <Select
                 size="small"
-                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                sx={{
+                  fontSize: "12px",
+                  mr: "10px",
+                  width: "100px",
+                  border: range !== "" ? "1px solid blue" : "1px solid grey",
+                  color: range !== "" ? "blue" : undefined,
+                  fontWeight: range !== "" ? "bold" : undefined,
+                }}
                 value={range}
                 displayEmpty
                 onChange={handleRangeChange}
@@ -291,12 +339,24 @@ const ChargingStationSearchBar = ({
               </Select>
             </Box>
             <Box>
-              <InputLabel className={classes.inputLabelStyle}>
+              <InputLabel
+                className={classes.inputLabelStyle}
+                style={{
+                  color: zcode !== "" ? "blue" : undefined,
+                }}
+              >
                 지역 단위
               </InputLabel>
               <Select
                 size="small"
-                sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
+                sx={{
+                  fontSize: "12px",
+                  mr: "10px",
+                  width: "140px",
+                  border: zcode !== "" ? "1px solid blue" : "1px solid grey",
+                  color: zcode !== "" ? "blue" : undefined,
+                  fontWeight: zcode !== "" ? "bold" : undefined,
+                }}
                 value={zcode}
                 onChange={handleZcodeChange}
                 displayEmpty
@@ -318,12 +378,24 @@ const ChargingStationSearchBar = ({
               </Select>
             </Box>
             <Box>
-              <InputLabel className={classes.inputLabelStyle}>
+              <InputLabel
+                className={classes.inputLabelStyle}
+                style={{
+                  color: zscode !== "" ? "blue" : undefined,
+                }}
+              >
                 세부 지역
               </InputLabel>
               <Select
                 size="small"
-                sx={{ fontSize: "11px", mr: "10px", width: "100px" }}
+                sx={{
+                  fontSize: "12px",
+                  mr: "10px",
+                  width: "100px",
+                  border: zscode !== "" ? "1px solid blue" : "1px solid grey",
+                  color: zscode !== "" ? "blue" : undefined,
+                  fontWeight: zscode !== "" ? "bold" : undefined,
+                }}
                 value={zscode}
                 onChange={handleZscodeChange}
                 displayEmpty
@@ -356,7 +428,12 @@ const ChargingStationSearchBar = ({
         {baseItem && (
           <>
             <Box>
-              <InputLabel className={classes.inputLabelStyle}>
+              <InputLabel
+                className={classes.inputLabelStyle}
+                style={{
+                  color: busiId.length > 0 ? "blue" : undefined,
+                }}
+              >
                 운영기관
               </InputLabel>
               <Select
@@ -365,12 +442,19 @@ const ChargingStationSearchBar = ({
                 value={busiId}
                 onChange={handleBusiIdChange}
                 displayEmpty
-                sx={{ fontSize: "11px", mr: "10px", width: "130px" }}
+                sx={{
+                  fontSize: "12px",
+                  mr: "10px",
+                  width: "130px",
+                  border:
+                    busiId.length > 0 ? "1px solid blue" : "1px solid grey",
+                }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
                   <div
                     style={{
                       color: selected.length === 0 ? "black" : "blue",
+                      fontWeight: selected.length === 0 ? undefined : "bold",
                     }}
                   >
                     {selected.length === 0
@@ -394,7 +478,12 @@ const ChargingStationSearchBar = ({
               </Select>
             </Box>
             <Box>
-              <InputLabel className={classes.inputLabelStyle}>
+              <InputLabel
+                className={classes.inputLabelStyle}
+                style={{
+                  color: chgerId.length > 0 ? "blue" : undefined,
+                }}
+              >
                 충전기 타입
               </InputLabel>
               <Select
@@ -403,12 +492,19 @@ const ChargingStationSearchBar = ({
                 value={chgerId}
                 onChange={handleChgerIdChange}
                 displayEmpty
-                sx={{ fontSize: "11px", mr: "10px", width: "210px" }}
+                sx={{
+                  fontSize: "12px",
+                  mr: "10px",
+                  width: "220px",
+                  border:
+                    chgerId.length > 0 ? "1px solid blue" : "1px solid grey",
+                }}
                 className={classes.selectEmpty}
                 renderValue={(selected) => (
                   <div
                     style={{
                       color: selected.length === 0 ? "black" : "blue",
+                      fontWeight: selected.length === 0 ? undefined : "bold",
                     }}
                   >
                     {selected.length === 0
@@ -434,8 +530,7 @@ const ChargingStationSearchBar = ({
           </>
         )}
       </Box>
-
-      <hr />
+      <Divider />
       {/* 검색 결과 리스트 */}
       <Box className={classes.ListContainer}>
         <List>
@@ -449,11 +544,15 @@ const ChargingStationSearchBar = ({
           {searchResult &&
             searchResult.content &&
             searchResult.content.map((data, index) => (
-              <ListItem key={index} className={classes.ListItemContainer}>
+              <ListItem
+                key={index}
+                className={classes.ListItemContainer}
+                onClick={() => handleMapMove(data.lat, data.lng)}
+              >
                 <div className={classes.ListItemInfo}>
                   <Typography
-                    variant="h6"
-                    style={{ fontWeight: "bold", color: "blue" }}
+                    variant="subtitle1"
+                    style={{ fontWeight: "bold" }}
                   >
                     {data.statNm}
                   </Typography>
@@ -500,6 +599,9 @@ const ChargingStationSearchBar = ({
                 </div>
                 <Chip
                   label="이동"
+                  style={{
+                    fontWeight: "bold",
+                  }}
                   color="secondary"
                   clickable
                   onClick={() => handleMapMove(data.lat, data.lng)}
@@ -526,9 +628,11 @@ export default ChargingStationSearchBar;
 
 const useStyles = makeStyles({
   baseLayer: {
+    display: "flex",
+    flexDirection: "column",
     backgroundColor: "#EFF8FB",
     width: "420px",
-    height: "70vh",
+    height: "60vh",
     padding: "20px",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)",
     transition: "transform 0.3s ease",
@@ -547,27 +651,32 @@ const useStyles = makeStyles({
   },
   comboContainer: {
     display: "flex",
-    justifyContent: "flext-start",
+    justifyContent: "flex-start",
     alignItems: "center",
     marginTop: "10px",
-    marginBottom: "10px",
+    marginBottom: "5px",
   },
   inputLabelStyle: {
     marginLeft: "2px",
     marginBottom: "5px",
-    fontSize: "10px",
+    fontSize: "11px",
   },
   ListContainer: {
     overflowY: "auto",
-    maxHeight: "40vh",
   },
   ListItemContainer: {
     borderBottom: "1px groove grey",
-    marginBottom: "15px",
+    paddingTop: "10px",
+    paddingBottom: "3px",
     padding: "2px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    cursor: "pointer",
+    transition: "background-color 0.1s",
+    "&:hover": {
+      backgroundColor: "#f0f0f0",
+    },
     fontSize: "11px",
   },
   ListItemInfo: {

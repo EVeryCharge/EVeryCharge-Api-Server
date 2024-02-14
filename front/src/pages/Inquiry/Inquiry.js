@@ -170,7 +170,6 @@ const Inquiry = () => {
         </Button>
 
         ):null}
-        
       </Box>
     </Box>
   );
