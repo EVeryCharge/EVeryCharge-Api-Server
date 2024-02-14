@@ -1,22 +1,26 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.entity;
 
+import static jakarta.persistence.FetchType.*;
+import static lombok.AccessLevel.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
 import com.ll.eitcharge.domain.review.review.entity.Review;
-import com.ll.eitcharge.domain.technicalManager.technicalManager.entity.TechnicalManager;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -44,9 +48,6 @@ public class ChargingStation {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "busi_id")
     private OperatingCompany operatingCompany;
-
-    @OneToOne(fetch = LAZY, mappedBy = "chargingStation")
-    private TechnicalManager technicalManager;
 
     //충전소명
     private String statNm;

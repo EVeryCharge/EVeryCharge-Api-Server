@@ -1,7 +1,8 @@
 package com.ll.eitcharge.global.app;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -111,5 +109,13 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Getter
+    public static String apiServiceKey;
+
+    @Value("${custom.api.serviceKey}")
+    public void setApiServiceKey(String apiServiceKey) {
+        this.apiServiceKey = apiServiceKey;
     }
 }
