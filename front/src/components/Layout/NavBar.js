@@ -30,9 +30,9 @@ const Navbar = () => {
         <Button color="inherit" component={Link} to="/chargingServiceInfo">
           서비스 안내
         </Button>
-        <Button color="inherit" component={Link} to="/search">
+        {/* <Button color="inherit" component={Link} to="/search">
           충전소 검색
-        </Button>
+        </Button> */}
         <Button color="inherit" component={Link} to="/map">
           충전소 지도
         </Button>

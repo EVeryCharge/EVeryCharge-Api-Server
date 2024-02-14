@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -29,12 +29,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChargingStationController {
 
-	private final ChargingStationService chargingStationService;
+    private final ChargingStationService chargingStationService;
+    private static final String DEFAULT_LAT = "37.5665"; // 종로구 서울 시청
+    private static final String DEFAULT_LNG = "126.9780"; // 종로구 서울 시청
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ChargingStation> get(String id) {
-		return ResponseEntity.ok(chargingStationService.findById(id));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<ChargingStation> get(String id) {
+        return ResponseEntity.ok(chargingStationService.findById(id));
+    }
 
     @GetMapping("/location/search")
     @Operation(summary = "충전소 검색", description = "위도 경도 기반 충전소 검색")
@@ -44,18 +46,18 @@ public class ChargingStationController {
             @RequestParam double neLat,
             @RequestParam double neLng
     ) {
-        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, neLat, swLng, neLng));
+        return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
     }
 
     @GetMapping("/chargerStatus/fromApi")
     @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(공공데이터 포탈 api)")
-    public RsData< Object > chargerStateApi(@RequestParam String statId){
+    public RsData<Object> chargerStateApi(@RequestParam String statId) {
         return chargingStationService.findFromApi(statId);
     }
 
     @GetMapping("/chargerStatus")
     @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(데이터 베이스)")
-    public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId){
+    public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId) {
         return ResponseEntity.ok(chargingStationService.chargerStateSearch(statId));
     }
 
@@ -66,7 +68,7 @@ public class ChargingStationController {
 
     @GetMapping("/search/region")
     public ResponseEntity<ChargingStationSearchItemResponseDto> getSearchMenuRegionDetailItem(
-        @RequestParam(value = "zcode") String zcode
+            @RequestParam(value = "zcode") String zcode
     ) {
         return ResponseEntity.ok(chargingStationService.getSearchMenuRegionDetailItem(zcode));
     }
@@ -94,7 +96,7 @@ public class ChargingStationController {
             @RequestParam(defaultValue = "1") int page,
             // 페이지 사이즈
             @RequestParam(defaultValue = "20") int pageSize
-    ){
+    ) {
         return ResponseEntity.ok(chargingStationService.searchBaseStatNm(
                 limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize));
     }
@@ -103,7 +105,7 @@ public class ChargingStationController {
     @GetMapping("/searchBaseDistance")
     public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
             // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
-            @RequestParam(value= "stat", required = false) String stat,
+            @RequestParam(value = "stat", required = false) String stat,
             // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", required = false) String limitYn,
             // 무료 주차 (Y / N)
@@ -124,13 +126,13 @@ public class ChargingStationController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             // 페이지 사이즈
             @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-            // 경도 디폴트 서울시 중구
-            @RequestParam(value = "lng", defaultValue = "126.9784") double lng,
-            // 위도 디폴트 서울시 중구
-            @RequestParam(value = "lat", defaultValue = "37.5665") double lat,
-            // 반경 제한 (m 단위, 디폴트 50km)
+            // 현 지도 중심 경도
+            @RequestParam(value = "lng", defaultValue = DEFAULT_LNG) double lng,
+            // 현 지도 중심 위도
+            @RequestParam(value = "lat", defaultValue = DEFAULT_LAT) double lat,
+            // 반경 제한 (m 단위, defaultValue: 2000km (전국 단위))
             @RequestParam(value = "range", defaultValue = "2000000") int range
-    ){
+    ) {
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }

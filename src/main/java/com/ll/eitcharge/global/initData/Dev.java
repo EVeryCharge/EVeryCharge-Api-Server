@@ -28,7 +28,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
-@Profile("!dev")
+@Profile("!prod")
 @Slf4j
 @RequiredArgsConstructor
 public class Dev {

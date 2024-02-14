@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ChargingStationSearchBar from "./ChargingStationSearchBar";
 import ChargingStationSearchMap from "./ChargingStationSearchMap";
+import ChargingStationSearchSwitch from "./ChargingStationSearchSwitch";
 
 const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
@@ -12,6 +13,9 @@ const ChargingStationSearch = () => {
   const [mapCenter, setMapCenter] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(true);
+  const [mapLoc, setMapLoc] = useState({});
+  const [check, setCheck] = useState(false);
+  const [switchChecked, setSwitchChecked] = useState(true);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -23,15 +27,35 @@ const ChargingStationSearch = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
+      setMapLoc({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
     }
 
     function error() {
       setMyLoc({
-        lat: 36.483034,
-        lng: 126.902435,
+        lat: 37.5665,
+        lng: 126.9784,
+      });
+      setMapLoc({
+        lat: 37.5665,
+        lng: 126.9784,
       });
     }
+    setCheck(true);
   }, []);
+
+  // 토글 아웃 시 충전소 지도로 이동 (0.5초 이후)
+  // useEffect(() => {
+  //   if (!showSearchBar) {
+  //     const timer = setTimeout(() => {
+  //       navigate("/map");
+  //     }, 500);
+
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [showSearchBar]);
 
   useEffect(() => {
     if (searchResult) {
@@ -47,7 +71,7 @@ const ChargingStationSearch = () => {
         "/api/v1/chargingStation/searchBaseDistance",
         {
           ...searchParam,
-          ...myLoc,
+          ...mapLoc,
         }
       );
       setSearchResult(response);
@@ -66,8 +90,16 @@ const ChargingStationSearch = () => {
     setShowSearchBar(!showSearchBar);
   };
 
+  const handleSwtichChange = (checked) => {
+    setSwitchChecked(checked);
+  };
+
   return (
     <Box style={{ overflow: "hidden" }}>
+      <ChargingStationSearchSwitch
+        checked={switchChecked}
+        onChange={handleSwtichChange}
+      />
       <Tooltip title="검색 창 열기 / 닫기" placement="right-end">
         <Fab
           color="primary"
@@ -101,6 +133,8 @@ const ChargingStationSearch = () => {
             setSearchResult={setSearchResult}
             onMapMove={handleMapMove}
             showSearchBar={showSearchBar}
+            mapLoc={mapLoc}
+            check={check}
           />
         </Box>
         <Box
@@ -113,6 +147,7 @@ const ChargingStationSearch = () => {
             temporaryArray={temporaryArray}
             myLoc={myLoc}
             propsMapCenter={mapCenter}
+            setMapLoc={setMapLoc}
           />
         </Box>
       </Box>
