@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ChargingStationSearchBar from "./ChargingStationSearchBar";
 import ChargingStationSearchMap from "./ChargingStationSearchMap";
+import { useNavigate } from "react-router-dom";
 
 const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
@@ -14,8 +15,7 @@ const ChargingStationSearch = () => {
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [mapLoc, setMapLoc] = useState({});
   const [check, setCheck] = useState(false);
-
- 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -27,8 +27,7 @@ const ChargingStationSearch = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
-      setMapLoc
-      ({
+      setMapLoc({
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
@@ -39,20 +38,24 @@ const ChargingStationSearch = () => {
         lat: 37.5665,
         lng: 126.9784,
       });
-      setMapLoc
-      ({
+      setMapLoc({
         lat: 37.5665,
         lng: 126.9784,
       });
     }
     setCheck(true);
-
   }, []);
 
+  // 토글 아웃 시 충전소 지도로 이동 (0.5초 이후)
   useEffect(() => {
-    console.log("map " + mapLoc.lat +" "+ mapLoc.lng);
-    console.log(check);
-  }, [mapLoc]);
+    if (!showSearchBar) {
+      const timer = setTimeout(() => {
+        navigate("/map");
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSearchBar]);
 
   useEffect(() => {
     if (searchResult) {
