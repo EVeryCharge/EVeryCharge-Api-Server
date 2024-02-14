@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 import ChargingStationSearchBar from "./ChargingStationSearchBar";
 import ChargingStationSearchMap from "./ChargingStationSearchMap";
-import { useNavigate } from "react-router-dom";
+import ChargingStationSearchSwitch from "./ChargingStationSearchSwitch";
 
 const ChargingStationSearch = () => {
   const [searchResult, setSearchResult] = useState(null);
@@ -15,7 +15,7 @@ const ChargingStationSearch = () => {
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [mapLoc, setMapLoc] = useState({});
   const [check, setCheck] = useState(false);
-  const navigate = useNavigate();
+  const [switchChecked, setSwitchChecked] = useState(true);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -47,15 +47,15 @@ const ChargingStationSearch = () => {
   }, []);
 
   // 토글 아웃 시 충전소 지도로 이동 (0.5초 이후)
-  useEffect(() => {
-    if (!showSearchBar) {
-      const timer = setTimeout(() => {
-        navigate("/map");
-      }, 500);
+  // useEffect(() => {
+  //   if (!showSearchBar) {
+  //     const timer = setTimeout(() => {
+  //       navigate("/map");
+  //     }, 500);
 
-      return () => clearTimeout(timer);
-    }
-  }, [showSearchBar]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [showSearchBar]);
 
   useEffect(() => {
     if (searchResult) {
@@ -90,8 +90,16 @@ const ChargingStationSearch = () => {
     setShowSearchBar(!showSearchBar);
   };
 
+  const handleSwtichChange = (checked) => {
+    setSwitchChecked(checked);
+  };
+
   return (
     <Box style={{ overflow: "hidden" }}>
+      <ChargingStationSearchSwitch
+        checked={switchChecked}
+        onChange={handleSwtichChange}
+      />
       <Tooltip title="검색 창 열기 / 닫기" placement="right-end">
         <Fab
           color="primary"

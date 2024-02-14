@@ -1,21 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import ChargerInfoModal from "../UI/ChargerInfoModal";
+import normalMarker from "../../assets/image/marker.png";
 import { useSelectedItems } from "../../utils/StationInfoContext";
-import normalMarker from '../../assets/image/marker.png';
+import ChargerInfoModal from "../UI/ChargerInfoModal";
 
-import { debounce } from "lodash";
-import { HttpGet, HttpPost } from "../../services/HttpService";
 import {
   Box,
   Button,
   Card,
   FormControl,
   InputAdornment,
+  Switch,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
+import { debounce } from "lodash";
 import { useNavigate } from "react-router-dom";
+import { HttpGet } from "../../services/HttpService";
+import { Stack } from "@mui/material";
+import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearchSwitch";
 const ChargingStationMap = () => {
   const mapRef = useRef(null);
   let map; // 지도 객체를 담을 변수
@@ -23,6 +26,7 @@ const ChargingStationMap = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.9784 }); //중구
   const { setSelectedItem, getStatId } = useSelectedItems();
   const navigate = useNavigate();
+  const [navigateSearchChecked, navigateSearch] = useState(false);
 
   useEffect(() => {
     map = new window.kakao.maps.Map(mapRef.current, {
@@ -44,6 +48,20 @@ const ChargingStationMap = () => {
 
     fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
   }, []);
+
+  useEffect(() => {
+    if (navigateSearchChecked) {
+      const timer = setTimeout(() => {
+        navigate("/search");
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [navigateSearchChecked]);
+
+  const handleNavigateSearch = () => {
+    navigateSearch(!navigateSearchChecked);
+  };
 
   const fetchDataFromServerRangeQuery = () => {
     const bounds = map.getBounds(); // 지도의 영역 가져오기
@@ -71,7 +89,7 @@ const ChargingStationMap = () => {
             new window.kakao.maps.Size(70, 70),
             new window.kakao.maps.Point(13, 34)
           );
-          marker.setImage(markerImage)
+          marker.setImage(markerImage);
           marker.setMap(map);
 
           window.kakao.maps.event.addListener(marker, "click", function () {
@@ -95,10 +113,6 @@ const ChargingStationMap = () => {
     500
   ); //200ms마다 서버에 요청
 
-  const handleSearchClick = () => {
-    navigate("/search");
-  };
-
   return (
     <div
       sx={{
@@ -106,54 +120,7 @@ const ChargingStationMap = () => {
         alignItems: "center",
       }}
     >
-      <Box sx={{ zIndex: 2, position: "fixed", top: "10%", left: "0%" }}>
-        <Box
-          onClick={handleSearchClick}
-          style={{ cursor: "pointer", zIndex: "3" }}
-        >
-          <Card
-            style={{
-              backgroundColor: "#EFF8FB",
-              width: "250px",
-              padding: "10px",
-              boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: "2",
-            }}
-          >
-            <FormControl fullWidth>
-              <TextField
-                size="small"
-                sx={{ fontSize: "11px", cursor: "pointer" }}
-                label="충전소 검색"
-                disabled
-                variant="outlined"
-                color="primary"
-                InputProps={{
-                  style: { cursor: "pointer", color: "black" },
-                  inputProps: {
-                    onClick: handleSearchClick,
-                  },
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search color="primary" />
-                      <Button color="primary" onClick={handleSearchClick}>
-                        충전소 검색을 시작해보세요!
-                      </Button>
-                    </InputAdornment>
-                  ),
-                  // 여기에 버튼 요소를 넣어서 해결하기
-                  endAdornment: (
-                    <InputAdornment position="start"></InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
-          </Card>
-        </Box>
-      </Box>
+      <ChargingStationSearchSwitch />
       <div
         id="map"
         sx={{

@@ -1,18 +1,16 @@
 import { Button, Tooltip } from "@material-ui/core";
-import { GpsFixedOutlined } from "@material-ui/icons";
+import { GpsFixedOutlined, Refresh } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
-import ChargerInfoModal from '../../components/UI/ChargerInfoModal';
-import { useSelectedItems } from '../../utils/StationInfoContext';
-import normalMarker from '../../assets/image/marker.png';
-import selectMarker from '../../assets/image/selectMarker.png';
-
-
+import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
+import { useSelectedItems } from "../../utils/StationInfoContext";
+import normalMarker from "../../assets/image/marker.png";
+import selectMarker from "../../assets/image/selectMarker.png";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
   myLoc,
   propsMapCenter,
-  setMapLoc
+  setMapLoc,
 }) => {
   const mapRef = useRef(null);
   const map = useRef(null); // 지도 객체를 useRef로 선언
@@ -20,7 +18,6 @@ const ChargingStationSearchMap = ({
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [check, setCheck] = useState(false);
-
 
   const [mapCenter, setMapCenter] = useState({
     lat: null,
@@ -35,7 +32,6 @@ const ChargingStationSearchMap = ({
   const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
   const [selectedMarker, setSelectedMarker] = useState([]); // 마커 배열을 상태로 관리
 
-
   const initMap = () => {
     const container = mapRef.current; // mapRef.current를 통해 container 참조
     const options = {
@@ -47,7 +43,6 @@ const ChargingStationSearchMap = ({
     map.current = new window.kakao.maps.Map(container, options); // useRef로 선언한 map에 할당
   };
 
-
   const fetchDataFromServerRangeQuery = async () => {
     if (!temporaryArray || !temporaryArray.content) {
       // console.log("temporaryArray is undefined or does not contain 'content'");
@@ -56,12 +51,11 @@ const ChargingStationSearchMap = ({
     const newItems = temporaryArray ? temporaryArray.content : [];
     setSelectedMarker({
       lat: null,
-      lng: null
+      lng: null,
     });
     setItems(newItems); // 상태 값 업데이트
     map.current.setLevel(3);
-
-  }
+  };
   useEffect(() => {
     marker(items);
   }, [items]);
@@ -69,7 +63,6 @@ const ChargingStationSearchMap = ({
   const marker = (items) => {
     // 기존 마커를 모두 삭제
     markers.forEach((marker) => marker.setMap(null));
-
 
     if (items.length > 0) {
       const firstItem = items[0];
@@ -80,23 +73,24 @@ const ChargingStationSearchMap = ({
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
-        const markerImage = (item.lat === selectedMarker.lat && item.lng === selectedMarker.lng) ?
-          new window.kakao.maps.MarkerImage(
-            selectMarker,
-            new window.kakao.maps.Size(70, 70),
-            new window.kakao.maps.Point(13, 34)
-          ) :
-          new window.kakao.maps.MarkerImage(
-            normalMarker,
-            new window.kakao.maps.Size(70, 70),
-            new window.kakao.maps.Point(13, 34)
-          );
+        const markerImage =
+          item.lat === selectedMarker.lat && item.lng === selectedMarker.lng
+            ? new window.kakao.maps.MarkerImage(
+                selectMarker,
+                new window.kakao.maps.Size(70, 70),
+                new window.kakao.maps.Point(13, 34)
+              )
+            : new window.kakao.maps.MarkerImage(
+                normalMarker,
+                new window.kakao.maps.Size(70, 70),
+                new window.kakao.maps.Point(13, 34)
+              );
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
         });
-        marker.setImage(markerImage)
-        window.kakao.maps.event.addListener(marker, 'click', function () {
+        marker.setImage(markerImage);
+        window.kakao.maps.event.addListener(marker, "click", function () {
           // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
           setIsOpen(false);
           setSelectedItem(item);
@@ -119,7 +113,6 @@ const ChargingStationSearchMap = ({
         lng: propsMapCenter.lng,
       });
 
-
       map.current.setLevel(1);
     }
   }, [propsMapCenter]);
@@ -127,7 +120,7 @@ const ChargingStationSearchMap = ({
   useEffect(() => {
     if (selectedMarker.lng != null) {
       marker(items);
-      console.log("select")
+      console.log("select");
       setMapCenter({
         lat: selectedMarker.lat,
         lng: selectedMarker.lng,
@@ -159,11 +152,11 @@ const ChargingStationSearchMap = ({
   };
 
   useEffect(() => {
-    if (mapCenterLoc.lat != null ) {
+    if (mapCenterLoc.lat != null) {
       console.log("mapCenterLoc" + mapCenterLoc.lat);
       setMapLoc({
         lat: mapCenterLoc.lat,
-        lng: mapCenterLoc.lng
+        lng: mapCenterLoc.lng,
       });
     }
   }, [mapCenterLoc, setMapLoc]);
@@ -173,8 +166,8 @@ const ChargingStationSearchMap = ({
     const centerLng = map.current.getCenter().getLng();
     setMapCenterLoc({
       lat: centerLat,
-      lng: centerLng
-    })
+      lng: centerLng,
+    });
   };
 
   const closeModal = () => {
@@ -197,7 +190,11 @@ const ChargingStationSearchMap = ({
         }}
         ref={mapRef}
       />
-      <ChargerInfoModal isOpen={isOpen} onRequestClose={closeModal} items={getStatId()} />
+      <ChargerInfoModal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        items={getStatId()}
+      />
 
       <Tooltip title="접속 위치로 지도 이동" placement="left-start">
         <Button
@@ -236,7 +233,7 @@ const ChargingStationSearchMap = ({
         size="large" // 이 부분을 수정
         onClick={researchMapCenter}
       >
-        현 위치에서 재검색
+        <Refresh style={{ marginRight: "3px" }} />현 위치에서 재검색
       </Button>
     </div>
   );

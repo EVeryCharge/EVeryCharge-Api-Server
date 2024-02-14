@@ -33,7 +33,7 @@ const ChargingStationSearchBar = ({
   onMapMove,
   showSearchBar,
   mapLoc,
-  check
+  check,
 }) => {
   const classes = useStyles();
   const [chargable, setChargable] = useState(true);
@@ -47,7 +47,6 @@ const ChargingStationSearchBar = ({
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
   const [baseItem, setBaseItem] = useState(null);
- 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -588,10 +587,11 @@ const ChargingStationSearchBar = ({
                       <Chip
                         key={index}
                         icon={<ElectricCarIcon />}
-                        label={`${baseItem.chgerTypes[
-                          baseItem.chgerIds.indexOf(chgerType)
-                        ]
-                          }`}
+                        label={`${
+                          baseItem.chgerTypes[
+                            baseItem.chgerIds.indexOf(chgerType)
+                          ]
+                        }`}
                         style={{ marginBottom: "5px", marginRight: "5px" }}
                       />
                     ))}
@@ -632,7 +632,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     backgroundColor: "#EFF8FB",
     width: "420px",
-    height: "70vh",
+    height: "60vh",
     padding: "20px",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)",
     transition: "transform 0.3s ease",
