@@ -23,8 +23,6 @@ public class ChargingStationItemDto {
     private String lng;
     private String busiId;
     private String bnm;
-    private String busiNm;
-    private String busiCall;
     private String stat;
     private String statUpdDt;
     private String lastTsdt;
