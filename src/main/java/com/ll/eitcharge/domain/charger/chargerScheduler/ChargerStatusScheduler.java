@@ -1,12 +1,12 @@
 package com.ll.eitcharge.domain.charger.chargerScheduler;
 
+import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
-
-import lombok.RequiredArgsConstructor;
-
 @Component
+@Profile("prod")
 @RequiredArgsConstructor
 public class ChargerStatusScheduler {
 
