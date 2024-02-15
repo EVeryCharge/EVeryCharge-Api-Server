@@ -17,7 +17,6 @@ const ChargingStationSearchMap = ({
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
-  const [check, setCheck] = useState(false);
 
   const [mapCenter, setMapCenter] = useState({
     lat: null,
@@ -36,7 +35,7 @@ const ChargingStationSearchMap = ({
     const container = mapRef.current; // mapRef.current를 통해 container 참조
     const options = {
       center: new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng),
-      level: 3,
+      level: 2,
       maxLevel: 10,
     };
 
@@ -54,7 +53,7 @@ const ChargingStationSearchMap = ({
       lng: null,
     });
     setItems(newItems); // 상태 값 업데이트
-    map.current.setLevel(3);
+    map.current.setLevel(2);
   };
   useEffect(() => {
     marker(items);
@@ -105,7 +104,7 @@ const ChargingStationSearchMap = ({
       // console.log("latLngArray is empty");
     }
   };
-  // props로 mapCenter를 전달받을 시 mapCenter를 수정한다. (이상제)
+  // props로 mapCenter를 전달받을 시 mapCenter를 수정
   useEffect(() => {
     if (propsMapCenter) {
       setSelectedMarker({
@@ -148,7 +147,7 @@ const ChargingStationSearchMap = ({
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
-    map.current.setLevel(3);
+    map.current.setLevel(2);
   };
 
   useEffect(() => {
