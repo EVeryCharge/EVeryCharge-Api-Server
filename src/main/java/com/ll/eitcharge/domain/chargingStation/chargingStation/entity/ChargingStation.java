@@ -61,10 +61,6 @@ public class ChargingStation {
     private double lat;
     //경도
     private double lng;
-    //운영업체 이름
-    private String busiNm;
-    //기관 전화번호
-    private String busiCall;
     //주차료여부
     private String parkingFree;
     //충전소 안내
