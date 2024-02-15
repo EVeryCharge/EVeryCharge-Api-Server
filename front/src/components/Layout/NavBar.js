@@ -3,6 +3,7 @@ import { Menu as MenuIcon } from "@material-ui/icons";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
+import EvStationIcon from '@mui/icons-material/EvStation';
 
 const Navbar = () => {
   const navigate = useNavigate();
