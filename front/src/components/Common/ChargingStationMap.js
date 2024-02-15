@@ -50,8 +50,8 @@ const ChargingStationMap = () => {
       const container = mapRef.current; // mapRef.current를 통해 container 참조
       const options = {
         center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
-        level: 2,
-        maxLevel: 5,
+        level: 13,
+
       };
 
       map.current = new window.kakao.maps.Map(container, options);
