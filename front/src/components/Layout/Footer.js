@@ -2,7 +2,7 @@
 
 import React from 'react';
 import './Footer.css';
-import githubLogo from '../../assets/image/github-logo.png'; // ê¹ƒí—ˆë¸? ë¡œê³  ?´ë¯¸ì??ë¥? ? ? ˆ?•œ ê²½ë¡œ?—?„œ ë¶ˆëŸ¬???ì£¼ì„¸?š”.
+import githubLogo from '../../assets/image/github-logo.png'; // ê¹ƒí—ˆë¸Œ ë¡œê³  ì´ë¯¸ì§€ë¥¼ ì ì ˆí•œ ê²½ë¡œì—ì„œ ë¶ˆëŸ¬ì™€ì£¼ì„¸ìš”.
 
 
 const Footer = () => {
