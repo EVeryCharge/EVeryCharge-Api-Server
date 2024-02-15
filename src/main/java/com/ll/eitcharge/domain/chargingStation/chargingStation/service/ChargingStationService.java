@@ -1,12 +1,23 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
+import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
+import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
+import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
+import com.ll.eitcharge.domain.region.service.RegionService;
+import com.ll.eitcharge.global.exceptions.GlobalException;
+import com.ll.eitcharge.global.rsData.RsData;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,25 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
-import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
-import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
-import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
-import com.ll.eitcharge.domain.region.service.RegionService;
-import com.ll.eitcharge.global.exceptions.GlobalException;
-import com.ll.eitcharge.global.rsData.RsData;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
+import static com.ll.eitcharge.global.app.AppConfig.apiServiceKey;
 
 @Service
 @Transactional
@@ -76,7 +76,7 @@ public class ChargingStationService {
 	public RsData<Object> findFromApi(String statId) {
 		WebClient webClient = WebClient.create();
 
-		String serviceKey = "%2B61CsEc7Nmo65NvzqtjoQh0FPR0CAdc45WlyZDPkxYDqeSxUJ4E1ncpqn2H2qyN%2BHFXNqJD6JbNbghaWu9Tctw%3D%3D";
+		String serviceKey = apiServiceKey;
 		String numOfRows = "100";
 		String pageNo = "1";
 

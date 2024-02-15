@@ -21,7 +21,6 @@ public class ChargingStationSearchRepository {
 
 	/**
 	 * 작성자 : 이상제
-	 * ChargingStationRepository의 네이티브 쿼리 현재 미작동 (엔티티에 없는 칼럼을 리턴하는 것이 원인으로 추정됨)
 	 * @return statId 와 현 위치 기준 거리(m) 를 가진 DTO
 	 */
 	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(

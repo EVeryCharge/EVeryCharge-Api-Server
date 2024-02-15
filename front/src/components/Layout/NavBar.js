@@ -12,8 +12,8 @@ const Navbar = () => {
   const { isLogin, setLogout, getUserName, getUserNickname } = useAuth();
 
   const handleLogout = () => {
-    console.log("lll")
     setLogout();
+    //로그 아웃 후 로그인 페이지 or 홈으로 이동 ?
     navigate("/");
   };
 

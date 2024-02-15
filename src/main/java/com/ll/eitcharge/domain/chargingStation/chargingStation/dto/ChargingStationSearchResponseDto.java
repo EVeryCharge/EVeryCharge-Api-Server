@@ -1,12 +1,13 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
-import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -20,7 +21,6 @@ public class ChargingStationSearchResponseDto {
     private List<String> chargerTypes; // 보유 충전기 타입
     private String busiId; // 기관 ID
     private String bnm; // 기관명
-    private String busiNm; // 운영기관명
     private String parkingFree; // 무료주차 여부
     private String limitYn; // 개방 여부
     private String limitDetail;
@@ -45,7 +45,6 @@ public class ChargingStationSearchResponseDto {
                 .collect(Collectors.toList());
         this.busiId = chargingStation.getOperatingCompany().getBusiId();
         this.bnm = chargingStation.getOperatingCompany().getBnm();
-        this.busiNm = chargingStation.getBusiNm();
         this.parkingFree = chargingStation.getParkingFree();
         this.limitYn = chargingStation.getLimitYn();
         this.limitDetail = chargingStation.getLimitDetail();
