@@ -46,17 +46,6 @@ const ChargingStationSearch = () => {
     setCheck(true);
   }, []);
 
-  // 토글 아웃 시 충전소 지도로 이동 (0.5초 이후)
-  // useEffect(() => {
-  //   if (!showSearchBar) {
-  //     const timer = setTimeout(() => {
-  //       navigate("/map");
-  //     }, 500);
-
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [showSearchBar]);
-
   useEffect(() => {
     if (searchResult) {
       setTemporaryArray(searchResult);
