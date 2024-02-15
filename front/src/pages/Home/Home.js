@@ -98,7 +98,7 @@ const Home = () => {
     <>
       <div style={{ display: 'flex', justifyContent: 'center', borderRadius: '50px', marginTop: '50px' }}>
        
-        <Box sx={{ width: '1200px ', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ maxWidth: '1200px ', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <AutoPlaySwipeableViews
             sx={{
               display: 'flex',
