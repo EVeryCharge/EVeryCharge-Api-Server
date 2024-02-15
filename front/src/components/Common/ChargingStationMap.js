@@ -1,13 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import normalMarker from "../../assets/image/marker.png";
-import {useSelectedItems} from "../../utils/StationInfoContext";
-import {GpsFixedOutlined} from "@material-ui/icons";
+import { useSelectedItems } from "../../utils/StationInfoContext";
+import { GpsFixedOutlined } from "@material-ui/icons";
 import ChargerInfoModal from "../UI/ChargerInfoModal";
 
-import {debounce} from "lodash";
-import {HttpGet} from "../../services/HttpService";
-import {Button, Tooltip} from "@material-ui/core";
-import {useNavigate} from "react-router-dom";
+import { debounce } from "lodash";
+import { HttpGet } from "../../services/HttpService";
+import { Button, Tooltip } from "@material-ui/core";
 import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearchSwitch";
 
 const ChargingStationMap = () => {
@@ -16,7 +15,6 @@ const ChargingStationMap = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: null, lng: null }); //중구
   const { setSelectedItem, getStatId } = useSelectedItems();
-  const navigate = useNavigate();
   const [myLoc, setMyLoc] = useState(null);
 
   useEffect(() => {
@@ -45,10 +43,6 @@ const ChargingStationMap = () => {
         lng: 126.9784,
       });
     }
-
-
-
-
   }, []);
 
   useEffect(() => {
@@ -56,22 +50,26 @@ const ChargingStationMap = () => {
       const container = mapRef.current; // mapRef.current를 통해 container 참조
       const options = {
         center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
-        level: 3,
-        maxLevel: 10,
+        level: 2,
+        maxLevel: 5,
       };
 
       map.current = new window.kakao.maps.Map(container, options);
 
       // 이벤트 리스너를 등록하여 지도의 중심 좌표가 변경될 때마다 서버에 데이터 요청
-      window.kakao.maps.event.addListener(map.current, "center_changed", function () {
-        const newCenter = map.current.getCenter();
-        setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
+      window.kakao.maps.event.addListener(
+        map.current,
+        "center_changed",
+        function () {
+          const newCenter = map.current.getCenter();
+          setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
 
-        fetchDataFromServerRangeQueryDebounced(
-          newCenter.getLat(),
-          newCenter.getLng()
-        );
-      });
+          fetchDataFromServerRangeQueryDebounced(
+            newCenter.getLat(),
+            newCenter.getLng()
+          );
+        }
+      );
 
       fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
     }
@@ -104,7 +102,7 @@ const ChargingStationMap = () => {
             new window.kakao.maps.Size(70, 70),
             new window.kakao.maps.Point(13, 34)
           );
-          marker.setImage(markerImage)
+          marker.setImage(markerImage);
           marker.setMap(map.current);
 
           window.kakao.maps.event.addListener(marker, "click", function () {
@@ -125,17 +123,12 @@ const ChargingStationMap = () => {
   };
   const fetchDataFromServerRangeQueryDebounced = debounce(
     fetchDataFromServerRangeQuery,
-    500
-  ); //200ms마다 서버에 요청
-
-  const handleSearchClick = () => {
-    navigate("/search");
-  };
+    3000
+  ); //3000ms마다 서버에 요청
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
-    map.current.setLevel(3);
-
+    map.current.setLevel(2);
   };
 
   return (
