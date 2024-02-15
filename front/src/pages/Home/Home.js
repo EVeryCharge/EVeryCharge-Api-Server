@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Button, Container, Grid, Paper } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Navbar from '../../components/Layout/NavBar'; // Navbar 컴포?��?���? import
+import Navbar from '../../components/Layout/NavBar'; // Navbar 컴포넌트 import
 import ChargingServiceInfo from '../../components/ChargingServiceInfo';
 import StatisticsInfo from '../../components/StatisticsInfo';
 import EVSystem from '../../components/EVSystem';
