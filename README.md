@@ -12,4 +12,4 @@
 * 👦 권성민 / `SeoungminKwon` / [@Github](https://github.com/SeoungminKwon)
 * 👦 이상제 / `Bi3a` / [@Github](https://github.com/Bisi3asi)
 * 👦 임지원 / `i-am-jiwon` / [@Github](https://github.com/i-am-jiwon)
-* 👦 임재욱 / `astral0525` / [@Github](https://github.com/astral0525)
+* 👦 임재욱 / `jaeuklim` / [@Github](https://github.com/jaeuklim)
