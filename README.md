@@ -2,10 +2,11 @@
 `오픈 API 기반 충전소 / 충전기 정보 제공 서비스`
 
 ### 개발 기간
-``24.01.15. ~ 24.02.15. ``
+``24.01.15. ~  ``
 
 ### 사용 기술 스택
-![skills](https://file.notion.so/f/f/c69962b0-3951-485b-b10a-5bb29576bba8/969f252a-420c-4466-9f7e-d657d61e0acd/Untitled.png?id=809b1448-c65d-4e69-9837-9c0611bdd311&table=block&spaceId=c69962b0-3951-485b-b10a-5bb29576bba8&expirationTimestamp=1708149600000&signature=TWPVIhGDSU0QaJ3drQjmSaK2NyJHh_68YDiMqFbghik&downloadName=Untitled.png)
+<img width="704" alt="image" src="https://github.com/E-IT-Charge/E-IT-Charge-Api-Server/assets/37866182/c1da9693-8f44-47c4-a563-be9357ba6149">
+
 
 ### Member
 * 🔰 김효준 / `gimyojun` / [@Github](https://github.com/gimyojun)
