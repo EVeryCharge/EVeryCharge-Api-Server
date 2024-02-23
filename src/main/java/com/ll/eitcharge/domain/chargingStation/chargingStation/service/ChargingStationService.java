@@ -1,10 +1,31 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
+import static com.ll.eitcharge.global.app.AppConfig.*;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.charger.charger.service.RedisChargerStorageService;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
@@ -17,26 +38,9 @@ import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.eitcharge.domain.region.service.RegionService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
+
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static com.ll.eitcharge.global.app.AppConfig.apiServiceKey;
 
 @Service
 @Transactional
@@ -49,6 +53,7 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
+	private final RedisChargerStorageService redisChargerStorageService;
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -140,7 +145,8 @@ public class ChargingStationService {
 		sorts.add(Sort.Order.desc("statNm"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
-		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(limitYn, parkingFree, zcode, zscode,
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(limitYn, parkingFree, zcode,
+			zscode,
 			isPrimary, busiIds, chgerTypes, kw, pageable);
 
 		return chargingStations.map(ChargingStationSearchResponseDto::new);
@@ -177,4 +183,11 @@ public class ChargingStationService {
 			stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
 		);
 	}
+
+	@Transactional(readOnly = true)
+	@PostConstruct // TODO 배치 서비스로 옮기기, 도메인 분리
+	public void initializeRedisChargers() {
+		redisChargerStorageService.initChargersToRedis();
+	}
 }
+

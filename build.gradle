@@ -24,6 +24,9 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // REDIS
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // LOMBOK
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
