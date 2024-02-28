@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeListDto;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeSearchBaseItemDto;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.repository.ChargeFeeRepository;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
@@ -53,39 +55,51 @@ public class ChargeFeeService {
 				// 리스트 {기관명, 충전타입(구분), 회원가, 비회원가}
 				rowData.add(worksheet.getCells().get(row, col).getStringValue());
 			}
-			String bnmData = rowData.get(0);
-			String chgerTypeData = rowData.get(1);
-			Double memberFeeData = Double.parseDouble(rowData.get(2));
-			Double nonMemberFeeData = Double.parseDouble(rowData.get(3));
-
-			switch (bnmData) {
-				case "GS차지비" -> bnmData = "차지비";
-				case "채비" -> bnmData = "대영채비";
-				case "이브이시스" -> bnmData = "중앙제어";
-				case "투이스이브이씨" -> bnmData = "삼성EVC";
-			}
-
-			Optional<OperatingCompany> opCompany = operatingCompanyService.findByBnmOptional(bnmData);
-			if (opCompany.isEmpty()) continue;
-
-			Optional<ChargeFee> opChargeFee = findByBnmAndChgerTypeOptional(bnmData, chgerTypeData);
-			if (opChargeFee.isPresent()) {
-				ChargeFee chargeFee = opChargeFee.get();
-				chargeFee.update(chgerTypeData, memberFeeData, nonMemberFeeData, chargeFee.getMemberFee(),
-					chargeFee.getNonMemberFee());
-			}
-			if (opChargeFee.isEmpty()) {
-				ChargeFee chargeFee = ChargeFee.builder()
-					.operatingCompany(opCompany.get())
-					.bnm(bnmData)
-					.chgerType(chgerTypeData)
-					.memberFee(memberFeeData)
-					.nonMemberFee(nonMemberFeeData)
-					.build();
-				chargeFeeRepository.save(chargeFee);
-			}
+			upsertRowData(rowData);
 		}
+		// 요금 미공시 업체 데이터 업데이트(별도 크롤링) TODO 크롤링 방안 마련
+		upsertRowData(List.of("한국전력", "급속", "324.4", "324.4"));
+		upsertRowData(List.of("한국전력", "완속", "347.2", "347.2"));
+		upsertRowData(List.of("에스트래픽", "급속", "385.0", "520.0"));
+		upsertRowData(List.of("에스트래픽", "완속", "288.0", "520.0"));
+
 		workbook.dispose();
+	}
+
+	@Transactional
+	public void upsertRowData(List<String> rowData) {
+		String bnmData = rowData.get(0);
+		String chgerTypeData = rowData.get(1);
+		Double memberFeeData = Double.parseDouble(rowData.get(2));
+		Double nonMemberFeeData = Double.parseDouble(rowData.get(3));
+
+		// 현재 엔티티 내 기관 (OperatingCompany) 명과 맞게 업체명 수정
+		switch (bnmData) {
+			case "GS차지비" -> bnmData = "차지비";
+			case "채비" -> bnmData = "대영채비";
+			case "이브이시스" -> bnmData = "중앙제어";
+			case "투이스이브이씨" -> bnmData = "삼성EVC";
+		}
+
+		Optional<OperatingCompany> opCompany = operatingCompanyService.findByBnmOptional(bnmData);
+		if (opCompany.isEmpty()) return;
+
+		Optional<ChargeFee> opChargeFee = findByBnmAndChgerTypeOptional(bnmData, chgerTypeData);
+		if (opChargeFee.isPresent()) {
+			ChargeFee chargeFee = opChargeFee.get();
+			chargeFee.update(chgerTypeData, memberFeeData, nonMemberFeeData, chargeFee.getMemberFee(),
+				chargeFee.getNonMemberFee());
+		}
+		if (opChargeFee.isEmpty()) {
+			ChargeFee chargeFee = ChargeFee.builder()
+				.operatingCompany(opCompany.get())
+				.bnm(bnmData)
+				.chgerType(chgerTypeData)
+				.memberFee(memberFeeData)
+				.nonMemberFee(nonMemberFeeData)
+				.build();
+			chargeFeeRepository.save(chargeFee);
+		}
 	}
 
 	@Scheduled(cron = "0 0 2 * * * ")
@@ -97,5 +111,13 @@ public class ChargeFeeService {
 			log.error("ERROR : 로밍요금 xlsx 저장 실패");
 			e.printStackTrace();
 		}
+	}
+
+	public ChargeFeeSearchBaseItemDto getSearchBaseItem() {
+		return new ChargeFeeSearchBaseItemDto(chargeFeeRepository.findAll());
+	}
+
+	public ChargeFeeListDto getChargeFee(List<String> bnms, String chgerType) {
+		return new ChargeFeeListDto(chargeFeeRepository.findAllByBnmsAndChgerType(bnms, chgerType));
 	}
 }
