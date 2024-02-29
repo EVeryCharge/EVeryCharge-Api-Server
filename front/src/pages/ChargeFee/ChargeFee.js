@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import { makeStyles } from "@material-ui/core/styles";
+import { Help, Info } from "@material-ui/icons";
+import { Tooltip, Typography } from "@mui/material";
+import React, { useState } from "react";
 import ChargeFeeInfo from "./ChargeFeeInfo";
 import ChargeRoamingFeeInfo from "./ChargeRoamingFeeInfo";
-import { Info } from "@material-ui/icons";
-import { Typography } from "@mui/material";
 
 const ChargeFee = () => {
   const classes = useStyles();
@@ -26,6 +26,12 @@ const ChargeFee = () => {
       </div>
       <Typography variant="body2" className={classes.disclaimer}>
         전기차 충전요금 정보는 일일단위로 업데이트됩니다.
+        <Tooltip
+          placement="right-start"
+          title="요금 정보는 환경부 데이터를 바탕으로 하며, 업체별 프로모션 등 기타 정책에 의해 공시된 요금과 상이할 수 있습니다."
+        >
+          <Help />
+        </Tooltip>
       </Typography>
       <div className={classes.tabContainer}>
         <Tabs

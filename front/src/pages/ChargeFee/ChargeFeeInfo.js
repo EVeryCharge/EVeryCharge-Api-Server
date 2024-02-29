@@ -19,43 +19,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: "50px",
-    width: "100%",
-  },
-  searchFilterContainer: {
-    flexGrow: 1,
-    backgroundColor: "#f2f2f2",
-    paddingTop: "20px",
-    paddingBottom: "20px",
-    display: "flex",
-    width: "100%",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  tableContainer: {
-    backgroundColor: "#fff",
-    paddingTop: "20px",
-    paddingBottom: "20px",
-    marginTop: "20px",
-    fontWeight: "bold",
-  },
-  selectContainer: {
-    marginTop: "10px",
-    paddingRight: "10px",
-    paddingLeft: "10px",
-    marginBottom: "20px",
-  },
-  buttonContainer: {
-    display: "flex",
-    marginTop: "10px",
-  },
-}));
-
 const ChargeFeeInfo = () => {
   const classes = useStyles();
   const [bnm, setBnm] = useState([]);
@@ -305,5 +268,42 @@ const ChargeFeeInfo = () => {
     </div>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: "50px",
+    width: "100%",
+  },
+  searchFilterContainer: {
+    flexGrow: 1,
+    backgroundColor: "#f2f2f2",
+    paddingTop: "20px",
+    paddingBottom: "20px",
+    display: "flex",
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  tableContainer: {
+    backgroundColor: "#fff",
+    paddingTop: "20px",
+    paddingBottom: "20px",
+    marginTop: "20px",
+    fontWeight: "bold",
+  },
+  selectContainer: {
+    marginTop: "10px",
+    paddingRight: "10px",
+    paddingLeft: "10px",
+    marginBottom: "20px",
+  },
+  buttonContainer: {
+    display: "flex",
+    marginTop: "10px",
+  },
+}));
 
 export default ChargeFeeInfo;
