@@ -8,11 +8,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.aspose.cells.Cells;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeListDto;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeSearchBaseItemDto;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeRoamingFeeListDto;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeRoamingFeeSearchBaseItemDto;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.repository.ChargeFeeRepository;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
@@ -119,5 +122,86 @@ public class ChargeFeeService {
 
 	public ChargeFeeListDto getChargeFee(List<String> bnms, String chgerType) {
 		return new ChargeFeeListDto(chargeFeeRepository.findAllByBnmsAndChgerType(bnms, chgerType));
+	}
+
+	public ChargeRoamingFeeSearchBaseItemDto getRoamingSearchBaseItem() {
+		Workbook workbook = excelDataUtil.readDataByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
+		Worksheet worksheet = workbook.getWorksheets().get(0);
+		int lastRow = worksheet.getCells().getMaxDataRow();
+		int lastCol = worksheet.getCells().getMaxDataColumn();
+
+		List<String> memberBnmList = new ArrayList<>();
+		for (int row = 1; row <= lastRow; row++) {
+			String cellValue = worksheet.getCells().get(row, 0).getStringValue().trim();
+			if (!cellValue.isEmpty()) {
+				memberBnmList.add(cellValue);
+			}
+		}
+
+		List<String> chargerBnmList = new ArrayList<>();
+		for (int col = 1; col <= lastCol; col++) {
+			String cellValue = worksheet.getCells().get(0, col).getStringValue().trim();
+			if (!cellValue.isEmpty()) {
+				chargerBnmList.add(cellValue);
+			}
+		}
+
+		return new ChargeRoamingFeeSearchBaseItemDto(memberBnmList, chargerBnmList);
+	}
+
+	public ChargeRoamingFeeListDto getChargeRoamingFee(List<String> memberBnm, List<String> chgerBnm) {
+		Workbook workbook = excelDataUtil.readDataByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
+		String[][] values = new String[memberBnm.size() + 1][chgerBnm.size() + 1];
+
+		// A1 셀 값 설정
+		values[0][0] = "회원 / 충전기";
+
+		// memberBnm 값 설정 (표의 기준 행)
+		for (int i = 0; i < memberBnm.size(); i++) {
+			values[i + 1][0] = memberBnm.get(i);
+		}
+
+		// chgerBnm 값 설정 (표의 기준 열)
+		for (int j = 0; j < chgerBnm.size(); j++) {
+			values[0][j + 1] = chgerBnm.get(j);
+		}
+
+		// 나머지 셀 값 설정
+		for (int i = 0; i < memberBnm.size(); i++) {
+			for (int j = 0; j < chgerBnm.size(); j++) {
+				String cellValue = getCellValueFromWorkbook(workbook, memberBnm.get(i), chgerBnm.get(j));
+				values[i + 1][j + 1] = cellValue;
+			}
+		}
+
+		return new ChargeRoamingFeeListDto(values);
+	}
+
+	// 기준 행열을 제외한 검색 필터에 따른 셀 값을 선택하는 로직
+	private String getCellValueFromWorkbook(Workbook workbook, String memberBnm, String chgerBnm) {
+		Worksheet worksheet = workbook.getWorksheets().get(0);
+		Cells cells = worksheet.getCells();
+
+		// 회원 / 충전기가 있는 첫 번째 열과 행 인덱스
+		int memberRowIndex = 0;
+		int chgerColIndex = 0;
+
+		// 회원 / 충전기가 있는 행과 열 인덱스 찾기
+		for (int row = 0; row <= cells.getMaxDataRow(); row++) {
+			if (cells.get(row, 0).getStringValue().equals(memberBnm)) {
+				memberRowIndex = row;
+				break;
+			}
+		}
+
+		for (int col = 0; col <= cells.getMaxDataColumn(); col++) {
+			if (cells.get(0, col).getStringValue().equals(chgerBnm)) {
+				chgerColIndex = col;
+				break;
+			}
+		}
+
+		// 셀 내 값 가져오기
+		return cells.get(memberRowIndex, chgerColIndex).getStringValue();
 	}
 }
