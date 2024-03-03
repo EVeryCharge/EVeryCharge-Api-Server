@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeListDto;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeRoamingFeeListDto;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeRoamingFeeSearchBaseItemDto;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.dto.ChargeFeeSearchBaseItemDto;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.service.ChargeFeeService;
 
@@ -23,7 +25,7 @@ public class ChargeFeeController {
 	@GetMapping
 	public ResponseEntity<ChargeFeeListDto> showSearchResult(
 		@RequestParam(value = "bnm", required = false) List<String> bnm,
-		@RequestParam(value ="chgerType", required = false) String chgerType
+		@RequestParam(value = "chgerType", required = false) String chgerType
 	) {
 		return ResponseEntity.ok(chargeFeeService.getChargeFee(bnm, chgerType));
 	}
@@ -34,13 +36,14 @@ public class ChargeFeeController {
 	}
 
 	@GetMapping("/roaming")
-	public String showRoamingSearchResult() {
-		return "success";
+	public ResponseEntity<ChargeRoamingFeeListDto> showRoamingSearchResult(
+		@RequestParam(value = "memberBnm", required = true) List<String> memberBnm,
+		@RequestParam(value = "chgerBnm", required = true) List<String> chgerBnm) {
+		return ResponseEntity.ok(chargeFeeService.getChargeRoamingFee(memberBnm, chgerBnm));
 	}
 
-	@GetMapping("roaming/item")
-	public String getRoamingSearchBaseItem() {
-		// chargeFeeService.getRoamingSearchBaseItem();
-		return "success";
+	@GetMapping("/roaming/item")
+	public ResponseEntity<ChargeRoamingFeeSearchBaseItemDto> getRoamingSearchBaseItem() {
+		return ResponseEntity.ok(chargeFeeService.getRoamingSearchBaseItem());
 	}
 }
