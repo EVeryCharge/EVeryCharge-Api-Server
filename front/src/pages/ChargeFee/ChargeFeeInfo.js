@@ -83,13 +83,16 @@ const ChargeFeeInfo = () => {
       <div className={classes.searchFilterContainer}>
         <div className={classes.selectContainer}>
           <FormControl fullWidth style={{ marginBottom: "20px" }}>
-            <FormHelperText>업체명</FormHelperText>
+            <FormHelperText style={{ color: "black", fontWeight: "bold" }}>
+              업체명
+            </FormHelperText>
             <Select
               value={bnm}
               onChange={(event) => setBnm(event.target.value)}
               displayEmpty
-              style={{ width: "240px" }}
+              style={{ width: "240px", fontSize: "13px" }}
               multiple
+              variant="outlined"
               renderValue={(selected) =>
                 selected.length > 0 ? selected.join(", ") : "전체"
               }
@@ -119,12 +122,15 @@ const ChargeFeeInfo = () => {
             </Select>
           </FormControl>
           <FormControl fullWidth>
-            <FormHelperText>타입</FormHelperText>
+            <FormHelperText style={{ color: "black", fontWeight: "bold" }}>
+              타입
+            </FormHelperText>
             <Select
               value={chgerType}
               onChange={(event) => setChgerType(event.target.value)}
               displayEmpty
-              style={{ width: "100px" }}
+              variant="outlined"
+              style={{ width: "100px", fontSize: "13px" }}
               MenuProps={{
                 anchorOrigin: {
                   vertical: "bottom",
@@ -177,40 +183,103 @@ const ChargeFeeInfo = () => {
               <TableRow
                 style={{
                   backgroundColor: "#e0e0e0",
-                  borderBottom: "1.5px solid grey",
+                  border: "1.5px solid grey",
                 }}
               >
-                <TableCell align="center" colSpan={2}>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
                   구분
                 </TableCell>
-                <TableCell align="center" colSpan={2}>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
                   기준가 (원 / KW)
                 </TableCell>
-                <TableCell align="center" colSpan={2}>
+                <TableCell
+                  align="center"
+                  colSpan={2}
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
                   등락폭 (원 / KW)
                 </TableCell>
               </TableRow>
               <TableRow
                 style={{
                   backgroundColor: "#e0e0e0",
-                  borderBottom: "1.5px solid grey",
+                  border: "1.5px solid grey",
+                  fontWeight: "bold",
                 }}
               >
-                <TableCell align="center">업체명</TableCell>
-                <TableCell align="center">타입</TableCell>
-                <TableCell align="center">회원가</TableCell>
-                <TableCell align="center">비회원가</TableCell>
-                <TableCell align="center">회원가</TableCell>
-                <TableCell align="center">비회원가</TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  업체명
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  타입
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  회원가
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  비회원가
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  회원가
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  비회원가
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {currentRows.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell align="center">{row.bnm}</TableCell>
-                  <TableCell align="center">{row.chgerType}</TableCell>
-                  <TableCell align="center">{row.memberFee}</TableCell>
-                  <TableCell align="center">{row.nonMemberFee}</TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey", width: "200px" }}
+                  >
+                    {row.bnm}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.chgerType}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.memberFee}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.nonMemberFee}
+                  </TableCell>
                   <TableCell
                     align="center"
                     style={{
@@ -220,6 +289,7 @@ const ChargeFeeInfo = () => {
                           : row.memberFeeChange < 0
                           ? "blue"
                           : "inherit",
+                      border: "1px groove lightGrey",
                     }}
                   >
                     {row.memberFeeChange !== 0.0
@@ -237,6 +307,7 @@ const ChargeFeeInfo = () => {
                           : row.nonMemberFeeChange < 0
                           ? "blue"
                           : "inherit",
+                      border: "1px groove lightGrey",
                     }}
                   >
                     {row.nonMemberFeeChange !== 0.0
@@ -303,6 +374,9 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     display: "flex",
     marginTop: "10px",
+    justifyContent: "flex-end",
+    width: "100%",
+    paddingRight: "20px",
   },
 }));
 
