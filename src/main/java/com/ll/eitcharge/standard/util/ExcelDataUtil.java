@@ -1,6 +1,8 @@
 package com.ll.eitcharge.standard.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.springframework.http.HttpHeaders;
@@ -42,5 +44,17 @@ public class ExcelDataUtil {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Workbook readDataByWorkbook(String filePath) {
+		try (InputStream inputStream = new FileInputStream(filePath)) {
+			return new Workbook(inputStream);
+	} catch (FileNotFoundException e) {
+			log.error("ERROR : 파일을 찾을 수 없습니다.");
+			e.printStackTrace();
+		} catch (Exception e) {
+			log.error("ERROR : 파일을 변환할 수 없습니다.");
+		}
+		return null;
 	}
 }
