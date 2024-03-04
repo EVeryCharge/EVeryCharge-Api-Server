@@ -80,4 +80,4 @@ jobs:
           working-directory: /
           comment: Deploy
           command: |
-            mkdir test.txt
+            mkdir test2.txt
