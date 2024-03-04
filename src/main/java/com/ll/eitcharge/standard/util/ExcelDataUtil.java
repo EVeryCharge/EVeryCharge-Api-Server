@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -39,6 +41,10 @@ public class ExcelDataUtil {
 		InputStream inputStream = new ByteArrayInputStream(responseMono.blockOptional().orElse(new byte[0]));
 		try {
 			return new Workbook(inputStream);
+			} catch (SSLHandshakeException e) {
+            log.error("ERROR : (SSL 인증 실패) API로부터 Workbook 불러오기 실패, " + httpRequestUrl);
+            e.printStackTrace();
+            return null;
 		} catch (Exception e) {
 			log.error("ERROR : API로부터 Workbook 불러오기 실패");
 			e.printStackTrace();
