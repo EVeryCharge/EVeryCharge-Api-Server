@@ -108,6 +108,7 @@ public class ChargeFeeService {
 	@Scheduled(cron = "0 0 2 * * * ")
 	public void updateChargeRoamingFeeFileFromApi() {
 		Workbook workbook = excelDataUtil.getDataByWorkbook(CHARGE_ROAMING_FEE_API_URL);
+		if (workbook == null) return;
 		try {
 			workbook.save(CHARGE_ROAMING_FEE_FILE_PATH, SaveFormat.XLSX);
 		} catch (Exception e) {
