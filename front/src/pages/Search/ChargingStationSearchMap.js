@@ -1,10 +1,10 @@
 import { Button, Tooltip } from "@material-ui/core";
 import { GpsFixedOutlined, Refresh } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
-import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
-import { useSelectedItems } from "../../utils/StationInfoContext";
 import normalMarker from "../../assets/image/marker.png";
 import selectMarker from "../../assets/image/selectMarker.png";
+import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
+import { useSelectedItems } from "../../utils/StationInfoContext";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
@@ -13,38 +13,35 @@ const ChargingStationSearchMap = ({
   setMapLoc,
 }) => {
   const mapRef = useRef(null);
-  const map = useRef(null); // 지도 객체를 useRef로 선언
+  const map = useRef(null);
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
-
   const [mapCenter, setMapCenter] = useState({
     lat: null,
     lng: null,
   });
-
   const [mapCenterLoc, setMapCenterLoc] = useState({
     lat: null,
     lng: null,
   });
-
-  const [markers, setMarkers] = useState([]); // 마커 배열을 상태로 관리
-  const [selectedMarker, setSelectedMarker] = useState([]); // 마커 배열을 상태로 관리
+  const [markers, setMarkers] = useState([]);
+  const [customOverlays, setCustomOverlays] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState([]);
 
   const initMap = () => {
-    const container = mapRef.current; // mapRef.current를 통해 container 참조
+    const container = mapRef.current;
     const options = {
       center: new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng),
       level: 2,
       maxLevel: 10,
     };
 
-    map.current = new window.kakao.maps.Map(container, options); // useRef로 선언한 map에 할당
+    map.current = new window.kakao.maps.Map(container, options);
   };
 
   const fetchDataFromServerRangeQuery = async () => {
     if (!temporaryArray || !temporaryArray.content) {
-      // console.log("temporaryArray is undefined or does not contain 'content'");
       return;
     }
     const newItems = temporaryArray ? temporaryArray.content : [];
@@ -52,16 +49,22 @@ const ChargingStationSearchMap = ({
       lat: null,
       lng: null,
     });
-    setItems(newItems); // 상태 값 업데이트
+    setItems(newItems);
     map.current.setLevel(2);
   };
+
   useEffect(() => {
     marker(items);
   }, [items]);
 
   const marker = (items) => {
     // 기존 마커를 모두 삭제
-    markers.forEach((marker) => marker.setMap(null));
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    customOverlays.forEach((overlay) => {
+      overlay.setMap(null);
+    });
 
     if (items.length > 0) {
       const firstItem = items[0];
@@ -69,6 +72,67 @@ const ChargingStationSearchMap = ({
         lat: firstItem.lat,
         lng: firstItem.lng,
       });
+
+      const newCustomOverlays = items.map((item) => {
+        const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+
+        const availableChgerColor = item.availableChger === 0 ? "red" : "green";
+        const content = document.createElement("div");
+
+        let truncatedBnm =
+          item.bnm.length > 7 ? item.bnm.slice(0, 6) + "··" : item.bnm;
+
+        content.style.cssText = `
+          text-align: center;
+          font-weight: bold;
+          font-size: 12px;
+          background-color: white;
+          border: 3px solid lightBlue;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          padding-left: 5px;
+          border-top-right-radius: 20px;
+          border-bottom-right-radius: 20px;
+          position: absolute;
+          left: 67px;
+          top: -20px;
+          transform: translateX(-50%);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 85px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        `;
+
+        content.innerHTML = `
+          <div style="margin-bottom: 1px; 
+            font-size: 10px; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;"
+              >${truncatedBnm}
+          </div>
+          <div style="overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;">
+            <span style="color: ${availableChgerColor};"
+            >${item.availableChger}</span> / ${item.totalChger}
+          </div>
+        `;
+
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          content: content,
+          position: markerPosition,
+          map: map.current,
+          zIndex: 1,
+        });
+
+        return customOverlay;
+      });
+      setCustomOverlays(newCustomOverlays);
 
       const newMarkers = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
@@ -87,8 +151,10 @@ const ChargingStationSearchMap = ({
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
+          zIndex: 2,
         });
         marker.setImage(markerImage);
+
         window.kakao.maps.event.addListener(marker, "click", function () {
           // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
           setIsOpen(false);
@@ -97,11 +163,8 @@ const ChargingStationSearchMap = ({
         });
         return marker;
       });
-      setMarkers(newMarkers);
 
-      // console.log(items);
-    } else {
-      // console.log("latLngArray is empty");
+      setMarkers(newMarkers);
     }
   };
   // props로 mapCenter를 전달받을 시 mapCenter를 수정
@@ -229,7 +292,7 @@ const ChargingStationSearchMap = ({
         }}
         variant="contained"
         color="primary"
-        size="large" // 이 부분을 수정
+        size="large"
         onClick={researchMapCenter}
       >
         <Refresh style={{ marginRight: "3px" }} />현 위치에서 재검색
