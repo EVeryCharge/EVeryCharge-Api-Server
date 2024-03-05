@@ -76,8 +76,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: "i-018a0a38dbb341105"
+          instance-ids: " i-0789c03dc6776a52f"
           working-directory: /
           comment: Deploy
           command: |
-            mkdir /tttt/test2.txt
+            mkdir -p /docker_projects/gha
+            curl -o /docker_projects/gha/zero_downtime_deploy.py https://raw.githubusercontent.com/E-IT-Charge/E-IT-Charge-Api-Server/feature/mainGHA/infraScript/zero_downtime_deploy.py
+            chmod +x /docker_projects/gha/zero_downtime_deploy.py
+            /docker_projects/gha/zero_downtime_deploy.py
