@@ -1,5 +1,6 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,11 +22,13 @@ public class ChargingStationSearchBaseDistanceResponseDto {
 	private String bnm;
 	private boolean parkingFree;
 	private boolean limitYn;
+	private Long totalChger;
+	private BigDecimal availableChger;
 	private List<String> chgerTypes;
 
 	public ChargingStationSearchBaseDistanceResponseDto(
 		String statId, double distance, String statNm, String addr, double lat, double lng, String bnm,
-		String parkingFree, String limitYn, String chgerTypes
+		String parkingFree, String limitYn, Long totalChger, BigDecimal availableChger, String chgerTypes
 	) {
 		this.statId = statId;
 		this.distance = formatDistance(distance);
@@ -39,6 +42,8 @@ public class ChargingStationSearchBaseDistanceResponseDto {
 		this.chgerTypes = chgerTypes == null ? null : Arrays.stream(chgerTypes.split(","))
 			.sorted()
 			.toList();
+		this.totalChger = totalChger;
+		this.availableChger = availableChger;
 	}
 
 	private String formatDistance(double distance) {

@@ -49,6 +49,8 @@ public class ChargingStationSearchRepository {
 		+ 	"OC.bnm AS bnm, "
 		+	"CS.parking_free AS parkingFree, "
 		+	"CS.limit_yn AS limitYn, "
+		+	"COUNT(C.stat_id) AS totalChger, "
+		+	"SUM(CASE WHEN C.stat = 2 THEN 1 ELSE 0 END) AS availableChger, "// 이런식으로 추가중
 		+   "GROUP_CONCAT(DISTINCT C.chger_type) AS chgerTypes "
 				+ "FROM charging_station AS CS "
 				+ "JOIN charger AS C ON CS.stat_id = C.stat_id "
