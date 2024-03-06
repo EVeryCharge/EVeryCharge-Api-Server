@@ -34,7 +34,7 @@ const Navbar = () => {
       <Toolbar style={{ display: "flex", justifyContent: "space-between", padding: "24px", maxWidth: "1200px", margin: "auto" }}>
         <div onClick={goToHome} style={{ cursor: "pointer" }}>
           <Typography variant="h5" style={{ fontWeight: "bold", display: "flex", alignItems: "center", color: "#3F51B5", marginRight: "20px" }}>
-            <EvStationIcon style={{ marginRight: "3px", fontSize: "2rem", color: "#3F51B5" }} />전기차 충전소 서비스</Typography>
+            <EvStationIcon style={{ marginRight: "3px", fontSize: "2rem", color: "#3F51B5" }} />전기차 충전소 서비스시</Typography>
         </div>
         <div>
           <Hidden mdUp style={{ display: "flex", justifyContent: "flex-end"}}>
