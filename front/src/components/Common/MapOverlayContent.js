@@ -1,13 +1,16 @@
 import React from "react";
 
-const OverlayContent = ({ bnm, availableChger, totalChger }) => {
-  // 기관명 7글자로 truncate
+const MapOverlayContent = ({ bnm, availableChger, totalChger, onClick }) => {
   const truncatedBnm = bnm.length >= 7 ? bnm.slice(0, 6) + "··" : bnm;
-  // 사용가능 충전기 개수에 따라 색깔 변경
   const availableChgerColor = availableChger === 0 ? "red" : "green";
+
+  const handleClick = () => {
+    onClick();
+  };
 
   return (
     <div
+      onClick={handleClick}
       style={{
         textAlign: "center",
         fontWeight: "bold",
@@ -34,24 +37,10 @@ const OverlayContent = ({ bnm, availableChger, totalChger }) => {
         cursor: "pointer",
       }}
     >
-      <div
-        style={{
-          marginBottom: "1px",
-          fontSize: "10px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
+      <div style={{ marginBottom: "1px", fontSize: "10px" }}>
         {truncatedBnm}
       </div>
-      <div
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
+      <div>
         <span style={{ color: availableChgerColor }}>{availableChger}</span> /{" "}
         {totalChger}
       </div>
@@ -59,4 +48,4 @@ const OverlayContent = ({ bnm, availableChger, totalChger }) => {
   );
 };
 
-export default OverlayContent;
+export default MapOverlayContent;

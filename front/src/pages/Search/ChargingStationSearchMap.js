@@ -5,6 +5,8 @@ import normalMarker from "../../assets/image/marker.png";
 import selectMarker from "../../assets/image/selectMarker.png";
 import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
 import { useSelectedItems } from "../../utils/StationInfoContext";
+import MapOverlayContent from "../../components/Common/MapOverlayContent";
+import ReactDOM from "react-dom";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
@@ -41,8 +43,6 @@ const ChargingStationSearchMap = ({
         lat: propsMapCenter.lat,
         lng: propsMapCenter.lng,
       });
-
-      map.current.setLevel(1);
     }
   }, [propsMapCenter]);
 
@@ -138,7 +138,6 @@ const ChargingStationSearchMap = ({
       lng: null,
     });
     setItems(newItems);
-    map.current.setLevel(2);
   };
 
   // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
@@ -170,58 +169,18 @@ const ChargingStationSearchMap = ({
 
       const newCustomOverlays = items.map((item) => {
         const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+        const contentBeforeRender = (
+          <MapOverlayContent
+            bnm={item.bnm}
+            availableChger={item.availableChger}
+            totalChger={item.totalChger}
+            onClick={() => handleMarkerAndOverlayClick(item)}
+          />
+        );
 
-        const availableChgerColor = item.availableChger === 0 ? "red" : "green";
+        // React 컴포넌트로 content를 렌더링 후 마운트
         const content = document.createElement("div");
-
-        let truncatedBnm =
-          item.bnm.length >= 7 ? item.bnm.slice(0, 6) + "··" : item.bnm;
-
-        content.style.cssText = `
-          text-align: center;
-          font-weight: bold;
-          font-size: 12px;
-          background-color: white;
-          border: 3px solid lightBlue;
-          padding-top: 3px;
-          padding-bottom: 3px;
-          padding-left: 5px;
-          border-top-right-radius: 20px;
-          border-bottom-right-radius: 20px;
-          position: absolute;
-          left: 67px;
-          top: -20px;
-          transform: translateX(-50%);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 85px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          cursor: pointer;
-        `;
-
-        content.innerHTML = `
-          <div style="margin-bottom: 1px; 
-            font-size: 10px; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap;"
-              >${truncatedBnm}
-          </div>
-          <div style="overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap;">
-            <span style="color: ${availableChgerColor};"
-            >${item.availableChger}</span> / ${item.totalChger}
-          </div>
-        `;
-
-        content.addEventListener("click", function () {
-          handleMarkerAndOverlayClick(item);
-        });
+        ReactDOM.render(contentBeforeRender, content);
 
         const customOverlay = new window.kakao.maps.CustomOverlay({
           content: content,
