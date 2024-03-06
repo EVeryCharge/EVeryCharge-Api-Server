@@ -70,6 +70,17 @@ const ChargingStationSearchMap = ({
     }
   }, [map.current]);
 
+  // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
+  const handleMarkerClick = (item) => {
+    // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+    setIsOpen(false);
+    setSelectedItem(item);
+
+    // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
+    setSelectedMarker({ lat: item.lat, lng: item.lng });
+    setIsOpen(true);
+  };
+
   const marker = (items) => {
     // 기존 마커, 오버레이를 모두 삭제
     markers.forEach((marker) => {
@@ -118,6 +129,7 @@ const ChargingStationSearchMap = ({
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          cursor: pointer;
         `;
 
         content.innerHTML = `
@@ -135,6 +147,11 @@ const ChargingStationSearchMap = ({
             >${item.availableChger}</span> / ${item.totalChger}
           </div>
         `;
+
+        // 커스텀 오버레이 클릭 이벤트 설정
+        content.addEventListener("click", function () {
+          handleMarkerClick(item);
+        });
 
         const customOverlay = new window.kakao.maps.CustomOverlay({
           content: content,
@@ -175,14 +192,9 @@ const ChargingStationSearchMap = ({
         });
         marker.setImage(markerImage);
 
+        // 마커 클릭 이벤트 등록
         window.kakao.maps.event.addListener(marker, "click", function () {
-          // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-          setIsOpen(false);
-          setSelectedItem(item);
-
-          // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
-          setSelectedMarker({ lat: item.lat, lng: item.lng });
-          setIsOpen(true);
+          handleMarkerClick(item);
         });
         return marker;
       });
