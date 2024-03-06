@@ -179,6 +179,9 @@ const ChargingStationSearchMap = ({
           // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
           setIsOpen(false);
           setSelectedItem(item);
+
+          // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
+          setSelectedMarker({ lat: item.lat, lng: item.lng });
           setIsOpen(true);
         });
         return marker;
