@@ -28,23 +28,11 @@ const ChargingStationSearchMap = ({
   const [markers, setMarkers] = useState([]);
   const [customOverlays, setCustomOverlays] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState([]);
+  const [selectedOverlay, setSelectedOverlay] = useState(null);
 
   useEffect(() => {
     setMarkerAndCustomOverlay(items);
   }, [items]);
-
-  useEffect(() => {
-    if (map && map.current && map.current.getLevel() >= 3) {
-      console.log(map.current.getLevel());
-      customOverlays.forEach((overlay) => {
-        overlay.setVisible(false);
-      });
-    } else {
-      customOverlays.forEach((overlay) => {
-        overlay.setVisible(true);
-      });
-    }
-  }, [map.current]);
 
   // props로 mapCenter를 전달받을 시 mapCenter를 수정
   useEffect(() => {
@@ -97,34 +85,37 @@ const ChargingStationSearchMap = ({
     }
   }, [mapCenterLoc, setMapLoc]);
 
+  // 지도 레벨 6 이상일 시 오버레이 숨김 (선택된 오버레이 제외)
   useEffect(() => {
-    const zoomChangeHandler = () => {
-      const currentLevel = map.current.getLevel();
-      if (currentLevel <= 5) {
+    if (map && map.current) {
+      const zoomChangeHandler = () => {
+        const currentLevel = map.current.getLevel();
         customOverlays.forEach((overlay) => {
-          overlay.setVisible(true);
+          if (selectedOverlay && overlay === selectedOverlay) {
+            overlay.setVisible(true);
+          } else if (currentLevel <= 5) {
+            overlay.setVisible(true);
+          } else {
+            overlay.setVisible(false);
+          }
         });
-      } else {
-        customOverlays.forEach((overlay) => {
-          overlay.setVisible(false);
-        });
-      }
-    };
+      };
 
-    window.kakao.maps.event.addListener(
-      map.current,
-      "zoom_changed",
-      zoomChangeHandler
-    );
-
-    return () => {
-      window.kakao.maps.event.removeListener(
+      window.kakao.maps.event.addListener(
         map.current,
         "zoom_changed",
         zoomChangeHandler
       );
-    };
-  }, [map.current, customOverlays]);
+
+      return () => {
+        window.kakao.maps.event.removeListener(
+          map.current,
+          "zoom_changed",
+          zoomChangeHandler
+        );
+      };
+    }
+  }, [map.current, customOverlays, selectedMarker]);
 
   const initMap = () => {
     const container = mapRef.current;
@@ -151,7 +142,7 @@ const ChargingStationSearchMap = ({
   };
 
   // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
-  const handleMarkerClick = (item) => {
+  const handleMarkerAndOverlayClick = (item) => {
     // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
     setIsOpen(false);
     setSelectedItem(item);
@@ -229,7 +220,7 @@ const ChargingStationSearchMap = ({
         `;
 
         content.addEventListener("click", function () {
-          handleMarkerClick(item);
+          handleMarkerAndOverlayClick(item);
         });
 
         const customOverlay = new window.kakao.maps.CustomOverlay({
@@ -242,6 +233,19 @@ const ChargingStationSearchMap = ({
               ? 3
               : 1,
         });
+
+        if (
+          selectedMarker &&
+          selectedMarker.lat === item.lat &&
+          selectedMarker.lng === item.lng
+        ) {
+          customOverlay.setVisible(true);
+          setSelectedOverlay(customOverlay);
+        } else if (map.current.getLevel() <= 5) {
+          customOverlay.setVisible(true);
+        } else {
+          customOverlay.setVisible(false);
+        }
 
         return customOverlay;
       });
@@ -272,7 +276,7 @@ const ChargingStationSearchMap = ({
         marker.setImage(markerImage);
 
         window.kakao.maps.event.addListener(marker, "click", function () {
-          handleMarkerClick(item);
+          handleMarkerAndOverlayClick(item);
         });
         return marker;
       });
