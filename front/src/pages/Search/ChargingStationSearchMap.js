@@ -57,8 +57,21 @@ const ChargingStationSearchMap = ({
     marker(items);
   }, [items]);
 
+  useEffect(() => {
+    if (map && map.current && map.current.getLevel() >= 3) {
+      console.log(map.current.getLevel());
+      customOverlays.forEach((overlay) => {
+        overlay.setVisible(false);
+      });
+    } else {
+      customOverlays.forEach((overlay) => {
+        overlay.setVisible(true);
+      });
+    }
+  }, [map.current]);
+
   const marker = (items) => {
-    // 기존 마커를 모두 삭제
+    // 기존 마커, 오버레이를 모두 삭제
     markers.forEach((marker) => {
       marker.setMap(null);
     });
@@ -80,7 +93,7 @@ const ChargingStationSearchMap = ({
         const content = document.createElement("div");
 
         let truncatedBnm =
-          item.bnm.length > 7 ? item.bnm.slice(0, 6) + "··" : item.bnm;
+          item.bnm.length >= 7 ? item.bnm.slice(0, 6) + "··" : item.bnm;
 
         content.style.cssText = `
           text-align: center;
@@ -127,7 +140,11 @@ const ChargingStationSearchMap = ({
           content: content,
           position: markerPosition,
           map: map.current,
-          zIndex: 1,
+          clickable: true,
+          zIndex:
+            item.lat === selectedMarker.lat && item.lng === selectedMarker.lng
+              ? 3
+              : 1,
         });
 
         return customOverlay;
@@ -151,7 +168,10 @@ const ChargingStationSearchMap = ({
         const marker = new window.kakao.maps.Marker({
           position: markerPosition,
           map: map.current,
-          zIndex: 2,
+          zIndex:
+            item.lat === selectedMarker.lat && item.lng === selectedMarker.lng
+              ? 4
+              : 2,
         });
         marker.setImage(markerImage);
 
@@ -208,11 +228,6 @@ const ChargingStationSearchMap = ({
     }
   }, [mapCenter]);
 
-  const handleResetMap = () => {
-    map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
-    map.current.setLevel(2);
-  };
-
   useEffect(() => {
     if (mapCenterLoc.lat != null) {
       console.log("mapCenterLoc" + mapCenterLoc.lat);
@@ -222,6 +237,11 @@ const ChargingStationSearchMap = ({
       });
     }
   }, [mapCenterLoc, setMapLoc]);
+
+  const handleResetMap = () => {
+    map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
+    map.current.setLevel(2);
+  };
 
   const researchMapCenter = () => {
     const centerLat = map.current.getCenter().getLat();
