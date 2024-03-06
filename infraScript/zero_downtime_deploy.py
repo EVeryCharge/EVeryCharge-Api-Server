@@ -42,7 +42,7 @@ class ServiceManager:
     # Docker 컨테이너를 실행하는 함수
     def _run_container(self, name: str, port: int) -> None:
         os.system(
-            f"docker run --name={name} -p {port}:8080 -v /docker_projects/gha/volumes/gen:/gen --restart unless-stopped -e TZ=Asia/Seoul --pull always -d ghcr.io/E-IT-Charge/E-IT-Charge-Api-Server/feature/mainGHA")
+            f"docker run --name={name} -p {port}:8080 -v /docker_projects/gha/volumes/gen:/gen --restart unless-stopped -e TZ=Asia/Seoul --pull always -d ghcr.io/e-it-charge/gha")
     def _switch_port(self) -> None:
         # Socat 포트를 전환하는 함수
         cmd: str = f"ps aux | grep 'socat -t0 TCP-LISTEN:{self.socat_port}' | grep -v grep | awk '{{print $2}}'"
