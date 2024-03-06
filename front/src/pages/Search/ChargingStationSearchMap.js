@@ -29,6 +29,103 @@ const ChargingStationSearchMap = ({
   const [customOverlays, setCustomOverlays] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState([]);
 
+  useEffect(() => {
+    setMarkerAndCustomOverlay(items);
+  }, [items]);
+
+  useEffect(() => {
+    if (map && map.current && map.current.getLevel() >= 3) {
+      console.log(map.current.getLevel());
+      customOverlays.forEach((overlay) => {
+        overlay.setVisible(false);
+      });
+    } else {
+      customOverlays.forEach((overlay) => {
+        overlay.setVisible(true);
+      });
+    }
+  }, [map.current]);
+
+  // props로 mapCenter를 전달받을 시 mapCenter를 수정
+  useEffect(() => {
+    if (propsMapCenter) {
+      setSelectedMarker({
+        lat: propsMapCenter.lat,
+        lng: propsMapCenter.lng,
+      });
+
+      map.current.setLevel(1);
+    }
+  }, [propsMapCenter]);
+
+  useEffect(() => {
+    if (selectedMarker.lng != null) {
+      setMarkerAndCustomOverlay(items);
+      console.log("select");
+      setMapCenter({
+        lat: selectedMarker.lat,
+        lng: selectedMarker.lng,
+      });
+    }
+  }, [selectedMarker]);
+
+  useEffect(() => {
+    fetchDataFromServerRangeQuery();
+  }, [temporaryArray]);
+
+  useEffect(() => {
+    if (myLoc) {
+      initMap();
+    }
+  }, [myLoc]); // 최초 렌더링 시에만 initMap 호출
+
+  useEffect(() => {
+    if (map.current) {
+      map.current.setCenter(
+        new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng)
+      );
+    }
+  }, [mapCenter]);
+
+  useEffect(() => {
+    if (mapCenterLoc.lat != null) {
+      console.log("mapCenterLoc" + mapCenterLoc.lat);
+      setMapLoc({
+        lat: mapCenterLoc.lat,
+        lng: mapCenterLoc.lng,
+      });
+    }
+  }, [mapCenterLoc, setMapLoc]);
+
+  useEffect(() => {
+    const zoomChangeHandler = () => {
+      const currentLevel = map.current.getLevel();
+      if (currentLevel <= 5) {
+        customOverlays.forEach((overlay) => {
+          overlay.setVisible(true);
+        });
+      } else {
+        customOverlays.forEach((overlay) => {
+          overlay.setVisible(false);
+        });
+      }
+    };
+
+    window.kakao.maps.event.addListener(
+      map.current,
+      "zoom_changed",
+      zoomChangeHandler
+    );
+
+    return () => {
+      window.kakao.maps.event.removeListener(
+        map.current,
+        "zoom_changed",
+        zoomChangeHandler
+      );
+    };
+  }, [map.current, customOverlays]);
+
   const initMap = () => {
     const container = mapRef.current;
     const options = {
@@ -53,23 +150,6 @@ const ChargingStationSearchMap = ({
     map.current.setLevel(2);
   };
 
-  useEffect(() => {
-    marker(items);
-  }, [items]);
-
-  useEffect(() => {
-    if (map && map.current && map.current.getLevel() >= 3) {
-      console.log(map.current.getLevel());
-      customOverlays.forEach((overlay) => {
-        overlay.setVisible(false);
-      });
-    } else {
-      customOverlays.forEach((overlay) => {
-        overlay.setVisible(true);
-      });
-    }
-  }, [map.current]);
-
   // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
   const handleMarkerClick = (item) => {
     // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
@@ -81,7 +161,7 @@ const ChargingStationSearchMap = ({
     setIsOpen(true);
   };
 
-  const marker = (items) => {
+  const setMarkerAndCustomOverlay = (items) => {
     // 기존 마커, 오버레이를 모두 삭제
     markers.forEach((marker) => {
       marker.setMap(null);
@@ -148,7 +228,6 @@ const ChargingStationSearchMap = ({
           </div>
         `;
 
-        // 커스텀 오버레이 클릭 이벤트 설정
         content.addEventListener("click", function () {
           handleMarkerClick(item);
         });
@@ -192,7 +271,6 @@ const ChargingStationSearchMap = ({
         });
         marker.setImage(markerImage);
 
-        // 마커 클릭 이벤트 등록
         window.kakao.maps.event.addListener(marker, "click", function () {
           handleMarkerClick(item);
         });
@@ -202,56 +280,6 @@ const ChargingStationSearchMap = ({
       setMarkers(newMarkers);
     }
   };
-  // props로 mapCenter를 전달받을 시 mapCenter를 수정
-  useEffect(() => {
-    if (propsMapCenter) {
-      setSelectedMarker({
-        lat: propsMapCenter.lat,
-        lng: propsMapCenter.lng,
-      });
-
-      map.current.setLevel(1);
-    }
-  }, [propsMapCenter]);
-
-  useEffect(() => {
-    if (selectedMarker.lng != null) {
-      marker(items);
-      console.log("select");
-      setMapCenter({
-        lat: selectedMarker.lat,
-        lng: selectedMarker.lng,
-      });
-    }
-  }, [selectedMarker]);
-
-  useEffect(() => {
-    fetchDataFromServerRangeQuery();
-  }, [temporaryArray]);
-
-  useEffect(() => {
-    if (myLoc) {
-      initMap();
-    }
-  }, [myLoc]); // 최초 렌더링 시에만 initMap 호출
-
-  useEffect(() => {
-    if (map.current) {
-      map.current.setCenter(
-        new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng)
-      );
-    }
-  }, [mapCenter]);
-
-  useEffect(() => {
-    if (mapCenterLoc.lat != null) {
-      console.log("mapCenterLoc" + mapCenterLoc.lat);
-      setMapLoc({
-        lat: mapCenterLoc.lat,
-        lng: mapCenterLoc.lng,
-      });
-    }
-  }, [mapCenterLoc, setMapLoc]);
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
