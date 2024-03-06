@@ -271,7 +271,7 @@ const ChargingStationSearchMap = ({
       <div
         id="map"
         style={{
-          width: "100%",
+          width: "calc(100% - 2px)",
           height: "calc(100vh - 145px)",
           border: "1px solid #ccc",
           overflow: "hidden",

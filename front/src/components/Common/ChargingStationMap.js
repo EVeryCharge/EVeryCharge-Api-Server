@@ -11,7 +11,7 @@ import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearc
 
 const ChargingStationMap = () => {
   const mapRef = useRef(null);
-  const map = useRef(null); // 지도 객체를 useRef로 선언
+  const map = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: null, lng: null }); //중구
   const { setSelectedItem, getStatId } = useSelectedItems();
@@ -80,7 +80,6 @@ const ChargingStationMap = () => {
     const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표 가져오기
     const neLatLng = bounds.getNorthEast(); // 영역의 북동쪽 좌표 가져오기
 
-
     HttpGet("/api/v1/chargingStation/location/search", {
       swLat: swLatLng.getLat(),
       swLng: swLatLng.getLng(),
@@ -133,9 +132,8 @@ const ChargingStationMap = () => {
 
   return (
     <div
-      sx={{
-        display: "flex",
-        alignItems: "center",
+      style={{
+        position: "relative",
       }}
     >
       <ChargingStationSearchSwitch />
@@ -161,10 +159,10 @@ const ChargingStationMap = () => {
         <Button
           style={{
             position: "absolute",
-            zIndex: "3",
+            zIndex: "2",
             backgroundColor: "white",
             color: "black",
-            bottom: "89px",
+            bottom: "10px",
             right: "40px",
             justifyContent: "center",
             borderRadius: "20px",
