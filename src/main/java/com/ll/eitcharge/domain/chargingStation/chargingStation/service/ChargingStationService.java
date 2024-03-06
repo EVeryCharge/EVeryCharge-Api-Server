@@ -1,5 +1,25 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
+import static com.ll.eitcharge.global.app.AppConfig.*;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
@@ -17,26 +37,8 @@ import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.eitcharge.domain.region.service.RegionService;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static com.ll.eitcharge.global.app.AppConfig.apiServiceKey;
 
 @Service
 @Transactional
@@ -156,7 +158,7 @@ public class ChargingStationService {
 
 	@Transactional(readOnly = true)
 	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(
-		String stat,
+		String chargeable,
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -174,7 +176,7 @@ public class ChargingStationService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
 		return chargingStationSearchRepository.searchBaseDistance(
-			stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
+			chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
 		);
 	}
 }

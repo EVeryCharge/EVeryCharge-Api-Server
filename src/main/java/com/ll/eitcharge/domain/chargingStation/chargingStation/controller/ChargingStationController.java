@@ -104,8 +104,8 @@ public class ChargingStationController {
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 위치 기준 거리순 정렬")
     @GetMapping("/searchBaseDistance")
     public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
-            // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
-            @RequestParam(value = "stat", required = false) String stat,
+            // 충전소 충전 가능 여부 (Y / N, Y : 충전 가능 N : 충전 불가능)
+            @RequestParam(value = "chargeable", required = false) String chargeable,
             // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", required = false) String limitYn,
             // 무료 주차 (Y / N)
@@ -134,7 +134,7 @@ public class ChargingStationController {
             @RequestParam(value = "range", defaultValue = "2000000") int range
     ) {
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
-                stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
+                chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
 
 }
