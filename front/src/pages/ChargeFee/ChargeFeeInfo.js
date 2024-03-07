@@ -52,6 +52,7 @@ const ChargeFeeInfo = () => {
         chgerType: chgerType.length > 0 ? chgerType : undefined,
       });
       setSearchResult(response.chargeFeeDtoList);
+      console.log("searchResult", searchResult);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -198,14 +199,14 @@ const ChargeFeeInfo = () => {
                   colSpan={2}
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  기준가 (원 / KW)
+                  현재 기준가 (원 / kW)
                 </TableCell>
                 <TableCell
                   align="center"
                   colSpan={2}
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  등락폭 (원 / KW)
+                  과거 기준가 (원 / kW)
                 </TableCell>
               </TableRow>
               <TableRow
@@ -231,13 +232,13 @@ const ChargeFeeInfo = () => {
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  회원가
+                  회원가 (등락폭)
                 </TableCell>
                 <TableCell
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  비회원가
+                  비회원가 (등락폭)
                 </TableCell>
                 <TableCell
                   align="center"
@@ -270,51 +271,57 @@ const ChargeFeeInfo = () => {
                   </TableCell>
                   <TableCell
                     align="center"
-                    style={{ border: "1px groove lightGrey" }}
-                  >
-                    {row.memberFee}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{ border: "1px groove lightGrey" }}
-                  >
-                    {row.nonMemberFee}
-                  </TableCell>
-                  <TableCell
-                    align="center"
                     style={{
+                      border: "1px groove lightGrey",
+                      backgroundColor: "whitesmoke",
                       color:
                         row.memberFeeChange > 0
                           ? "red"
                           : row.memberFeeChange < 0
                           ? "blue"
-                          : "inherit",
-                      border: "1px groove lightGrey",
+                          : "black",
                     }}
                   >
+                    {row.memberFee} (
                     {row.memberFeeChange !== 0.0
                       ? `${row.memberFeeChange > 0 ? "+" : ""}${
                           row.memberFeeChange
                         }`
                       : "-"}
+                    )
                   </TableCell>
                   <TableCell
                     align="center"
                     style={{
-                      color:
-                        row.nonMemberFeeChange > 0
-                          ? "red"
-                          : row.nonMemberFeeChange < 0
-                          ? "blue"
-                          : "inherit",
                       border: "1px groove lightGrey",
+                      backgroundColor: "whitesmoke",
+                      color:
+                        row.memberFeeChange > 0
+                          ? "red"
+                          : row.memberFeeChange < 0
+                          ? "blue"
+                          : "black",
                     }}
                   >
+                    {row.nonMemberFee} (
                     {row.nonMemberFeeChange !== 0.0
                       ? `${row.nonMemberFeeChange > 0 ? "+" : ""}${
                           row.nonMemberFeeChange
                         }`
                       : "-"}
+                    )
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.prevMemberFee ? row.prevMemberFee : "정보 없음"}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.prevNonMemberFee ? row.prevNonMemberFee : "정보 없음"}
                   </TableCell>
                 </TableRow>
               ))}
