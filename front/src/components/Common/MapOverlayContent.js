@@ -2,7 +2,8 @@ import React from "react";
 
 const MapOverlayContent = ({ bnm, availableChger, totalChger, onClick }) => {
   const truncatedBnm = bnm.length >= 7 ? bnm.slice(0, 6) + "··" : bnm;
-  const availableChgerColor = availableChger === 0 ? "red" : "green";
+  const availableChgerColor =
+    availableChger === "0" || availableChger === 0 ? "red" : "green";
 
   const handleClick = () => {
     onClick();
