@@ -9,6 +9,8 @@ import { debounce } from "lodash";
 import { HttpGet } from "../../services/HttpService";
 import { Button, Tooltip } from "@material-ui/core";
 import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearchSwitch";
+import ReactDOM from "react-dom";
+import MapOverlayContent from "./MapOverlayContent";
 
 const ChargingStationMap = () => {
   const mapRef = useRef(null);
@@ -55,7 +57,6 @@ const ChargingStationMap = () => {
   useEffect(() => {
     if (selectedMarker.lng != null) {
       setMarkerAndCustomOverlay(items);
-      console.log("select");
     }
   }, [selectedMarker]);
 
@@ -107,14 +108,63 @@ const ChargingStationMap = () => {
       });
   };
 
+  // 지도 고정 시 3000ms 마다 서버에 요청
+  const fetchDataFromServerRangeQueryDebounced = debounce(
+    fetchDataFromServerRangeQuery,
+    3000
+  );
+
   const setMarkerAndCustomOverlay = (items) => {
     // 기존 마커, 오버레이를 모두 삭제
     markers.forEach((marker) => {
       marker.setMap(null);
     });
-    // customOverlays.forEach((overlay) => {
-    //   overlay.setMap(null);
-    // });
+    customOverlays.forEach((overlay) => {
+      overlay.setMap(null);
+    });
+
+    const newCustomOverlays = items.map((item) => {
+      const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
+      const contentBeforeRender = (
+        <MapOverlayContent
+          bnm={item.bnm}
+          availableChger={item.availableChger}
+          totalChger={item.totalChger}
+          onClick={() => handleMarkerAndOverlayClick(item)}
+        />
+      );
+
+      // React 컴포넌트로 content를 렌더링 후 마운트
+      const content = document.createElement("div");
+      ReactDOM.render(contentBeforeRender, content);
+
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        content: content,
+        position: markerPosition,
+        map: map.current,
+        clickable: true,
+        zIndex:
+          item.lat === selectedMarker.lat && item.lng === selectedMarker.lng
+            ? 3
+            : 1,
+      });
+
+      if (
+        selectedMarker &&
+        selectedMarker.lat === item.lat &&
+        selectedMarker.lng === item.lng
+      ) {
+        customOverlay.setVisible(true);
+        setSelectedOverlay(customOverlay);
+      } else if (map.current.getLevel() <= 5) {
+        customOverlay.setVisible(true);
+      } else {
+        customOverlay.setVisible(false);
+      }
+
+      return customOverlay;
+    });
+    setCustomOverlays(newCustomOverlays);
 
     const newMarkers = items.map((item) => {
       const { lat, lng } = item;
@@ -142,27 +192,31 @@ const ChargingStationMap = () => {
       window.kakao.maps.event.addListener(marker, "click", function () {
         // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
         setIsOpen(false);
-        setSelectedItem(items);
+        setSelectedItem(item);
 
         // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
         setSelectedMarker({ lat, lng });
-        console.log("selectedMarker", selectedMarker);
         setIsOpen(true);
       });
       return marker;
     });
     setMarkers(newMarkers);
-    console.log("뉴마커", newMarkers);
+  };
+
+  // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
+  const handleMarkerAndOverlayClick = (item) => {
+    // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+    setIsOpen(false);
+    setSelectedItem(item);
+
+    // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
+    setSelectedMarker({ lat: item.lat, lng: item.lng });
+    setIsOpen(true);
   };
 
   const closeModal = () => {
     setIsOpen(false);
   };
-
-  const fetchDataFromServerRangeQueryDebounced = debounce(
-    fetchDataFromServerRangeQuery,
-    3000
-  ); //지도 고정 시 3000ms 마다 서버에 요청
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
