@@ -5,6 +5,7 @@ import { useSelectedItems } from "../../utils/StationInfoContext";
 import Review from "../../pages/Review/Review";
 import ChargingStationStateTable from "../Common/ChargingStationStateTable";
 import ChargingStationInfo from "../Common/ChargingStationInfo";
+import { Box } from "@material-ui/core";
 const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
   const { getStatId } = useSelectedItems();
 
@@ -30,9 +31,11 @@ const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
         },
       }}
     >
-      <ChargingStationStateTable statId={getStatId()} />
-      <ChargingStationInfo statId={getStatId()}></ChargingStationInfo>
-      <Review chargingStationId={getStatId()}></Review>
+      <Box>
+        <ChargingStationInfo statId={getStatId()} />
+        <ChargingStationStateTable statId={getStatId()} />
+        <Review chargingStationId={getStatId()}></Review>
+      </Box>
     </Modal>
   );
 };

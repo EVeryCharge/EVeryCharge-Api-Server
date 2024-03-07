@@ -23,9 +23,9 @@ const ChargerType = {
 };
 
 const ChargerState = {
-  1: { description: "통신이상", color: "red" },
+  1: { description: "통신이상", color: "black" },
   2: { description: "충전가능", color: "green" },
-  3: { description: "충전중", color: "red" },
+  3: { description: "충전중", color: "orange" },
   4: { description: "운영중지", color: "red" },
   5: { description: "점검중", color: "red" },
   9: { description: "상태미확인", color: "black" },
@@ -48,19 +48,33 @@ const ChargingStationStateTable = ({ statId }) => {
   }, []);
 
   return (
-    <div>
-      <Typography variant="subtitle1">
-        충전기 전체 {chargingStationData.length}대 | 충전가능{" "}
-        <span style={{ color: "green" }}>{availableChargersCount}</span>대
+    <div
+      style={{
+        marginBottom: "20px",
+        padding: "5px",
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        style={{
+          fontWeight: "bold",
+          marginBottom: "3px",
+          padding: "3px",
+          backgroundColor: "whitesmoke",
+        }}
+      >
+        충전기 전체 {chargingStationData.length}대 | 충전가능
+        <span style={{ color: "green" }}> {availableChargersCount}대</span>
       </Typography>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer>
+        <Table style={{ border: "1px groove lightgrey" }}>
           <TableHead>
-            <TableRow>
-              <TableCell>충전기 타입</TableCell>
-              <TableCell>충전기 상태</TableCell>
-              <TableCell>충전기 용량</TableCell>
-              <TableCell>이용가능 시간</TableCell>
+            <TableRow style={{ borderBottom: "1.5px solid grey" }}>
+              <TableCell style={{ fontWeight: "bold" }}>타입</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>상태</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>용량</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>이용시간</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>최근이용</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -72,6 +86,7 @@ const ChargingStationStateTable = ({ statId }) => {
                 </TableCell>
                 <TableCell>{row.output + "kW"}</TableCell>
                 <TableCell>{row.useTime}</TableCell>
+                <TableCell>{row.lasTedt ? row.lasTedt : "-"}</TableCell>
               </TableRow>
             ))}
           </TableBody>
