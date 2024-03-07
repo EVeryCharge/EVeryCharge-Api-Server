@@ -84,7 +84,9 @@ const ChargingStationStateTable = ({ statId }) => {
                 <TableCell style={{ color: ChargerState[row.stat]?.color }}>
                   {ChargerState[row.stat].description}
                 </TableCell>
-                <TableCell>{row.output + "kW"}</TableCell>
+                <TableCell>
+                  {row.output ? row.output + "kW" : "확인불가"}
+                </TableCell>
                 <TableCell>{row.useTime}</TableCell>
                 <TableCell>{row.lasTedt ? row.lasTedt : "-"}</TableCell>
               </TableRow>
