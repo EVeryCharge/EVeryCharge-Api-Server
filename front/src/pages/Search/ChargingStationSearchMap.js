@@ -6,7 +6,7 @@ import selectMarker from "../../assets/image/selectMarker.png";
 import ChargerInfoModal from "../../components/UI/ChargerInfoModal";
 import { useSelectedItems } from "../../utils/StationInfoContext";
 import MapOverlayContent from "../../components/Common/MapOverlayContent";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 const ChargingStationSearchMap = ({
   temporaryArray,
@@ -168,8 +168,10 @@ const ChargingStationSearchMap = ({
         );
 
         // React 컴포넌트로 content를 렌더링 후 마운트
+        // React 컴포넌트로 content를 렌더링 후 마운트
         const content = document.createElement("div");
-        ReactDOM.render(contentBeforeRender, content);
+        const root = createRoot(content);
+        root.render(contentBeforeRender);
 
         const customOverlay = new window.kakao.maps.CustomOverlay({
           content: content,

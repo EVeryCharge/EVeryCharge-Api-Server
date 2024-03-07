@@ -9,7 +9,7 @@ import { debounce } from "lodash";
 import { HttpGet } from "../../services/HttpService";
 import { Button, Tooltip } from "@material-ui/core";
 import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearchSwitch";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import MapOverlayContent from "./MapOverlayContent";
 
 const ChargingStationMap = () => {
@@ -109,13 +109,9 @@ const ChargingStationMap = () => {
     window.kakao.maps.event.addListener(
       map.current,
       "center_changed",
+      // 이후의 지도 이동시에는 디바운스로 주변 충전소 불러오기
       function () {
-        // const newCenter = map.current.getCenter();
-
-        // 이후의 지도 이동시에는 디바운스로 주변 충전소 불러오기
         fetchDataFromServerRangeQueryDebounced();
-        // newCenter.getLat(),
-        // newCenter.getLng()
       }
     );
   };
@@ -169,7 +165,8 @@ const ChargingStationMap = () => {
 
       // React 컴포넌트로 content를 렌더링 후 마운트
       const content = document.createElement("div");
-      ReactDOM.render(contentBeforeRender, content);
+      const root = createRoot(content);
+      root.render(contentBeforeRender);
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
         content: content,
