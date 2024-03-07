@@ -24,6 +24,7 @@ const ChargingStationMap = () => {
   const [customOverlays, setCustomOverlays] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
 
+  // 위치 정보 동의 시 접속 위치를 고정
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(success, error);
@@ -44,6 +45,7 @@ const ChargingStationMap = () => {
     }
   }, []);
 
+  // 현 접속 위치 고정 시 최초 1회 지도 마운트
   useEffect(() => {
     if (myLoc) {
       initMap();
@@ -59,6 +61,38 @@ const ChargingStationMap = () => {
       setMarkerAndCustomOverlay(items);
     }
   }, [selectedMarker]);
+
+  // 지도 레벨 5 이상일 시 오버레이 숨김 (선택된 오버레이 제외)
+  useEffect(() => {
+    if (map && map.current) {
+      const zoomChangeHandler = () => {
+        const currentLevel = map.current.getLevel();
+        customOverlays.forEach((overlay) => {
+          if (selectedOverlay && overlay === selectedOverlay) {
+            overlay.setVisible(true);
+          } else if (currentLevel <= 4) {
+            overlay.setVisible(true);
+          } else {
+            overlay.setVisible(false);
+          }
+        });
+      };
+
+      window.kakao.maps.event.addListener(
+        map.current,
+        "zoom_changed",
+        zoomChangeHandler
+      );
+
+      return () => {
+        window.kakao.maps.event.removeListener(
+          map.current,
+          "zoom_changed",
+          zoomChangeHandler
+        );
+      };
+    }
+  }, [map.current, customOverlays, selectedMarker]);
 
   const initMap = () => {
     const container = mapRef.current;
@@ -76,13 +110,12 @@ const ChargingStationMap = () => {
       map.current,
       "center_changed",
       function () {
-        const newCenter = map.current.getCenter();
+        // const newCenter = map.current.getCenter();
 
         // 이후의 지도 이동시에는 디바운스로 주변 충전소 불러오기
-        fetchDataFromServerRangeQueryDebounced(
-          newCenter.getLat(),
-          newCenter.getLng()
-        );
+        fetchDataFromServerRangeQueryDebounced();
+        // newCenter.getLat(),
+        // newCenter.getLng()
       }
     );
   };
@@ -156,7 +189,7 @@ const ChargingStationMap = () => {
       ) {
         customOverlay.setVisible(true);
         setSelectedOverlay(customOverlay);
-      } else if (map.current.getLevel() <= 5) {
+      } else if (map.current.getLevel() <= 4) {
         customOverlay.setVisible(true);
       } else {
         customOverlay.setVisible(false);
@@ -190,13 +223,7 @@ const ChargingStationMap = () => {
       marker.setImage(markerImage);
 
       window.kakao.maps.event.addListener(marker, "click", function () {
-        // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-        setIsOpen(false);
-        setSelectedItem(item);
-
-        // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
-        setSelectedMarker({ lat, lng });
-        setIsOpen(true);
+        handleMarkerAndOverlayClick(item);
       });
       return marker;
     });
