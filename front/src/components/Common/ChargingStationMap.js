@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import normalMarker from "../../assets/image/marker.png";
+import selectMarker from "../../assets/image/selectMarker.png";
 import { useSelectedItems } from "../../utils/StationInfoContext";
 import { GpsFixedOutlined } from "@material-ui/icons";
 import ChargerInfoModal from "../UI/ChargerInfoModal";
@@ -12,10 +13,15 @@ import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearc
 const ChargingStationMap = () => {
   const mapRef = useRef(null);
   const map = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState({ lat: null, lng: null }); //중구
-  const { setSelectedItem, getStatId } = useSelectedItems();
+  const [item, setItem] = useState([]);
   const [myLoc, setMyLoc] = useState(null);
+  const [mapCenter, setMapCenter] = useState({ lat: null, lng: null }); //중구
+  const [isOpen, setIsOpen] = useState(false);
+  const { setSelectedItem, getStatId } = useSelectedItems();
+  const [markers, setMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState([]);
+  const [customOverlays, setCustomOverlays] = useState([]);
+  const [selectedOverlay, setSelectedOverlay] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -47,34 +53,43 @@ const ChargingStationMap = () => {
 
   useEffect(() => {
     if (myLoc) {
-      const container = mapRef.current; // mapRef.current를 통해 container 참조
-      const options = {
-        center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng),
-        level: 2,
-        maxLevel: 5,
-      };
-
-      map.current = new window.kakao.maps.Map(container, options);
-
-      // 이벤트 리스너를 등록하여 지도의 중심 좌표가 변경될 때마다 서버에 데이터 요청
-      window.kakao.maps.event.addListener(
-        map.current,
-        "center_changed",
-        function () {
-          const newCenter = map.current.getCenter();
-          setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
-
-          fetchDataFromServerRangeQueryDebounced(
-            newCenter.getLat(),
-            newCenter.getLng()
-          );
-        }
-      );
-
-      fetchDataFromServerRangeQuery(mapCenter.lat, mapCenter.lng);
+      initMap();
     }
   }, [myLoc]);
 
+  useEffect(() => {
+    setMarkerAndCustomOverlay(item);
+  }, [item]);
+
+  const initMap = () => {
+    const container = mapRef.current;
+    const options = {
+      center: new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng),
+      level: 2,
+      maxLevel: 5,
+    };
+    map.current = new window.kakao.maps.Map(container, options);
+    // 최초 지도 접근 시 지도상 주변 충전소를 불러오기(최초 1회만 실행)
+    fetchDataFromServerRangeQuery();
+
+    // 이벤트 리스너를 등록하여 지도의 중심 좌표가 변경될 때마다 서버에 데이터 요청
+    window.kakao.maps.event.addListener(
+      map.current,
+      "center_changed",
+      function () {
+        const newCenter = map.current.getCenter();
+        setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
+
+        // 이후의 지도 이동시에는 디바운스로 주변 충전소 불러오기
+        fetchDataFromServerRangeQueryDebounced(
+          newCenter.getLat(),
+          newCenter.getLng()
+        );
+      }
+    );
+  };
+
+  // 요청을 보내 마커 정보 데이터를 가져온 후 item에 저장
   const fetchDataFromServerRangeQuery = () => {
     const bounds = map.current.getBounds(); // 지도의 영역 가져오기
     const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표 가져오기
@@ -87,47 +102,73 @@ const ChargingStationMap = () => {
       neLng: neLatLng.getLng(),
     })
       .then((response) => {
-        console.log(response);
         const item = response;
-
-        item.forEach((itemData) => {
-          const { lat, lng } = itemData;
-          const markerPosition = new window.kakao.maps.LatLng(lat, lng);
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition,
-          });
-          const markerImage = new window.kakao.maps.MarkerImage(
-            normalMarker,
-            new window.kakao.maps.Size(70, 70),
-            new window.kakao.maps.Point(13, 34)
-          );
-          marker.setImage(markerImage);
-          marker.setMap(map.current);
-
-          window.kakao.maps.event.addListener(marker, "click", function () {
-            // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-            setIsOpen(false);
-            setSelectedItem(itemData);
-            setIsOpen(true);
-          });
-        });
+        setItem(item);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
       });
   };
 
+  const setMarkerAndCustomOverlay = (item) => {
+    // 기존 마커, 오버레이를 모두 삭제
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    // customOverlays.forEach((overlay) => {
+    //   overlay.setMap(null);
+    // });
+
+    const newMarkers = item.map((item) => {
+      const { lat, lng } = item;
+      const markerPosition = new window.kakao.maps.LatLng(lat, lng);
+      const markerImage =
+        lat === selectedMarker.lat && lng === selectedMarker.lng
+          ? new window.kakao.maps.MarkerImage(
+              selectMarker,
+              new window.kakao.maps.Size(70, 70),
+              new window.kakao.maps.Point(13, 34)
+            )
+          : new window.kakao.maps.MarkerImage(
+              normalMarker,
+              new window.kakao.maps.Size(70, 70),
+              new window.kakao.maps.Point(13, 34)
+            );
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+        map: map.current,
+        zIndex:
+          lat === selectedMarker.lat && lng === selectedMarker.lng ? 4 : 2,
+      });
+      marker.setImage(markerImage);
+
+      window.kakao.maps.event.addListener(marker, "click", function () {
+        // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+        setIsOpen(false);
+        setSelectedItem(item);
+
+        // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
+        setSelectedMarker({ lat: item.lat, lng: item.lng });
+        console.log("selectedMarker", selectedMarker);
+        setIsOpen(true);
+      });
+      return marker;
+    });
+    setMarkers(newMarkers);
+    console.log("뉴마커", newMarkers);
+  };
+
   const closeModal = () => {
     setIsOpen(false);
   };
+
   const fetchDataFromServerRangeQueryDebounced = debounce(
     fetchDataFromServerRangeQuery,
     3000
-  ); //3000ms마다 서버에 요청
+  ); //지도 고정 시 3000ms 마다 서버에 요청
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
-    map.current.setLevel(2);
   };
 
   return (
