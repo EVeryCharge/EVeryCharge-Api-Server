@@ -12,14 +12,19 @@ public class ChargeFeeDto {
 	private String chgerType;
 	private Double memberFee;
 	private Double memberFeeChange;
+	private Double prevMemberFee;
+	private Double prevNonMemberFee;
 	private Double nonMemberFee;
 	private Double nonMemberFeeChange;
+
 
 	public ChargeFeeDto(ChargeFee chargeFee) {
 		this.bnm = chargeFee.getBnm();
         this.chgerType = chargeFee.getChgerType();
         this.memberFee = chargeFee.getMemberFee();
         this.memberFeeChange = chargeFee.getMemberFeeChange();
+		this.prevMemberFee = chargeFee.getPrevMemberFee();
+		this.prevNonMemberFee = chargeFee.getPrevNonMemberFee();
         this.nonMemberFee = chargeFee.getNonMemberFee();
         this.nonMemberFeeChange = chargeFee.getNonMemberFeeChange();
 	}

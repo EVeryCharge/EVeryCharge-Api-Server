@@ -24,20 +24,27 @@ public class ChargeFee extends BaseTime {
 	@JoinColumn(name = "busi_id")
 	private OperatingCompany operatingCompany;
 	private String bnm;
-
 	private String chgerType;
-
+	// 현재 요금
 	private Double memberFee;
 	private Double nonMemberFee;
-
+	// 이전 요금
+	private Double prevMemberFee;
+	private Double prevNonMemberFee;
+	// 요금 변동금액
 	private Double memberFeeChange;
 	private Double nonMemberFeeChange;
 
-	public void update(String chgerType, Double newMemberFee, Double newNonMemberFee, Double prevMemberFee, Double prevNonMemberFee) {
+	public void update(String chgerType, Double newMemberFee, Double newNonMemberFee, Double prevMemberFee,
+		Double prevNonMemberFee) {
 		this.chgerType = chgerType;
-        this.memberFee = newMemberFee;
-        this.nonMemberFee = newNonMemberFee;
-        this.memberFeeChange = newMemberFee - prevMemberFee;
-        this.nonMemberFeeChange = newNonMemberFee - prevNonMemberFee;
+		this.memberFee = newMemberFee;
+		this.nonMemberFee = newNonMemberFee;
+		if (!this.prevMemberFee.equals(this.memberFee))
+			this.prevMemberFee = this.memberFee;
+		if (!this.prevNonMemberFee.equals(this.nonMemberFee))
+			this.prevNonMemberFee = this.nonMemberFee;
+		this.memberFeeChange = newMemberFee - prevMemberFee;
+		this.nonMemberFeeChange = newNonMemberFee - prevNonMemberFee;
 	}
 }
