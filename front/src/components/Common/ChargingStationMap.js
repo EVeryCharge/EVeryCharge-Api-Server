@@ -13,9 +13,8 @@ import ChargingStationSearchSwitch from "../../pages/Search/ChargingStationSearc
 const ChargingStationMap = () => {
   const mapRef = useRef(null);
   const map = useRef(null);
-  const [item, setItem] = useState([]);
+  const [items, setItems] = useState([]);
   const [myLoc, setMyLoc] = useState(null);
-  const [mapCenter, setMapCenter] = useState({ lat: null, lng: null }); //중구
   const [isOpen, setIsOpen] = useState(false);
   const { setSelectedItem, getStatId } = useSelectedItems();
   const [markers, setMarkers] = useState([]);
@@ -33,18 +32,10 @@ const ChargingStationMap = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
-      setMapCenter({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
     }
 
     function error() {
       setMyLoc({
-        lat: 37.5665,
-        lng: 126.9784,
-      });
-      setMapCenter({
         lat: 37.5665,
         lng: 126.9784,
       });
@@ -58,8 +49,15 @@ const ChargingStationMap = () => {
   }, [myLoc]);
 
   useEffect(() => {
-    setMarkerAndCustomOverlay(item);
-  }, [item]);
+    setMarkerAndCustomOverlay(items);
+  }, [items]);
+
+  useEffect(() => {
+    if (selectedMarker.lng != null) {
+      setMarkerAndCustomOverlay(items);
+      console.log("select");
+    }
+  }, [selectedMarker]);
 
   const initMap = () => {
     const container = mapRef.current;
@@ -78,7 +76,6 @@ const ChargingStationMap = () => {
       "center_changed",
       function () {
         const newCenter = map.current.getCenter();
-        setMapCenter({ lat: newCenter.getLat(), lng: newCenter.getLng() });
 
         // 이후의 지도 이동시에는 디바운스로 주변 충전소 불러오기
         fetchDataFromServerRangeQueryDebounced(
@@ -89,7 +86,7 @@ const ChargingStationMap = () => {
     );
   };
 
-  // 요청을 보내 마커 정보 데이터를 가져온 후 item에 저장
+  // 요청을 보내 마커 정보 데이터를 가져온 후 items에 저장
   const fetchDataFromServerRangeQuery = () => {
     const bounds = map.current.getBounds(); // 지도의 영역 가져오기
     const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표 가져오기
@@ -102,15 +99,15 @@ const ChargingStationMap = () => {
       neLng: neLatLng.getLng(),
     })
       .then((response) => {
-        const item = response;
-        setItem(item);
+        const items = response;
+        setItems(items);
       })
       .catch((error) => {
         console.log("Error fetching data", error);
       });
   };
 
-  const setMarkerAndCustomOverlay = (item) => {
+  const setMarkerAndCustomOverlay = (items) => {
     // 기존 마커, 오버레이를 모두 삭제
     markers.forEach((marker) => {
       marker.setMap(null);
@@ -119,7 +116,7 @@ const ChargingStationMap = () => {
     //   overlay.setMap(null);
     // });
 
-    const newMarkers = item.map((item) => {
+    const newMarkers = items.map((item) => {
       const { lat, lng } = item;
       const markerPosition = new window.kakao.maps.LatLng(lat, lng);
       const markerImage =
@@ -145,10 +142,10 @@ const ChargingStationMap = () => {
       window.kakao.maps.event.addListener(marker, "click", function () {
         // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
         setIsOpen(false);
-        setSelectedItem(item);
+        setSelectedItem(items);
 
         // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
-        setSelectedMarker({ lat: item.lat, lng: item.lng });
+        setSelectedMarker({ lat, lng });
         console.log("selectedMarker", selectedMarker);
         setIsOpen(true);
       });
