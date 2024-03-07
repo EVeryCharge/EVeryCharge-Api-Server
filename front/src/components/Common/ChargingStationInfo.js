@@ -9,20 +9,26 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { HttpGet } from "../../services/HttpService";
 
-const ChargingStationInfo = ({ item }) => {
+const ChargingStationInfo = ({ statId }) => {
   const [chargingStationData, setChargingStationData] = useState([]);
+
   useEffect(() => {
-    console.log("ChargingStationInfo : " + item);
-    console.log("ChargingStationInfo : " + item.statId);
-    setChargingStationData(item);
+    HttpGet("/api/v1/chargingStation/info", { statId: statId })
+      .then((response) => {
+        setChargingStationData(response);
+      })
+      .catch((error) => {
+        console.error("데이터를 불러오는 중 오류 발생:", error);
+      });
   }, []);
 
   return (
     <div>
       <Typography variant="subtitle1" style={{ marginTop: "20px" }}>
         {" "}
-        {item.statNm} 충전소 | {item.addr}
+        {chargingStationData.statNm} 충전소 | {chargingStationData.addr}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
@@ -36,10 +42,10 @@ const ChargingStationInfo = ({ item }) => {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>{item.statId}</TableCell>
-              <TableCell>{item.bnm}</TableCell>
-              <TableCell>{item.parkingFree}</TableCell>
-              <TableCell>{item.limitDetail}</TableCell>
+              <TableCell>{chargingStationData.statId}</TableCell>
+              <TableCell>{chargingStationData.bnm}</TableCell>
+              <TableCell>{chargingStationData.parkingFree}</TableCell>
+              <TableCell>{chargingStationData.limitDetail}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
