@@ -25,6 +25,10 @@ public class ChargingStationSearchResponseDto {
     private String limitYn; // 개방 여부
     private String limitDetail;
 
+    // 총 충전기수, 충전가능대수 관련 DTO 엘리먼트 추가
+    private String totalChger;
+    private String availableChger;
+
     // API TEST 용 필드(백업)
     //    private String regionName;
     //    private String regionDetailName;
@@ -48,6 +52,11 @@ public class ChargingStationSearchResponseDto {
         this.parkingFree = chargingStation.getParkingFree();
         this.limitYn = chargingStation.getLimitYn();
         this.limitDetail = chargingStation.getLimitDetail();
+        // 총 충전기수, 충전가능대수 관련 DTO 엘리먼트 추가
+        this.totalChger = String.valueOf(chargingStation.getChargers().size());
+        this.availableChger = String.valueOf(chargingStation.getChargers().stream()
+             .filter(charger -> charger.getStat().contentEquals("2"))
+             .count());
 
         // API TEST 용 필드(백업)
         //        this.isPrimary = chargingStation.getOperatingCompany().getIsPrimary();
