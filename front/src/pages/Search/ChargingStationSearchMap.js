@@ -32,19 +32,16 @@ const ChargingStationSearchMap = ({
   const [selectedMarker, setSelectedMarker] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
 
+  // 현 접속 위치 고정 시 최초 1회 지도 마운트
+  useEffect(() => {
+    if (myLoc) {
+      initMap();
+    }
+  }, [myLoc]);
+
   useEffect(() => {
     setMarkerAndCustomOverlay(items);
   }, [items]);
-
-  // props로 mapCenter를 전달받을 시 mapCenter를 수정
-  useEffect(() => {
-    if (propsMapCenter) {
-      setSelectedMarker({
-        lat: propsMapCenter.lat,
-        lng: propsMapCenter.lng,
-      });
-    }
-  }, [propsMapCenter]);
 
   useEffect(() => {
     if (selectedMarker.lng != null) {
@@ -56,35 +53,7 @@ const ChargingStationSearchMap = ({
     }
   }, [selectedMarker]);
 
-  useEffect(() => {
-    fetchDataFromServerRangeQuery();
-  }, [temporaryArray]);
-
-  useEffect(() => {
-    if (myLoc) {
-      initMap();
-    }
-  }, [myLoc]); // 최초 렌더링 시에만 initMap 호출
-
-  useEffect(() => {
-    if (map.current) {
-      map.current.setCenter(
-        new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng)
-      );
-    }
-  }, [mapCenter]);
-
-  useEffect(() => {
-    if (mapCenterLoc.lat != null) {
-      console.log("mapCenterLoc" + mapCenterLoc.lat);
-      setMapLoc({
-        lat: mapCenterLoc.lat,
-        lng: mapCenterLoc.lng,
-      });
-    }
-  }, [mapCenterLoc, setMapLoc]);
-
-  // 지도 레벨 6 이상일 시 오버레이 숨김 (선택된 오버레이 제외)
+  // 지도 레벨 5 이상일 시 오버레이 숨김 (선택된 오버레이 제외)
   useEffect(() => {
     if (map && map.current) {
       const zoomChangeHandler = () => {
@@ -115,6 +84,38 @@ const ChargingStationSearchMap = ({
       };
     }
   }, [map.current, customOverlays, selectedMarker]);
+
+  // props로 mapCenter를 전달받을 시 mapCenter를 수정
+  useEffect(() => {
+    if (propsMapCenter) {
+      setSelectedMarker({
+        lat: propsMapCenter.lat,
+        lng: propsMapCenter.lng,
+      });
+    }
+  }, [propsMapCenter]);
+
+  useEffect(() => {
+    fetchDataFromServerRangeQuery();
+  }, [temporaryArray]);
+
+  useEffect(() => {
+    if (map.current) {
+      map.current.setCenter(
+        new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng)
+      );
+    }
+  }, [mapCenter]);
+
+  useEffect(() => {
+    if (mapCenterLoc.lat != null) {
+      console.log("mapCenterLoc" + mapCenterLoc.lat);
+      setMapLoc({
+        lat: mapCenterLoc.lat,
+        lng: mapCenterLoc.lng,
+      });
+    }
+  }, [mapCenterLoc, setMapLoc]);
 
   const initMap = () => {
     const container = mapRef.current;
@@ -188,7 +189,7 @@ const ChargingStationSearchMap = ({
         ) {
           customOverlay.setVisible(true);
           setSelectedOverlay(customOverlay);
-        } else if (map.current.getLevel() <= 5) {
+        } else if (map.current.getLevel() <= 4) {
           customOverlay.setVisible(true);
         } else {
           customOverlay.setVisible(false);
@@ -243,6 +244,10 @@ const ChargingStationSearchMap = ({
     setIsOpen(true);
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
   };
@@ -254,10 +259,6 @@ const ChargingStationSearchMap = ({
       lat: centerLat,
       lng: centerLng,
     });
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
   };
 
   return (
