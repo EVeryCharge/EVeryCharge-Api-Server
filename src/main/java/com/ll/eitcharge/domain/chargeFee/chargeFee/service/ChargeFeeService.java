@@ -42,6 +42,11 @@ public class ChargeFeeService {
 		return chargeFeeRepository.findByBnmAndChgerType(bnm, chgerType);
 	}
 
+	public List<ChargeFee> findByBnm(String bnm) {
+		return chargeFeeRepository.findByBnm(bnm);
+	}
+
+
 	@Scheduled(cron = "0 0 2 * * * ")
 	@Transactional
 	public void upsertChargeFeeFromApi() {

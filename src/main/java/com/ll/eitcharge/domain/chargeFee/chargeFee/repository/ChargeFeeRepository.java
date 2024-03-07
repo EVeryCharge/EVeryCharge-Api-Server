@@ -11,6 +11,9 @@ import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
 
 @Repository
 public interface ChargeFeeRepository extends JpaRepository<ChargeFee, Long> {
+
+	List<ChargeFee> findByBnm(String bnm);
+
 	Optional<ChargeFee> findByBnmAndChgerType(String bnm, String chgerType);
 
 	@Query("SELECT cf FROM ChargeFee cf "

@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
@@ -56,9 +57,15 @@ public class ChargingStationController {
     }
 
     @GetMapping("/chargerStatus")
-    @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(데이터 베이스)")
+    @Operation(summary = "충전기 상태 조회", description = "충전소에 포함된 충전기 상태조회")
     public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId) {
         return ResponseEntity.ok(chargingStationService.chargerStateSearch(statId));
+    }
+
+    @GetMapping("/info")
+    @Operation(summary = "충전소 세부정보 조회", description = "충전소 세부정보 조회")
+    public ResponseEntity<ChargingStationInfoResponseDto> infoSearch(@RequestParam String statId) {
+        return ResponseEntity.ok(chargingStationService.infoSearch(statId));
     }
 
     @GetMapping("/search/item")

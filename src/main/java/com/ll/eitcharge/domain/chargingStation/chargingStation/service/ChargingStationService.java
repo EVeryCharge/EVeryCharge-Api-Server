@@ -22,10 +22,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.service.ChargeFeeService;
+import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
@@ -46,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 public class ChargingStationService {
 	private final ObjectMapper objectMapper;
 	private final RegionService regionService;
+	private final ChargeFeeService chargeFeeService;
 	private final ChargerRepository chargerRepository;
 	private final RegionDetailService regionDetailService;
 	private final OperatingCompanyService operatingCompanyService;
@@ -178,5 +182,12 @@ public class ChargingStationService {
 		return chargingStationSearchRepository.searchBaseDistance(
 			chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
 		);
+	}
+
+	public ChargingStationInfoResponseDto infoSearch(String statId) {
+		ChargingStation chargingStation = findById(statId);
+		List<ChargeFee> chargeFeeList = chargeFeeService.findByBnm(chargingStation.getOperatingCompany().getBnm());
+
+		return new ChargingStationInfoResponseDto(chargingStation, chargeFeeList);
 	}
 }
