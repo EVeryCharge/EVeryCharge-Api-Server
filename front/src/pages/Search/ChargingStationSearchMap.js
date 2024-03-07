@@ -246,7 +246,6 @@ const ChargingStationSearchMap = ({
 
   const handleResetMap = () => {
     map.current.setCenter(new window.kakao.maps.LatLng(myLoc.lat, myLoc.lng));
-    map.current.setLevel(2);
   };
 
   const researchMapCenter = () => {
