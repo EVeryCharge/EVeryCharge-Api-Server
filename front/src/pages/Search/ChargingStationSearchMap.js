@@ -49,7 +49,6 @@ const ChargingStationSearchMap = ({
   useEffect(() => {
     if (selectedMarker.lng != null) {
       setMarkerAndCustomOverlay(items);
-      console.log("select");
       setMapCenter({
         lat: selectedMarker.lat,
         lng: selectedMarker.lng,
@@ -93,7 +92,7 @@ const ChargingStationSearchMap = ({
         customOverlays.forEach((overlay) => {
           if (selectedOverlay && overlay === selectedOverlay) {
             overlay.setVisible(true);
-          } else if (currentLevel <= 5) {
+          } else if (currentLevel <= 4) {
             overlay.setVisible(true);
           } else {
             overlay.setVisible(false);
@@ -138,17 +137,6 @@ const ChargingStationSearchMap = ({
       lng: null,
     });
     setItems(newItems);
-  };
-
-  // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
-  const handleMarkerAndOverlayClick = (item) => {
-    // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
-    setIsOpen(false);
-    setSelectedItem(item);
-
-    // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
-    setSelectedMarker({ lat: item.lat, lng: item.lng });
-    setIsOpen(true);
   };
 
   const setMarkerAndCustomOverlay = (items) => {
@@ -242,6 +230,17 @@ const ChargingStationSearchMap = ({
 
       setMarkers(newMarkers);
     }
+  };
+
+  // 마커와 커스텀 오버레이의 클릭 이벤트 핸들러 함수
+  const handleMarkerAndOverlayClick = (item) => {
+    // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+    setIsOpen(false);
+    setSelectedItem(item);
+
+    // 클릭된 마커와 오버레이를 상단에 노출, selected로 전환
+    setSelectedMarker({ lat: item.lat, lng: item.lng });
+    setIsOpen(true);
   };
 
   const handleResetMap = () => {
