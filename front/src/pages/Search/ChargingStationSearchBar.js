@@ -36,7 +36,7 @@ const ChargingStationSearchBar = ({
   check,
 }) => {
   const classes = useStyles();
-  const [chargable, setChargable] = useState(true);
+  const [chargeable, setChargeable] = useState(true);
   const [parkingFree, setParkingFree] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [range, setRange] = useState(3000);
@@ -68,10 +68,10 @@ const ChargingStationSearchBar = ({
   // 검색 조건이 변경될 때마다 검색 결과를 언마운트
   useEffect(() => {
     setSearchResult(null);
-  }, [chargable, parkingFree, isOpen, zcode, zscode, busiId, chgerId, kw]);
+  }, [chargeable, parkingFree, isOpen, zcode, zscode, busiId, chgerId, kw]);
 
-  const handleChargableChange = () => {
-    setChargable(!chargable);
+  const handleChargeableChange = () => {
+    setChargeable(!chargeable);
   };
 
   const handleParkingFreeChange = () => {
@@ -138,7 +138,7 @@ const ChargingStationSearchBar = ({
   const handleSearch = () => {
     setPage(1);
     onSearch({
-      stat: chargable ? 2 : undefined,
+      chargeable: chargeable ? "Y" : undefined,
       parkingFree: parkingFree ? "Y" : undefined,
       limitYn: isOpen ? "N" : undefined,
       zcode: zcode || undefined,
@@ -155,7 +155,7 @@ const ChargingStationSearchBar = ({
   const handlePageMove = (event, newPage) => {
     setPage(newPage);
     onSearch({
-      stat: chargable ? 2 : undefined,
+      chargeable: chargeable ? "Y" : undefined,
       parkingFree: parkingFree ? "Y" : undefined,
       limitYn: isOpen ? "N" : undefined,
       zcode: zcode || undefined,
@@ -174,7 +174,7 @@ const ChargingStationSearchBar = ({
   };
 
   const handleReset = () => {
-    setChargable(true);
+    setChargeable(true);
     setParkingFree(false);
     setOpen(false);
     setRange(3000);
@@ -249,9 +249,9 @@ const ChargingStationSearchBar = ({
                 fontWeight: "bold",
               },
             }}
-            value="chargable"
-            selected={chargable}
-            onChange={handleChargableChange}
+            value="chargeable"
+            selected={chargeable}
+            onChange={handleChargeableChange}
           >
             충전가능
           </ToggleButton>

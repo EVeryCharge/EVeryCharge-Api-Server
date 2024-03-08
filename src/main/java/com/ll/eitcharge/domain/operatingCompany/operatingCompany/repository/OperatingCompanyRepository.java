@@ -1,6 +1,7 @@
 package com.ll.eitcharge.domain.operatingCompany.operatingCompany.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,6 @@ import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.Operatin
 public interface OperatingCompanyRepository extends JpaRepository<OperatingCompany, String> {
 
 	List<OperatingCompany> findByIsPrimary(String isPrimary);
+
+	Optional<OperatingCompany> findByBnm(String bnm);
 }

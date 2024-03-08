@@ -20,39 +20,40 @@ import Inquiry from "./pages/Inquiry/Inquiry";
 import InquiryForm from "./pages/Inquiry/InquiryForm";
 import InquiryDetail from "./pages/Inquiry/InquiryDetail";
 import InquiryModifyform from "./pages/Inquiry/InquiryModifyform";
+import ChargeFee from "./pages/ChargeFee/ChargeFee";
 
 function App() {
-    return (
-        <Router>
-            <AuthProvider>
-                <SelectedItemsProvider>
-                    <Navbar />
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/" element={<Home />} />
-                        <Route path="/map" element={<ChargingStationMap />} />
-                        <Route
-                            path="/chargingServiceInfo"
-                            element={<ChargingServiceInfo />}
-                        />
-                        <Route path="/evsystem" element={<EVSystem />} />
-                        <Route path="/statisticsInfo" element={<StatisticsInfo />} />
-                        <Route path="/report/list" element={<ReportList />} />
-                        <Route path="/report/:id" element={<ReportDetail />} />
-                        <Route path="/report/form" element={<ReportForm />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/search" element={<ChargingStationSearch />} />
-                        <Route path="/inquiry" element={<Inquiry />} />
-                        <Route path="/inquiry/form" element={<InquiryForm />} />
-                        <Route path="/inquiry/:id" element={<InquiryDetail/>}/>
-                        <Route path="/modify/:id" element={<InquiryModifyform/>}/>
-                    </Routes>
-                    <Footer />
-                </SelectedItemsProvider>
-            </AuthProvider>
-        </Router>
-    );
+  return (
+    <Router>
+      <AuthProvider>
+        <SelectedItemsProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/map" element={<ChargingStationMap />} />
+            <Route
+              path="/chargingServiceInfo"
+              element={<ChargingServiceInfo />}
+            />
+            <Route path="/evsystem" element={<EVSystem />} />
+            <Route path="/statisticsInfo" element={<StatisticsInfo />} />
+            <Route path="/report/list" element={<ReportList />} />
+            <Route path="/report/:id" element={<ReportDetail />} />
+            <Route path="/report/form" element={<ReportForm />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/search" element={<ChargingStationSearch />} />
+            <Route path="/inquiry" element={<Inquiry />} />
+            <Route path="/inquiry/form" element={<InquiryForm />} />
+            <Route path="/inquiry/:id" element={<InquiryDetail />} />
+            <Route path="/modify/:id" element={<InquiryModifyform />} />
+            <Route path="/fee" element={<ChargeFee />} />
+          </Routes>
+          <Footer />
+        </SelectedItemsProvider>
+      </AuthProvider>
+    </Router>
+  );
 }
 
 export default App;
-
