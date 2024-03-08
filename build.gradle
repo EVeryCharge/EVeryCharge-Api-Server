@@ -78,6 +78,8 @@ dependencies {
     // XML
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
 
+    // Aspose for Excel Data
+    implementation 'com.luhuiguo:aspose-cells:23.1'
 }
 
 tasks.named('test') {

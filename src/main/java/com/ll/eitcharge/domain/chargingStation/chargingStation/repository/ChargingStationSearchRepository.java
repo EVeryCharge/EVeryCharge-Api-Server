@@ -24,7 +24,7 @@ public class ChargingStationSearchRepository {
 	 * @return statId 와 현 위치 기준 거리(m) 를 가진 DTO
 	 */
 	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(
-		String stat,
+		String chargeable,
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -41,44 +41,46 @@ public class ChargingStationSearchRepository {
 
 		String nativeQuery =
 			"SELECT CS.stat_id AS statId, "
-		+ 	"ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) AS distance, "
-		+ 	"CS.stat_nm AS statNm, "
-		+ 	"CS.addr AS addr, "
-		+ 	"CS.lat AS lat, "
-		+ 	"CS.lng AS lng, "
-		+ 	"OC.bnm AS bnm, "
-		+	"CS.parking_free AS parkingFree, "
-		+	"CS.limit_yn AS limitYn, "
-		+   "GROUP_CONCAT(DISTINCT C.chger_type) AS chgerTypes "
+				+ "ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) AS distance, "
+				+ "CS.stat_nm AS statNm, "
+				+ "CS.addr AS addr, "
+				+ "CS.lat AS lat, "
+				+ "CS.lng AS lng, "
+				+ "OC.bnm AS bnm, "
+				+ "CS.parking_free AS parkingFree, "
+				+ "CS.limit_yn AS limitYn, "
+				+ "COUNT(C.stat_id) AS totalChger, "
+				+ "SUM(CASE WHEN C.stat = 2 THEN 1 ELSE 0 END) AS availableChger, "
+				+ "GROUP_CONCAT(DISTINCT C.chger_type) AS chgerTypes "
 				+ "FROM charging_station AS CS "
 				+ "JOIN charger AS C ON CS.stat_id = C.stat_id "
 				+ "JOIN region_detail AS RD ON CS.zscode = RD.zscode "
 				+ "JOIN region AS R ON R.zcode = RD.zcode "
 				+ "JOIN operating_company AS OC ON OC.busi_id = CS.busi_id "
-				+ "WHERE (:parkingFree is null or CS.parking_free = :parkingFree) "
-				+ "AND (:limitYn is null or CS.limit_yn = :limitYn) "
-				+ "AND EXISTS ("
-				+ 		"SELECT 1 FROM charger AS C2 WHERE C2.stat = :stat OR :stat is null) "
-				+ "AND (:zscode is null or RD.zscode = :zscode) " + "AND (:zcode is null or R.zcode = :zcode) "
-				+ "AND (:isPrimary is null or OC.is_primary = :isPrimary) "
-				+ "AND (ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) <= :range) ";
+					+ "WHERE (:parkingFree is null or CS.parking_free = :parkingFree) "
+					+ "AND (:limitYn is null or CS.limit_yn = :limitYn) "
+					+ "AND (:zscode is null or RD.zscode = :zscode) " + "AND (:zcode is null or R.zcode = :zcode) "
+					+ "AND (:isPrimary is null or OC.is_primary = :isPrimary) "
+					+ "AND (ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) <= :range) ";
 
-			// null에 따른 쿼리 추가
-			if (kw != null) {
-				nativeQuery += "AND (CS.stat_nm LIKE :kw OR CS.addr LIKE :kw) ";
-			}
-			if (chgerTypes != null && !chgerTypes.isEmpty()) {
-				nativeQuery += "AND (C.chger_type IN (:chgerTypes)) ";
-			}
-			if (busiIds != null && !busiIds.isEmpty()) {
-				nativeQuery += "AND (OC.busi_id IN (:busiIds)) ";
-			}
+		// null에 따른 쿼리 추가
+		if (kw != null) {
+			nativeQuery += "AND (CS.stat_nm LIKE :kw OR CS.addr LIKE :kw) ";
+		}
+		if (chgerTypes != null && !chgerTypes.isEmpty()) {
+			nativeQuery += "AND (C.chger_type IN (:chgerTypes)) ";
+		}
+		if (busiIds != null && !busiIds.isEmpty()) {
+			nativeQuery += "AND (OC.busi_id IN (:busiIds)) ";
+		}
 
-		nativeQuery += "GROUP BY CS.stat_id "
-			+ "ORDER BY distance ASC";
+		nativeQuery += "GROUP BY CS.stat_id ";
+		if (chargeable != null && chargeable.contentEquals("Y")) {
+			nativeQuery += "HAVING availableChger > 0 ";
+		}
+		nativeQuery += "ORDER BY distance ASC";
 
 		Query query = entityManager.createNativeQuery(nativeQuery, ChargingStationSearchBaseDistanceResponseDto.class)
-			.setParameter("stat", stat)
 			.setParameter("limitYn", limitYn)
 			.setParameter("parkingFree", parkingFree)
 			.setParameter("zcode", zcode)
@@ -90,7 +92,7 @@ public class ChargingStationSearchRepository {
 
 		// null 에 따른 파라미터 추가
 		if (kw != null) {
-			query.setParameter("kw", "%"+ kw + "%");
+			query.setParameter("kw", "%" + kw + "%");
 		}
 		if (chgerTypes != null && !chgerTypes.isEmpty()) {
 			query.setParameter("chgerTypes", chgerTypes);
@@ -105,8 +107,11 @@ public class ChargingStationSearchRepository {
 		// 페이지 생성
 		int start = (int)pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), resultList.size());
-		Page<ChargingStationSearchBaseDistanceResponseDto> page = new PageImpl<>(resultList.subList(start, end), pageable,
-			resultList.size());
+		Page<ChargingStationSearchBaseDistanceResponseDto> page = new PageImpl<>(
+			resultList.subList(start, end),
+			pageable,
+			resultList.size()
+		);
 
 		return page;
 	}
