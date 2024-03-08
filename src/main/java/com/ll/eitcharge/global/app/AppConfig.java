@@ -122,7 +122,7 @@ public class AppConfig {
     }
 
     public static String getResourcesRelativeDirPath(String DETAIL_FILE_PATH) {
-            ClassPathResource resource = new ClassPathResource(DETAIL_FILE_PATH);
+        ClassPathResource resource = new ClassPathResource(DETAIL_FILE_PATH);
             try {
                 return resource.getURI().getPath();
             } catch (IOException e) {

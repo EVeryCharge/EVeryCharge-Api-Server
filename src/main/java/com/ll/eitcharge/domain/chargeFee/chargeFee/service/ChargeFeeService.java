@@ -34,8 +34,8 @@ public class ChargeFeeService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargeFeeRepository chargeFeeRepository;
 	private final ExcelDataUtil excelDataUtil;
-	private final String CHARGE_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
-	private final String CHARGE_ROAMING_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
+	private final String CHARGE_FEE_API_URL = "/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
+	private final String CHARGE_ROAMING_FEE_API_URL = "/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
 	private final String CHARGE_ROAMING_FEE_FILE_PATH = AppConfig.getResourcesRelativeDirPath("/xls/charging_roaming_fee.xlsx");
 
 	// 엔티티 조회용
