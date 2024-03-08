@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,11 +19,7 @@ public class ExcelDataUtil {
 	private final WebClient webClient;
 
 	public ExcelDataUtil() {
-		this.webClient = WebClient.builder()
-			.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-			.defaultHeader(HttpHeaders.ACCEPT_ENCODING, "gzip, deflate, br, zstd")
-			.defaultHeader(HttpHeaders.ACCEPT_LANGUAGE, "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-			.build();
+		this.webClient = WebClient.create("https://ev.or.kr");
 	}
 
 	/**
@@ -38,7 +32,6 @@ public class ExcelDataUtil {
 			// HTTP 요청, 파일 다운로드
 			Mono<byte[]> responseMono = webClient.get()
 				.uri(httpRequestUrl)
-				.accept(MediaType.APPLICATION_OCTET_STREAM)
 				.retrieve()
 				.bodyToMono(byte[].class);
 

@@ -33,7 +33,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // DEV TOOLS
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // WEB
     implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -20,6 +20,7 @@ import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.repository.ChargeFeeRepository;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
+import com.ll.eitcharge.global.app.AppConfig;
 import com.ll.eitcharge.standard.util.ExcelDataUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ public class ChargeFeeService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargeFeeRepository chargeFeeRepository;
 	private final ExcelDataUtil excelDataUtil;
-	private final String CHARGE_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
-	private final String CHARGE_ROAMING_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
-	private final String CHARGE_ROAMING_FEE_FILE_PATH = "src/main/resources/xls/charging_roaming_fee.xlsx";
+	private final String CHARGE_FEE_API_URL = "/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
+	private final String CHARGE_ROAMING_FEE_API_URL = "/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
+	private final String CHARGE_ROAMING_FEE_FILE_PATH = AppConfig.getResourcesRelativeDirPath("/xls/charging_roaming_fee.xlsx");
 
 	// 엔티티 조회용
 	public Optional<ChargeFee> findByBnmAndChgerTypeOptional(String bnm, String chgerType) {
