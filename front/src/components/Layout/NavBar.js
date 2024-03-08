@@ -250,27 +250,25 @@ const Navbar = () => {
                   fontSize: "20px",
                   color: "gray",
                   fontWeight: "bold",
-                  marginLeft: "12px",
-                  marginRight: "10px",
                 }}
               >
                 로그아웃
               </Button>
-              <Typography
+              <Button
                 variant="body1"
+                component={Link}
+                to="/mypage"
                 style={{
                   fontSize: "20px",
-                  color: "black",
-                  marginLeft: "5px",
+                  color: "gray",
                   fontWeight: "bold",
-                  textAlign: "right",
                 }}
               >
-                {!getUserName().startsWith("KAKAO")
+                {/* {!getUserName().startsWith("KAKAO")
                   ? getUserName()
-                  : getUserNickname()}
-                님
-              </Typography>
+                  : getUserNickname()} */}
+                  마이페이지
+              </Button>
             </>
           ) : (
             <>
