@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -71,7 +72,7 @@ public class ChargerService {
         }
         return hashMap;
     }
-
+    @Async
     public void chargerStatusUpdate() {
         String key = apiServiceKey;
         String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
@@ -115,6 +116,9 @@ public class ChargerService {
             chargingStationRepository.findById(statId)
                     //충전소가 존재할때
                     .map(chargingStation -> {
+
+
+
                         return chargerRepository.findByChargingStationStatIdAndChgerId(statId,chgerId)
                                 //해당 충전소의 충전기가 존재할때
                                 .map(charger -> {
