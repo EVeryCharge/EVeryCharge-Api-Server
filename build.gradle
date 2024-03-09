@@ -36,7 +36,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // DEV TOOLS
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // WEB
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -81,6 +81,8 @@ dependencies {
     // XML
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
 
+    // Aspose for Excel Data
+    implementation 'com.luhuiguo:aspose-cells:23.1'
 }
 
 tasks.named('test') {

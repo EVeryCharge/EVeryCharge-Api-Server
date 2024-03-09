@@ -1,32 +1,16 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import static com.ll.eitcharge.global.app.AppConfig.*;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
+import com.ll.eitcharge.domain.chargeFee.chargeFee.service.ChargeFeeService;
+import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.RedisChargerStorageService;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
@@ -40,6 +24,7 @@ import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 
 import jakarta.annotation.PostConstruct;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -48,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class ChargingStationService {
 	private final ObjectMapper objectMapper;
 	private final RegionService regionService;
+	private final ChargeFeeService chargeFeeService;
 	private final ChargerRepository chargerRepository;
 	private final RegionDetailService regionDetailService;
 	private final OperatingCompanyService operatingCompanyService;
@@ -145,9 +131,9 @@ public class ChargingStationService {
 		sorts.add(Sort.Order.desc("statNm"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
-		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(limitYn, parkingFree, zcode,
-			zscode,
-			isPrimary, busiIds, chgerTypes, kw, pageable);
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(
+			limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, pageable
+		);
 
 		return chargingStations.map(ChargingStationSearchResponseDto::new);
 	}
@@ -162,7 +148,7 @@ public class ChargingStationService {
 
 	@Transactional(readOnly = true)
 	public Page<ChargingStationSearchBaseDistanceResponseDto> searchBaseDistance(
-		String stat,
+		String chargeable,
 		String limitYn,
 		String parkingFree,
 		String zcode,
@@ -180,8 +166,15 @@ public class ChargingStationService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
 		return chargingStationSearchRepository.searchBaseDistance(
-			stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
+			chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
 		);
+	}
+
+	public ChargingStationInfoResponseDto infoSearch(String statId) {
+		ChargingStation chargingStation = findById(statId);
+		List<ChargeFee> chargeFeeList = chargeFeeService.findByBnm(chargingStation.getOperatingCompany().getBnm());
+
+		return new ChargingStationInfoResponseDto(chargingStation, chargeFeeList);
 	}
 
 	@Transactional(readOnly = true)
@@ -190,4 +183,3 @@ public class ChargingStationService {
 		redisChargerStorageService.initChargersToRedis();
 	}
 }
-

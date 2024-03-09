@@ -1,10 +1,11 @@
-package com.ll.eitcharge.domain.chargingStation.chargingStation.dto;
-
-import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import lombok.Getter;
-import lombok.Setter;
+package com.ll.eitcharge.domain.charger.charger.dto;
 
 import java.time.LocalDateTime;
+
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

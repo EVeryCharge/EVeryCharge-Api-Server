@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
@@ -56,9 +57,15 @@ public class ChargingStationController {
     }
 
     @GetMapping("/chargerStatus")
-    @Operation(summary = "충전기 상태조회", description = "충전소에 포함된 충전기들의 상태조회(데이터 베이스)")
+    @Operation(summary = "충전기 상태 조회", description = "충전소에 포함된 충전기 상태조회")
     public ResponseEntity<List<ChargerStateDto>> chargerStateSearch(@RequestParam String statId) {
         return ResponseEntity.ok(chargingStationService.chargerStateSearch(statId));
+    }
+
+    @GetMapping("/info")
+    @Operation(summary = "충전소 세부정보 조회", description = "충전소 세부정보 조회")
+    public ResponseEntity<ChargingStationInfoResponseDto> infoSearch(@RequestParam String statId) {
+        return ResponseEntity.ok(chargingStationService.infoSearch(statId));
     }
 
     @GetMapping("/search/item")
@@ -104,8 +111,8 @@ public class ChargingStationController {
     @Operation(summary = "충전소 검색", description = "키워드 단위 충전소 검색 (Param) + 위치 기준 거리순 정렬")
     @GetMapping("/searchBaseDistance")
     public ResponseEntity<Page<ChargingStationSearchBaseDistanceResponseDto>> searchBaseDistance(
-            // 충전소 충전 가능 여부 (1 : 통신 이상, 2: 충전 대기, 3: 충전 중 ...)
-            @RequestParam(value = "stat", required = false) String stat,
+            // 충전소 충전 가능 여부 (Y / N, Y : 충전 가능 N : 충전 불가능)
+            @RequestParam(value = "chargeable", required = false) String chargeable,
             // 사용제한 여부 (Y / N, Y : 제한 있음 N : 제한 없음)
             @RequestParam(value = "limitYn", required = false) String limitYn,
             // 무료 주차 (Y / N)
@@ -134,7 +141,7 @@ public class ChargingStationController {
             @RequestParam(value = "range", defaultValue = "2000000") int range
     ) {
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
-                stat, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
+                chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
 
 }
