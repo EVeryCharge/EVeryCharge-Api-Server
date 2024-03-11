@@ -1,41 +1,62 @@
 package com.ll.eitcharge.standard.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.aspose.cells.Workbook;
 
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
 public class ExcelDataUtil {
-	private final WebClient webClient;
-
-	public ExcelDataUtil() {
-		this.webClient = WebClient.create("https://ev.or.kr");
-	}
-
 	/**
 	 * HTTP 요청을 통해 xls, xlsx 파일을 Workbook 객체로 리턴한다.
 	 * 작성자 : 이상제
-	 * 참고사항 : 로컬 / 개발 환경에서는 SSL 인증 문제로 인해 Exception이 발생할 수 밖에 없으므로 주의
 	 */
-	public Workbook getDataByWorkbook(String httpRequestUrl) {
+	public Workbook getDataFromHttpByWorkbook(String httpRequestUrl) {
 		try {
-			// HTTP 요청, 파일 다운로드
-			Mono<byte[]> responseMono = webClient.get()
-				.uri(httpRequestUrl)
-				.retrieve()
-				.bodyToMono(byte[].class);
+			TrustManager[] trustAllCerts = new TrustManager[]{
+				new X509TrustManager() {
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
 
-			InputStream inputStream = new ByteArrayInputStream(responseMono.blockOptional().orElse(new byte[0]));
+					public void checkClientTrusted(X509Certificate[] certs, String authType) {
+					}
+
+					public void checkServerTrusted(X509Certificate[] certs, String authType) {
+					}
+				}
+			};
+
+			// SSL 인증 무시 설정
+			SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, trustAllCerts, new SecureRandom());
+
+			URL url = new URL(httpRequestUrl);
+			HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+
+			if (httpUrlConnection instanceof HttpsURLConnection) {
+				((HttpsURLConnection) httpUrlConnection).setSSLSocketFactory(sslContext.getSocketFactory());
+			}
+
+			// HTTP 요청 수행 및 데이터 응답 받기
+			InputStream inputStream = httpUrlConnection.getInputStream();
+
+			// InputStream으로부터 Workbook 객체 생성
 			return new Workbook(inputStream);
 		} catch (Exception e) {
 			log.error("ERROR : API로부터 Workbook 불러오기 실패");
@@ -44,7 +65,7 @@ public class ExcelDataUtil {
 		}
 	}
 
-	public Workbook readDataByWorkbook(String filePath) {
+	public Workbook readDataFromFileByWorkbook(String filePath) {
 		try (InputStream inputStream = new FileInputStream(filePath)) {
 			return new Workbook(inputStream);
 		} catch (FileNotFoundException e) {
