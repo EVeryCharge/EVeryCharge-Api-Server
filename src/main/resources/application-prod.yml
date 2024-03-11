@@ -11,9 +11,9 @@ spring:
       ddl-auto: update
 #  data:
 #    redis:
-#      host: 172.1.0.1
-#      port: 6379
-#      password: lldj123414
+#      host: <ON_SECRET>
+#      port: <ON_SECRET>
+#      password: <ON_SECRET>
 logging:
   level:
     com.ll.eitcharge: INFO
