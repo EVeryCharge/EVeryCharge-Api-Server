@@ -34,8 +34,8 @@ public class ChargeFeeService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargeFeeRepository chargeFeeRepository;
 	private final ExcelDataUtil excelDataUtil;
-	private final String CHARGE_FEE_API_URL = "/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
-	private final String CHARGE_ROAMING_FEE_API_URL = "/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
+	private final String CHARGE_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
+	private final String CHARGE_ROAMING_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
 	private final String CHARGE_ROAMING_FEE_FILE_PATH = AppConfig.getResourcesRelativeDirPath("/xls/charging_roaming_fee.xlsx");
 
 	// 엔티티 조회용
@@ -51,7 +51,7 @@ public class ChargeFeeService {
 	@Scheduled(cron = "0 0 2 * * * ")
 	@Transactional
 	public void upsertChargeFeeFromApi() {
-		Workbook workbook = excelDataUtil.getDataByWorkbook(CHARGE_FEE_API_URL);
+		Workbook workbook = excelDataUtil.getDataFromHttpByWorkbook(CHARGE_FEE_API_URL);
 		if (workbook == null) return;
 
 		Worksheet worksheet = workbook.getWorksheets().get(0);
@@ -113,7 +113,7 @@ public class ChargeFeeService {
 
 	@Scheduled(cron = "0 0 2 * * * ")
 	public void updateChargeRoamingFeeFileFromApi() {
-		Workbook workbook = excelDataUtil.getDataByWorkbook(CHARGE_ROAMING_FEE_API_URL);
+		Workbook workbook = excelDataUtil.getDataFromHttpByWorkbook(CHARGE_ROAMING_FEE_API_URL);
 		if (workbook == null) return;
 		try {
 			workbook.save(CHARGE_ROAMING_FEE_FILE_PATH, SaveFormat.XLSX);
@@ -132,7 +132,7 @@ public class ChargeFeeService {
 	}
 
 	public ChargeRoamingFeeSearchBaseItemDto getRoamingSearchBaseItem() {
-		Workbook workbook = excelDataUtil.readDataByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
+		Workbook workbook = excelDataUtil.readDataFromFileByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
 		Worksheet worksheet = workbook.getWorksheets().get(0);
 		int lastRow = worksheet.getCells().getMaxDataRow();
 		int lastCol = worksheet.getCells().getMaxDataColumn();
@@ -157,7 +157,7 @@ public class ChargeFeeService {
 	}
 
 	public ChargeRoamingFeeListDto getChargeRoamingFee(List<String> memberBnm, List<String> chgerBnm) {
-		Workbook workbook = excelDataUtil.readDataByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
+		Workbook workbook = excelDataUtil.readDataFromFileByWorkbook(CHARGE_ROAMING_FEE_FILE_PATH);
 		String[][] values = new String[memberBnm.size() + 1][chgerBnm.size() + 1];
 
 		// A1 셀 값 설정
