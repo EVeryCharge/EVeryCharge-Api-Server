@@ -2,19 +2,27 @@ server:
   shutdown: graceful
 spring:
   datasource:
-    url: jdbc:mysql://db-1.eitcharge.site:3306/eitcharge_prod
-    username: admin
-    password: lldj123414
+#    url: <ON_SECRET>
+#    username: <ON_SECRET>
+#    password: <ON_SECRET>
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+#  data:
+#    redis:
+#      host: 172.1.0.1
+#      port: 6379
+#      password: lldj123414
+logging:
+  level:
+    com.ll.eitcharge: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.orm.jdbc.extract: INFO
+    org.springframework.transaction.interceptor: INFO
 custom:
   site:
     cookieDomain: "${custom.prod.cookieDomain}"
     frontUrl: "${custom.prod.frontUrl}"
     backUrl: "${custom.prod.backUrl}"
-  temp:
-    dirPath: c:/temp/eitcharge_prod/temp
-  genFile:
-    dirPath: c:/temp/eitcharge_prod
