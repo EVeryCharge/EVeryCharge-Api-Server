@@ -9,21 +9,56 @@ function InquiryForm() {
   const [isPublished, setIsPublished] = useState(false);
   const [inquiryType, setInquiryType] = useState(null); // 문의 유형 상태 추가
   const navigate = useNavigate();
+  const formData = new FormData();
+  const [file, setFile] = useState(null); // 파일 상태 추가
+  const [filename, setFileName] = useState(null); // 파일 상태 추가
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]); // 첫 번째 파일 선택
+    setFileName(e.target.files[0].name);  
+    // console.log("등록된 파일이름은: " + filename);   
+  };
 
 
   const handleSubmit = async () => {
     try {
-      const response = await HttpPost(
+      // const request2 = await HttpPost('/api/v1/inquiry/fileupload', formData);
+      console.log(`파일 = ${file}`)
+      console.log(`파일이름1 = ${filename}`)
+
+      if(file){
+        formData.append('file', file); // 파일 필드 추가
+
+        console.log("파일이름2: " + file.name); 
+        fetch(`${BACKEND_URL}/api/v1/inquiry/fileupload`, {
+        method: 'POST',
+        body: formData
+      }).then(
+        resp => resp.json()
+      ).then(
+        data => console.log(data)
+      ).catch( err => console.log)
+      }
+
+      const request1 = await HttpPost(
         '/api/v1/inquiry/create',
         {
           title: title,
           content: content,
           inquiryType : inquiryType,
-          isPublished: isPublished
+          isPublished: isPublished,
+          s3fileName : filename
         }
       );
 
-      console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType});
+      console.log(`파일이름1 = ${filename}`)
+      console.log(`파일2 = ${file}`)
+
+      // const [response1, response2] = await Promise.all([request1, request2]);
+      // const [response1] = await Promise.all([request1]);
+
+      console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType, filename});
       alert("문의 등록 완료");
       navigate('/inquiry');
     } catch (error) {
@@ -35,7 +70,8 @@ function InquiryForm() {
       }else if(inquiryType === null){
         alert("문의 유형을 선택해주세요.")
       }
-      console.error('글쓰기 실패', error.response.data);      
+      console.error('글쓰기 실패', error);      
+      console.error('글쓰기 실패', error.request1);           
     }
     
   };
@@ -73,6 +109,8 @@ function InquiryForm() {
         value={content}
         onChange={e => setContent(e.target.value)}
       />
+      <input type="file" onChange={handleFileChange} /> {/* 파일 입력 필드 추가 */}
+      <p></p>
       <FormControlLabel
         control={<Checkbox checked={isPublished} onChange={e => setIsPublished(e.target.checked)} />}
         label="공개"
