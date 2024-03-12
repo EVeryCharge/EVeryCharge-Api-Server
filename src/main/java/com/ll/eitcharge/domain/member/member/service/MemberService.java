@@ -1,11 +1,14 @@
 package com.ll.eitcharge.domain.member.member.service;
 
+import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.repository.MemberRepository;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 import com.ll.eitcharge.global.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -80,6 +83,8 @@ public class MemberService {
         return join(username, "");
     }
 
+
+
     public record AuthAndMakeTokensResponseBody(
             @NonNull Member member,
             @NonNull String accessToken,
@@ -139,6 +144,8 @@ public class MemberService {
 
         return RsData.of("200-1", "토큰 갱신 성공", accessToken);
     }
-
-
+    @Transactional
+    public void carInit(Member member, String carModel) {
+        member.carInit(carModel);
+    }
 }
