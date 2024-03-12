@@ -121,10 +121,9 @@ public class AppConfig {
         this.apiServiceKey = apiServiceKey;
     }
 
-    public static String getResourcesRelativeDirPath(String DETAIL_FILE_PATH) {
-        ClassPathResource resource = new ClassPathResource(DETAIL_FILE_PATH);
+    public static String getResourcesAbsouluteDirPath(String path) {
             try {
-                return resource.getURI().getPath();
+                return new ClassPathResource(path).getFile().getAbsolutePath();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

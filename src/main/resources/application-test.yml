@@ -4,8 +4,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-custom:
-  temp:
-    dirPath: c:/temp/eitcharge_test/temp
-  genFile:
-    dirPath: c:/temp/eitcharge_test
