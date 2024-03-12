@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HttpPost } from '../../services/HttpService';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
@@ -13,11 +13,24 @@ function InquiryForm() {
   const [file, setFile] = useState(null); // 파일 상태 추가
   const [filename, setFileName] = useState(null); // 파일 상태 추가
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
+  useEffect(() => {
+    console.log("등록된 파일 이름은: " + filename);
+  }, [filename]); // fileName 상태가 변경될 때마다 이 useEffect가 실행됩니다.  
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]); // 첫 번째 파일 선택
-    setFileName(e.target.files[0].name);  
-    // console.log("등록된 파일이름은: " + filename);   
+    const selectedFile = e.target.files[0]; // 첫 번째 파일 선택
+  if (selectedFile) {
+    setFile(selectedFile); // file 상태 업데이트
+    setFileName(selectedFile.name); // fileName 상태 업데이트
+
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreviewUrl(reader.result); // 이미지 프리뷰 URL 상태 업데이트
+    };
+    reader.readAsDataURL(selectedFile); // FileReader로 파일 읽기 시작
+    }
   };
 
 
@@ -110,6 +123,10 @@ function InquiryForm() {
         onChange={e => setContent(e.target.value)}
       />
       <input type="file" onChange={handleFileChange} /> {/* 파일 입력 필드 추가 */}
+      <p></p>
+      {imagePreviewUrl && (
+        <img src={imagePreviewUrl} alt="이미지 프리뷰" style={{ width: "100px", height: "100px" }} />
+      )}
       <p></p>
       <FormControlLabel
         control={<Checkbox checked={isPublished} onChange={e => setIsPublished(e.target.checked)} />}
