@@ -257,7 +257,7 @@ const Navbar = () => {
               <Button
                 variant="body1"
                 component={Link}
-                to="/mypage"
+                to="/my"
                 style={{
                   fontSize: "20px",
                   color: "gray",
