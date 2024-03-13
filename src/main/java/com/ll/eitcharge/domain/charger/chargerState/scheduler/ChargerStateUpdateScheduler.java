@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateUpdateService;
+import com.ll.eitcharge.global.app.AppConfig;
 
 import lombok.RequiredArgsConstructor;
 
