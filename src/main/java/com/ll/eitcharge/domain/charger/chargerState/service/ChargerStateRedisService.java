@@ -64,7 +64,7 @@ public class ChargerStateRedisService {
 				listConvertedByMap.forEach(map ->
 					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
 				);
-				log.info("Redis : 충전소_충전기 / 상태정보 " + listConvertedByMap.size() + "건 저장 완료");
+				log.info("Redis(init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -90,7 +90,7 @@ public class ChargerStateRedisService {
 				listConvertedByMap.forEach(map ->
 					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
 				);
-				log.info("Redis(초기 세팅) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
+				// log.info("Redis(초기 세팅) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -106,20 +106,18 @@ public class ChargerStateRedisService {
 
 		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
 			for (ChargerStateUpdateDto dto : list) {
-				// dto에서 statId와 chgerId를 key로, %s_%s로 묶어서, value는 stat로 추출해서 넣어줘
 				String key = String.format("%s_%s", dto.getStatId(), dto.getChgerId());
 				String value = dto.getStat();
 
 				if (redisTemplate.hasKey(key) && !redisTemplate.opsForValue().get(key).equals(value)) {
 					redisTemplate.opsForValue().set(key, value);
-					// 업데이트된 해당 Dto를 리스트에 추가해서 리턴해줘
 					updatedList.add(dto);
 				}
 			}
 			return null;
 		});
 
-		log.info("Redis(정기 업데이트) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
+		log.info("Redis(scheduler) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
 		return updatedList;
 	}
 
