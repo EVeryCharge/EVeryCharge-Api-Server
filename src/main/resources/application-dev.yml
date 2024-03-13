@@ -6,14 +6,14 @@ spring:
       enabled: always
   datasource:
     url: jdbc:mysql://localhost:3306/eitcharge
-    username: <NEED_TO_INPUT>
-    password: <NEED_TO_INPUT>
+    username: root
+    password: lldj123414
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
-#      password: <NEED_TO_INPUT>
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 1234
 logging:
   level:
     com.ll.eitcharge: INFO
