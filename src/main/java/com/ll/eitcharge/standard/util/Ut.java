@@ -1,7 +1,10 @@
 package com.ll.eitcharge.standard.util;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import com.ll.eitcharge.global.app.AppConfig;
+
 import lombok.SneakyThrows;
 
 public class Ut {
@@ -74,5 +77,9 @@ public class Ut {
         public static String toString(Object obj) {
             return AppConfig.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         }
+    }
+
+    public static String calcDuration(LocalDateTime startTime, LocalDateTime endTime) {
+        return Duration.between(startTime, endTime).toMillis() + "ms";
     }
 }
