@@ -7,51 +7,73 @@ function InquiryForm() {
   const [title, setTitle] = useState(null);
   const [content, setContent] = useState(null);
   const [isPublished, setIsPublished] = useState(false);
-  const [inquiryType, setInquiryType] = useState(null); // 문의 유형 상태 추가
+  const [inquiryType, setInquiryType] = useState(null); 
   const navigate = useNavigate();
   const formData = new FormData();
-  const [file, setFile] = useState(null); // 파일 상태 추가
-  const [filename, setFileName] = useState(null); // 파일 상태 추가
+  const [files, setFiles] = useState([]); 
+  const [previewUrls, setPreviewUrls] = useState([]); 
+  const [filenames, setFileNames] = useState([]); 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
 
   useEffect(() => {
-    console.log("등록된 파일 이름은: " + filename);
-  }, [filename]); // fileName 상태가 변경될 때마다 이 useEffect가 실행됩니다.  
+    console.log("등록된 파일 이름은: " + filenames);
+  }, [filenames]);  
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // 첫 번째 파일 선택
-  if (selectedFile) {
-    setFile(selectedFile); // file 상태 업데이트
-    setFileName(selectedFile.name); // fileName 상태 업데이트
 
-    let reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreviewUrl(reader.result); // 이미지 프리뷰 URL 상태 업데이트
-    };
-    reader.readAsDataURL(selectedFile); // FileReader로 파일 읽기 시작
+    if (e.target.files.length > 10) {
+      alert(`최대 10 개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
+      e.target.value = '';
+      setFiles([]);
+      setPreviewUrls([]);
+      return; 
     }
+
+    const selectedFiles = Array.from(e.target.files); // 선택된 파일들을 배열로 변환
+    setFiles(selectedFiles); 
+
+    const fileReaders = [];
+    const urls = [];
+    const filenames = [];
+
+    selectedFiles.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        urls.push(event.target.result);
+        filenames.push(file.name);
+
+        if (urls.length === selectedFiles.length) {
+          setPreviewUrls(urls); 
+          setFileNames(filenames);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
   };
 
 
   const handleSubmit = async () => {
     try {
-      // const request2 = await HttpPost('/api/v1/inquiry/fileupload', formData);
-      console.log(`파일 = ${file}`)
-      console.log(`파일이름1 = ${filename}`)
+      if(files){ 
+        // files 배열에 있는 모든 파일을 FormData에 추가
+        files.forEach((file, index) => {
+          formData.append(`files`, file); // 서버에서 배열 형태로 파일을 받을 수 있도록 이름을 설정
+        });
 
-      if(file){
-        formData.append('file', file); // 파일 필드 추가
+        formData.append('type', 'inquiry'); // 'type' 파라미터 추가
 
-        console.log("파일이름2: " + file.name); 
         fetch(`${BACKEND_URL}/api/v1/inquiry/fileupload`, {
-        method: 'POST',
-        body: formData
-      }).then(
-        resp => resp.json()
-      ).then(
-        data => console.log(data)
-      ).catch( err => console.log)
+          method: 'POST',
+          body: formData,
+        }).then(
+            resp => resp.json()
+          ).then(
+            data => console.log(data)
+          ).catch( err => console.log)
+          console.log(`전송된 파일 목록 = ${filenames}`)
       }
 
       const request1 = await HttpPost(
@@ -61,17 +83,11 @@ function InquiryForm() {
           content: content,
           inquiryType : inquiryType,
           isPublished: isPublished,
-          s3fileName : filename
+          s3fileNames : files.map(file => file.name), // 업로드된 파일 이름들
         }
       );
 
-      console.log(`파일이름1 = ${filename}`)
-      console.log(`파일2 = ${file}`)
-
-      // const [response1, response2] = await Promise.all([request1, request2]);
-      // const [response1] = await Promise.all([request1]);
-
-      console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType, filename});
+      console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType, filenames: files.map(file => file.name)});
       alert("문의 등록 완료");
       navigate('/inquiry');
     } catch (error) {
@@ -83,10 +99,8 @@ function InquiryForm() {
       }else if(inquiryType === null){
         alert("문의 유형을 선택해주세요.")
       }
-      console.error('글쓰기 실패', error);      
-      console.error('글쓰기 실패', error.request1);           
+      console.error('글쓰기 실패', error);              
     }
-    
   };
 
 
@@ -122,12 +136,13 @@ function InquiryForm() {
         value={content}
         onChange={e => setContent(e.target.value)}
       />
-      <input type="file" onChange={handleFileChange} /> {/* 파일 입력 필드 추가 */}
-      <p></p>
-      {imagePreviewUrl && (
-        <img src={imagePreviewUrl} alt="이미지 프리뷰" style={{ width: "100px", height: "100px" }} />
-      )}
-      <p></p>
+      <input type="file" onChange={handleFileChange} multiple />
+      <div>
+        {previewUrls.map((url, index) => (
+          <img key={index} src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+        ))}
+      </div>
+     
       <FormControlLabel
         control={<Checkbox checked={isPublished} onChange={e => setIsPublished(e.target.checked)} />}
         label="공개"
