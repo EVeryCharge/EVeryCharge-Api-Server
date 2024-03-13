@@ -1,6 +1,7 @@
 package com.ll.eitcharge.global.app;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,11 +122,7 @@ public class AppConfig {
         this.apiServiceKey = apiServiceKey;
     }
 
-    public static String getResourcesAbsouluteDirPath(String path) {
-            try {
-                return new ClassPathResource(path).getFile().getAbsolutePath();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    public static InputStream getResourceAsStream(String relativePath) {
+        return AppConfig.class.getClassLoader().getResourceAsStream(relativePath);
     }
 }
