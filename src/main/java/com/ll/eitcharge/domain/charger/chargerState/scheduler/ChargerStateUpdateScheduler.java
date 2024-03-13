@@ -13,10 +13,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChargerStateUpdateScheduler {
 
-    private final ChargerStateUpdateService chargerStatusUpdateService;
+	private final ChargerStateUpdateService chargerStatusUpdateService;
 
-     @Scheduled(fixedRate = 3 * 60 * 1000) // 초기 지연 시간 5분, 그 후 3분마다 실행
-     public void updateChargerState() {
-         chargerStatusUpdateService.updateChargerStateScheduled();
-     }
+	@Scheduled(fixedRate = 3 * 60 * 1000) // 초기 지연 시간 5분, 그 후 3분마다 실행
+	public void updateChargerState() {
+		if (AppConfig.isAppInitialized) {
+			chargerStatusUpdateService.updateChargerStateScheduled();
+		}
+	}
 }
