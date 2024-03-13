@@ -122,4 +122,15 @@ public class ChargerStateRedisService {
 		log.info("Redis(정기 업데이트) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
 		return updatedList;
 	}
+
+	/**
+	 * Redis에 존재하는 모든 key, value를 삭제한다. (초기화)
+	 */
+	public void flushAll() {
+		redisTemplate.execute((RedisCallback<Void>) connection -> {
+			connection.serverCommands().flushAll();
+			log.info("Redis(init) : redis flushAll 완료");
+			return null;
+		});
+	}
 }

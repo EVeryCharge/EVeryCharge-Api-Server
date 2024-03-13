@@ -7,9 +7,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
-import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
 
 	@Value("${spring.data.redis.host}")
@@ -21,17 +22,10 @@ public class RedisConfig {
 	@Value("${spring.data.redis.password}")
 	private String password;
 
-	private LettuceConnectionFactory lettuceConnectionFactory;
-
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory(){
 		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host,  port);
 		config.setPassword(password);
 		return new LettuceConnectionFactory(config);
-	}
-
-	@PreDestroy
-	public void flushRedisOnShutdown() {
-		lettuceConnectionFactory.getConnection().serverCommands().flushAll();
 	}
 }

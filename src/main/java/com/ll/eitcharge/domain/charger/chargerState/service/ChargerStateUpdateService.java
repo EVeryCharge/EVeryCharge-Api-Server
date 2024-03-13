@@ -35,6 +35,7 @@ public class ChargerStateUpdateService {
 	}
 
 	public void initChargersToRedis() {
+		chargerStateRedisService.flushAll();
 		chargerStateRedisService.setChargersToRedisByChargingStationList(chargerService.findAll());
 	}
 
