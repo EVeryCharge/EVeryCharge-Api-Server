@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/inquiry")
 @Tag(name = "InquiryController", description = "문의게시판 컨트롤러 API")
@@ -61,11 +63,11 @@ public class InquiryController {
             Principal principal
     ) {
         String fileurl;
-        System.out.println("파일이름이 뭔데" + requestDto.getS3fileName());
-        if(requestDto.getS3fileName() == null)
+        System.out.println("파일이름이 뭔데" + requestDto.getS3fileNames());
+        if(requestDto.getS3fileNames() == null)
             fileurl = null;
         else
-            fileurl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + requestDto.getS3fileName();
+            fileurl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + requestDto.getS3fileNames();
 
         inquiryService.create(requestDto, principal.getName(), fileurl);
 
@@ -108,17 +110,24 @@ public class InquiryController {
 
     @PostMapping("/fileupload")
     @ResponseBody
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestPart("files") List<MultipartFile> files,
+                                             @RequestParam String type) {
         try {
-            String fileName=file.getOriginalFilename();
-            // 파일을 S3에 업로드합니다.
-//        // ObjectMetadata 객체 생성 및 설정
-            ObjectMetadata metadata= new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
-            amazonS3.putObject(bucket,fileName,file.getInputStream(),metadata);
-            return ResponseEntity.ok("업로드 완료");
-        } catch (IOException e) {
+            for (MultipartFile file : files) { // 파일 배열을 반복 처리
+                String fileName = file.getOriginalFilename();
+                // ObjectMetadata 객체 생성 및 설정
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(file.getContentType());
+                metadata.setContentLength(file.getSize());
+
+                // 파일을 S3에 업로드
+                amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
+                log.info("file 값은", file);
+                System.out.println("타입값은" + type);
+            }
+            return ResponseEntity.ok("파일 업로드 완료");
+//        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -3,6 +3,9 @@ package com.ll.eitcharge.domain.inquiry.inquiry.dto;
 import lombok.*;
 import org.springframework.lang.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -19,6 +22,6 @@ public class InquiryRequestDto {
     @NonNull
     private String inquiryType;
     private Boolean isPublished;
-    private String s3fileName;
+    private List<String> s3fileNames = new ArrayList<>();
 
 }
