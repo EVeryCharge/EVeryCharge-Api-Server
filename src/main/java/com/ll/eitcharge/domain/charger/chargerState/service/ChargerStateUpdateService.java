@@ -47,7 +47,7 @@ public class ChargerStateUpdateService {
 		log.info("[REDIS](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 
-	// @Async
+	@Async
 	@Transactional
 	public void updateChargerState() {
 		log.info("충전기 상태 업데이트 시작");
