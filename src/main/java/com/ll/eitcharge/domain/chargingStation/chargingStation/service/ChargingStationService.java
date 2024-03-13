@@ -1,5 +1,23 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
@@ -8,8 +26,7 @@ import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.charger.charger.service.RedisChargerStorageService;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargerStateDto;
+import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateRedisService;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
@@ -20,10 +37,9 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.Chargi
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
 import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.eitcharge.domain.region.service.RegionService;
+import com.ll.eitcharge.global.app.AppConfig;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
-
-import jakarta.annotation.PostConstruct;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +55,7 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
-	private final RedisChargerStorageService redisChargerStorageService;
+	private final ChargerStateRedisService chargerStateRedisService;
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -67,7 +83,7 @@ public class ChargingStationService {
 	public RsData<Object> findFromApi(String statId) {
 		WebClient webClient = WebClient.create();
 
-		String serviceKey = apiServiceKey;
+		String serviceKey = AppConfig.getApiServiceKey();
 		String numOfRows = "100";
 		String pageNo = "1";
 
@@ -175,11 +191,5 @@ public class ChargingStationService {
 		List<ChargeFee> chargeFeeList = chargeFeeService.findByBnm(chargingStation.getOperatingCompany().getBnm());
 
 		return new ChargingStationInfoResponseDto(chargingStation, chargeFeeList);
-	}
-
-	@Transactional(readOnly = true)
-	@PostConstruct // TODO 배치 서비스로 옮기기, 도메인 분리
-	public void initializeRedisChargers() {
-		redisChargerStorageService.initChargersToRedis();
 	}
 }
