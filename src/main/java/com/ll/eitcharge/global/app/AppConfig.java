@@ -125,4 +125,12 @@ public class AppConfig {
     public static InputStream getResourceAsStream(String relativePath) {
         return AppConfig.class.getClassLoader().getResourceAsStream(relativePath);
     }
+
+    public static String getResourcesAbsouluteDirPath(String path) {
+            try {
+                return new ClassPathResource(path).getFile().getAbsolutePath();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+    }
 }
