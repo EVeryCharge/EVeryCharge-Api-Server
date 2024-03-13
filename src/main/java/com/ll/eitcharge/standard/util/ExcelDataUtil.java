@@ -16,6 +16,7 @@ import javax.net.ssl.X509TrustManager;
 import org.springframework.stereotype.Component;
 
 import com.aspose.cells.Workbook;
+import com.ll.eitcharge.global.app.AppConfig;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,13 +67,15 @@ public class ExcelDataUtil {
 	}
 
 	public Workbook readDataFromFileByWorkbook(String filePath) {
-		try (InputStream inputStream = new FileInputStream(filePath)) {
+		try (InputStream inputStream = AppConfig.getResourceAsStream(filePath)) {
 			return new Workbook(inputStream);
+      
 		} catch (FileNotFoundException e) {
 			log.error("ERROR : 파일을 찾을 수 없습니다.");
 			e.printStackTrace();
 		} catch (Exception e) {
 			log.error("ERROR : 파일을 변환할 수 없습니다.");
+			e.printStackTrace();
 		}
 		return null;
 	}
