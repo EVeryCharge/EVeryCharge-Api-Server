@@ -33,7 +33,7 @@ public class CarController {
         return ResponseEntity.ok(carService.getCarInfoAll());
     }
 
-    @GetMapping("/manufAll")
+    @GetMapping("/manuAll")
     public ResponseEntity<CarManufacturerDto> getCarManuAll() {
         return ResponseEntity.ok(carService.getCarManuAll());
     }
