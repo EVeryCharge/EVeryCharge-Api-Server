@@ -73,6 +73,7 @@ public class ExcelDataUtil {
 			e.printStackTrace();
 		} catch (Exception e) {
 			log.error("ERROR : 파일을 변환할 수 없습니다.");
+			e.printStackTrace();
 		}
 		return null;
 	}

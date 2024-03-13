@@ -35,7 +35,7 @@ public class ChargeFeeService {
 	private final ExcelDataUtil excelDataUtil;
 	private final String CHARGE_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectEvcarStationPriceExcel.do";
 	private final String CHARGE_ROAMING_FEE_API_URL = "https://ev.or.kr/nportal/evcarInfo/selectChrgeFeeStatusExcel.do";
-	private final String CHARGE_ROAMING_FEE_FILE_PATH = "/xls/charging_roaming_fee.xlsx";
+	private final String CHARGE_ROAMING_FEE_FILE_PATH = "xls/charge_roaming_fee.xlsx";
 
 	// 엔티티 조회용
 	public Optional<ChargeFee> findByBnmAndChgerTypeOptional(String bnm, String chgerType) {
