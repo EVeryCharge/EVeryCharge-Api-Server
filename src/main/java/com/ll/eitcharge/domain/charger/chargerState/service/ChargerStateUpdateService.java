@@ -30,11 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ChargerStateUpdateService {
 	private final ChargerService chargerService;
 	private final ChargerStateRedisService chargerStateRedisService;
-	private final ChargerStateUpdateRepository chargerStateUpdateRepository;
-
-	public void updateChargerStateScheduled() {
-		updateChargerState();
-	}
+	private final ChargerRepository chargerRepository;
+	private final ChargerStateBulkUpdateRepository chargerStateBulkUpdateRepository;
 
 	public void initChargersToRedis() {
 		LocalDateTime startTime = LocalDateTime.now();
@@ -73,7 +70,7 @@ public class ChargerStateUpdateService {
 
 		for (Map<String, Object> item : items) {
 			String statId = (String)item.get("statId");
-			String chgerId = (String)item.get("chgerId");
+			String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
 			String stat = (String)item.get("stat");
 
 			LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
@@ -94,11 +91,11 @@ public class ChargerStateUpdateService {
 				.orElse(null);
 
 			apiChargersDtoList.add(
-				new ChargerStateUpdateDto(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt));
+				new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt));
 		}
 
 		// 레디스 비교를 통해 충전기 상태가 갱신된 충전기 리스트 반환
-		List<ChargerStateUpdateDto> updatedChargersDtoList =
+		List<ChargerStateUpdateForm> updatedChargersDtoList =
 			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
 
 		// DB 업데이트 로직 1. 단건 업데이트
