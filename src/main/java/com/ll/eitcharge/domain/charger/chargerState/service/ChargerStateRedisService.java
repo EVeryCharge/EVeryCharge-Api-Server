@@ -64,7 +64,7 @@ public class ChargerStateRedisService {
 				listConvertedByMap.forEach(map ->
 					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
 				);
-				log.info("Redis(init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
+				log.info("[Redis](init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -117,7 +117,7 @@ public class ChargerStateRedisService {
 			return null;
 		});
 
-		log.info("Redis(scheduler) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
+		log.info("[Redis](scheduler) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
 		return updatedList;
 	}
 
@@ -127,7 +127,7 @@ public class ChargerStateRedisService {
 	public void flushAll() {
 		redisTemplate.execute((RedisCallback<Void>) connection -> {
 			connection.serverCommands().flushAll();
-			log.info("Redis(init) : redis flushAll 완료");
+			log.info("[Redis](init) : redis flushAll 완료");
 			return null;
 		});
 	}

@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.chargerState.dto;
+package com.ll.eitcharge.domain.charger.chargerState.form;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ChargerStateUpdateDto {
+public class ChargerStateUpdateForm {
 	private String statId;
 	private String chgerId;
 	private String stat;

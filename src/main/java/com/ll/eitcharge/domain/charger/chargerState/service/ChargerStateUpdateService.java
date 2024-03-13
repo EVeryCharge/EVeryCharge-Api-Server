@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
-import com.ll.eitcharge.domain.charger.chargerState.dto.ChargerStateUpdateDto;
-import com.ll.eitcharge.domain.charger.chargerState.repository.ChargerStateUpdateRepository;
+import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.chargerState.repository.ChargerStateBulkUpdateRepository;
 import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
@@ -35,13 +37,19 @@ public class ChargerStateUpdateService {
 	}
 
 	public void initChargersToRedis() {
+		LocalDateTime startTime = LocalDateTime.now();
+		log.info("[REDIS](init) : 시작");
+
 		chargerStateRedisService.flushAll();
 		chargerStateRedisService.setChargersToRedisByChargingStationList(chargerService.findAll());
+
+		LocalDateTime endTime = LocalDateTime.now();
+		log.info("[REDIS](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 
 	// @Async
 	@Transactional
-	public String updateChargerState() {
+	public void updateChargerState() {
 		log.info("충전기 상태 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -59,8 +67,9 @@ public class ChargerStateUpdateService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
-		List<ChargerStateUpdateDto> apiChargersDtoList = new ArrayList<>();
-		List<Map<String, Object>> items = (List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+		List<ChargerStateUpdateForm> apiChargersDtoList = new ArrayList<>();
+		List<Map<String, Object>> items =
+			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		for (Map<String, Object> item : items) {
 			String statId = (String)item.get("statId");
@@ -92,10 +101,17 @@ public class ChargerStateUpdateService {
 		List<ChargerStateUpdateDto> updatedChargersDtoList =
 			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
 
-		// 네이티브 쿼리를 활용한 bulk update
-		chargerStateUpdateRepository.bulkUpdateChargerState(updatedChargersDtoList);
+		// DB 업데이트 로직 1. 단건 업데이트
+		updatedChargersDtoList.forEach(chargerRepository::updateChargerState);
+		log.info("[DB] : 충전기 상태 {}건 업데이트 완료", updatedChargersDtoList.size());
 
-		// 기존 로직
+		// DB 업데이트 로직 2. 네이티브 쿼리를 활용한 bulk update 로직 (unused)
+		// chargerStateUpdateRepository.bulkUpdateChargerState(updatedChargersDtoList);
+
+		// DB 업데이트 로직 3. 조회는 하되 저장은 한번에 JPA saveAll
+		//
+
+		// DB 업데이트 로직 4. JPA 기반 단건 업데이트 로직(기존)
 		// chargingStationRepository.findById(statId)
 		// 	//충전소가 존재할때
 		// 	.map(chargingStation -> {
@@ -155,9 +171,7 @@ public class ChargerStateUpdateService {
 		// 	);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("충전기 상태 업데이트 완료 : 메소드 실행시간 {}ms", Ut.calcDuration(startTime, endTime));
-
-		return String.format("메소드 실행시간 %s", Ut.calcDuration(startTime, endTime));
+		log.info("충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 }
 
