@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.chargerState.dto.ChargerStateUpdateDto;
+import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
 import lombok.AllArgsConstructor;
@@ -101,11 +101,11 @@ public class ChargerStateRedisService {
 	 * @param list : 오픈API로 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
 	 * @return list : redis에 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
 	 */
-	public List<ChargerStateUpdateDto> updateExistingChargersToRedis(List<ChargerStateUpdateDto> list) {
-		List<ChargerStateUpdateDto> updatedList = new ArrayList<>();
+	public List<ChargerStateUpdateForm> updateExistingChargersToRedis(List<ChargerStateUpdateForm> list) {
+		List<ChargerStateUpdateForm> updatedList = new ArrayList<>();
 
 		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
-			for (ChargerStateUpdateDto dto : list) {
+			for (ChargerStateUpdateForm dto : list) {
 				String key = String.format("%s_%s", dto.getStatId(), dto.getChgerId());
 				String value = dto.getStat();
 
@@ -125,7 +125,7 @@ public class ChargerStateRedisService {
 	 * Redis에 존재하는 모든 key, value를 삭제한다. (초기화)
 	 */
 	public void flushAll() {
-		redisTemplate.execute((RedisCallback<Void>) connection -> {
+		redisTemplate.execute((RedisCallback<Void>)connection -> {
 			connection.serverCommands().flushAll();
 			log.info("[Redis](init) : redis flushAll 완료");
 			return null;
