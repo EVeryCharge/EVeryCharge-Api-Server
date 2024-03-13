@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 
 import com.ll.eitcharge.domain.chargeFee.chargeFee.service.ChargeFeeService;
+import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateUpdateService;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class All {
     private All self;
     private final MemberService memberService;
     private final ChargeFeeService chargeFeeService;
+    private final ChargerStateUpdateService chargerStatusUpdateService;
 
     @Bean
     @Order(2)
@@ -29,6 +31,7 @@ public class All {
             this.initSystemAccount();
             this.initChargeFeeData();
             this.initChargeRoamingFeeData();
+            this.initChargersToRedis();
         };
     }
 
@@ -45,5 +48,9 @@ public class All {
 
     public void initChargeRoamingFeeData(){
         chargeFeeService.updateChargeRoamingFeeFileFromApi();
+    }
+
+    public void initChargersToRedis() {
+        chargerStatusUpdateService.initChargersToRedis();
     }
 }
