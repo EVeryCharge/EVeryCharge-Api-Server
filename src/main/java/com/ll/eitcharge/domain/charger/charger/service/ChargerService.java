@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
@@ -30,8 +31,13 @@ public class ChargerService {
     private final ChargerRepository chargerRepository;
     private final ChargingStationRepository chargingStationRepository;
 
+    // 조회용 엔티티
     public List<ChargingStation> findAll() {
         return chargingStationRepository.findAll();
+    }
+
+    public Charger getCharger(String statId, String chgerId) {
+        return chargerRepository.findByChargingStationStatIdAndChgerId(statId, chgerId).get();
     }
 
     public HashMap webClientApiGetChargerStatus(String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int priod){
