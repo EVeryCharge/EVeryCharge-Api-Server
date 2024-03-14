@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
 import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
-import com.ll.eitcharge.domain.charger.chargerState.repository.ChargerStateBulkUpdateRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
@@ -29,25 +29,25 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class ChargerStateUpdateService {
 	private final ChargerService chargerService;
+	private final ChargingStationService chargingStationService;
 	private final ChargerStateRedisService chargerStateRedisService;
 	private final ChargerRepository chargerRepository;
-	private final ChargerStateBulkUpdateRepository chargerStateBulkUpdateRepository;
 
 	public void initChargersToRedis() {
 		LocalDateTime startTime = LocalDateTime.now();
-		log.info("[REDIS](init) : 시작");
+		log.info("[Redis](init) : 시작");
 
 		chargerStateRedisService.flushAll();
-		chargerStateRedisService.setChargersToRedisByChargingStationList(chargerService.findAll());
+		chargerStateRedisService.setChargersToRedisByChargingStationList(chargingStationService.findAll());
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[REDIS](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Redis](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 
 	@Async
 	@Transactional
 	public void updateChargerState() {
-		log.info("충전기 상태 업데이트 시작");
+		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
 		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
@@ -59,6 +59,8 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
+		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
+
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -67,6 +69,10 @@ public class ChargerStateUpdateService {
 		List<ChargerStateUpdateForm> apiChargersDtoList = new ArrayList<>();
 		List<Map<String, Object>> items =
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+
+		if(!items.isEmpty()) {
+			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+		}
 
 		for (Map<String, Object> item : items) {
 			String statId = (String)item.get("statId");
@@ -168,7 +174,7 @@ public class ChargerStateUpdateService {
 		// 	);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 }
 
