@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.chargerScheduler;
+package com.ll.eitcharge.domain.charger.chargerState.config;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;

@@ -133,4 +133,6 @@ public class AppConfig {
                 throw new RuntimeException(e);
             }
     }
+
+    public static boolean isAppInitialized = false;
 }
