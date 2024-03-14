@@ -60,8 +60,8 @@ public class ExcelDataUtil {
 			// InputStream으로부터 Workbook 객체 생성
 			return new Workbook(inputStream);
 		} catch (Exception e) {
-			log.error("ERROR : API로부터 Workbook 불러오기 실패");
-			e.printStackTrace();
+			log.error("[ERROR] : API로부터 Workbook 불러오기 실패");
+			e.getCause();
 			return null;
 		}
 	}
@@ -71,11 +71,9 @@ public class ExcelDataUtil {
 			return new Workbook(inputStream);
       
 		} catch (FileNotFoundException e) {
-			log.error("ERROR : 파일을 찾을 수 없습니다.");
-			e.printStackTrace();
+			log.error("ERROR : 파일을 찾을 수 없습니다. {}", e.getMessage());
 		} catch (Exception e) {
-			log.error("ERROR : 파일을 변환할 수 없습니다.");
-			e.printStackTrace();
+			log.error("ERROR : 파일을 변환할 수 없습니다. {}", e.getMessage());
 		}
 		return null;
 	}

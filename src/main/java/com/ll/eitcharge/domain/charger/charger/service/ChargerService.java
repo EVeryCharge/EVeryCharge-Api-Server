@@ -65,9 +65,9 @@ public class ChargerService {
 
             hashMap = objectMapper.readValue(response, HashMap.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("ERROR : OpenAPI 데이터 JSON 파싱 오류", e);
+            log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
         } catch(Exception e) {
-            log.error("ERROR : OpenAPI GET 중 에러 발생(시간초과) {}", e.getMessage());
+            log.error("[ERROR] : OpenAPI GET 중 에러 발생(시간초과) {}", e.getMessage());
         }
         return hashMap;
     }
