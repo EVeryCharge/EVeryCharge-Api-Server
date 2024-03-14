@@ -1,8 +1,10 @@
 package com.ll.eitcharge.domain.member.member.service;
 
+import com.ll.eitcharge.domain.member.member.dto.MemberCarDto;
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.repository.MemberRepository;
+import com.ll.eitcharge.domain.mypage.car.dto.CarListDto;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 import com.ll.eitcharge.global.security.SecurityUser;
@@ -84,7 +86,6 @@ public class MemberService {
     }
 
 
-
     public record AuthAndMakeTokensResponseBody(
             @NonNull Member member,
             @NonNull String accessToken,
@@ -148,4 +149,9 @@ public class MemberService {
     public void carInit(Member member, String carModel) {
         member.carInit(carModel);
     }
+
+    public MemberCarDto getUserInfo(String username) {
+        return new MemberCarDto(memberRepository.findByUsername(username).get());
+    }
+
 }

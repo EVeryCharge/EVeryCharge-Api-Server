@@ -4,6 +4,7 @@ import com.ll.eitcharge.domain.member.member.dto.MemberCarDto;
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
+import com.ll.eitcharge.domain.mypage.car.dto.CarListDto;
 import com.ll.eitcharge.domain.review.review.controller.ReviewController;
 import com.ll.eitcharge.domain.review.review.dto.ReviewDto;
 import com.ll.eitcharge.domain.review.review.entity.Review;
@@ -128,5 +129,12 @@ public class MemberController {
         memberService.carInit(member, requestBody.carModel);
 
         return ResponseEntity.ok(new CarInitResponseBody(member));
+    }
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<MemberCarDto> getUserInfo(
+            @RequestParam(value = "username") String username
+    ) {
+        return ResponseEntity.ok(memberService.getUserInfo(username));
     }
 }
