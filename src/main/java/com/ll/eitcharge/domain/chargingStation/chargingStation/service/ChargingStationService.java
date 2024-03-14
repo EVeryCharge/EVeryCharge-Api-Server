@@ -26,7 +26,6 @@ import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateRedisService;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
@@ -55,11 +54,15 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
-	private final ChargerStateRedisService chargerStateRedisService;
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
 		return chargingStationRepository.findById(id).orElseThrow(GlobalException.E404::new);
+	}
+
+	// 엔티티 조회용
+	public List<ChargingStation> findAll() {
+		return chargingStationRepository.findAll();
 	}
 
 	// 엔티티 조회용

@@ -4,7 +4,6 @@ import static com.ll.eitcharge.global.app.AppConfig.*;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,26 +16,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class ChargerService {
     private final ChargerRepository chargerRepository;
     private final ChargingStationRepository chargingStationRepository;
 
     // 조회용 엔티티
-    public List<ChargingStation> findAll() {
-        return chargingStationRepository.findAll();
-    }
-
-    public Charger getCharger(String statId, String chgerId) {
+    public Charger findByChargingStationStatIdAndChgerId(String statId, String chgerId) {
         return chargerRepository.findByChargingStationStatIdAndChgerId(statId, chgerId).get();
     }
 
@@ -58,18 +54,20 @@ public class ChargerService {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
 
-        String response = webClient.get()
+        HashMap hashMap = null;
+        try {
+            String response = webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
 
-        HashMap hashMap = null;
-        try {
             hashMap = objectMapper.readValue(response, HashMap.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("JSON 파싱 오류", e);
+            log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
+        } catch(Exception e) {
+            log.error("[ERROR] : OpenAPI GET 중 에러 발생(시간초과) {}", e.getMessage());
         }
         return hashMap;
     }
