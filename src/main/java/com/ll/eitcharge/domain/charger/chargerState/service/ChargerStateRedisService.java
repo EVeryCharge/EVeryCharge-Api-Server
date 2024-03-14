@@ -73,7 +73,7 @@ public class ChargerStateRedisService {
 				if(execCount.get() < 0) {
 					log.error("[ERROR] : Redis 데이터 저장 실패");
 				}
-				log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 중 {}건 저장 완료", execCount, listConvertedByMap.size());
+				log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 중 {}건 Redis 저장 완료", execCount, listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -128,7 +128,7 @@ public class ChargerStateRedisService {
 		if(!list.isEmpty() && updatedList.isEmpty()) {
 			log.error("[ERROR] : Redis 데이터 저장 실패");
 		}
-		log.info("[Redis](scheduler) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
+		log.info("[Redis](scheduler) : OpenAPI 충전기 상태 {}건 중 변화 감지 {}건 Redis 저장 완료", list.size(), updatedList.size());
 		return updatedList;
 	}
 
