@@ -83,6 +83,9 @@ dependencies {
 
     // Aspose for Excel Data
     implementation 'com.luhuiguo:aspose-cells:23.1'
+
+    // S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
