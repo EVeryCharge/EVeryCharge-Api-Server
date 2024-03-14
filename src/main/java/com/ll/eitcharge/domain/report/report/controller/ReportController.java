@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 작성자: 이상제
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/api/v1/reports", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "ReportController", description = "신고내역 컨트롤러 API")
 @RequiredArgsConstructor
+@Slf4j
 public class ReportController {
 	private final ReportService reportService;
 
@@ -46,7 +48,8 @@ public class ReportController {
 
 		Page<ReportResponseDto> responseDtos = reportService.getList(page, pageSize);
 		responseDtos.getContent().forEach(this::loadReportAccess);
-
+		//todo 디버그용 log, 지우기
+		log.info("[test]: 클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!클릭!");
 		return RsData.of("200", "ok", responseDtos);
 	}
 

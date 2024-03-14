@@ -1,7 +1,5 @@
 package com.ll.eitcharge.domain.chargingStation.chargingStation.service;
 
-import static com.ll.eitcharge.global.app.AppConfig.*;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +26,7 @@ import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateRedisService;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
@@ -38,6 +37,7 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.Chargi
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
 import com.ll.eitcharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.eitcharge.domain.region.service.RegionService;
+import com.ll.eitcharge.global.app.AppConfig;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 
@@ -55,6 +55,7 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
+	private final ChargerStateRedisService chargerStateRedisService;
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -82,7 +83,7 @@ public class ChargingStationService {
 	public RsData<Object> findFromApi(String statId) {
 		WebClient webClient = WebClient.create();
 
-		String serviceKey = apiServiceKey;
+		String serviceKey = AppConfig.getApiServiceKey();
 		String numOfRows = "100";
 		String pageNo = "1";
 
@@ -146,8 +147,9 @@ public class ChargingStationService {
 		sorts.add(Sort.Order.desc("statNm"));
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sorts));
 
-		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(limitYn, parkingFree, zcode, zscode,
-			isPrimary, busiIds, chgerTypes, kw, pageable);
+		Page<ChargingStation> chargingStations = chargingStationRepository.searchBaseStatNm(
+			limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, pageable
+		);
 
 		return chargingStations.map(ChargingStationSearchResponseDto::new);
 	}
