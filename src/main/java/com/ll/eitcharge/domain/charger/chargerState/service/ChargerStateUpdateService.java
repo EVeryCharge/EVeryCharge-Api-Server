@@ -36,18 +36,21 @@ public class ChargerStateUpdateService {
 	public void initChargersToRedis() {
 		LocalDateTime startTime = LocalDateTime.now();
 		log.info("[Redis](init) : 시작");
+		Ut.calcHeapMemory();
 
 		chargerStateRedisService.flushAll();
 		chargerStateRedisService.setChargersToRedisByChargingStationList(chargingStationService.findAll());
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Redis](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
 	}
 
 	@Async
 	@Transactional
 	public void updateChargerState() {
 		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
+		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
 		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
@@ -175,6 +178,7 @@ public class ChargerStateUpdateService {
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
 	}
 }
 

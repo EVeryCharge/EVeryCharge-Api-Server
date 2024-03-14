@@ -117,7 +117,7 @@ public class ChargeFeeService {
 		try {
 			workbook.save(CHARGE_ROAMING_FEE_FILE_PATH, SaveFormat.XLSX);
 		} catch (Exception e) {
-			log.error("ERROR : 로밍요금 xlsx 저장 실패 {}", e.getMessage());
+			log.error("[ERROR] : 로밍요금 xlsx 저장 실패 {}", e.getMessage());
 		}
 	}
 

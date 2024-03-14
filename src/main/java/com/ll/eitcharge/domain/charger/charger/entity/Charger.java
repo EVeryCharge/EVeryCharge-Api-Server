@@ -1,15 +1,22 @@
 package com.ll.eitcharge.domain.charger.charger.entity;
 
-
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
-import com.ll.eitcharge.global.jpa.entity.BaseTime;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import static jakarta.persistence.FetchType.*;
+import static lombok.AccessLevel.*;
 
 import java.time.LocalDateTime;
 
-import static lombok.AccessLevel.PROTECTED;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.global.jpa.entity.BaseTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -18,7 +25,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 //@Table(indexes = @Index(name="idx_charger_type", columnList ="chger_type"))
 public class Charger extends BaseTime {
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "stat_id")
     private ChargingStation chargingStation;
     //충전기 id

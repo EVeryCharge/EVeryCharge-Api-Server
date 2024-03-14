@@ -37,6 +37,17 @@ const ChargingStationStateTable = ({ statId }) => {
     (row) => row.stat === "2"
   ).length;
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     HttpGet("/api/v1/chargingStation/chargerStatus", { statId: statId })
       .then((response) => {
@@ -88,7 +99,9 @@ const ChargingStationStateTable = ({ statId }) => {
                   {row.output ? row.output + "kW" : "확인불가"}
                 </TableCell>
                 <TableCell>{row.useTime}</TableCell>
-                <TableCell>{row.lasTedt ? row.lasTedt : "-"}</TableCell>
+                <TableCell>
+                  {row.lastTedt ? formatDate(row.lastTedt) : "-"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
