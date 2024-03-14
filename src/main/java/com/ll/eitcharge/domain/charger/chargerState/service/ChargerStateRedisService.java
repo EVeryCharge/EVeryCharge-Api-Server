@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -60,11 +61,19 @@ public class ChargerStateRedisService {
 						}))
 			.toList();
 
+		log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 불러오기 완료", listConvertedByMap.size());
+
+		AtomicInteger execCount = new AtomicInteger();
 		redisTemplate.executePipelined((RedisCallback<Object>)connection -> {
-				listConvertedByMap.forEach(map ->
-					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
+				listConvertedByMap.forEach(map -> {
+						redisTemplate.opsForValue().set(map.getKey(), map.getValue());
+						execCount.getAndIncrement();
+					}
 				);
-				log.info("[Redis](init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
+				if(execCount.get() < 0) {
+					log.error("[ERROR] : Redis 데이터 저장 실패");
+				}
+				log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 중 {}건 저장 완료", execCount, listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -90,7 +99,7 @@ public class ChargerStateRedisService {
 				listConvertedByMap.forEach(map ->
 					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
 				);
-				// log.info("Redis(초기 세팅) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
+				// log.info("Redis(init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
 				return null;
 			}
 		);
@@ -116,7 +125,9 @@ public class ChargerStateRedisService {
 			}
 			return null;
 		});
-
+		if(!list.isEmpty() && updatedList.isEmpty()) {
+			log.error("[ERROR] : Redis 데이터 저장 실패");
+		}
 		log.info("[Redis](scheduler) : 충전기 상태 {}건 중 변화 감지 {}건 저장 완료", list.size(), updatedList.size());
 		return updatedList;
 	}
