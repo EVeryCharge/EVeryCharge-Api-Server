@@ -85,4 +85,4 @@ jobs:
             chmod +x /docker_projects/everycharge/zero_downtime_deploy.py
             /docker_projects/everycharge/zero_downtime_deploy.py
             docker rmi $(docker images -f "dangling=true" -q)
-            
+            docker system prune -a --volumes
