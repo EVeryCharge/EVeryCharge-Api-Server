@@ -36,7 +36,7 @@ public class ChargerStateUpdateService {
 	private final ChargerRepository chargerRepository;
 
 	public void initChargersToRedis() {
-		int pageSize= 500;
+		int pageSize= 100;
 		int pageNumber = 0;
 		Page<Charger> page;
 
