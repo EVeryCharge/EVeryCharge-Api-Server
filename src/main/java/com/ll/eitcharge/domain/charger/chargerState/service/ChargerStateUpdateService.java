@@ -5,9 +5,11 @@ import static com.ll.eitcharge.global.app.AppConfig.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.scheduling.annotation.Async;
@@ -328,21 +330,28 @@ public class ChargerStateUpdateService {
 				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
 			}).toList();
 
-		// 레디스 비교를 통해 DB상 없는 충전소를 1차 필터링
+		// 레디스 비교를 통해 DB상 없는 충전기를 1차 필터링
 		List<ChargerStateUpdateForm> filteredChargerList =
 			chargerStateRedisService.filterExistingChargersFromRedis(apiChargerList);
 
 		// DB 업데이트 로직 1. 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
+		Set<String> nonExistingChargerKeySet = new HashSet<>();
+
 		filteredChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
+
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
-			if (isUpdated == 0) {
 
+			if (isUpdated == 0) {
+				nonExistingChargerKeySet.add(String.format("%s_%s", charger.getStatId(), charger.getChgerId()));
 			}
 		});
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
+
+		// DB 비교 후 없는 충전기 정보를 Redis에 저장
+		chargerStateRedisService.updateNonExistingChargersToRedis(nonExistingChargerKeySet);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler4] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
