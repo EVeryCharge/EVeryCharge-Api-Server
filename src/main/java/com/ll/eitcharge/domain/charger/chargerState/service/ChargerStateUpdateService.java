@@ -61,7 +61,7 @@ public class ChargerStateUpdateService {
 	 */
 	@Transactional
 	public void updateChargerState1() {
-		log.info("[Scheduler1] : 충전기 상태 업데이트 시작");
+		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
 		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -74,7 +74,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler1] : OpenAPI 데이터 불러오기 시작");
+		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -123,7 +123,7 @@ public class ChargerStateUpdateService {
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler1] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 
@@ -133,7 +133,7 @@ public class ChargerStateUpdateService {
 	@Async
 	@Transactional
 	public void updateChargerState2() {
-		log.info("[Scheduler2] : 충전기 상태 업데이트 시작");
+		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
 		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -146,7 +146,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler2] : OpenAPI 데이터 불러오기 시작");
+		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -156,7 +156,7 @@ public class ChargerStateUpdateService {
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
-			log.info("[Scheduler2] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
 		List<ChargerStateUpdateForm> apiChargerList =
@@ -195,7 +195,7 @@ public class ChargerStateUpdateService {
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler2] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 
@@ -207,7 +207,7 @@ public class ChargerStateUpdateService {
 	@Async
 	@Transactional
 	public void updateChargerState3() {
-		log.info("[Scheduler3] : 충전기 상태 업데이트 시작");
+		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
 		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -220,7 +220,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler3] : OpenAPI 데이터 불러오기 시작");
+		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -230,7 +230,7 @@ public class ChargerStateUpdateService {
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
-			log.info("[Scheduler3] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
 		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
@@ -277,7 +277,7 @@ public class ChargerStateUpdateService {
 		log.info("[DB] 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler3] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 
@@ -288,7 +288,7 @@ public class ChargerStateUpdateService {
 	@Async
 	@Transactional
 	public void updateChargerState4() {
-		log.info("[Scheduler4] : 충전기 상태 업데이트 시작");
+		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
 		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -301,7 +301,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler3] : OpenAPI 데이터 불러오기 시작");
+		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -312,7 +312,7 @@ public class ChargerStateUpdateService {
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
-			log.info("[Scheduler4] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
 		List<ChargerStateUpdateForm> apiChargerList =
@@ -367,7 +367,7 @@ public class ChargerStateUpdateService {
 		chargerStateRedisService.updateNonExistingChargersToRedis(nonExistingChargerKeySet);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler4] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 }
