@@ -5,6 +5,9 @@ import static com.ll.eitcharge.global.app.AppConfig.*;
 import java.net.URI;
 import java.util.HashMap;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -34,6 +37,11 @@ public class ChargerService {
     // 조회용 엔티티
     public Charger findByChargingStationStatIdAndChgerId(String statId, String chgerId) {
         return chargerRepository.findByChargingStationStatIdAndChgerId(statId, chgerId).get();
+    }
+
+    public Page<Charger> findByPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return chargerRepository.findAll(pageable);
     }
 
     public HashMap webClientApiGetChargerStatus(String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int priod){

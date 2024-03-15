@@ -12,14 +12,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
 import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
@@ -31,17 +32,24 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class ChargerStateUpdateService {
 	private final ChargerService chargerService;
-	private final ChargingStationService chargingStationService;
 	private final ChargerStateRedisService chargerStateRedisService;
 	private final ChargerRepository chargerRepository;
 
 	public void initChargersToRedis() {
+		int pageSize= 3000;
+		int pageNumber = 0;
+		Page<Charger> page;
+
 		LocalDateTime startTime = LocalDateTime.now();
 		log.info("[Redis3](init) : 시작");
 		Ut.calcHeapMemory();
 
 		chargerStateRedisService.flushAll();
-		chargerStateRedisService.setChargersToRedisByChargingStationList(chargingStationService.findAll());
+		do {
+			page = chargerService.findByPage(pageNumber, pageSize);
+            chargerStateRedisService.initChargersToRedis(page.getContent());
+			pageNumber++;
+		} while (page.hasNext());
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Redis3](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
