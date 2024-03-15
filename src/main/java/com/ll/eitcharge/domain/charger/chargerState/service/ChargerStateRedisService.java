@@ -1,82 +1,40 @@
 package com.ll.eitcharge.domain.charger.chargerState.service;
 
-import static lombok.AccessLevel.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ChargerStateRedisService {
 	private final StringRedisTemplate redisTemplate;
 
-	@Getter
-	@Setter
-	@Builder
-	@NoArgsConstructor(access = PROTECTED)
-	@AllArgsConstructor(access = PROTECTED)
-	public static class RedisMap {
-		private String key;
-		private String value;
-	}
-
 	/**
-	 * 충전소 리스트를 입력받아 해당 충전소의 모든 충전기 상태 정보를 레디스에 저장한다.
-	 * @param 충전소 리스트
-	 * redis (key, value) : 충전소ID_충전기ID, 충전기 상태
-	 * [참고] 최초 스프링부트 실행 시 모든 충전기 정보를 저장할 시 사용
+	 * DB의 모든 충전기 상태 정보를 레디스에 저장한다. / 최초 init시 실행
+	 * @param list 충전소 리스트
 	 */
-	public void setChargersToRedisByChargingStationList(List<ChargingStation> list) {
-		List<RedisMap> listConvertedByMap = list.stream().flatMap(
-				chargingStation ->
-					chargingStation.getChargers().stream().map(
-						charger -> {
-							String key = chargingStation.getStatId() + "_" + charger.getChgerId();
-							String value = charger.getStat();
+	public void initChargersToRedis(List<Charger> list) {
+		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
+			list.forEach(charger -> {
+				String key = String.format("%s_%s", charger.getChargingStation().getStatId(), charger.getChgerId());
+				String value = charger.getStat();
+				redisTemplate.opsForValue().set(key, value);
+			});
+			return null;
+		});
 
-							return RedisMap.builder()
-								.key(key)
-								.value(value)
-								.build();
-						}))
-			.toList();
-
-		log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 불러오기 완료", listConvertedByMap.size());
-
-		AtomicInteger execCount = new AtomicInteger();
-		redisTemplate.executePipelined((RedisCallback<Object>)connection -> {
-				listConvertedByMap.forEach(map -> {
-						redisTemplate.opsForValue().set(map.getKey(), map.getValue());
-						execCount.getAndIncrement();
-					}
-				);
-				if (execCount.get() < 0) {
-					log.error("[ERROR] : Redis 데이터 저장 실패");
-				}
-				log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 중 {}건 Redis 저장 완료", execCount, listConvertedByMap.size());
-				return null;
-			}
-		);
+		log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 불러오기 완료", list.size());
 	}
 
 	/**
@@ -93,7 +51,7 @@ public class ChargerStateRedisService {
 				String key = String.format("%s_%s", charger.getStatId(), charger.getChgerId());
 				String value = charger.getStat();
 
-				if (redisTemplate.hasKey(key) && !redisTemplate.opsForValue().get(key).equals(value)) {
+				if (redisTemplate.hasKey(key)) {
 					redisTemplate.opsForValue().set(key, value);
 					updatedList.add(charger);
 				}
@@ -133,7 +91,8 @@ public class ChargerStateRedisService {
 	 */
 	public void updateNonExistingChargersToRedis(Set<String> keySet) {
 		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
-				for (String key : keySet) redisTemplate.opsForValue().set(key, "없음");
+				for (String key : keySet)
+					redisTemplate.opsForValue().set(key, "없음");
 				return null;
 			}
 		);
