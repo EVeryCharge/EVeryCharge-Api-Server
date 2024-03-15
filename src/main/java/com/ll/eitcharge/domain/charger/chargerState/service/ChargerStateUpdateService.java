@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,21 +36,23 @@ public class ChargerStateUpdateService {
 
 	public void initChargersToRedis() {
 		LocalDateTime startTime = LocalDateTime.now();
-		log.info("[Redis](init) : 시작");
+		log.info("[Redis3](init) : 시작");
 		Ut.calcHeapMemory();
 
 		chargerStateRedisService.flushAll();
 		chargerStateRedisService.setChargersToRedisByChargingStationList(chargingStationService.findAll());
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Redis](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Redis3](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 
-	@Async
+	/**
+	 * 어싱크 없는 버젼
+	 */
 	@Transactional
-	public void updateChargerState() {
-		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
+	public void updateChargerState1() {
+		log.info("[Scheduler1] : 충전기 상태 업데이트 시작");
 		Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
@@ -62,7 +65,232 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
+		log.info("[Scheduler1] : OpenAPI 데이터 불러오기 시작");
+
+		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
+			baseUrl, key, numOfRows, pageNo, jsonType, priod);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+		List<Map<String, Object>> items =
+			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+
+		if (!items.isEmpty()) {
+			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+		}
+
+		List<ChargerStateUpdateForm> apiChargersDtoList =
+			items.stream().map(item -> {
+					String statId = (String)item.get("statId");
+					String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
+					String stat = (String)item.get("stat");
+
+					LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
+						.filter(s -> !s.isEmpty())
+						.map(s -> LocalDateTime.parse(s, formatter))
+						.orElse(null);
+					LocalDateTime lastTsdt = Optional.ofNullable((String)item.get("lastTsdt"))
+						.filter(s -> !s.isEmpty())
+						.map(s -> LocalDateTime.parse(s, formatter))
+						.orElse(null);
+					LocalDateTime lastTedt = Optional.ofNullable((String)item.get("lastTedt"))
+						.filter(s -> !s.isEmpty())
+						.map(s -> LocalDateTime.parse(s, formatter))
+						.orElse(null);
+					LocalDateTime nowTsdt = Optional.ofNullable((String)item.get("nowTsdt"))
+						.filter(s -> !s.isEmpty())
+						.map(s -> LocalDateTime.parse(s, formatter))
+						.orElse(null);
+
+					return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
+				}).toList();
+
+		AtomicInteger successCnt = new AtomicInteger();
+		apiChargersDtoList.forEach(charger -> {
+			int isUpdated = chargerRepository.updateChargerState(charger);
+			if (isUpdated == 1)
+				successCnt.getAndIncrement();
+		});
+		// DB 업데이트 로직 1. 단건 업데이트
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+
+		LocalDateTime endTime = LocalDateTime.now();
+		log.info("[Scheduler1] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
+	}
+
+	/**
+	 * 어싱크 있는 버젼
+	 */
+	@Async
+	@Transactional
+	public void updateChargerState2() {
+		log.info("[Scheduler2] : 충전기 상태 업데이트 시작");
+		Ut.calcHeapMemory();
+		LocalDateTime startTime = LocalDateTime.now();
+
+		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
+		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
+		String key = apiServiceKey;
+		String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
+		String jsonType = "JSON";
+		int numOfRows = 10000;
+		int pageNo = 1;
+		int priod = 10;
+
+		log.info("[Scheduler2] : OpenAPI 데이터 불러오기 시작");
+
+		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
+			baseUrl, key, numOfRows, pageNo, jsonType, priod);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+		List<Map<String, Object>> items =
+			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+
+		if (!items.isEmpty()) {
+			log.info("[Scheduler2] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+		}
+
+		List<ChargerStateUpdateForm> apiChargersDtoList =
+			items.stream().map(item -> {
+				String statId = (String)item.get("statId");
+				String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
+				String stat = (String)item.get("stat");
+
+				LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTsdt = Optional.ofNullable((String)item.get("lastTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTedt = Optional.ofNullable((String)item.get("lastTedt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime nowTsdt = Optional.ofNullable((String)item.get("nowTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+
+				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
+			}).toList();
+
+		// DB 업데이트 로직 1. 단건 업데이트
+		AtomicInteger successCnt = new AtomicInteger();
+		apiChargersDtoList.forEach(charger -> {
+			int isUpdated = chargerRepository.updateChargerState(charger);
+			if (isUpdated == 1)
+				successCnt.getAndIncrement();
+		});
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+
+		LocalDateTime endTime = LocalDateTime.now();
+		log.info("[Scheduler2] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
+	}
+
+	/**
+	 * 레디스 1 로직 적용 버전
+	 * 어싱크 적용여부 / 미적용여부는 테스트 후 판단
+	 * 작동 전 All.java redisInitAll 활성화 후 시작
+	 */
+	@Async
+	@Transactional
+	public void updateChargerState3() {
+		log.info("[Scheduler3] : 충전기 상태 업데이트 시작");
+		Ut.calcHeapMemory();
+		LocalDateTime startTime = LocalDateTime.now();
+
+		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
+		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
+		String key = apiServiceKey;
+		String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
+		String jsonType = "JSON";
+		int numOfRows = 10000;
+		int pageNo = 1;
+		int priod = 10;
+
+		log.info("[Scheduler3] : OpenAPI 데이터 불러오기 시작");
+
+		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
+			baseUrl, key, numOfRows, pageNo, jsonType, priod);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+		List<Map<String, Object>> items =
+			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+
+		if (!items.isEmpty()) {
+			log.info("[Scheduler3] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+		}
+
+		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
+		List<ChargerStateUpdateForm> apiChargersDtoList =
+			items.stream().map(item -> {
+				String statId = (String)item.get("statId");
+				String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
+				String stat = (String)item.get("stat");
+
+				LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTsdt = Optional.ofNullable((String)item.get("lastTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTedt = Optional.ofNullable((String)item.get("lastTedt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime nowTsdt = Optional.ofNullable((String)item.get("nowTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+
+				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
+			}).toList();
+
+		// 레디스 비교를 통해 충전기 상태가 갱신된 충전기 리스트 반환
+		List<ChargerStateUpdateForm> updatedChargersDtoList =
+			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
+
+		// DB 업데이트 로직 1. 단건 업데이트
+		AtomicInteger successCnt = new AtomicInteger();
+		updatedChargersDtoList.forEach(charger -> {
+			int isUpdated = chargerRepository.updateChargerState(charger);
+			if (isUpdated == 1)
+				successCnt.getAndIncrement();
+		});
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+
+		LocalDateTime endTime = LocalDateTime.now();
+		log.info("[Scheduler3] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
+	}
+
+	/**
+	 * 레디스 1 로직 적용 버전
+	 * 어싱크 적용여부 / 미적용여부는 테스트 후 판단
+	 * 작동 전 All.java redisInitAll 활성화 후 시작
+	 */
+	@Async
+	@Transactional
+	public void updateChargerState4() {
+		log.info("[Scheduler4] : 충전기 상태 업데이트 시작");
+		Ut.calcHeapMemory();
+		LocalDateTime startTime = LocalDateTime.now();
+
+		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
+		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
+		String key = apiServiceKey;
+		String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
+		String jsonType = "JSON";
+		int numOfRows = 10000;
+		int pageNo = 1;
+		int priod = 10;
+
+		log.info("[Scheduler3] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -73,8 +301,8 @@ public class ChargerStateUpdateService {
 		List<Map<String, Object>> items =
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
-		if(!items.isEmpty()) {
-			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+		if (!items.isEmpty()) {
+			log.info("[Scheduler4] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
 		for (Map<String, Object> item : items) {
@@ -108,76 +336,16 @@ public class ChargerStateUpdateService {
 			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
 
 		// DB 업데이트 로직 1. 단건 업데이트
-		updatedChargersDtoList.forEach(chargerRepository::updateChargerState);
-		log.info("[DB] : 충전기 상태 {}건 업데이트 완료", updatedChargersDtoList.size());
-
-		// DB 업데이트 로직 2. 네이티브 쿼리를 활용한 bulk update 로직 (unused)
-		// chargerStateUpdateRepository.bulkUpdateChargerState(updatedChargersDtoList);
-
-		// DB 업데이트 로직 3. 조회는 하되 저장은 한번에 JPA saveAll
-		//
-
-		// DB 업데이트 로직 4. JPA 기반 단건 업데이트 로직(기존)
-		// chargingStationRepository.findById(statId)
-		// 	//충전소가 존재할때
-		// 	.map(chargingStation -> {
-		//
-		// 		return chargerRepository.findByChargingStationStatIdAndChgerId(statId,chgerId)
-		// 			//해당 충전소의 충전기가 존재할때
-		// 			.map(charger -> {
-		// 				charger.toBuilder()
-		// 					.stat(stat)
-		// 					.statUpdDt(statUpdDt)
-		// 					.lastTsdt(lastTsdt)
-		// 					.lastTedt(lastTedt)
-		// 					.nowTsdt(nowTsdt)
-		// 					.build();
-		// 				System.out.println("충전소 업데이트 성공 1-1");
-		// 				return chargerRepository.save(charger);
-		// 			})
-		// 			.orElseGet(() -> {
-		// 				//해당 충전소의 충전기가 존재하지 않을때
-		// 				// 새 충전기 생성 후 저장
-		// 				Charger charger = Charger.builder()
-		// 					.chargingStation(chargingStation)
-		// 					.stat(stat)
-		// 					.chgerId(chgerId)
-		// 					.statUpdDt(statUpdDt)
-		// 					.lastTsdt(lastTsdt)
-		// 					.lastTedt(lastTedt)
-		// 					.nowTsdt(nowTsdt)
-		// 					.build();
-		// 				// 파일에 로그 메시지를 저장
-		// 				// 아마 기존의 충전소에 새롭게 충전기가 설치될경우 이 로직을 타게될듯
-		// 				// 해당 파일은 배치를 통해 api요청으로
-		// 				String logMessage = charger.getChargingStation().getStatId() + "," + charger.getChgerId() + "," + charger.getStat();
-		// 				try (BufferedWriter writer = new BufferedWriter(new FileWriter("batch/NoCharger.txt", true))) {
-		// 					writer.write(logMessage);
-		// 					writer.newLine();
-		// 				} catch (IOException e) {
-		// 					// 파일 쓰기 실패 시 예외 처리
-		// 					e.printStackTrace();
-		// 				}
-		// 				System.out.println("충전소 업데이트 성공 1-2");
-		// 				return chargerRepository.save(charger);
-		// 			});
-		// 	})
-		// 	//충전소가 존재하지 않을때
-		// 	.orElseGet(()->{
-		// 			String logMessage = statId;
-		// 			try (BufferedWriter writer = new BufferedWriter(new FileWriter("batch/NoChargingStation.txt", true))) {
-		// 				writer.write(logMessage);
-		// 				writer.newLine();
-		// 			} catch (IOException e) {
-		// 				// 파일 쓰기 실패 시 예외 처리
-		// 				e.printStackTrace();
-		// 			}
-		// 			return null;
-		// 		}
-		// 	);
+		AtomicInteger successCnt = new AtomicInteger();
+		updatedChargersDtoList.forEach(charger -> {
+			int isUpdated = chargerRepository.updateChargerState(charger);
+			if (isUpdated == 1)
+				successCnt.getAndIncrement();
+		});
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler4] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 }
