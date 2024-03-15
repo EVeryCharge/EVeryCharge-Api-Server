@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.data.redis.core.RedisCallback;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
@@ -70,7 +70,7 @@ public class ChargerStateRedisService {
 						execCount.getAndIncrement();
 					}
 				);
-				if(execCount.get() < 0) {
+				if (execCount.get() < 0) {
 					log.error("[ERROR] : Redis 데이터 저장 실패");
 				}
 				log.info("[Redis](init) : DB 충전기 상태 데이터 {}건 중 {}건 Redis 저장 완료", execCount, listConvertedByMap.size());
@@ -80,32 +80,7 @@ public class ChargerStateRedisService {
 	}
 
 	/**
-	 * 충전기 리스트를 입력받아 해당 충전기의 모든 충전기 상태 정보를 레디스에 저장한다.
-	 * redis (key, value) 충전소ID_충전기ID : 충전기 상태
-	 */
-	public void setChargersToRedisByChargerList(List<Charger> list) {
-		List<RedisMap> listConvertedByMap = list.stream().map(charger -> {
-				String key = charger.getChargingStation().getStatId() + "_" + charger.getChgerId();
-				String value = charger.getStat();
-
-				return RedisMap.builder()
-					.key(key)
-					.value(value)
-					.build();
-			})
-			.toList();
-
-		redisTemplate.executePipelined((RedisCallback<Object>)connection -> {
-				listConvertedByMap.forEach(map ->
-					redisTemplate.opsForValue().set(map.getKey(), map.getValue())
-				);
-				// log.info("Redis(init) : 충전기 상태 {}건 저장 완료", listConvertedByMap.size());
-				return null;
-			}
-		);
-	}
-
-	/**
+	 * Redis 로직 1
 	 * Redis에 존재하는 key값에 한해 인자의 hashMap의 value로 업데이트 후 업데이트된 hashMap을 리턴한다.
 	 * @param list : 오픈API로 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
 	 * @return list : redis에 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
@@ -114,22 +89,37 @@ public class ChargerStateRedisService {
 		List<ChargerStateUpdateForm> updatedList = new ArrayList<>();
 
 		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
-			for (ChargerStateUpdateForm dto : list) {
-				String key = String.format("%s_%s", dto.getStatId(), dto.getChgerId());
-				String value = dto.getStat();
+			for (ChargerStateUpdateForm charger : list) {
+				String key = String.format("%s_%s", charger.getStatId(), charger.getChgerId());
+				String value = charger.getStat();
 
 				if (redisTemplate.hasKey(key) && !redisTemplate.opsForValue().get(key).equals(value)) {
 					redisTemplate.opsForValue().set(key, value);
-					updatedList.add(dto);
+					updatedList.add(charger);
 				}
 			}
 			return null;
 		});
-		if(!list.isEmpty() && updatedList.isEmpty()) {
+		if (!list.isEmpty() && updatedList.isEmpty()) {
 			log.error("[ERROR] : Redis 데이터 저장 실패");
 		}
 		log.info("[Redis](scheduler) : OpenAPI 충전기 상태 {}건 중 변화 감지 {}건 Redis 저장 완료", list.size(), updatedList.size());
 		return updatedList;
+	}
+
+	/**
+	 * Redis 로직 2
+	 * Redis에 존재하는 key값 (DB상 없는 충전소ID_충전기ID)를 입력받은 인자와 비교해 걸러낸다.
+	 * @return filteredChargersList
+	 */
+	public List<ChargerStateUpdateForm> filterExistingChargersFromRedis(List<ChargerStateUpdateForm> list) {
+		Set<String> keys = redisTemplate.keys("*");
+		if (keys.isEmpty())
+			return list;
+
+		return list.stream()
+			.filter(charger ->
+				!keys.contains(String.format("%s_%s", charger.getStatId(), charger.getChgerId()))).toList();
 	}
 
 	/**

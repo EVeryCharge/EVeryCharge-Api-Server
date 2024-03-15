@@ -4,7 +4,6 @@ import static com.ll.eitcharge.global.app.AppConfig.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class ChargerStateUpdateService {
 			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
-		List<ChargerStateUpdateForm> apiChargersDtoList =
+		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
 					String statId = (String)item.get("statId");
 					String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
@@ -105,13 +104,13 @@ public class ChargerStateUpdateService {
 				}).toList();
 
 		AtomicInteger successCnt = new AtomicInteger();
-		apiChargersDtoList.forEach(charger -> {
+		apiChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
 		});
 		// DB 업데이트 로직 1. 단건 업데이트
-		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler1] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
@@ -150,7 +149,7 @@ public class ChargerStateUpdateService {
 			log.info("[Scheduler2] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
-		List<ChargerStateUpdateForm> apiChargersDtoList =
+		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
 				String statId = (String)item.get("statId");
 				String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
@@ -178,12 +177,12 @@ public class ChargerStateUpdateService {
 
 		// DB 업데이트 로직 1. 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
-		apiChargersDtoList.forEach(charger -> {
+		apiChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
 		});
-		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler2] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
@@ -225,7 +224,7 @@ public class ChargerStateUpdateService {
 		}
 
 		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
-		List<ChargerStateUpdateForm> apiChargersDtoList =
+		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
 				String statId = (String)item.get("statId");
 				String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
@@ -252,17 +251,17 @@ public class ChargerStateUpdateService {
 			}).toList();
 
 		// 레디스 비교를 통해 충전기 상태가 갱신된 충전기 리스트 반환
-		List<ChargerStateUpdateForm> updatedChargersDtoList =
-			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
+		List<ChargerStateUpdateForm> updatedChargerList =
+			chargerStateRedisService.updateExistingChargersToRedis(apiChargerList);
 
 		// DB 업데이트 로직 1. 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
-		updatedChargersDtoList.forEach(charger -> {
+		updatedChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
 		});
-		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler3] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
@@ -270,9 +269,8 @@ public class ChargerStateUpdateService {
 	}
 
 	/**
-	 * 레디스 1 로직 적용 버전
+	 * 레디스 2 로직 적용 버전
 	 * 어싱크 적용여부 / 미적용여부는 테스트 후 판단
-	 * 작동 전 All.java redisInitAll 활성화 후 시작
 	 */
 	@Async
 	@Transactional
@@ -297,7 +295,6 @@ public class ChargerStateUpdateService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
-		List<ChargerStateUpdateForm> apiChargersDtoList = new ArrayList<>();
 		List<Map<String, Object>> items =
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
@@ -305,44 +302,47 @@ public class ChargerStateUpdateService {
 			log.info("[Scheduler4] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
-		for (Map<String, Object> item : items) {
-			String statId = (String)item.get("statId");
-			String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
-			String stat = (String)item.get("stat");
+		List<ChargerStateUpdateForm> apiChargerList =
+			items.stream().map(item -> {
+				String statId = (String)item.get("statId");
+				String chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId"))); // 0 절삭
+				String stat = (String)item.get("stat");
 
-			LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
-				.filter(s -> !s.isEmpty())
-				.map(s -> LocalDateTime.parse(s, formatter))
-				.orElse(null);
-			LocalDateTime lastTsdt = Optional.ofNullable((String)item.get("lastTsdt"))
-				.filter(s -> !s.isEmpty())
-				.map(s -> LocalDateTime.parse(s, formatter))
-				.orElse(null);
-			LocalDateTime lastTedt = Optional.ofNullable((String)item.get("lastTedt"))
-				.filter(s -> !s.isEmpty())
-				.map(s -> LocalDateTime.parse(s, formatter))
-				.orElse(null);
-			LocalDateTime nowTsdt = Optional.ofNullable((String)item.get("nowTsdt"))
-				.filter(s -> !s.isEmpty())
-				.map(s -> LocalDateTime.parse(s, formatter))
-				.orElse(null);
+				LocalDateTime statUpdDt = Optional.ofNullable((String)item.get("statUpdDt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTsdt = Optional.ofNullable((String)item.get("lastTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime lastTedt = Optional.ofNullable((String)item.get("lastTedt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
+				LocalDateTime nowTsdt = Optional.ofNullable((String)item.get("nowTsdt"))
+					.filter(s -> !s.isEmpty())
+					.map(s -> LocalDateTime.parse(s, formatter))
+					.orElse(null);
 
-			apiChargersDtoList.add(
-				new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt));
-		}
+				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
+			}).toList();
 
-		// 레디스 비교를 통해 충전기 상태가 갱신된 충전기 리스트 반환
-		List<ChargerStateUpdateForm> updatedChargersDtoList =
-			chargerStateRedisService.updateExistingChargersToRedis(apiChargersDtoList);
+		// 레디스 비교를 통해 DB상 없는 충전소를 1차 필터링
+		List<ChargerStateUpdateForm> filteredChargerList =
+			chargerStateRedisService.filterExistingChargersFromRedis(apiChargerList);
 
 		// DB 업데이트 로직 1. 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
-		updatedChargersDtoList.forEach(charger -> {
+		filteredChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
+			if (isUpdated == 0) {
+
+			}
 		});
-		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargersDtoList.size(), successCnt);
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler4] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
