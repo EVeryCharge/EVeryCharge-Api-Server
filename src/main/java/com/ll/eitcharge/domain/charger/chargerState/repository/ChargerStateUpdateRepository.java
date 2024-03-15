@@ -9,9 +9,11 @@ import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
-public class ChargerStateBulkUpdateRepository {
+@Slf4j
+public class ChargerStateUpdateRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;

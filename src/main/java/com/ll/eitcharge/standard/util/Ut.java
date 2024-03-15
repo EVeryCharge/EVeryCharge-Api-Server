@@ -94,5 +94,7 @@ public class Ut {
         log.info("[System] : 총 HEAP 메모리 {}MB", totalMemory / (1024 * 1024));
         log.info("[System] : 사용 HEAP 메모리 {}MB", freeMemory / (1024 * 1024));
         log.info("[System] : 잔여 HEAP 메모리 {}MB", usedMemory / (1024 * 1024));
+        log.info("[System] : 현재 사용중인 스레드, {}", Thread.currentThread());
+        log.info("[System] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
     }
 }
