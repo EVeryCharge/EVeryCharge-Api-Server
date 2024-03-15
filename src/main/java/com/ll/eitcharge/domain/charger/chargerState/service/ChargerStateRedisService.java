@@ -80,10 +80,10 @@ public class ChargerStateRedisService {
 	}
 
 	/**
-	 * Redis 로직 1
+	 * Redis 로직 1 /
 	 * Redis에 존재하는 key값에 한해 인자의 hashMap의 value로 업데이트 후 업데이트된 hashMap을 리턴한다.
-	 * @param list : 오픈API로 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
-	 * @return list : redis에 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
+	 * @param list : OpenAPI로 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
+	 * @return updatedList : Redis에 갱신된 충전소ID, 충전기ID, 충전기 상태, 업데이트 날짜
 	 */
 	public List<ChargerStateUpdateForm> updateExistingChargersToRedis(List<ChargerStateUpdateForm> list) {
 		List<ChargerStateUpdateForm> updatedList = new ArrayList<>();
@@ -108,18 +108,36 @@ public class ChargerStateRedisService {
 	}
 
 	/**
-	 * Redis 로직 2
+	 * Redis 로직 2 (비교) /
 	 * Redis에 존재하는 key값 (DB상 없는 충전소ID_충전기ID)를 입력받은 인자와 비교해 걸러낸다.
-	 * @return filteredChargersList
+	 * @param list OpenAPI상 충전소 데이터 리스트
+	 * @return list Redis에 존재, DB에 없는 충전기 리스트를 필터링한 리스트
 	 */
 	public List<ChargerStateUpdateForm> filterExistingChargersFromRedis(List<ChargerStateUpdateForm> list) {
 		Set<String> keys = redisTemplate.keys("*");
 		if (keys.isEmpty())
 			return list;
 
-		return list.stream()
-			.filter(charger ->
-				!keys.contains(String.format("%s_%s", charger.getStatId(), charger.getChgerId()))).toList();
+		List<ChargerStateUpdateForm> filteredList =
+			list.stream()
+				.filter(charger ->
+					!keys.contains(String.format("%s_%s", charger.getStatId(), charger.getChgerId()))).toList();
+		log.info("[Redis] : OpenApi 충전기 데이터 {}개 중 DB 미존재 충전기 데이터 {} 필터링 완료", list.size(), filteredList.size());
+		return filteredList;
+	}
+
+	/**
+	 * Redis 로직 2 (추가) /
+	 * DB에 없는 충전소_충전기ID key를 Redis에 추가한다.
+	 * @param keySet DB에 존재하지 않는 충전소_충전기ID key, Redis에 업데이트할 key
+	 */
+	public void updateNonExistingChargersToRedis(Set<String> keySet) {
+		redisTemplate.executePipelined((RedisCallback<Void>)connection -> {
+				for (String key : keySet) redisTemplate.opsForValue().set(key, "없음");
+				return null;
+			}
+		);
+		log.info("[Redis] : DB 미존재 충전기 충전기 정보 {}개 저장 완료", keySet.size());
 	}
 
 	/**
