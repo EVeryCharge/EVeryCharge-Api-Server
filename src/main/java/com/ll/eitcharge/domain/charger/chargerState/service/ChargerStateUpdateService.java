@@ -340,7 +340,6 @@ public class ChargerStateUpdateService {
 		AtomicInteger successCnt = new AtomicInteger();
 		Set<String> nonExistingChargerKeySet = new HashSet<>();
 
-		// DB 업데이트 로직 1. 단건 업데이트
 		LocalDateTime dbStartTime = LocalDateTime.now();
 		filteredChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
