@@ -32,7 +32,7 @@ public class All {
             this.initSystemAccount();
             this.initChargeFeeData();
             this.initChargeRoamingFeeData();
-            // this.initChargersToRedis();
+            this.initChargersToRedis();
             AppConfig.isAppInitialized = true;
         };
     }
