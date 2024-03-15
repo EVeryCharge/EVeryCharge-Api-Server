@@ -16,7 +16,7 @@ public class ChargerStateUpdateScheduler {
 
 	private final ChargerStateUpdateService chargerStatusUpdateService;
 
-	// 분기 (성능 테스트) 5: poolsize up (2 -> 5)
+	// 분기 (성능 테스트) 5: poolsize up (2 -> 50)
 	@Scheduled(fixedRate = 3 * 60 * 1000) // 초기 지연 시간 5분, 그 후 3분마다 실행
 	public void updateChargerStateScheduled() {
 		if (AppConfig.isAppInitialized) {
