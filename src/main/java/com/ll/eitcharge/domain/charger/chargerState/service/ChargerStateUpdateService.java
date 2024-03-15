@@ -49,6 +49,7 @@ public class ChargerStateUpdateService {
 			page = chargerService.findByPage(pageNumber, pageSize);
             chargerStateRedisService.initChargersToRedis(page.getContent());
 			pageNumber++;
+			if (pageNumber % 100 == 0) System.gc();
 		} while (page.hasNext());
 
 		LocalDateTime endTime = LocalDateTime.now();
