@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChargerStateRedisService {
 	private final StringRedisTemplate redisTemplate;
 
-
 	/**
 	 * Redis 로직 (write-through, API → Redis) /
 	 * Redis에 존재하는 key값 (DB상 없는 충전소ID_충전기ID)를 입력받은 인자와 비교해 걸러낸다.

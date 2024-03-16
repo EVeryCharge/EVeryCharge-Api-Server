@@ -37,7 +37,6 @@ public class ChargerStateUpdateService {
 		chargerStateRedisService.flushAll();
 	}
 
-
 	/**
 	 * 충전기 상태 업데이트
 	 * Async O, Redis X
@@ -96,7 +95,7 @@ public class ChargerStateUpdateService {
 				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
 			}).toList();
 
-		// DB 업데이트 로직 1. 단건 업데이트
+		// DB 업데이트 로직 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
 		apiChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
@@ -134,14 +133,14 @@ public class ChargerStateUpdateService {
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
 		List<Map<String, Object>> items =
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
 			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
-
+    
+    // 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
 		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
 				String statId = (String)item.get("statId");
