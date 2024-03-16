@@ -18,8 +18,8 @@ const ReportHeader = ({
           variant="subtitle2"
           style={{
             fontWeight: "bold",
-            color: "#008000",
-            paddingLeft: "10px",
+            color: "blue",
+            paddingLeft: "5px",
             marginTop: "5px",
           }}
         >
@@ -47,6 +47,7 @@ const ReportHeader = ({
         {actorCanCreate && (
           <Button
             variant="outlined"
+            color="primary"
             component={Link}
             to={`/report/form`}
             style={{ marginRight: "2px" }}

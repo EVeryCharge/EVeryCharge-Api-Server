@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -36,6 +37,7 @@ const ReportForm = () => {
   const [searchStatId, setSearchStatId] = useState(propStatId || "");
   const [chargingStations, setChargingStations] = useState([]);
   const [mode, setMode] = useState(propMode || "CREATE");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     title: "",
     content: "",
@@ -50,6 +52,7 @@ const ReportForm = () => {
       const response = await HttpGet("/api/v1/reports/station", {
         kw: searchKw,
       });
+      console.log("kw", searchKw);
       const result = response;
 
       if (result.success && result.data) {
@@ -57,9 +60,8 @@ const ReportForm = () => {
         setError((prevError) => ({ ...prevError, searchKw: "" }));
       } else {
         setChargingStations([]);
-        setError((prevError) => ({
-          ...prevError,
-          searchKw: result.data.errorMsg,
+        setError(() => ({
+          searchKw: "검색 결과가 없습니다.",
         }));
       }
     } catch (error) {
@@ -68,15 +70,44 @@ const ReportForm = () => {
         ...prevError,
         searchKw: "요청 중 에러가 발생했습니다. 잠시 후에 시도해주세요",
       }));
+    } finally {
+      setLoading(false);
+      if (
+        searchKw &&
+        searchKw.trim() !== "" &&
+        searchKw.length >= 2 &&
+        chargingStations &&
+        chargingStations.length === 0
+      ) {
+        setError(() => ({
+          searchKw: "검색 결과가 없습니다.",
+        }));
+      }
     }
   }, [searchKw]);
 
   useEffect(() => {
-    // searchKw가 변경되었을 때 API 요청
-    if (searchKw && searchKw.trim() !== "") {
-      fetchChargingStations();
+    if ((searchKw && searchKw.trim() === "") || searchKw.length < 2) {
+      setChargingStations([]);
+      setLoading(false);
+      setError(() => ({
+        searchKw: "검색어를 2자 이상 입력해주세요",
+      }));
+    } else if (searchStatId !== "") {
+      setLoading(false);
+    } else {
+      setLoading(true);
+      setError(() => ({
+        searchKw: "검색 결과를 찾고 있습니다",
+      }));
+      const timerId = setTimeout(() => {
+        fetchChargingStations(searchKw);
+      }, 1500); // 유저 타이핑이 멈추고 1.5초 뒤 최종 searchKw 기반으로 호출
+      return () => {
+        clearTimeout(timerId);
+      };
     }
-  }, [searchKw, fetchChargingStations]);
+  }, [searchKw]);
 
   // 신고 생성 / 수정 API 요청
   const handleCreateModifyReport = async () => {
@@ -131,14 +162,15 @@ const ReportForm = () => {
   const handleContentChange = (event) => {
     const inputValue = event.target.value;
     setContent(inputValue);
-    setError((prevError) => ({ ...prevError, content: "" }));
+    setError((prevError) => ({ ...prevError, content: "." }));
   };
 
   const handleSearchChange = (event) => {
     const inputValue = event.target.value;
     setSearchKw(inputValue);
+    setChargingStations([]); // 검색어 변경 시 충전소 검색창 초기화
     setSearchStatId(""); // 검색어 변경 시 충전소 ID 초기화
-    setError((prevError) => ({ ...prevError, searchKw: "" }));
+    setError((prevError) => ({ ...prevError, searchKw: "." }));
   };
 
   const handleReportTypeChange = (event) => {
@@ -150,7 +182,11 @@ const ReportForm = () => {
   const handleChargingStationSelect = (station) => {
     setSearchKw(station.statNm);
     setSearchStatId(station.statId);
-    setError((prevError) => ({ ...prevError, searchKw: "", searchStatId: "" }));
+    setError((prevError) => ({
+      ...prevError,
+      searchKw: ".",
+      searchStatId: "",
+    }));
   };
 
   // 입력값 검증
@@ -242,15 +278,21 @@ const ReportForm = () => {
             <TextField
               label="충전소 검색"
               value={searchKw}
-              placeholder="충전소명 / 지역명을 입력하세요."
+              placeholder="충전소명 / 주소명을 입력하세요."
               helperText={error.searchKw}
               onChange={handleSearchChange}
               style={{
-                width: "500px",
+                width: "400px",
                 marginLeft: "10px",
               }}
             />
-
+            {/* 로딩 표시 */}
+            {loading && (
+              <CircularProgress
+                size={24}
+                style={{ marginLeft: "10px", marginTop: "20px" }}
+              />
+            )}
             {/* 드롭다운에 표시할 충전소 목록 */}
             {chargingStations &&
               chargingStations.length > 0 &&
@@ -347,7 +389,7 @@ const ReportForm = () => {
           }}
         >
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleCreateModifyReport}
             style={{ marginTop: "10px" }}
