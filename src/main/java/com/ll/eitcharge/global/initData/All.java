@@ -32,7 +32,6 @@ public class All {
             this.initSystemAccount();
             this.initChargeFeeData();
             this.initChargeRoamingFeeData();
-            // this.initChargersToRedis();
             AppConfig.isAppInitialized = true;
         };
     }
@@ -52,6 +51,7 @@ public class All {
         chargeFeeService.updateChargeRoamingFeeFileFromApi();
     }
 
+    // 이후 충전기, 충전소 전역 업데이트 시 사용 예정
     public void initChargersToRedis() {
         chargerStatusUpdateService.initChargersToRedis2();
     }
