@@ -61,7 +61,7 @@ public class MemberController {
         );
     }
 
-    public record MeResponseBody(@NonNull MemberDto item) {
+    public record MeResponseBody(@NonNull MemberCarDto item) {
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +69,7 @@ public class MemberController {
     public RsData<MeResponseBody> getMe() {
         return RsData.of(
                 new MeResponseBody(
-                        new MemberDto(rq.getMember())
+                        new MemberCarDto(rq.getMember())
                 )
         );
     }
