@@ -14,6 +14,7 @@ import { useAuth } from "../../utils/AuthContext";
 import {
     HttpGet,
 } from "../../services/HttpService";
+import SettingsIcon from '@mui/icons-material/Settings';
 const bull = (
     <Box
         component="span"
@@ -62,9 +63,13 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
                             가입일 : {formattedDate}
                         </Typography>
                     </Grid>
+                    <Grid item xs={1}>
+                    </Grid>
                     <Grid item xs={2}>
                         <CardActions>
-                            <Button size="small">수정하기</Button>
+                            <Button size="small" color="primary" style={{ marginLeft: '15px' }}>
+                                <SettingsIcon />
+                            </Button>
                         </CardActions>
                     </Grid>
                 </Grid>
@@ -73,20 +78,46 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
     );
 }
 
-function CardComponent2({ carModel }) {
+function CardComponent2({ carModel, carInfo }) {
+    if (carModel === null) {
+        return (
+            <Typography component="div" style={{ textAlign: 'center', margin: '40px' }}>
+                아직 등록된 차량이 없어요.
+                <br />
+                아래 버튼을 눌러 등록해 보세요.
+                <br />
+                <br />
+                <Button variant="outlined" color="Primary" component={Link} style={{ textAlign: 'center', margin: '10px' }}
+                    to="/carInit" >
+                    등록하기
+                </Button>
+            </Typography>
+        );
+    }
     return (
         <React.Fragment>
             <CardContent>
                 <Grid container direction="column" spacing={2} alignItems="flex-start">
+                    <Grid container direction="row" justifyContent="space-between" alignItems="center">
 
-                    {/* 차종 이름 - 왼쪽 정렬 */}
-                    <Grid item style={{ alignSelf: 'flex-start' }}>
-                        <Typography variant="h5" component="div" style={{ textAlign: 'left' }}>
-                            {carModel}
-                        </Typography>
-                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                            aa
-                        </Typography>
+                        {/* 차종 이름 - 왼쪽 정렬 */}
+                        <Grid item style={{ marginTop: '15px', marginLeft: '20px' }}>
+                            <Typography variant="h5" component="div" style={{ textAlign: 'left' }}>
+                                {carModel}
+                            </Typography>
+                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                {carInfo.manufacturer}
+                            </Typography>
+                        </Grid>
+
+                        {/* 수정 버튼 - 오른쪽 정렬 */}
+                        <Grid item>
+                            <CardActions>
+                                <Button size="small" color="primary" component={Link} to="/carInit">
+                                    <SettingsIcon />
+                                </Button>
+                            </CardActions>
+                        </Grid>
                     </Grid>
 
                     {/* 이미지 */}
@@ -98,30 +129,34 @@ function CardComponent2({ carModel }) {
                         {/* 배터리 정보 (전체 넓이의 1/3) */}
                         <Grid item xs={4} align="center">
                             <Typography variant="body2" >
-                                배터리
+                                완속 충전
                             </Typography>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                100
+                                방식 : {carInfo.chargeWaySlow}
+                                <br />
+                                시간 : {carInfo.chargeTimeSlow}
                             </Typography>
                         </Grid>
 
                         {/* 충전 방식 (전체 넓이의 1/3) */}
                         <Grid item xs={4} align="center">
                             <Typography variant="body2" >
-                                충전방식
+                                급속 충전
                             </Typography>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                100
+                                방식 : {carInfo.chargeWayFast}
+                                <br />
+                                시간 : {carInfo.chargeTimeFast}
                             </Typography>
                         </Grid>
 
                         {/* 충전기 타입 (전체 넓이의 1/3) */}
                         <Grid item xs={4} align="center">
                             <Typography variant="body2" >
-                                충전기 타입
+                                배터리
                             </Typography>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                100
+                                용량 : {carInfo.battery}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -182,16 +217,17 @@ const My = () => {
     };
     const [user, setUser] = useState(null);
 
-    const [carInfo, setCarInfo] = useState(null);
     const [car, setCar] = useState(null);
     const [createDate, setCreateDate] = useState(null);
     const [profileImgUrl, setProfileImgUrl] = useState(null);
+    const [carInfo, setCarInfo] = useState({});
 
     useEffect(() => {
         const sessionUsername = sessionStorage.getItem("username");
         if (sessionUsername === null || sessionUsername === undefined || sessionUsername === "") {
             alert("로그인이 필요한 서비스입니다.");
             navigate("/login");
+            return
         }
 
         HttpGet("/api/v1/members/me")
@@ -201,8 +237,7 @@ const My = () => {
                     setCar(data.data.item.carModel)
                     setCreateDate(data.data.item.createDate)
                     setProfileImgUrl(data.data.item.profileImgUrl)
-
-                    console.log('car ' + car)
+                    console.log('car ' + data.data.item.car)
                     console.log('cd ' + createDate)
                     console.log('p ' + profileImgUrl)
                 }
@@ -215,22 +250,27 @@ const My = () => {
 
         };
         fetchCarInfo();
+
+        console.log('car2 ' + car)
+
     }, []);
 
     useEffect(() => {
+
         if (car) {
-            try {
-                console.log("aa " + car)
-                const data = HttpGet("/api/v1/car/carInfo", {
-                    carModel: car // 사용자 이름 설정
-                });
-                setCarInfo(data);
-                console.log("m " + carInfo.manufacturer)
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+            HttpGet("/api/v1/car/carInfo", {
+                carModel: car // 사용자 이름 설정
+            }).then((data2) => {
+                if (data2) {
+                    setCarInfo(data2);
+                    console.log("m " + data2.manufacturer)
+                }
+            })
         }
-    }, [car]); // car 상태를 의존성 배열에 추가합니다.
+
+    }, [user]);
+
+
 
 
     return (
@@ -245,19 +285,13 @@ const My = () => {
             <br />
             <Box sx={{ minWidth: 700 }}>
                 <Card variant="outlined" sx={{ border: 1.5 }}>
-                    <CardComponent2 carModel={car} />
+                    <CardComponent2 carModel={car} carInfo={carInfo} />
                 </Card>
             </Box>
             <br />
             <Box sx={{ minWidth: 700 }}>
                 <Card variant="outlined" sx={{ border: 1.5 }}>{card3}</Card>
             </Box>
-
-            <Button variant="outlined" color="secondary" component={Link}
-                to="/carInit" >
-                내 차 등록
-            </Button>
-
         </div>
     );
 };
