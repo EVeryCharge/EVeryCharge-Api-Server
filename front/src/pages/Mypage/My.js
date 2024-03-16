@@ -67,7 +67,7 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
                     </Grid>
                     <Grid item xs={2}>
                         <CardActions>
-                            <Button size="small" color="primary" style={{ marginLeft: '15px' }}>
+                            <Button size="small" color="primary" style={{ marginLeft: '15px' }} component={Link} to="/edit">
                                 <SettingsIcon />
                             </Button>
                         </CardActions>

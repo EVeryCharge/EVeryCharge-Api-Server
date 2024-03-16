@@ -23,6 +23,7 @@ import InquiryModifyform from "./pages/Inquiry/InquiryModifyform";
 import ChargeFee from "./pages/ChargeFee/ChargeFee";
 import My from "./pages/Mypage/My";
 import CarInit from "./pages/Mypage/CarInit"
+import Edit from "./pages/Mypage/Edit"
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             <Route path="/fee" element={<ChargeFee />} />
             <Route path="/my" element={<My />} />
             <Route path="/carInit" element={<CarInit />} />
+            <Route path="/edit" element={<Edit />} />
           </Routes>
           <Footer />
         </SelectedItemsProvider>
