@@ -15,6 +15,7 @@ import { HttpGet } from "../../services/HttpService";
 import ReportHeader from "./ReportHeader";
 
 const ReportList = () => {
+  const [actorCanCreate, setActorCanCreate] = React.useState("false");
   const [data, setData] = React.useState({
     totalPages: 0,
     totalElements: 0,
@@ -30,10 +31,6 @@ const ReportList = () => {
     fetchData(page, rowsPerPage);
   }, [page, rowsPerPage]);
 
-  React.useEffect(() => {
-    console.log("Data received:", data);
-  }, [data]);
-
   // 신고 리스트 API GET
   const fetchData = async (currentPage, pageSize) => {
     try {
@@ -41,8 +38,8 @@ const ReportList = () => {
         page: currentPage,
         pageSize: pageSize,
       });
-
-      setData(response.data);
+      setActorCanCreate(response.data.actorCanCreate);
+      setData(response.data.page);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -80,7 +77,7 @@ const ReportList = () => {
       <ReportHeader
         headerTitle={"신고내역 확인"}
         headerDescription={"충전소 관련 내용을 신고할 수 있습니다."}
-        actorCanCreate={data?.content[0]?.actorCanCreate || false}
+        actorCanCreate={actorCanCreate}
         actorCanManagerSearch={data?.content[0]?.actorCanManagerSearch || false}
         isEditPage={false}
       />

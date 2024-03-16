@@ -52,7 +52,6 @@ const ReportForm = () => {
       const response = await HttpGet("/api/v1/reports/station", {
         kw: searchKw,
       });
-      console.log("kw", searchKw);
       const result = response;
 
       if (result.success && result.data) {
