@@ -71,23 +71,11 @@ const ReportForm = () => {
       }));
     } finally {
       setLoading(false);
-      if (
-        searchKw &&
-        searchKw.trim() !== "" &&
-        searchKw.length >= 2 &&
-        chargingStations &&
-        chargingStations.length === 0
-      ) {
-        setError(() => ({
-          searchKw: "검색 결과가 없습니다.",
-        }));
-      }
     }
   }, [searchKw]);
 
   useEffect(() => {
     if ((searchKw && searchKw.trim() === "") || searchKw.length < 2) {
-      setChargingStations([]);
       setLoading(false);
       setError(() => ({
         searchKw: "검색어를 2자 이상 입력해주세요",
@@ -101,7 +89,7 @@ const ReportForm = () => {
       }));
       const timerId = setTimeout(() => {
         fetchChargingStations(searchKw);
-      }, 1500); // 유저 타이핑이 멈추고 1.5초 뒤 최종 searchKw 기반으로 호출
+      }, 1000); // 유저 타이핑이 멈추고 1.5초 뒤 최종 searchKw 기반으로 호출
       return () => {
         clearTimeout(timerId);
       };
@@ -300,7 +288,7 @@ const ReportForm = () => {
                   position="absolute"
                   zIndex="1"
                   bgcolor="rgb(211, 211, 211, 0.95)"
-                  width="490px"
+                  width="390px"
                   paddingLeft="10px"
                   marginLeft="10px"
                   maxHeight="400px"
