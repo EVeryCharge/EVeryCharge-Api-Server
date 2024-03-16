@@ -1,15 +1,20 @@
 package com.ll.eitcharge.domain.charger.chargerState.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,15 +77,26 @@ public class ChargerStateRedisService {
 	 * @return list Redis에 존재, DB에 없는 충전기 리스트를 필터링한 리스트
 	 */
 	public List<ChargerStateUpdateForm> filterExistingChargersFromRedis(List<ChargerStateUpdateForm> list) {
-		Set<String> keys = redisTemplate.keys("*");
-		if (keys.isEmpty())
-			return list;
+		Set<String> existingKeys = new HashSet<>();
 
-		List<ChargerStateUpdateForm> filteredList =
-			list.stream()
-				.filter(charger ->
-					!keys.contains(String.format("%s_%s", charger.getStatId(), charger.getChgerId()))).toList();
+		redisTemplate.executeWithStickyConnection(connection -> {
+			Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match("*").build());
+			try {
+				cursor.forEachRemaining(keyBytes -> existingKeys.add(new String(keyBytes, StandardCharsets.UTF_8)));
+			} finally {
+				cursor.close();
+			}
+			return null;
+		});
+
+		List<ChargerStateUpdateForm> filteredList = list.stream()
+			.filter(charger ->
+				!existingKeys.contains(String.format("%s_%s", charger.getStatId(), charger.getChgerId()))
+			)
+			.toList();
+
 		log.info("[Redis] : OpenApi 충전기 데이터 {}개 중 DB 미존재 충전기 데이터 {} 필터링 완료", list.size(), filteredList.size());
+		Ut.calcHeapMemory();
 		return filteredList;
 	}
 
@@ -97,6 +113,7 @@ public class ChargerStateRedisService {
 			}
 		);
 		log.info("[Redis] : DB 미존재 충전기 충전기 정보 {}개 저장 완료", keySet.size());
+		Ut.calcHeapMemory();
 	}
 
 	/**
