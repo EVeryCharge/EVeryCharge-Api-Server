@@ -35,7 +35,7 @@ public class ChargerStateUpdateService {
 	private final ChargerStateRedisService chargerStateRedisService;
 	private final ChargerRepository chargerRepository;
 
-	public void initChargersToRedis() {
+	public void initChargersToRedis1() {
 		int pageSize= 100;
 		int pageNumber = 0;
 		Page<Charger> page;
@@ -55,6 +55,10 @@ public class ChargerStateUpdateService {
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Redis3](init) : 종료, 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
+	}
+
+	public void initChargersToRedis2() {
+		chargerStateRedisService.flushAll();
 	}
 
 	/**
@@ -275,7 +279,7 @@ public class ChargerStateUpdateService {
 		});
 		LocalDateTime dbEndTime = LocalDateTime.now();
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
-		log.info("[DB] 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
+		log.info("[DB] : 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
@@ -362,7 +366,7 @@ public class ChargerStateUpdateService {
 		});
 		LocalDateTime dbEndTime = LocalDateTime.now();
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
-		log.info("[DB] 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
+		log.info("[DB] : 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
 
 		// DB 비교 후 없는 충전기 정보를 Redis에 저장
 		chargerStateRedisService.updateNonExistingChargersToRedis(nonExistingChargerKeySet);
