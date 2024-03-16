@@ -37,7 +37,6 @@ public class ChargerStateUpdateService {
 		chargerStateRedisService.flushAll();
 	}
 
-
 	/**
 	 * 충전기 상태 업데이트
 	 * Async O, Redis X
@@ -96,7 +95,7 @@ public class ChargerStateUpdateService {
 				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
 			}).toList();
 
-		// DB 업데이트 로직 1. 단건 업데이트
+		// DB 업데이트 로직 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
 		apiChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
@@ -117,6 +116,7 @@ public class ChargerStateUpdateService {
 	@Transactional
 	public void updateChargerState2() {
 		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
+		// Ut.calcHeapMemory();
 		LocalDateTime startTime = LocalDateTime.now();
 
 		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
@@ -134,7 +134,6 @@ public class ChargerStateUpdateService {
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
 		List<Map<String, Object>> items =
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
@@ -142,6 +141,7 @@ public class ChargerStateUpdateService {
 			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
+		// 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
 		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
 				String statId = (String)item.get("statId");
@@ -168,35 +168,27 @@ public class ChargerStateUpdateService {
 				return new ChargerStateUpdateForm(statId, chgerId, stat, statUpdDt, lastTsdt, lastTedt, nowTsdt);
 			}).toList();
 
-		// 레디스 비교를 통해 DB상 없는 충전기를 1차 필터링
-		List<ChargerStateUpdateForm> filteredChargerList =
-			chargerStateRedisService.filterExistingChargersFromRedis(apiChargerList);
+		// 레디스 비교를 통해 충전기 상태가 갱신된 충전기 리스트 반환
+		List<ChargerStateUpdateForm> updatedChargerList =
+			chargerStateRedisService.updateExistingChargersToRedis(apiChargerList);
 
+		// DB 업데이트 로직 단건 업데이트
 		AtomicInteger successCnt = new AtomicInteger();
-		Set<String> nonExistingChargerKeySet = new HashSet<>();
-
 		LocalDateTime dbStartTime = LocalDateTime.now();
-		filteredChargerList.forEach(charger -> {
+		updatedChargerList.forEach(charger -> {
 			int isUpdated = chargerRepository.updateChargerState(charger);
-
 			if (isUpdated == 1)
 				successCnt.getAndIncrement();
-
-			if (isUpdated == 0) {
-				nonExistingChargerKeySet.add(String.format("%s_%s", charger.getStatId(), charger.getChgerId()));
-			}
 		});
 		LocalDateTime dbEndTime = LocalDateTime.now();
-		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료, {}건 DB 미등록 데이터",
-			filteredChargerList.size(), successCnt, nonExistingChargerKeySet.size(), dbEndTime);
+		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
 		log.info("[DB] : 충전기 상태 갱신 시간 : {}", Ut.calcDuration(dbStartTime, dbEndTime));
-
-		// DB 비교 후 없는 충전기 정보를 Redis에 저장
-		chargerStateRedisService.updateNonExistingChargersToRedis(nonExistingChargerKeySet);
 
 		LocalDateTime endTime = LocalDateTime.now();
 		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		Ut.calcHeapMemory();
 	}
+  
 }
 
 
