@@ -53,6 +53,6 @@ public class All {
     }
 
     public void initChargersToRedis() {
-        chargerStatusUpdateService.initChargersToRedis();
+        chargerStatusUpdateService.initChargersToRedis2();
     }
 }
