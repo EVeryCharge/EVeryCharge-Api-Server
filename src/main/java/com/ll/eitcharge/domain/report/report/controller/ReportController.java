@@ -4,7 +4,6 @@ import static org.springframework.util.MimeTypeUtils.*;
 
 import java.security.Principal;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportPageResponseDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportSearchStationListResponseDto;
@@ -41,18 +41,18 @@ public class ReportController {
 	private final ReportService reportService;
 
 	@GetMapping("/list")
-	public RsData<Page<ReportResponseDto>> getList(
+	public RsData<ReportPageResponseDto> getList(
 		@RequestParam(value="page", defaultValue = "0") int page,
 		@RequestParam(value="pageSize", defaultValue = "10") int pageSize
 	) {
-
-		Page<ReportResponseDto> responseDtos = reportService.getList(page, pageSize);
-		responseDtos.getContent().forEach(this::loadReportAccess);
+		ReportPageResponseDto responseDto = reportService.getList(page, pageSize);
+		responseDto.getPage().getContent().forEach(this::loadReportAccess);
+		loadReportAccess(responseDto);
 		//todo 디버그용 log, 지우기
 		log.info("[Test] : 신고 리스트 요청");
 		log.info("[Test] : 현재 사용중인 스레드, {}", Thread.currentThread());
 		log.info("[Test] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
-		return RsData.of("200", "ok", responseDtos);
+		return RsData.of("200", "ok", responseDto);
 	}
 
 	@GetMapping("/{id}")
@@ -115,7 +115,11 @@ public class ReportController {
 		return RsData.of("200", "ok", responseDto);
 	}
 
-	private void loadReportAccess(ReportResponseDto responseDto) {
-		reportService.loadReportAccess(responseDto);
+	private void loadReportAccess(ReportResponseDto dto) {
+		reportService.loadReportAccess(dto);
+	}
+
+	private void loadReportAccess(ReportPageResponseDto dto) {
+		reportService.loadReportAccess(dto);
 	}
 }
