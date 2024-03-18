@@ -44,9 +44,6 @@ public class ChargerStateUpdateService {
 	@Async
 	@Transactional
 	public void updateChargerState1() {
-		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
-		LocalDateTime startTime = LocalDateTime.now();
-
 		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
 		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
 		String key = apiServiceKey;
@@ -56,7 +53,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
+		log.info("[OpenAPI] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -66,7 +63,7 @@ public class ChargerStateUpdateService {
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
-			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+			log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
 
 		List<ChargerStateUpdateForm> apiChargerList =
@@ -103,9 +100,6 @@ public class ChargerStateUpdateService {
 				successCnt.getAndIncrement();
 		});
 		log.info("[DB] : 충전기 상태 {}건 중 {}건 업데이트 완료", apiChargerList.size(), successCnt);
-
-		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 	}
 
 	/**
@@ -115,9 +109,6 @@ public class ChargerStateUpdateService {
 	@Async
 	@Transactional
 	public void updateChargerState2() {
-		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
-		LocalDateTime startTime = LocalDateTime.now();
-
 		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
 		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
 		String key = apiServiceKey;
@@ -127,7 +118,7 @@ public class ChargerStateUpdateService {
 		int pageNo = 1;
 		int priod = 10;
 
-		log.info("[Scheduler] : OpenAPI 데이터 불러오기 시작");
+		log.info("[OpenAPI] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
 			baseUrl, key, numOfRows, pageNo, jsonType, priod);
@@ -137,7 +128,7 @@ public class ChargerStateUpdateService {
 			(List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
 
 		if (!items.isEmpty()) {
-			log.info("[Scheduler] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+			log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
     
     // 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
@@ -195,10 +186,6 @@ public class ChargerStateUpdateService {
 
 		// DB 비교 후 없는 충전기 정보를 Redis에 저장
 		chargerStateRedisService.updateNonExistingChargersToRedis(nonExistingChargerKeySet);
-
-		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 충전기 상태 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
-		Ut.calcHeapMemory();
 	}
 }
 
