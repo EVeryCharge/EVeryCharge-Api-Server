@@ -3,7 +3,10 @@ package com.ll.eitcharge.domain.charger.charger.service;
 import static com.ll.eitcharge.global.app.AppConfig.*;
 
 import java.net.URI;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 
@@ -44,6 +48,9 @@ public class ChargerService {
         return chargerRepository.findAll(pageable);
     }
 
+    /**
+     * 충전기 상태 변경감지 조회용 메소드
+     */
     public HashMap webClientApiGetChargerStatus(String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int priod){
         URI uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("serviceKey", serviceKey)
@@ -75,8 +82,56 @@ public class ChargerService {
         } catch (JsonProcessingException e) {
             log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
         } catch(Exception e) {
-            log.error("[ERROR] : OpenAPI GET 중 에러 발생(시간초과) {}", e.getMessage());
+            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생(시간초과) {}", e.getMessage());
         }
         return hashMap;
+    }
+
+    /**
+     * 충전기 정보 조회용 메소드
+     */
+    public List<ChargerApiItemForm> webClientApiGetChargerInfo(
+        String baseUrl, String serviceKey, int numOfRows, int pageNo, String type){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        URI uri = UriComponentsBuilder.fromUriString(baseUrl)
+            .queryParam("serviceKey", serviceKey)
+            .queryParam("numOfRows", numOfRows)
+            .queryParam("pageNo", pageNo)
+            .queryParam("dataType", type)
+            .build(true)
+            .toUri();
+
+        HttpClient httpClient = HttpClient.create()
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+
+        WebClient webClient = WebClient.builder()
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5 * 1024 * 1024))  //5MB
+            .baseUrl(uri.toString())
+            .clientConnector(new ReactorClientHttpConnector(httpClient))
+            .build();
+
+        HashMap apiDataMap = null;
+        try {
+            String response = webClient.get()
+                .uri(uri)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+            apiDataMap = objectMapper.readValue(response, HashMap.class);
+        } catch (JsonProcessingException e) {
+            log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
+        } catch(Exception e) {
+            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생(시간초과) {}", e.getMessage());
+        }
+
+        List<Map<String, Object>> items = (List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
+        if (!items.isEmpty()) {
+            log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
+        }
+
+        return items.stream().map(item -> new ChargerApiItemForm(item, formatter)).toList();
     }
 }
