@@ -20,29 +20,30 @@ import lombok.extern.slf4j.Slf4j;
 @Profile("dev")
 @RequiredArgsConstructor
 public class ChargerBatchUpdateScheduler {
-
 	private final ChargerBatchUpdateService chargerBatchUpdateService;
+	private final ChargerBatchUpdateConfig chargerBatchUpdateConfig;
+	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
 
 	// @Scheduled(cron = "0 0 3 * * *") // 운영용
 	@Scheduled(fixedRate = 3 * 60 * 1000) // 개발용
 	public void updateChargerScheduled() {
-		while (!AppConfig.isAppInitialized || ChargerStateUpdateConfig.isUpdateRunning) {
+		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				log.info("[System] : 충전기 전역 업데이트 대기중 스레드 오류, 스레드 재설정");
+				log.info("[System] : 충전소 / 충전기 전역 업데이트 대기중 스레드 오류, 스레드 재설정");
 				Thread.currentThread().interrupt();
 			}
 		}
-		ChargerBatchUpdateConfig.isBatchUpdateRunning = true;
-		log.info("[Scheduler] : 충전기 상태 업데이트 시작");
+		chargerBatchUpdateConfig.setBatchUpdateRunning(true);
+		log.info("[Scheduler] : 충전소 / 충전기 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
 		chargerBatchUpdateService.updateCharger();
 
-		ChargerBatchUpdateConfig.isBatchUpdateRunning = false;
+		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 충전기 전역 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 충전소 / 충전기 전역 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 }

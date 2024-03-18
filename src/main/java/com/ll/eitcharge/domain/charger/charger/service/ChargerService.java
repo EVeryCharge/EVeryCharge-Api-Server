@@ -51,12 +51,15 @@ public class ChargerService {
     /**
      * 충전기 상태 변경감지 조회용 메소드
      */
-    public HashMap webClientApiGetChargerStatus(String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int priod){
+    public HashMap webClientApiGetChargerStatus(
+        String baseUrl, String serviceKey, int numOfRows, int pageNo, String type, int period
+    ){
         URI uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("numOfRows", numOfRows)
                 .queryParam("pageNo", pageNo)
                 .queryParam("dataType", type)
+                .queryParam("period", period)
                 .build(true)
                 .toUri();
 
@@ -91,7 +94,8 @@ public class ChargerService {
      * 충전기 정보 조회용 메소드
      */
     public List<ChargerApiItemForm> webClientApiGetChargerInfo(
-        String baseUrl, String serviceKey, int numOfRows, int pageNo, String type){
+        String baseUrl, String serviceKey, int numOfRows, int pageNo, String type
+    ){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         URI uri = UriComponentsBuilder.fromUriString(baseUrl)

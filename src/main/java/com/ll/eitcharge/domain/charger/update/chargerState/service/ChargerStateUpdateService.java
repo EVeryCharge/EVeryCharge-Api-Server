@@ -43,20 +43,11 @@ public class ChargerStateUpdateService {
 	 */
 	@Async
 	@Transactional
-	public void updateChargerState1() {
-		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
-		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
-		String key = apiServiceKey;
-		String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
-		String jsonType = "JSON";
-		int numOfRows = 10000;
-		int pageNo = 1;
-		int priod = 10;
-
+	public void updateChargerState1(String baseUrl, String contentType, int numOfRows, int pageNo, int priod) {
 		log.info("[OpenAPI] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
-			baseUrl, key, numOfRows, pageNo, jsonType, priod);
+			baseUrl, apiServiceKey, numOfRows, pageNo, contentType, priod);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 		List<Map<String, Object>> items =
@@ -108,20 +99,11 @@ public class ChargerStateUpdateService {
 	 */
 	@Async
 	@Transactional
-	public void updateChargerState2() {
-		//현재는 해당 api의 응답데이터가 10000개를 넘는일은 없을것으로 예상.
-		//하지만 추후에 10000개 이상일경우, 리팩토링 필요함
-		String key = apiServiceKey;
-		String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus";
-		String jsonType = "JSON";
-		int numOfRows = 10000;
-		int pageNo = 1;
-		int priod = 10;
-
+	public void updateChargerState2(String baseUrl, String contentType, int numOfRows, int pageNo, int period) {
 		log.info("[OpenAPI] : OpenAPI 데이터 불러오기 시작");
 
 		HashMap apiDataMap = chargerService.webClientApiGetChargerStatus(
-			baseUrl, key, numOfRows, pageNo, jsonType, priod);
+			baseUrl, apiServiceKey, numOfRows, pageNo, contentType, period);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 		List<Map<String, Object>> items =
