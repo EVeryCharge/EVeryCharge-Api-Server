@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.update.chargerState.form.ChargerStateUpdateForm;
 
 @Repository
 public interface ChargerRepository extends JpaRepository<Charger, Long> {

@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.chargerState.form;
+package com.ll.eitcharge.domain.charger.update.chargerState.form;
 
 import java.time.LocalDateTime;
 

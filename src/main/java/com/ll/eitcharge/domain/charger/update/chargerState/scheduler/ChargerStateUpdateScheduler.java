@@ -1,16 +1,16 @@
-package com.ll.eitcharge.domain.charger.chargerState.scheduler;
+package com.ll.eitcharge.domain.charger.update.chargerState.scheduler;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateUpdateService;
+import com.ll.eitcharge.domain.charger.update.chargerState.service.ChargerStateUpdateService;
 import com.ll.eitcharge.global.app.AppConfig;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Profile("prod")
+@Profile("dev")
 @RequiredArgsConstructor
 public class ChargerStateUpdateScheduler {
 

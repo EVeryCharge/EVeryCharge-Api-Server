@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.chargerState.service;
+package com.ll.eitcharge.domain.charger.update.chargerState.service;
 
 import static com.ll.eitcharge.global.app.AppConfig.*;
 
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
-import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.update.chargerState.form.ChargerStateUpdateForm;
 import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;
