@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import CarInit from "./CarInit";
 import {
     Button,
 } from "@material-ui/core";
@@ -15,6 +16,18 @@ import {
     HttpGet,
 } from "../../services/HttpService";
 import SettingsIcon from '@mui/icons-material/Settings';
+import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
+import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
+import StarIcon from '@mui/icons-material/Star';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+import ArticleIcon from '@mui/icons-material/Article';
+import {
+    Help,
+} from "@material-ui/icons";
+import {
+    Tooltip,
+} from "@material-ui/core";
+
 const bull = (
     <Box
         component="span"
@@ -78,93 +91,8 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
     );
 }
 
-function CardComponent2({ carModel, carInfo }) {
-    if (carModel === null) {
-        return (
-            <Typography component="div" style={{ textAlign: 'center', margin: '40px' }}>
-                아직 등록된 차량이 없어요.
-                <br />
-                아래 버튼을 눌러 등록해 보세요.
-                <br />
-                <br />
-                <Button variant="outlined" color="Primary" component={Link} style={{ textAlign: 'center', margin: '10px' }}
-                    to="/carInit" >
-                    등록하기
-                </Button>
-            </Typography>
-        );
-    }
-    return (
-        <React.Fragment>
-            <CardContent>
-                <Grid container direction="column" spacing={2} alignItems="flex-start">
-                    <Grid container direction="row" justifyContent="space-between" alignItems="center">
 
-                        {/* 차종 이름 - 왼쪽 정렬 */}
-                        <Grid item style={{ marginTop: '15px', marginLeft: '20px' }}>
-                            <Typography variant="h5" component="div" style={{ textAlign: 'left' }}>
-                                {carModel}
-                            </Typography>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                {carInfo.manufacturer}
-                            </Typography>
-                        </Grid>
 
-                        {/* 수정 버튼 - 오른쪽 정렬 */}
-                        <Grid item>
-                            <CardActions>
-                                <Button size="small" color="primary" component={Link} to="/carInit">
-                                    <SettingsIcon />
-                                </Button>
-                            </CardActions>
-                        </Grid>
-                    </Grid>
-
-                    {/* 이미지 */}
-                    <Grid item style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        <img src="https://via.placeholder.com/600x200" alt="설명" style={{ width: '600px', height: '200px' }} />
-                    </Grid>
-
-                    <Grid container item spacing={2} justifyContent="center">
-                        {/* 배터리 정보 (전체 넓이의 1/3) */}
-                        <Grid item xs={4} align="center">
-                            <Typography variant="body2" >
-                                완속 충전
-                            </Typography>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                방식 : {carInfo.chargeWaySlow}
-                                <br />
-                                시간 : {carInfo.chargeTimeSlow}
-                            </Typography>
-                        </Grid>
-
-                        {/* 충전 방식 (전체 넓이의 1/3) */}
-                        <Grid item xs={4} align="center">
-                            <Typography variant="body2" >
-                                급속 충전
-                            </Typography>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                방식 : {carInfo.chargeWayFast}
-                                <br />
-                                시간 : {carInfo.chargeTimeFast}
-                            </Typography>
-                        </Grid>
-
-                        {/* 충전기 타입 (전체 넓이의 1/3) */}
-                        <Grid item xs={4} align="center">
-                            <Typography variant="body2" >
-                                배터리
-                            </Typography>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                용량 : {carInfo.battery}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </CardContent>
-        </React.Fragment>
-    );
-}
 
 
 
@@ -174,32 +102,44 @@ const card3 = (
             <Grid container item spacing={2} justifyContent="center">
                 {/* 배터리 정보 (전체 넓이의 1/3) */}
                 <Grid item xs={4} align="center">
-                    <Typography variant="body2" >
-                        내찜목록
+                    <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <StarIcon />
+                        즐겨찾기
                     </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        100
-                    </Typography>
+                    <Tooltip
+                        placement="right-start"
+                        title="추후에 제공될 예정입니다."
+                    >
+                        <Help style={{ color: "grey", fontSize: "20" }} />
+                    </Tooltip>
                 </Grid>
 
                 {/* 충전 방식 (전체 넓이의 1/3) */}
                 <Grid item xs={4} align="center">
-                    <Typography variant="body2" >
+                    <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <FindInPageIcon />
                         최근 조회 충전소
                     </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        100
-                    </Typography>
+                    <Tooltip
+                        placement="right-start"
+                        title="추후에 제공될 예정입니다."
+                    >
+                        <Help style={{ color: "grey", fontSize: "20" }} />
+                    </Tooltip>
                 </Grid>
 
                 {/* 충전기 타입 (전체 넓이의 1/3) */}
                 <Grid item xs={4} align="center">
-                    <Typography variant="body2" >
+                    <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <ArticleIcon />
                         내 리뷰 목록
                     </Typography>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        100
-                    </Typography>
+                    <Tooltip
+                        placement="right-start"
+                        title="추후에 제공될 예정입니다."
+                    >
+                        <Help style={{ color: "grey", fontSize: "20" }} />
+                    </Tooltip>
                 </Grid>
             </Grid>
 
@@ -222,6 +162,22 @@ const My = () => {
     const [profileImgUrl, setProfileImgUrl] = useState(null);
     const [carInfo, setCarInfo] = useState({});
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+
+
+    const handleModal = () => {
+        // 모달을 닫고, 선택된 충전소 ID를 설정한 후 다시 모달을 열기
+        setIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsOpen(false);
+        setRefresh(!refresh)
+    };
+
+
+
     useEffect(() => {
         const sessionUsername = sessionStorage.getItem("username");
         if (sessionUsername === null || sessionUsername === undefined || sessionUsername === "") {
@@ -243,17 +199,24 @@ const My = () => {
                 }
             });
 
-
-
-
-        const fetchCarInfo = async () => {
-
-        };
-        fetchCarInfo();
-
         console.log('car2 ' + car)
 
     }, []);
+
+    useEffect(() => {
+        HttpGet("/api/v1/members/me")
+        .then((data) => {
+            if (data) {
+                setUser(data);
+                setCar(data.data.item.carModel)
+                setCreateDate(data.data.item.createDate)
+                setProfileImgUrl(data.data.item.profileImgUrl)
+                console.log('car ' + data.data.item.car)
+                console.log('cd ' + createDate)
+                console.log('p ' + profileImgUrl)
+            }
+        });
+    }, [refresh]);
 
     useEffect(() => {
 
@@ -269,10 +232,6 @@ const My = () => {
         }
 
     }, [user]);
-
-
-
-
     return (
         <div className={classes.root}>
             <h3>마이페이지</h3>
@@ -285,8 +244,103 @@ const My = () => {
             <br />
             <Box sx={{ minWidth: 700 }}>
                 <Card variant="outlined" sx={{ border: 1.5 }}>
-                    <CardComponent2 carModel={car} carInfo={carInfo} />
+                    {car === null ? (
+                        <Typography component="div" style={{ textAlign: 'center', margin: '40px' }}>
+                            아직 등록된 차량이 없어요.
+                            <br />
+                            아래 버튼을 눌러 등록해 보세요.
+                            <br />
+                            <br />
+                            <Button variant="outlined" color="Primary" onClick={() => handleModal()} >
+                                등록하기
+                            </Button>
+                            <CarInit
+                                isOpen={isOpen}
+                                onRequestClose={closeModal}
+                            />
+                        </Typography>
+                    ) :
+                        (
+                            <React.Fragment>
+                                <CardContent>
+                                    <Grid container direction="column" spacing={2} alignItems="flex-start">
+                                        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+
+                                            {/* 차종 이름 - 왼쪽 정렬 */}
+                                            <Grid item style={{ marginTop: '15px', marginLeft: '20px' }}>
+                                                <Typography variant="h5" component="div" style={{ textAlign: 'left' }}>
+                                                    {car}
+                                                </Typography>
+                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                    {carInfo.manufacturer}
+                                                </Typography>
+                                            </Grid>
+
+                                            {/* 수정 버튼 - 오른쪽 정렬 */}
+                                            <Grid item>
+                                                <CardActions>
+                                                    <Button size="small" color="primary" onClick={() => handleModal()}>
+                                                        <SettingsIcon />
+                                                    </Button>
+                                                    <CarInit
+                                                        isOpen={isOpen}
+                                                        onRequestClose={closeModal}
+                                                    />
+                                                </CardActions>
+                                            </Grid>
+                                        </Grid>
+
+                                        {/* 이미지 */}
+                                        <Grid item style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                            <img src="https://via.placeholder.com/600x200" alt="설명" style={{ width: '600px', height: '200px' }} />
+                                        </Grid>
+                                        <br />
+
+                                        <Grid container item spacing={2} justifyContent="center">
+                                            {/* 배터리 정보 (전체 넓이의 1/3) */}
+                                            <Grid item xs={4} align="center">
+                                                <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <ElectricalServicesIcon />
+
+                                                    완속 충전
+                                                </Typography>
+                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                    방식 : {carInfo.chargeWaySlow}
+                                                    <br />
+                                                    시간 : {carInfo.chargeTimeSlow}
+                                                </Typography>
+                                            </Grid>
+
+                                            {/* 충전 방식 (전체 넓이의 1/3) */}
+                                            <Grid item xs={4} align="center">
+                                                <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <ElectricalServicesIcon />
+                                                    급속 충전
+                                                </Typography>
+                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                    방식 : {carInfo.chargeWayFast}
+                                                    <br />
+                                                    시간 : {carInfo.chargeTimeFast}
+                                                </Typography>
+                                            </Grid>
+
+                                            {/* 충전기 타입 (전체 넓이의 1/3) */}
+                                            <Grid item xs={4} align="center">
+                                                <Typography variant="body2" style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <BatteryChargingFullIcon />
+                                                    배터리
+                                                </Typography>
+                                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                                    용량 : {carInfo.battery}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </React.Fragment>
+                        )}
                 </Card>
+
             </Box>
             <br />
             <Box sx={{ minWidth: 700 }}>

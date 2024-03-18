@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
+
 import { HttpGet, HttpPut } from "../../services/HttpService";
 import Stack from '@mui/material/Stack';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -11,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../utils/AuthContext";
 
-const CarInit = () => {
+const CarInit = ({ isOpen, onRequestClose }) => {
     const classes = useStyles();
     const [manuItem, setManuItem] = useState([]);
     const [carItem, setCarItem] = useState([]);
@@ -20,6 +22,12 @@ const CarInit = () => {
 
     const navigate = useNavigate();
     const { getUserName } = useAuth();
+
+    const closeModal = () => {
+        onRequestClose();
+    };
+
+    useEffect(() => { }, [isOpen]);
 
     useEffect(() => {
         const fetchManuItem = async () => {
@@ -66,17 +74,18 @@ const CarInit = () => {
     const handleSubmit = async () => {
         // 선택된 차량이 맞는지 확인하는 알림창을 띄움
         const isConfirmed = window.confirm(`${getUserName()} ${selectedCar}로 등록하기`);
-    
+
         if (isConfirmed) {
             try {
                 // 사용자가 '확인'을 누르면 httpPut 요청 실행
                 const response = await HttpPut("/api/v1/members/carInit", {
                     username: getUserName(), // 사용자 이름 설정
                     carModel: selectedCar, // 선택된 차 모델 사용
+                    
                 });
-    
+
                 // httpPut 요청이 성공한 후 /my로 리다이렉트
-                navigate("/my");
+                onRequestClose();
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
             }
@@ -88,73 +97,88 @@ const CarInit = () => {
 
 
     return (
-        <div className={classes.root}>
-            <h1>차등록 - 제목</h1>
-            <h1>브랜드 선택</h1>
-            <Stack spacing={2} alignItems="center">
-                {chunkedManuItems(manuItem, 6).map((chunk, index) => (
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={closeModal}
+            contentLabel="Selected Marker"
+            style={{
+                overlay: {
+                    zIndex: 1000, // 모달 배경의 z-index
+                },
+                content: {
+                    width: "70%", // 모달의 너비를 조절합니다.
+                    height: "50%", // 모달의 높이를 조절합니다.
+                    margin: "auto", // 모달을 화면 중앙에 위치시킵니다.
+                },
+            }}
+        >
+            <div className={classes.root}>
+                <h1>브랜드 선택</h1>
+                <Stack alignItems="center">
+                    {chunkedManuItems(manuItem, 6).map((chunk, index) => (
+                        <ToggleButtonGroup
+                            key={index}
+                            value={selectedBrand}
+                            exclusive
+                            aria-label="Button group"
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(6, 1fr)',
+                                marginBottom: 2, // 각 ToggleButtonGroup 사이의 마진 추가
+                            }}
+                            onChange={handleBrandChange}
+                        >
+                            {chunk.map((option) => (
+                                <ToggleButton
+                                    key={option}
+                                    value={option}
+                                    sx={{
+                                        width: 140,
+                                        height: 60,
+                                    }}
+                                >
+                                    {option}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                    ))}
+                </Stack>
+                <h1>모델 선택</h1>
+
+                <Stack alignItems="center">
                     <ToggleButtonGroup
-                        key={index}
-                        value={selectedBrand}
-                        exclusive
+                        orientation="vertical"
+                        value={selectedCar}
+                        onChange={handleBrandChange2}
+                        exclusive  // 한 번에 하나의 버튼만 선택 가능하도록 exclusive 속성 추가
                         aria-label="Button group"
-                        sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(6, 1fr)',
-                            marginBottom: 2, // 각 ToggleButtonGroup 사이의 마진 추가
-                        }}
-                        onChange={handleBrandChange}
                     >
-                        {chunk.map((option) => (
+                        {carItem.map(car => (
                             <ToggleButton
-                                key={option}
-                                value={option}
+                                value={car.carModel}
+                                key={car.carModel}
                                 sx={{
-                                    width: 140,
-                                    height: 90,
+                                    width: 600,
+                                    height: 70,
                                 }}
                             >
-                                {option}
+                                {car.carModel}
                             </ToggleButton>
                         ))}
                     </ToggleButtonGroup>
-                ))}
-            </Stack>
-            <h1>모델 선택</h1>
+                </Stack>
 
-            <Stack spacing={2} alignItems="center">
-                <ToggleButtonGroup
-                    orientation="vertical"
-                    value={selectedCar}
-                    onChange={handleBrandChange2}
-                    exclusive  // 한 번에 하나의 버튼만 선택 가능하도록 exclusive 속성 추가
-                    aria-label="Button group"
+                <br />
+
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleSubmit}
                 >
-                    {carItem.map(car => (
-                        <ToggleButton
-                            value={car.carModel}
-                            key={car.carModel}
-                            sx={{
-                                width: 600,
-                                height: 80,
-                            }}
-                        >
-                            {car.carModel}
-                        </ToggleButton>
-                    ))}
-                </ToggleButtonGroup>
-            </Stack>
-
-            <br />
-
-            <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleSubmit}
-            >
-                등록
-            </Button>
-        </div>
+                    등록
+                </Button>
+            </div>
+        </Modal>
     );
 };
 
@@ -167,7 +191,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
     },
 }));
 
