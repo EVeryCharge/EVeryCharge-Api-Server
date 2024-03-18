@@ -31,6 +31,7 @@ public class MemberService {
     @Transactional
     public RsData<Member> join(String username, String password) {
         Member member = Member.builder()
+                .nickname(username)
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .refreshToken(authTokenService.genRefreshToken())
