@@ -31,5 +31,6 @@ public class Car extends BaseTime {
     private String chargeWayFast;
     //충전방식(완속)
     private String chargeWaySlow;
-
+    //이미지
+    private String imgUrl;
 }

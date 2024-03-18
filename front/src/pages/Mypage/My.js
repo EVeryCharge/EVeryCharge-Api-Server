@@ -226,7 +226,7 @@ const My = () => {
             }).then((data2) => {
                 if (data2) {
                     setCarInfo(data2);
-                    console.log("m " + data2.manufacturer)
+                    console.log("m " + data2.imgUrl)
                 }
             })
         }
@@ -292,7 +292,7 @@ const My = () => {
 
                                         {/* 이미지 */}
                                         <Grid item style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                                            <img src="https://via.placeholder.com/600x200" alt="설명" style={{ width: '600px', height: '200px' }} />
+                                            <img src={carInfo.imgUrl} alt="설명" style={{ width: 'auto', height: '200px' }} />
                                         </Grid>
                                         <br />
 

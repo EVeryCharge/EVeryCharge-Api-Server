@@ -24,6 +24,8 @@ public class CarDto {
     private String chargeWayFast;
     //충전방식(완속)
     private String chargeWaySlow;
+    //
+    private String imgUrl;
 
     public CarDto(Car car) {
         this.manufacturer = car.getManufacturer();
@@ -34,5 +36,6 @@ public class CarDto {
         this.maxBoard =  car.getMaxBoard();
         this.chargeWayFast =  car.getChargeWayFast();
         this.chargeWaySlow =  car.getChargeWaySlow();
+        this.imgUrl = car.getImgUrl();
     }
 }
