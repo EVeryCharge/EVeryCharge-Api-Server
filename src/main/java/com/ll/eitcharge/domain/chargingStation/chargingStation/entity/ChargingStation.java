@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
@@ -79,4 +80,24 @@ public class ChargingStation {
     private String kind;
     //충전소 구분 상세 코드
     private String kindDetail;
+
+    public void updateByApi(ChargerApiItemForm item, OperatingCompany company, RegionDetail regionDetail) {
+        this.statNm = item.getStatNm();
+        this.addr = item.getAddr();
+        this.location = item.getLocation();
+        this.useTime = item.getUseTime();
+        this.lat = item.getLat();
+        this.lng = item.getLng();
+        this.parkingFree = item.getParkingFree();
+        this.note = item.getNote();
+        this.limitYn = item.getLimitYn();
+        this.limitDetail = item.getLimitDetail();
+        this.delYn = item.getDelYn();
+        this.delDetail = item.getDelDetail();
+        this.trafficYn = item.getTrafficYn();
+        this.kind = item.getKind();
+        this.kindDetail = item.getKindDetail();
+        this.operatingCompany = company;
+        this.regionDetail = regionDetail;
+    }
 }
