@@ -56,13 +56,13 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
         setEditing(true);
     };
 
-    const handleSaveClick = () => {
+    const handleSaveClick = async () => {
         if (newPassword !== newPassword2) {
             alert('새 비밀번호가 일치하지 않습니다.');
             return;
         }
         try {
-            HttpPut(`api/v1/members/edit`, {
+            const response = await HttpPut(`api/v1/members/edit`, {
                 username: username,
                 password: password,
                 nickname: newNickname,
@@ -72,10 +72,9 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
             if (error.response.data.resultCode === "400-2") {
                 alert("비밀번호가 일치하지 않습니다.");
             }
-
             console.error("Login failed:", error.response.data);
-
             console.error("후기를 수정하는 중 오류 발생:", error);
+            return
         }
         setEditing(false);
         setLogout();
