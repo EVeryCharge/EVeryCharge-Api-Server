@@ -137,4 +137,15 @@ public class MemberController {
     ) {
         return ResponseEntity.ok(memberService.getUserInfo(username));
     }
+
+    public record EditResponseBody(@NonNull MemberDto item) {
+    }
+    public record EditRequestBody(@NotBlank String username, @NotBlank String password, String nickname, String newPassword) {
+    }
+    @PutMapping("/edit")
+    public ResponseEntity<EditResponseBody> edit(@Valid @RequestBody EditRequestBody body){
+
+        Member member = memberService.authAndEdit(body.username, body.password, body.newPassword, body.nickname);
+        return ResponseEntity.ok(new EditResponseBody(new MemberDto(member)));
+    }
 }

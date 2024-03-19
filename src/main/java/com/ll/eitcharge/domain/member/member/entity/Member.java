@@ -92,6 +92,11 @@ public class Member extends BaseTime {
         this.profileImgUrl = profileImgUrl;
     }
 
+    public void changeUserInfo(String nickname, String newPassword) {
+        this.nickname = nickname;
+        this.password = newPassword;
+    }
+
     public void carInit(String carModel){
         this.carModel = carModel;
     }

@@ -155,4 +155,16 @@ public class MemberService {
         return new MemberCarDto(memberRepository.findByUsername(username).get());
     }
 
+    @Transactional
+    public Member authAndEdit(String username, String password, String newPassword, String nickname) {
+        Member member = findByUsername(username)
+                .orElseThrow(() -> new GlobalException("400-1", "해당 유저가 존재하지 않습니다."));
+
+        if (!passwordMatches(member, password))
+            throw new GlobalException("400-2", "비밀번호가 일치하지 않습니다.");
+
+        member.changeUserInfo(nickname, passwordEncoder.encode(newPassword));
+
+        return member;
+    }
 }
