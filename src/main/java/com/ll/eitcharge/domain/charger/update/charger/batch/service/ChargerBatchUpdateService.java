@@ -31,18 +31,4 @@ public class ChargerBatchUpdateService {
 		}
 	}
 }
-	//
-	// int pageNo = 1;
-	// List<ChargerApiItemForm> apiResponse;
-	// 	do {
-	// 		// 500개씩 끊어서 API 응답을 정제한 Form 리스트를 받는다.
-	// 		apiResponse = chargerService.webClientApiGetChargerInfo(baseUrl, contentType, numOfRows, pageNo, contentType);
-	// 		try {
-	// 		// 이후 배치 작업이 500개씩 끊어서 반복적으로 실행된다.
-	// 		jobLauncher.run(chargerBatchUpdateJob, jobParameters(), apiResponse);
-	// 		pageNo++;
-	// 		} catch (Exception e) {
-	// 		log.info("[Batch] : 배치 업데이트 중 오류, {}", e.getMessage());
-	// 		}
-	// 		} while (!apiResponse.isEmpty());
 
