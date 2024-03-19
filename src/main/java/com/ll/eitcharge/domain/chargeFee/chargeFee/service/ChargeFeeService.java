@@ -68,8 +68,8 @@ public class ChargeFeeService {
 		// 요금 미공시 업체 데이터 업데이트(별도 크롤링) TODO 크롤링 방안 마련
 		upsertRowData(List.of("한국전력", "급속", "324.4", "324.4"));
 		upsertRowData(List.of("한국전력", "완속", "347.2", "347.2"));
-		upsertRowData(List.of("에스트래픽", "급속", "385.0", "520.0"));
-		upsertRowData(List.of("에스트래픽", "완속", "288.0", "520.0"));
+		upsertRowData(List.of("SK 일렉링크", "급속", "385.0", "520.0"));
+		upsertRowData(List.of("SK 일렉링크", "완속", "288.0", "520.0"));
 
 		workbook.dispose();
 	}
@@ -85,8 +85,6 @@ public class ChargeFeeService {
 		switch (bnmData) {
 			case "GS차지비" -> bnmData = "차지비";
 			case "채비" -> bnmData = "대영채비";
-			case "이브이시스" -> bnmData = "중앙제어";
-			case "투이스이브이씨" -> bnmData = "삼성EVC";
 		}
 
 		Optional<OperatingCompany> opCompany = operatingCompanyService.findByBnmOptional(bnmData);
