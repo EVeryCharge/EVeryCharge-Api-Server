@@ -24,7 +24,7 @@ public class CarDto {
     private String chargeWayFast;
     //충전방식(완속)
     private String chargeWaySlow;
-    //
+    //차량 이미지
     private String imgUrl;
 
     public CarDto(Car car) {
