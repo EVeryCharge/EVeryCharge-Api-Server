@@ -57,35 +57,43 @@ function InquiryForm() {
 
   const handleSubmit = async () => {
     try {
-      if(files){ 
-        // files 배열에 있는 모든 파일을 FormData에 추가
-        files.forEach((file, index) => {
-          formData.append(`files`, file); // 서버에서 배열 형태로 파일을 받을 수 있도록 이름을 설정
-        });
+      const data = {
+        title: title,
+        writer : "",
+        content: content,
+        inquiryType: inquiryType,
+        isPublished: isPublished,
+        s3fileNames : []
+      };
+      
+      const dataBlob = new Blob([JSON.stringify(data)], { type: 'application/json'})
+      formData.append('data', dataBlob);
 
-        formData.append('type', 'inquiry'); // 'type' 파라미터 추가
+      files.forEach((file, index) => {
+        formData.append(`files`, file); // 서버에서 배열 형태로 파일을 받을 수 있도록 이름을 설정
+      });
 
-        fetch(`${BACKEND_URL}/api/v1/inquiry/fileupload`, {
-          method: 'POST',
-          body: formData,
-        }).then(
-            resp => resp.json()
-          ).then(
-            data => console.log(data)
-          ).catch( err => console.log)
-          console.log(`전송된 파일 목록 = ${filenames}`)
-      }
+      fetch(`${BACKEND_URL}/api/v1/inquiry/create`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      }).then(
+          resp => resp.json()
+        ).then(
+          data => console.log(data)
+        ).catch( err => console.log)
+        console.log(`전송된 파일 목록 = ${filenames}`)
 
-      const request1 = await HttpPost(
-        '/api/v1/inquiry/create',
-        {
-          title: title,
-          content: content,
-          inquiryType : inquiryType,
-          isPublished: isPublished,
-          s3fileNames : files.map(file => file.name), // 업로드된 파일 이름들
-        }
-      );
+      // const request1 = await HttpPost(
+      //   '/api/v1/inquiry/create',
+      //   {
+      //     title: title,
+      //     content: content,
+      //     inquiryType : inquiryType,
+      //     isPublished: isPublished,
+      //     s3fileNames : files.map(file => file.name), // 업로드된 파일 이름들
+      //   }
+      // );
 
       console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType, filenames: files.map(file => file.name)});
       alert("문의 등록 완료");
