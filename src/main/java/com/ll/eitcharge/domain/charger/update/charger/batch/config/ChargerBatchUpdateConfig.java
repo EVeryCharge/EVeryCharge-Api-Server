@@ -14,8 +14,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerBatchProcessor;
+import com.ll.eitcharge.domain.charger.update.charger.batch.processor.CompanyBatchProcessor;
 import com.ll.eitcharge.domain.charger.update.charger.batch.reader.ChargerBatchReader;
 import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargerBatchWriter;
+import com.ll.eitcharge.domain.charger.update.charger.batch.writer.CompanyBatchWriter;
+import com.ll.eitcharge.domain.operatingCompany.operatingCompany.form.OperatingCompanyUpdateForm;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +35,50 @@ public class ChargerBatchUpdateConfig {
 	private final int CHUNK_SIZE = 1;
 
 	@Bean
-	public Job chargerBatchUpdateJob(JobRepository jobRepository, Step chargerBatchUpdateStep) {
+	public Job chargerBatchUpdateJob(
+		JobRepository jobRepository,
+		Step companyBatchUpdateStep,
+		Step stationBatchUpdateStep,
+		Step chargerBatchUpdateStep
+	) {
 		return new JobBuilder("chargerBatchUpdateJob", jobRepository)
-			.start(chargerBatchUpdateStep)
+			.start(companyBatchUpdateStep)
+			.next(stationBatchUpdateStep)
+			.next(chargerBatchUpdateStep)
+			.build();
+	}
+
+	@JobScope
+	@Bean
+	public Step companyBatchUpdateStep(
+		JobRepository jobRepository,
+		ChargerBatchReader reader,
+		CompanyBatchProcessor processor,
+		CompanyBatchWriter writer,
+		PlatformTransactionManager manager
+	) {
+		return new StepBuilder("companyBatchUpdateStep", jobRepository)
+			.<List<ChargerApiItemForm>, List<OperatingCompanyUpdateForm>>chunk(CHUNK_SIZE, manager)
+			.reader(reader)
+			.processor(processor)
+			.writer(writer)
+			.build();
+	}
+
+	@JobScope
+	@Bean
+	public Step stationBatchUpdateStep(
+		JobRepository jobRepository,
+		ChargerBatchReader reader,
+		ChargerBatchProcessor processor,
+		ChargerBatchWriter writer,
+		PlatformTransactionManager manager
+	) {
+		return new StepBuilder("stationBatchUpdateStep", jobRepository)
+			.<List<ChargerApiItemForm>, List<ChargerApiItemForm>>chunk(CHUNK_SIZE, manager)
+			.reader(reader)
+			.processor(processor)
+			.writer(writer)
 			.build();
 	}
 
