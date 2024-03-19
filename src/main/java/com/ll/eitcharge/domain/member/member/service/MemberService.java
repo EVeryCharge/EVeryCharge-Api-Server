@@ -1,16 +1,12 @@
 package com.ll.eitcharge.domain.member.member.service;
 
 import com.ll.eitcharge.domain.member.member.dto.MemberCarDto;
-import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.repository.MemberRepository;
-import com.ll.eitcharge.domain.mypage.car.dto.CarListDto;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rsData.RsData;
 import com.ll.eitcharge.global.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -56,16 +53,16 @@ public class MemberService {
     }
 
     @Transactional
-    public RsData<Member> modifyOrJoin(String username, String providerTypeCode, String nickname, String profileImgUrl){
+    public RsData<Member> modifyOrJoin(String username, String providerTypeCode, String nickname, String profileImgUrl) {
         Member member = findByUsername(username).orElse(null);
-        if(member == null){
+        if (member == null) {
             return join(username, "", nickname, profileImgUrl);
         }
         return modifyNicknameAndProfile(member, nickname, profileImgUrl);
     }
 
     @Transactional
-    public RsData<Member> modifyNicknameAndProfile(Member member, String nickname, String profileImgUrl){
+    public RsData<Member> modifyNicknameAndProfile(Member member, String nickname, String profileImgUrl) {
         member.changeNickNameAndProfileImgUrl(nickname, profileImgUrl);
         return RsData.of("200", "ok", member);
     }
@@ -146,6 +143,7 @@ public class MemberService {
 
         return RsData.of("200-1", "토큰 갱신 성공", accessToken);
     }
+
     @Transactional
     public void carInit(Member member, String carModel) {
         member.carInit(carModel);
@@ -163,6 +161,8 @@ public class MemberService {
         if (!passwordMatches(member, password))
             throw new GlobalException("400-2", "비밀번호가 일치하지 않습니다.");
 
+        if (nickname.isEmpty()) nickname = member.getNickname();
+        if (newPassword.isEmpty()) newPassword = password;
         member.changeUserInfo(nickname, passwordEncoder.encode(newPassword));
 
         return member;

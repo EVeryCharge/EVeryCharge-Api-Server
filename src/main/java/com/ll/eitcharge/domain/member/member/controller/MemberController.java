@@ -144,7 +144,6 @@ public class MemberController {
     }
     @PutMapping("/edit")
     public ResponseEntity<EditResponseBody> edit(@Valid @RequestBody EditRequestBody body){
-
         Member member = memberService.authAndEdit(body.username, body.password, body.newPassword, body.nickname);
         return ResponseEntity.ok(new EditResponseBody(new MemberDto(member)));
     }
