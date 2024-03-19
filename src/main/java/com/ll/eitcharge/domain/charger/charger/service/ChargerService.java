@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +35,10 @@ import reactor.netty.http.client.HttpClient;
 @Slf4j
 public class ChargerService {
     private final ChargerRepository chargerRepository;
-    private final ChargingStationRepository chargingStationRepository;
 
     // 조회용 엔티티
     public Charger findByChargingStationStatIdAndChgerId(String statId, String chgerId) {
-        return chargerRepository.findByChargingStationStatIdAndChgerId(statId, chgerId).get();
+        return chargerRepository.findByStatIdAndChgerId(statId, chgerId).get();
     }
 
     public Page<Charger> findByPage(int pageNumber, int pageSize) {
