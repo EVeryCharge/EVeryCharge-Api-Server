@@ -94,7 +94,7 @@ public class ChargerService {
      * 충전기 정보 조회용 메소드
      */
     public List<ChargerApiItemForm> webClientApiGetChargerInfo(
-        String baseUrl, String serviceKey, int numOfRows, int pageNo, String type
+        String baseUrl, String serviceKey, int numOfRows, int pageNo, String dataType
     ){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
@@ -102,7 +102,7 @@ public class ChargerService {
             .queryParam("serviceKey", serviceKey)
             .queryParam("numOfRows", numOfRows)
             .queryParam("pageNo", pageNo)
-            .queryParam("dataType", type)
+            .queryParam("dataType", dataType)
             .build(true)
             .toUri();
 
@@ -132,10 +132,12 @@ public class ChargerService {
         }
 
         List<Map<String, Object>> items = (List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");
-        if (!items.isEmpty()) {
-            log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
-        }
 
-        return items.stream().map(item -> new ChargerApiItemForm(item, formatter)).toList();
+        List<ChargerApiItemForm> list = items.stream()
+            .map(item -> new ChargerApiItemForm(item, formatter)).toList();
+        if (!list.isEmpty()) {
+            log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", list.size());
+        }
+        return list;
     }
 }
