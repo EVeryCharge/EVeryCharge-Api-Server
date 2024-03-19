@@ -22,6 +22,6 @@ public class InquiryRequestDto {
     @NonNull
     private String inquiryType;
     private Boolean isPublished;
-    private List<String> s3fileNames = new ArrayList<>();
+    private List<String> s3fileNames;
 
 }
