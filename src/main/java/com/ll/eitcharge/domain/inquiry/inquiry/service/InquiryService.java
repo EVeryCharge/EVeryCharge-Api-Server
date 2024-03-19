@@ -1,5 +1,8 @@
 package com.ll.eitcharge.domain.inquiry.inquiry.service;
 
+import com.ll.eitcharge.domain.base.uploadedfiles.entity.UploadedFiles;
+import com.ll.eitcharge.domain.base.uploadedfiles.service.UploadedFilesService;
+import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryDetailResponseDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryRequestDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryResponseDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.entity.Inquiry;
@@ -8,6 +11,7 @@ import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
 import com.ll.eitcharge.domain.report.report.entity.Report;
+import com.ll.eitcharge.global.aws.s3.S3Config;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +21,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.desktop.SystemEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +34,8 @@ import java.util.List;
 public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final MemberService memberService;
+    private final UploadedFilesService uploadedFilesService;
+    private final S3Config s3Config;
 
     public Page<InquiryResponseDto> getList(int page, int pageSize) {
         List<Sort.Order> sorts = new ArrayList<>();
@@ -39,7 +48,7 @@ public class InquiryService {
     }
 
     @Transactional
-    public InquiryResponseDto create(InquiryRequestDto requestDto, String username, String S3fileUrl) {
+    public InquiryResponseDto create(InquiryRequestDto requestDto, List<MultipartFile> files, String username) {
         Inquiry inquiry = Inquiry.builder()
                 .content(requestDto.getContent())
                 .title(requestDto.getTitle())
@@ -47,20 +56,31 @@ public class InquiryService {
                 .isPublished(requestDto.getIsPublished())
                 .writer(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
                 .inquiryState("답변대기")
-                .S3fileUrl(S3fileUrl)
                 .build();
-        inquiryRepository.save(inquiry);
+        Inquiry savedInquiry = inquiryRepository.saveAndFlush(inquiry);
+
+        Long relId = savedInquiry.getId();
+        uploadedFilesService.upload(files, "Inquiry", relId);
+
         return new InquiryResponseDto(inquiry);
     }
 
     @Transactional
-    public InquiryResponseDto getInquiryById(Long id) {
+    public InquiryDetailResponseDto getInquiryById(Long id) {
         Inquiry inquiry = inquiryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 문의사항이 없습니다. id=" + id));
 
         inquiry.increaseViewCount();
 
-        return new InquiryResponseDto(inquiry);
+        List<UploadedFiles> files = uploadedFilesService.findByRel(inquiry);
+        List<String> urllist = new ArrayList<>();
+
+        for(UploadedFiles file : files)
+            urllist.add(file.getFileUrl());
+
+        inquiry.updateUrl(urllist);
+
+        return new InquiryDetailResponseDto(inquiry);
     }
 
     @Transactional
@@ -85,7 +105,10 @@ public class InquiryService {
             throw new GlobalException("삭제권한이 없습니다.");
         }
 
+        List<UploadedFiles> files = uploadedFilesService.findByRel(inquiry);
+
         inquiryRepository.delete(inquiry);
+        uploadedFilesService.delete(files);
     }
 
     @Transactional
