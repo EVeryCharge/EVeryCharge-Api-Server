@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { useAuth } from "../../utils/AuthContext";
 import {
-    HttpGet,
+    HttpGet, HttpPut,
 } from "../../services/HttpService";
 import SettingsIcon from '@mui/icons-material/Settings';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
@@ -27,7 +27,8 @@ import {
 import {
     Tooltip,
 } from "@material-ui/core";
-
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { TextField } from '@material-ui/core';
 const bull = (
     <Box
         component="span"
@@ -42,7 +43,53 @@ const bull = (
 
 
 function CardComponent({ username, nickname, createDate, profileImgUrl }) {
+    const [editing, setEditing] = useState(false);
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [newPassword2, setNewPassword2] = useState('');
+    const [newNickname, setNewNickname] = useState('');
+    const { setLogout } = useAuth();
+    const navigate = useNavigate();
     let formattedDate = new Date(createDate).toISOString().split('T')[0];
+
+    const handleEditClick = () => {
+        setEditing(true);
+    };
+
+    const handleSaveClick = () => {
+        if (newPassword !== newPassword2) {
+            alert('새 비밀번호가 일치하지 않습니다.');
+            return;
+        }
+        try {
+            HttpPut(`api/v1/members/edit`, {
+                username: username,
+                password: password,
+                nickname: newNickname,
+                newPassword: newPassword
+            });
+        } catch (error) {
+            if (error.response.data.resultCode === "400-2") {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+
+            console.error("Login failed:", error.response.data);
+
+            console.error("후기를 수정하는 중 오류 발생:", error);
+        }
+        setEditing(false);
+        setLogout();
+        navigate("/");
+    };
+
+    const handleNewPasswordChange = (event) => {
+        setNewPassword(event.target.value);
+    };
+
+    const handleNewPassword2Change = (event) => {
+        setNewPassword2(event.target.value);
+    };
+
     return (
         <React.Fragment>
             <CardContent>
@@ -64,25 +111,85 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
                             }} />
                         </div>
                     </Grid>
-                    {/* 세로 Divider 추가 */}
                     <Grid item xs={6}>
-                        <Typography variant="h5" component="div">
-                            {username}
-                        </Typography>
-                        <Typography variant="body2" style={{ marginTop: '5px' }}>
-                            {nickname}
-                        </Typography>
-                        <Typography variant="body2">
-                            가입일 : {formattedDate}
-                        </Typography>
+                        {editing ? (
+                            <React.Fragment>
+                                <TextField
+                                    label="새로운 닉네임"
+                                    value={newNickname}
+                                    onChange={(event) => setNewNickname(event.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    size="small"
+                                    style={{ width: "250px" }}
+                                />
+                                <br />
+                                <TextField
+                                    label="기존 비밀번호"
+                                    type="password"
+                                    value={password}
+                                    onChange={(event) => setPassword(event.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    size="small"
+                                    style={{ width: "250px" }}
+                                />
+                                <br />
+
+                                <TextField
+                                    label="새 비밀번호"
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={handleNewPasswordChange}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    size="small"
+                                    style={{ width: "250px" }}
+                                />
+                                <br />
+
+                                <TextField
+                                    label="새 비밀번호 확인"
+                                    type="password"
+                                    value={newPassword2}
+                                    onChange={handleNewPassword2Change}
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    size="small"
+                                    style={{ width: "250px" }}
+                                />
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                                <Typography variant="h5" component="div">
+                                    {nickname}
+                                </Typography>
+                                <Typography variant="body2" style={{ marginTop: '5px' }}>
+                                    {username}
+                                </Typography>
+                                <Typography variant="body2">
+                                    가입일 : {formattedDate}
+                                </Typography>
+                            </React.Fragment>
+                        )}
                     </Grid>
                     <Grid item xs={1}>
                     </Grid>
                     <Grid item xs={2}>
                         <CardActions>
-                            <Button size="small" color="primary" style={{ marginLeft: '15px' }} component={Link} to="/edit">
-                                <SettingsIcon />
-                            </Button>
+                            {editing ? (
+                                <Button size="small" color="primary" onClick={handleSaveClick}>
+                                    Save
+                                </Button>
+                            ) : (
+                                <Button size="small" color="primary" onClick={handleEditClick}>
+                                    <ModeEditIcon />
+                                </Button>
+                            )}
                         </CardActions>
                     </Grid>
                 </Grid>
@@ -90,6 +197,7 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
         </React.Fragment>
     );
 }
+
 
 
 
@@ -205,17 +313,17 @@ const My = () => {
 
     useEffect(() => {
         HttpGet("/api/v1/members/me")
-        .then((data) => {
-            if (data) {
-                setUser(data);
-                setCar(data.data.item.carModel)
-                setCreateDate(data.data.item.createDate)
-                setProfileImgUrl(data.data.item.profileImgUrl)
-                console.log('car ' + data.data.item.car)
-                console.log('cd ' + createDate)
-                console.log('p ' + profileImgUrl)
-            }
-        });
+            .then((data) => {
+                if (data) {
+                    setUser(data);
+                    setCar(data.data.item.carModel)
+                    setCreateDate(data.data.item.createDate)
+                    setProfileImgUrl(data.data.item.profileImgUrl)
+                    console.log('car ' + data.data.item.car)
+                    console.log('cd ' + createDate)
+                    console.log('p ' + profileImgUrl)
+                }
+            });
     }, [refresh]);
 
     useEffect(() => {
