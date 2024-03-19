@@ -1,12 +1,21 @@
 package com.ll.eitcharge.domain.charger.update.charger.batch.config;
 
-import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
-import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
-import com.ll.eitcharge.domain.operatingCompany.operatingCompany.repository.OperatingCompanyRepository;
-import com.ll.eitcharge.domain.region.RegionRepository;
-import com.ll.eitcharge.domain.region.regionDetail.repository.RegionDetailRepository;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
+import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerBatchProcessor;
+import com.ll.eitcharge.domain.charger.update.charger.batch.reader.ChargerBatchReader;
+import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargerBatchWriter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,33 +29,29 @@ public class ChargerBatchUpdateConfig {
 	@Getter
 	@Setter
 	private boolean isBatchUpdateRunning = true;
+	private final int CHUNK_SIZE = 1;
 
-	private final RegionRepository regionRepository;
-	private final RegionDetailRepository regionDetailRepository;
-	private final OperatingCompanyRepository operatingCompanyRepository;
-	private final ChargingStationRepository chargingStationRepository;
-	private final ChargerRepository chargerRepository;
+	@Bean
+	public Job chargerBatchUpdateJob(JobRepository jobRepository, Step chargerBatchUpdateStep) {
+		return new JobBuilder("chargerBatchUpdateJob", jobRepository)
+			.start(chargerBatchUpdateStep)
+			.build();
+	}
 
-	// batch properties
-	@Getter
-	private final int CHUNK_SIZE = 500;
-	@Getter
-	private final String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo";
-	@Getter
-	private final String contentType = "JSON";
-	@Getter
-	private final int priod = 10; // 갱신기간(분)
-
-	// @Bean
-	// public Job ChargerBatchUpdateJob(JobRepository jobRepository, Step chargerBatchUpdateStep) {
-	// 	return new JobBuilder("ChargerBatchUpdateJob", jobRepository)
-	// 		.start(chargerBatchUpdateStep)
-	// 		.build();
-	// }
-	//
-	// @JobScope
-	// @Bean
-	// public Step chargerBatchUpdateStep(JobRepository jobRepository){
-	//
-    // }
+	@JobScope
+	@Bean
+	public Step chargerBatchUpdateStep(
+		JobRepository jobRepository,
+		ChargerBatchReader reader,
+		ChargerBatchProcessor processor,
+		ChargerBatchWriter writer,
+		PlatformTransactionManager manager
+	) {
+		return new StepBuilder("chargerBatchUpdateStep", jobRepository)
+			.<List<ChargerApiItemForm>, List<ChargerApiItemForm>>chunk(CHUNK_SIZE, manager)
+			.reader(reader)
+			.processor(processor)
+			.writer(writer)
+			.build();
+	}
 }
