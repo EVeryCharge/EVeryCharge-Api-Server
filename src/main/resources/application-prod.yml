@@ -26,3 +26,8 @@ custom:
     cookieDomain: "${custom.prod.cookieDomain}"
     frontUrl: "${custom.prod.frontUrl}"
     backUrl: "${custom.prod.backUrl}"
+  aws:
+    s3:
+      bucket: prod-bucket-eticharge
+      stack.auto: false
+      region.static: ap-northeast-2

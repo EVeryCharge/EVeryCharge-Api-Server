@@ -21,3 +21,9 @@ logging:
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
     org.springframework.transaction.interceptor: TRACE
+custom:
+  aws:
+    s3:
+      bucket: dev-bucket-eticharge-1
+      stack.auto: false
+      region.static: ap-northeast-2
