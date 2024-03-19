@@ -38,10 +38,13 @@ VALUES
 
 # 03.19. 기관명 일부 수정
 UPDATE operating_company
-SET bnm = 'SK일렉링크', is_primary = 'Y' WHERE busi_id = 'ST';
+SET bnm = 'SK일렉링크', is_primary = 'Y' WHERE busi_id = 'ST'; # 에스트래픽 → SK일렉링크
 
 UPDATE operating_company
-SET bnm = '대구시설공공관리공단' WHERE busi_id = 'DE';
+SET bnm = '대구시설공공관리공단' WHERE busi_id = 'DE'; # 대구공단 → 대구시설공공관리공단
 
 UPDATE operating_company
-SET bnm = '투이스이브이씨', is_primary = 'Y' WHERE busi_id = 'SS';
+SET bnm = '투이스이브이씨', is_primary = 'Y' WHERE busi_id = 'SS'; # 삼성이브이씨 → 투이스이브이씨
+
+UPDATE operating_company
+SET bnm = '이브이시스', is_primary = 'Y' WHERE busi_id = 'JA'; # 중앙제어 → 이브이시스
