@@ -4,26 +4,21 @@ spring:
     include: secret
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      enabled: true # 멀티파트 업로드 지원여부 (default: true)
+      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+      location:  # 업로드된 파일이 임시로 저장되는 디스크 위치 (default: WAS가 결정)
+      max-file-size: 10MB # 한개 파일의 최대 사이즈 (default: 1MB)
+      max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
   jackson:
     serialization:
       fail-on-empty-beans: false
   threads:
     virtual:
       enabled: true
-  datasource:
-    #로컬 db에 대해서는 각자 하고싶은걸로 하시길..
-    #일단 설정은 mysql로 해놨습니다.
-    url: jdbc:mysql://localhost:3306/eitcharge #디비 생성하시길...
-    username: root
-    password: lldj123414
-    driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
       mode: always
       continue-on-error: true
-      # 숫자 순서대로 sql 파일 읽어 실행
       data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql
   jpa:
     hibernate:
@@ -42,7 +37,7 @@ spring:
       client:
         registration:
           kakao:
-            clientId: ON_SECRET
+            client-id: <ON_SECRET>
             scope: profile_nickname, profile_image
             client-name: Kakao
             authorization-grant-type: authorization_code
@@ -53,13 +48,6 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-logging:
-  level:
-    com.ll.eitcharge: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: INFO
-    org.hibernate.orm.jdbc.extract: INFO
-    org.springframework.transaction.interceptor: TRACE
 custom:
   dev:
     cookieDomain: localhost
@@ -75,7 +63,7 @@ custom:
     backUrl: "${custom.dev.backUrl}"
     name: eitcharge
   jwt:
-    secretKey: ON_SECRET
+    secretKey: <ON_SECRET>
   accessToken:
     expirationSec: '#{60*60}'
   temp:
@@ -83,4 +71,4 @@ custom:
   genFile:
     dirPath: c:/temp/eitcharge_dev
   api:
-    serviceKey: ON_SECRET
+    serviceKey: <ON_SECRET>

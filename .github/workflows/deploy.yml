@@ -76,13 +76,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: "i-0608da03fe68c5724"
+          instance-ids: "i-01e641368202eb226"
           working-directory: /
           comment: Deploy
           command: |
             mkdir -p /docker_projects/everycharge
-            curl -o /docker_projects/everycharge/zero_downtime_deploy.py https://raw.githubusercontent.com/E-IT-Charge/E-IT-Charge-Api-Server/feature/mainGHA/infraScript/zero_downtime_deploy.py
+            curl -o /docker_projects/everycharge/zero_downtime_deploy.py https://raw.githubusercontent.com/E-IT-Charge/E-IT-Charge-Api-Server/main/infraScript/zero_downtime_deploy.py
             chmod +x /docker_projects/everycharge/zero_downtime_deploy.py
             /docker_projects/everycharge/zero_downtime_deploy.py
             docker rmi $(docker images -f "dangling=true" -q)
-            
+            docker system prune -a --volumes

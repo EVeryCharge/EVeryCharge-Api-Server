@@ -1,72 +1,51 @@
 package com.ll.eitcharge.domain.report.report.dto;
 
-import static lombok.AccessLevel.*;
-
 import java.time.LocalDateTime;
 
 import org.springframework.lang.NonNull;
 
 import com.ll.eitcharge.domain.report.report.entity.Report;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
 public class ReportResponseDto {
 	@NonNull
 	private Long id;
-
 	@NonNull
 	private String title;
-
 	@NonNull
 	private String content;
-
 	@NonNull
 	private String reportType;
-
 	@NonNull
 	private LocalDateTime createDate;
-
 	private LocalDateTime modifyDate;
-
 	@NonNull
 	private Long memberId;
-
 	@NonNull
 	private String memberName;
-
 	@NonNull
 	private String statId;
-
 	@NonNull
 	private String statNm;
-
 	@NonNull
 	private String addr;
-
 	@NonNull
 	private boolean completed;
 
+	// 답변 관련 필드
 	private String replierName;
-
     private String reply;
-
 	private LocalDateTime replyCreatedDate;
 
+	// 접근 권한 관련 필드
 	private boolean actorCanRead;
-
 	private boolean actorCanManagerSearch;
-
 	private boolean actorCanCreate;
-
     private boolean actorCanEdit;
-
     private boolean actorCanComplete;
 
 	public ReportResponseDto(Report report) {

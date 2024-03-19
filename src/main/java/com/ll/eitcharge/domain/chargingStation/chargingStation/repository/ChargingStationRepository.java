@@ -16,8 +16,7 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
 
 	@Query("SELECT cs FROM ChargingStation cs " +
 		"WHERE cs.statNm LIKE %:kw% " +
-		"OR cs.regionDetail.regionDetailName LIKE %:kw% " +
-		"OR cs.regionDetail.zcode.regionName LIKE %:kw% ")
+		"OR cs.addr LIKE %:kw% ")
 	List<ChargingStation> findByReportEditKw(@Param("kw") String kw);
 
 

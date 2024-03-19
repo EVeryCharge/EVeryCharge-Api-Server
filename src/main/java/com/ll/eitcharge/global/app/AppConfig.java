@@ -1,8 +1,8 @@
 package com.ll.eitcharge.global.app;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -118,4 +121,18 @@ public class AppConfig {
     public void setApiServiceKey(String apiServiceKey) {
         this.apiServiceKey = apiServiceKey;
     }
+
+    public static InputStream getResourceAsStream(String relativePath) {
+        return AppConfig.class.getClassLoader().getResourceAsStream(relativePath);
+    }
+
+    public static String getResourcesAbsouluteDirPath(String path) {
+            try {
+                return new ClassPathResource(path).getFile().getAbsolutePath();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+    }
+
+    public static boolean isAppInitialized = false;
 }

@@ -15,6 +15,7 @@ import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingS
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.domain.report.report.dto.ReportCompleteRequestDto;
+import com.ll.eitcharge.domain.report.report.dto.ReportPageResponseDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportRequestDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportResponseDto;
 import com.ll.eitcharge.domain.report.report.dto.ReportSearchStationListResponseDto;
@@ -40,14 +41,14 @@ public class ReportService {
 	private final TechnicalManagerService technicalManagerService;
 	private final Rq rq;
 
-	public Page<ReportResponseDto> getList(int page, int pageSize) {
+	public ReportPageResponseDto getList(int page, int pageSize) {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("id"));
 
 		Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
 		Page<Report> reportPage = reportRepository.findAll(pageable);
 
-		return reportPage.map(ReportResponseDto::new);
+		return new ReportPageResponseDto(reportPage.map(ReportResponseDto::new));
 	}
 
 	public ReportResponseDto get(Long id) {
@@ -130,6 +131,12 @@ public class ReportService {
 			dto.setActorCanEdit(canEdit(actor, dto));
 			dto.setActorCanComplete(canComplete(actor, dto));
 	}
+
+	public void loadReportAccess(ReportPageResponseDto dto) {
+		Member actor = rq.getMember();
+		dto.setActorCanCreate(canCreate(actor));
+	}
+
 
 	public boolean canRead(ReportResponseDto dto) {
 		return dto != null;

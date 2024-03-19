@@ -24,6 +24,9 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // REDIS
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // LOMBOK
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -33,7 +36,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // DEV TOOLS
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // WEB
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -80,6 +83,9 @@ dependencies {
 
     // Aspose for Excel Data
     implementation 'com.luhuiguo:aspose-cells:23.1'
+
+    // S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

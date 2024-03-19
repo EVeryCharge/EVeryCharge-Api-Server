@@ -1,9 +1,14 @@
 package com.ll.eitcharge.standard.util;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import com.ll.eitcharge.global.app.AppConfig;
-import lombok.SneakyThrows;
 
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Ut {
     public static class thread {
         @SneakyThrows
@@ -74,5 +79,22 @@ public class Ut {
         public static String toString(Object obj) {
             return AppConfig.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         }
+    }
+
+    public static String calcDuration(LocalDateTime startTime, LocalDateTime endTime) {
+        return Duration.between(startTime, endTime).toMillis() + "ms";
+    }
+
+    public static void calcHeapMemory() {
+        Runtime runtime = Runtime.getRuntime();
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+
+        log.info("[System] : 총 HEAP 메모리 {}MB", totalMemory / (1024 * 1024));
+        log.info("[System] : 사용 HEAP 메모리 {}MB", usedMemory / (1024 * 1024));
+        log.info("[System] : 잔여 HEAP 메모리 {}MB", freeMemory / (1024 * 1024));
+        log.info("[System] : 현재 사용중인 스레드, {}", Thread.currentThread());
+        log.info("[System] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
     }
 }

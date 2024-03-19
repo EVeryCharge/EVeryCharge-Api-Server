@@ -23,11 +23,13 @@ import com.ll.eitcharge.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(value = "/api/v1/chargingStation", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "ChargingStationController", description = "충전소 컨트롤러 API")
 @RequiredArgsConstructor
+@Slf4j
 public class ChargingStationController {
 
     private final ChargingStationService chargingStationService;
@@ -47,6 +49,10 @@ public class ChargingStationController {
             @RequestParam double neLat,
             @RequestParam double neLng
     ) {
+        // todo: 로그 지우기
+        log.info("[Test] : 지도 위경도 기반 충전소 마커 요청");
+        log.info("[Test] : 현재 사용중인 스레드, {}", Thread.currentThread());
+        log.info("[Test] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
         return ResponseEntity.ok(chargingStationService.findByLatBetweenAndLngBetween(swLat, swLng, neLat, neLng));
     }
 
@@ -140,6 +146,10 @@ public class ChargingStationController {
             // 반경 제한 (m 단위, defaultValue: 2000km (전국 단위))
             @RequestParam(value = "range", defaultValue = "2000000") int range
     ) {
+        // todo: 로그 지우기
+        log.info("[Test] : 지도 검색 기반 충전소 마커 요청");
+        log.info("[Test] : 현재 사용중인 스레드, {}", Thread.currentThread());
+        log.info("[Test] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }

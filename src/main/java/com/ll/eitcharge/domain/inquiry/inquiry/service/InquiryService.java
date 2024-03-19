@@ -39,7 +39,7 @@ public class InquiryService {
     }
 
     @Transactional
-    public InquiryResponseDto create(InquiryRequestDto requestDto, String username) {
+    public InquiryResponseDto create(InquiryRequestDto requestDto, String username, String S3fileUrl) {
         Inquiry inquiry = Inquiry.builder()
                 .content(requestDto.getContent())
                 .title(requestDto.getTitle())
@@ -47,6 +47,7 @@ public class InquiryService {
                 .isPublished(requestDto.getIsPublished())
                 .writer(memberService.findByUsername(username).orElseThrow(GlobalException.E404::new))
                 .inquiryState("답변대기")
+                .S3fileUrl(S3fileUrl)
                 .build();
         inquiryRepository.save(inquiry);
         return new InquiryResponseDto(inquiry);

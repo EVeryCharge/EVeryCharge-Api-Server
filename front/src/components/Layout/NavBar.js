@@ -97,14 +97,14 @@ const Navbar = () => {
               onClose={handleMenuClose}
             >
               {[
-                <MenuItem
-                  key="serviceInfo"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/chargingServiceInfo"
-                >
-                  서비스 안내
-                </MenuItem>,
+                // <MenuItem
+                //   key="serviceInfo"
+                //   onClick={handleMenuClose}
+                //   component={Link}
+                //   to="/chargingServiceInfo"
+                // >
+                //   서비스 안내
+                // </MenuItem>,
                 <MenuItem
                   key="report"
                   onClick={handleMenuClose}
@@ -171,7 +171,7 @@ const Navbar = () => {
         </div>
 
         <Hidden mdDown>
-          <Button
+          {/* <Button
             color="inherit"
             component={Link}
             to="/chargingServiceInfo"
@@ -184,7 +184,7 @@ const Navbar = () => {
             }}
           >
             서비스 안내
-          </Button>
+          </Button> */}
           <Button
             color="inherit"
             component={Link}
