@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
-import com.ll.eitcharge.domain.charger.update.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
 import com.ll.eitcharge.standard.util.Ut;
 
 import lombok.RequiredArgsConstructor;

@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.ll.eitcharge.domain.charger.update.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.ll.eitcharge.domain.charger.update.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

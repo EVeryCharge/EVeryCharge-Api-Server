@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerUpdateForm;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 

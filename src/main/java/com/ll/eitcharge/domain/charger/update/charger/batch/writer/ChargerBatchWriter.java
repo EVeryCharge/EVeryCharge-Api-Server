@@ -10,7 +10,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerUpdateForm;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
