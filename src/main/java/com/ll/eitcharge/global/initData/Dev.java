@@ -53,7 +53,7 @@ public class Dev {
 				// self.makeTestReportResult();
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.error("샘플 데이터 생성 중 에러 발생");
+				log.error("[ERROR] : 샘플 데이터 생성 중 에러 발생");
 			}
 		};
 

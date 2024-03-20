@@ -12,9 +12,11 @@ import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @StepScope
+@Slf4j
 @RequiredArgsConstructor
 public class ChargerApiBatchReader implements ItemReader<List<ChargerApiItemForm>> {
 	private final ChargerService chargerService;
@@ -26,6 +28,7 @@ public class ChargerApiBatchReader implements ItemReader<List<ChargerApiItemForm
 	@Override
 	public List<ChargerApiItemForm> read() {
 		List<ChargerApiItemForm> list = chargerService.webClientApiGetChargerInfo(baseUrl, apiServiceKey, numOfRows, currentIndex, dataType);
+		log.debug("[Batch] : 현재 페이지 {}", currentIndex);
 		currentIndex++;
 
 		if (list.isEmpty()) return null;

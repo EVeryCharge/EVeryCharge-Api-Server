@@ -45,7 +45,7 @@ public class ChargerBatchUpdateConfig {
 		Step stationBatchUpdateStep,
 		Step chargerBatchUpdateStep
 	) {
-		return new JobBuilder("chargerBatchUpdateJob", jobRepository)
+		return new JobBuilder("dataBatchUpdateJob", jobRepository)
 			.start(companyBatchUpdateStep)
 			.next(stationBatchUpdateStep)
 			.next(chargerBatchUpdateStep)

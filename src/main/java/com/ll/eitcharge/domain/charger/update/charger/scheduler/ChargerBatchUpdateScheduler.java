@@ -30,20 +30,21 @@ public class ChargerBatchUpdateScheduler {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
 				Thread.sleep(1000);
+				log.info("[Scheduler] : 데이터 배치 전역 업데이트 대기중");
 			} catch (InterruptedException e) {
-				log.info("[System] : 충전소 / 충전기 전역 업데이트 대기중 스레드 오류, 스레드 재설정");
+				log.error("[ERROR] : 데이터 배치 전역 업데이트 대기중 스레드 오류, 스레드 재설정");
 				Thread.currentThread().interrupt();
 			}
 		}
 		chargerBatchUpdateConfig.setBatchUpdateRunning(true);
-		log.info("[Scheduler] : 충전소 / 충전기 업데이트 시작");
+		log.info("[Scheduler] : 데이터 배치 전역 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
 		chargerBatchUpdateService.runChargerBatchUpdateJob();
 
 		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 충전소 / 충전기 전역 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 데이터 배치 전역 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 }

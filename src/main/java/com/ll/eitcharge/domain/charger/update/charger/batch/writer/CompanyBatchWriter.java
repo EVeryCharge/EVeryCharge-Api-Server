@@ -33,6 +33,8 @@ public class CompanyBatchWriter implements ItemWriter<List<OperatingCompanyUpdat
 				);
 			newCompanyCount += items.size();
 		}
-		log.info("[Batch] : 신규 기관 {}건 감지, DB 저장 완료", newCompanyCount);
+		if (newCompanyCount != 0) {
+			log.info("[Batch] : 신규 기관 {}건 감지, DB 저장 완료", newCompanyCount);
+		}
 	}
 }
