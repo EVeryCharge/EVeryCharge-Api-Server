@@ -27,7 +27,7 @@ public class ChargerBatchUpdateService {
 
 			jobLauncher.run(chargerBatchUpdateJob, parameters);
 		} catch (Exception e) {
-			log.info("[Batch] : 배치 업데이트 중 오류, {}", e.getMessage());
+			log.info("[Batch] : 배치 업데이트 중 오류 발생, {}", e.getMessage());
 		}
 	}
 }

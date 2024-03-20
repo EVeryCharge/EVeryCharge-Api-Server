@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerUpdateForm;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerBatchProcessor;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargingStationBatchProcessor;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.CompanyBatchProcessor;
@@ -35,7 +36,7 @@ public class ChargerBatchUpdateConfig {
 	@Getter
 	@Setter
 	private boolean isBatchUpdateRunning = true;
-	private final int CHUNK_SIZE = 1;
+	private final int CHUNK_SIZE = 5;
 
 	@Bean
 	public Job chargerBatchUpdateJob(
@@ -95,7 +96,7 @@ public class ChargerBatchUpdateConfig {
 		PlatformTransactionManager manager
 	) {
 		return new StepBuilder("chargerBatchUpdateStep", jobRepository)
-			.<List<ChargerApiItemForm>, List<ChargerApiItemForm>>chunk(CHUNK_SIZE, manager)
+			.<List<ChargerApiItemForm>, List<ChargerUpdateForm>>chunk(CHUNK_SIZE, manager)
 			.reader(reader)
 			.processor(processor)
 			.writer(writer)

@@ -25,7 +25,7 @@ public class ChargerBatchUpdateScheduler {
 	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
 
 	// @Scheduled(cron = "0 0 3 * * *") // 운영용
-	@Scheduled(fixedRate = 3 * 60 * 1000) // 개발용
+	@Scheduled(cron = "0 0 5 * * *") // 개발용
 	public void updateChargerScheduled() {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
@@ -39,7 +39,7 @@ public class ChargerBatchUpdateScheduler {
 		log.info("[Scheduler] : 충전소 / 충전기 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
-		chargerBatchUpdateService.updateCharger();
+		chargerBatchUpdateService.runChargerBatchUpdateJob();
 
 		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
