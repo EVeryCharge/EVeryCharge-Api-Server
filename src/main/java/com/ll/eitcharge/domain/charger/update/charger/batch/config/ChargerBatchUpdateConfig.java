@@ -52,7 +52,7 @@ public class ChargerBatchUpdateConfig {
 	@Bean
 	public Step companyBatchUpdateStep(
 		JobRepository jobRepository,
-		ChargerBatchReader reader,
+		ChargerApiBatchReader reader,
 		CompanyBatchProcessor processor,
 		CompanyBatchWriter writer,
 		PlatformTransactionManager manager
@@ -69,13 +69,13 @@ public class ChargerBatchUpdateConfig {
 	@Bean
 	public Step stationBatchUpdateStep(
 		JobRepository jobRepository,
-		ChargerBatchReader reader,
-		ChargerBatchProcessor processor,
-		ChargerBatchWriter writer,
+		ChargerApiBatchReader reader,
+		ChargingStationBatchProcessor processor,
+		ChargingStationBatchWriter writer,
 		PlatformTransactionManager manager
 	) {
 		return new StepBuilder("stationBatchUpdateStep", jobRepository)
-			.<List<ChargerApiItemForm>, List<ChargerApiItemForm>>chunk(CHUNK_SIZE, manager)
+			.<List<ChargerApiItemForm>, List<ChargingStationUpdateForm>>chunk(CHUNK_SIZE, manager)
 			.reader(reader)
 			.processor(processor)
 			.writer(writer)
