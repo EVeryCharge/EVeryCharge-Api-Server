@@ -31,13 +31,13 @@ public class CompanyBatchProcessor
 		return items.stream()
 			.filter(item -> isNewItem(item, distinctBusiIds))
 			.map(OperatingCompanyUpdateForm::new)
-			.distinct().toList();
+			.toList();
 	}
 
 	private boolean isNewItem(ChargerApiItemForm item, Set<String> distinctBusiIds) {
 		if (item.getBusiId() != null && !item.getBusiId().isEmpty() && item.getBnm() != null && item.getBnm().isEmpty()
-			&& !companyRepository.existsById(item.getBusiId())
-			&& !distinctBusiIds.contains(item.getBusiId())) {
+			&& !distinctBusiIds.contains(item.getBusiId())
+			&& !companyRepository.existsById(item.getBusiId())) {
 
 			distinctBusiIds.add(item.getBusiId());
 			return true;
