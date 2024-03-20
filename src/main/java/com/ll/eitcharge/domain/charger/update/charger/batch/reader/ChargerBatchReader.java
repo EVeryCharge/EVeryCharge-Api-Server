@@ -18,13 +18,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChargerBatchReader implements ItemReader<List<ChargerApiItemForm>> {
 	private final ChargerService chargerService;
+	private int currentIndex = 1;
 	private final int numOfRows = 1000;
 	private final String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo";
 	private final String dataType = "JSON";
 
 	@Override
 	public List<ChargerApiItemForm> read() {
-		int pageNo = 1;
-		return chargerService.webClientApiGetChargerInfo(baseUrl, apiServiceKey, numOfRows, pageNo, dataType);
+		List<ChargerApiItemForm> list = chargerService.webClientApiGetChargerInfo(baseUrl, apiServiceKey, numOfRows, currentIndex, dataType);
+		currentIndex++;
+
+		if (list.isEmpty()) return null;
+		return list;
 	}
 }

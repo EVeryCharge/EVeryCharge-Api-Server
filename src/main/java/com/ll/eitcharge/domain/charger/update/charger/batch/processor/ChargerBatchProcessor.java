@@ -7,6 +7,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
+import com.ll.eitcharge.domain.region.regionDetail.repository.RegionDetailRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @StepScope
 @RequiredArgsConstructor
 public class ChargerBatchProcessor implements ItemProcessor<List<ChargerApiItemForm>, List<ChargerApiItemForm>> {
+	private final RegionDetailRepository regionDetailRepository;
 	@Override
 	public List<ChargerApiItemForm> process(List<ChargerApiItemForm> items) {
 		return items.stream()
@@ -31,6 +33,8 @@ public class ChargerBatchProcessor implements ItemProcessor<List<ChargerApiItemF
 			item.getZcode() != null && !item.getZcode().isEmpty() &&
 			item.getZscode() != null && !item.getZscode().isEmpty() &&
 			item.getBusiId() != null && !item.getBusiId().isEmpty() &&
-			item.getBnm() != null && !item.getBnm().isEmpty();
+			item.getBnm() != null && !item.getBnm().isEmpty() &&
+			// 불변 데이터 지역코드도 존재하는 지 확인
+			regionDetailRepository.existsById(item.getZscode());
 	}
 }

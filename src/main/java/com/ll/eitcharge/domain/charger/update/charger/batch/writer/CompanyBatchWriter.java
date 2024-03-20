@@ -23,10 +23,16 @@ public class CompanyBatchWriter implements ItemWriter<List<OperatingCompanyUpdat
 
 	@Override
 	public void write(Chunk<? extends List<OperatingCompanyUpdateForm>> chunk) {
+		int newCompanyCount = 0;
 		for (List<OperatingCompanyUpdateForm> items : chunk) {
-			operatingCompanyRepository.saveAll(
-				items.stream().map(OperatingCompany::new).toList()
-			);
+			operatingCompanyRepository
+				.saveAll(
+					items.stream()
+						.map(OperatingCompany::new)
+						.toList()
+				);
+			newCompanyCount += items.size();
 		}
+		log.info("[Batch] : 신규 기관 {}건 감지, DB 저장 완료", newCompanyCount);
 	}
 }
