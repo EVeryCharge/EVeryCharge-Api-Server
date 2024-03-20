@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @StepScope
 @RequiredArgsConstructor
-public class ChargerBatchReader implements ItemReader<List<ChargerApiItemForm>> {
+public class ChargerApiBatchReader implements ItemReader<List<ChargerApiItemForm>> {
 	private final ChargerService chargerService;
 	private int currentIndex = 1;
 	private final int numOfRows = 1000;
