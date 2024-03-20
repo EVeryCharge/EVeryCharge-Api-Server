@@ -52,7 +52,23 @@ public class Charger extends BaseTime {
     //충전 방식
     private String method;
 
-    public void updateByApi(ChargerApiItemForm item, ChargingStation station) {
+    // 배치 활용 로직, 인서트 시 사용 편의 생성자
+    public Charger(ChargerUpdateForm item, ChargingStation station) {
+        this.chgerId = item.getChgerId();
+        this.chgerType = item.getChgerType();
+        this.stat = item.getStat();
+        this.statUpdDt = item.getStatUpdDt();
+        this.lastTsdt = item.getLastTsdt();
+        this.lastTedt = item.getLastTedt();
+        this.nowTsdt = item.getNowTsdt();
+        this.method = item.getMethod();
+        this.output = item.getOutput();
+        this.chargingStation = station;
+    }
+
+    // 배치 업데이트 시 사용 편의 메소드
+    public void update(ChargerUpdateForm item, ChargingStation station) {
+        this.chgerId = item.getChgerId();
         this.chgerType = item.getChgerType();
         this.stat = item.getStat();
         this.statUpdDt = item.getStatUpdDt();
