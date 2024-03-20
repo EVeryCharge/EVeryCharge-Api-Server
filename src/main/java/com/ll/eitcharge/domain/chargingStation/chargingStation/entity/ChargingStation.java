@@ -81,6 +81,7 @@ public class ChargingStation {
     //충전소 구분 상세 코드
     private String kindDetail;
 
+    // 배치 활용 로직, 인서트 시 사용 편의 생성자
     public ChargingStation(ChargingStationUpdateForm item, OperatingCompany company, RegionDetail regionDetail) {
         this.statId = item.getStatId();
         this.statNm = item.getStatNm();
@@ -102,7 +103,8 @@ public class ChargingStation {
         this.regionDetail = regionDetail;
     }
 
-    public void updateByApi(ChargingStationUpdateForm item, OperatingCompany company, RegionDetail regionDetail) {
+    // 배치 활용 로직, 업데이트 시 사용 편의 메소드
+    public void update(ChargingStationUpdateForm item, OperatingCompany company, RegionDetail regionDetail) {
         this.statNm = item.getStatNm();
         this.addr = item.getAddr();
         this.location = item.getLocation();
