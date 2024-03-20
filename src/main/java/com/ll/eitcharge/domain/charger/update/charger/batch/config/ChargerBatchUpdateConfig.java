@@ -14,10 +14,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerBatchProcessor;
+import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargingStationBatchProcessor;
 import com.ll.eitcharge.domain.charger.update.charger.batch.processor.CompanyBatchProcessor;
-import com.ll.eitcharge.domain.charger.update.charger.batch.reader.ChargerBatchReader;
+import com.ll.eitcharge.domain.charger.update.charger.batch.reader.ChargerApiBatchReader;
 import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargerBatchWriter;
+import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargingStationBatchWriter;
 import com.ll.eitcharge.domain.charger.update.charger.batch.writer.CompanyBatchWriter;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.form.ChargingStationUpdateForm;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.form.OperatingCompanyUpdateForm;
 
 import lombok.Getter;
@@ -86,7 +89,7 @@ public class ChargerBatchUpdateConfig {
 	@Bean
 	public Step chargerBatchUpdateStep(
 		JobRepository jobRepository,
-		ChargerBatchReader reader,
+		ChargerApiBatchReader reader,
 		ChargerBatchProcessor processor,
 		ChargerBatchWriter writer,
 		PlatformTransactionManager manager
