@@ -11,13 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
 @Repository
 public interface ChargerRepository extends JpaRepository<Charger, Long> {
     List<Charger> findByChargingStationStatId(String statId);
 
     //statId와 chrgerId를 기반으로 charger를 찾는 메서드
-    Optional<Charger> findByStatIdAndChgerId(String statId, String chgerId);
+    Optional<Charger> findByChargingStationAndChgerId(ChargingStation chargingStation, String chgerId);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Charger c " +

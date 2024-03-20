@@ -39,8 +39,8 @@ public class ChargerBatchWriter implements ItemWriter<List<ChargerUpdateForm>> {
 				Charger charger;
 				ChargingStation station = stationRepository.findById(item.getStatId()).get();
 
-				Optional<Charger> opCharger = chargerRepository.findByStatIdAndChgerId(item.getStatId(),
-					item.getChgerId());
+				Optional<Charger> opCharger
+					= chargerRepository.findByChargingStationAndChgerId(station, item.getChgerId());
 				if (opCharger.isEmpty()) {
 					charger = new Charger(item, station);
 					insertCount++;

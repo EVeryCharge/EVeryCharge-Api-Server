@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Profile("dev")
+@Profile("prod")
 @Slf4j
 @RequiredArgsConstructor
 public class ChargerStateUpdateScheduler {

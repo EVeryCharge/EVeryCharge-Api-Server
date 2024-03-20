@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
+import com.ll.eitcharge.global.exceptions.GlobalException;
 
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +39,14 @@ public class ChargerService {
     private final ChargerRepository chargerRepository;
 
     // 조회용 엔티티
-    public Charger findByChargingStationStatIdAndChgerId(String statId, String chgerId) {
-        return chargerRepository.findByStatIdAndChgerId(statId, chgerId).get();
+    public Charger findByChargingStationStatIdAndChgerId(ChargingStation chargingStation, String chgerId) {
+        return chargerRepository.findByChargingStationAndChgerId(chargingStation, chgerId)
+            .orElseThrow(
+                GlobalException.E404::new
+        );
     }
 
+    // 조회용 엔티티
     public Page<Charger> findByPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return chargerRepository.findAll(pageable);
