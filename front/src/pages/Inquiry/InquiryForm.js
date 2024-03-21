@@ -14,41 +14,48 @@ function InquiryForm() {
   const [filenames, setFileNames] = useState([]); 
 
   useEffect(() => {
-    console.log("등록된 파일 이름은: " + filenames);
-  }, [filenames]);  
+    console.log("등록된 파일 실 개수는: " + files.length);
+  }, [files]);  
 
   const handleFileChange = (e) => {
 
-    if (e.target.files.length > 10) {
-      alert(`최대 10 개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
-      e.target.value = '';
-      setFiles([]);
-      setPreviewUrls([]);
-      return; 
+    const newSelectedFiles = Array.from(e.target.files); // 새롭게 선택된 파일들을 배열로 변환
+    const selectedFiles = [...files, ...newSelectedFiles]; // 기존 파일들과 새로운 파일들을 합친 배열
+
+    if ((files.length + newSelectedFiles.length) > 10) {
+      alert(`최대 10개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
+      return;
     }
+    
+    setFiles(selectedFiles);
 
-    const selectedFiles = Array.from(e.target.files); // 선택된 파일들을 배열로 변환
-    setFiles(selectedFiles); 
-
-    const fileReaders = [];
-    const urls = [];
-    const filenames = [];
-
-    selectedFiles.forEach((file) => {
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        urls.push(event.target.result);
-        filenames.push(file.name);
-
-        if (urls.length === selectedFiles.length) {
-          setPreviewUrls(urls); 
-          setFileNames(filenames);
-        }
-      };
-      reader.readAsDataURL(file);
+    Promise.all(newSelectedFiles.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => {
+          resolve({url: event.target.result, name: file.name});
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    })).then(results => {
+      // 모든 파일이 로드되었을 때 실행
+      const urls = results.map(result => result.url);
+      const filenames2 = results.map(result => result.name);
+  
+      setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+      setFileNames(prevNames => [...prevNames, ...filenames2]);
+    }).catch(error => {
+      console.error("파일 로드 중 오류가 발생했습니다.", error);
     });
 
+  };
+
+  const handleDeleteImage = (event, indexToDelete) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
+    setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToDelete)); // 파일 목록에서도 삭제
   };
 
 
@@ -115,8 +122,18 @@ function InquiryForm() {
       />
       <input type="file" onChange={handleFileChange} multiple />
       <div>
+        총 {previewUrls.length}개의 파일이 선택되었습니다.
+      </div>
+      <div>
         {previewUrls.map((url, index) => (
-          <img key={index} src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+          <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+            <button type="button" 
+              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+              onClick={(event) => handleDeleteImage(event, index)}>
+              X
+            </button>
+          </div>
         ))}
       </div>
      
