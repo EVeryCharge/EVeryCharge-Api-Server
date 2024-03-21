@@ -59,7 +59,7 @@ public class InquiryController {
     @ResponseBody
     @PostMapping("/create")
     public ResponseEntity<InquiryRequestDto> create(@RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                                    @RequestPart(value = "data") InquiryRequestDto requestDto,
+                                                    @RequestPart(value = "data") @Valid InquiryRequestDto requestDto,
                                                     Principal principal
     ) {
         inquiryService.create(requestDto, files, principal.getName());
