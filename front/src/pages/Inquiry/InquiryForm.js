@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HttpPost } from '../../services/HttpService';
+import { HttpPostWithFile } from '../../services/HttpService';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 
@@ -9,12 +9,9 @@ function InquiryForm() {
   const [isPublished, setIsPublished] = useState(false);
   const [inquiryType, setInquiryType] = useState(null); 
   const navigate = useNavigate();
-  const formData = new FormData();
   const [files, setFiles] = useState([]); 
   const [previewUrls, setPreviewUrls] = useState([]); 
   const [filenames, setFileNames] = useState([]); 
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
 
   useEffect(() => {
     console.log("등록된 파일 이름은: " + filenames);
@@ -65,41 +62,13 @@ function InquiryForm() {
         isPublished: isPublished,
         s3fileNames : []
       };
-      
-      const dataBlob = new Blob([JSON.stringify(data)], { type: 'application/json'})
-      formData.append('data', dataBlob);
 
-      files.forEach((file, index) => {
-        formData.append(`files`, file); // 서버에서 배열 형태로 파일을 받을 수 있도록 이름을 설정
-      });
+      const responseData = await HttpPostWithFile('/api/v1/inquiry/create', data, files);
+      console.log("서버 응답 데이터:", responseData);       
 
-      fetch(`${BACKEND_URL}/api/v1/inquiry/create`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-      }).then(
-          resp => resp.json()
-        ).then(
-          data => console.log(data)
-        ).catch( err => console.log)
-        console.log(`전송된 파일 목록 = ${filenames}`)
-
-      // const request1 = await HttpPost(
-      //   '/api/v1/inquiry/create',
-      //   {
-      //     title: title,
-      //     content: content,
-      //     inquiryType : inquiryType,
-      //     isPublished: isPublished,
-      //     s3fileNames : files.map(file => file.name), // 업로드된 파일 이름들
-      //   }
-      // );
-
-      console.log('문의 등록 완료' ,{ title, content, isPublished, inquiryType, filenames: files.map(file => file.name)});
       alert("문의 등록 완료");
       navigate('/inquiry');
-    } catch (error) {
-      
+    } catch (error) {      
       if(title === null){
         alert("제목은 필수 입력 항목입니다.")
       }else if(content == null){
@@ -107,7 +76,7 @@ function InquiryForm() {
       }else if(inquiryType === null){
         alert("문의 유형을 선택해주세요.")
       }
-      console.error('글쓰기 실패', error);              
+      console.error("글쓰기 요청 중 오류 발생:", error);            
     }
   };
 
