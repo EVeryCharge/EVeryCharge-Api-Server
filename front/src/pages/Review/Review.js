@@ -63,7 +63,6 @@ const Review = ({ chargingStationId }) => {
     })).then(results => {
       // 모든 파일이 로드되었을 때 실행
       const urls = results.map(result => result.url);
-      const filenames2 = results.map(result => result.name);
   
       setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
 
