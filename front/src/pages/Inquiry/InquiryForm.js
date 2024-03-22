@@ -11,7 +11,6 @@ function InquiryForm() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]); 
   const [previewUrls, setPreviewUrls] = useState([]); 
-  const [filenames, setFileNames] = useState([]); 
 
   useEffect(() => {
     console.log("등록된 파일 실 개수는: " + files.length);
@@ -33,7 +32,7 @@ function InquiryForm() {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = event => {
-          resolve({url: event.target.result, name: file.name});
+          resolve({url: event.target.result});
         };
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
@@ -41,10 +40,8 @@ function InquiryForm() {
     })).then(results => {
       // 모든 파일이 로드되었을 때 실행
       const urls = results.map(result => result.url);
-      const filenames2 = results.map(result => result.name);
   
       setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
-      setFileNames(prevNames => [...prevNames, ...filenames2]);
     }).catch(error => {
       console.error("파일 로드 중 오류가 발생했습니다.", error);
     });
