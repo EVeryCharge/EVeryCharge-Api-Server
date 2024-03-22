@@ -72,15 +72,17 @@ public class InquiryService {
 
         inquiry.increaseViewCount();
 
+
+
         List<UploadedFiles> files = uploadedFilesService.findByRel(inquiry);
         List<String> urllist = new ArrayList<>();
 
         for(UploadedFiles file : files)
             urllist.add(file.getFileUrl());
 
-        inquiry.updateUrl(urllist);
+//        inquiry.updateUrl(urllist);
 
-        return new InquiryDetailResponseDto(inquiry);
+        return new InquiryDetailResponseDto(inquiry, urllist);
     }
 
     @Transactional

@@ -24,12 +24,12 @@ public class InquiryDetailResponseDto {
     private Boolean isPublished;
     private List<String> s3fileUrl;
 
-    public InquiryDetailResponseDto(Inquiry entity) {
+    public InquiryDetailResponseDto(Inquiry entity, List<String> url) {
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.writer = entity.getWriter().getUsername();
         this.inquiryType = entity.getInquiryType();
         this.isPublished = entity.getIsPublished();
-        this.s3fileUrl = entity.getS3fileUrl();
+        this.s3fileUrl = url;
     }
 }
