@@ -4,6 +4,7 @@ import com.ll.eitcharge.domain.review.review.entity.Review;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class ReviewDto {
@@ -17,6 +18,7 @@ public class ReviewDto {
     private final LocalDateTime deleteDate;
     private final boolean isDeleted;
     private final String content;
+    private List<String> s3fileUrl;
 
 
     public ReviewDto(Review review) {
@@ -30,6 +32,7 @@ public class ReviewDto {
         this.deleteDate = review.getDeletedDate();
         this.isDeleted = review.isDeleted();
         this.content = review.getContent();
+        this.s3fileUrl = review.getS3fileUrl();
     }
 
 

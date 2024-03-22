@@ -3,12 +3,14 @@ package com.ll.eitcharge.domain.review.review.entity;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -35,4 +37,11 @@ public class Review extends BaseTime {
     @Setter
     @Builder.Default
     private int rating = 0; // 평점 속성 추가
+
+    @ElementCollection
+    private List<String> s3fileUrl;
+
+    public void updateUrl(List<String> url){
+        this.s3fileUrl = url;
+    }
 }

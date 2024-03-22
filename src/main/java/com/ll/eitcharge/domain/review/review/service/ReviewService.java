@@ -1,8 +1,16 @@
 package com.ll.eitcharge.domain.review.review.service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.amazonaws.services.s3.transfer.Upload;
+import com.ll.eitcharge.domain.base.uploadedfiles.entity.UploadedFiles;
+import com.ll.eitcharge.domain.base.uploadedfiles.service.UploadedFilesService;
+import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryResponseDto;
+import com.ll.eitcharge.domain.inquiry.inquiry.entity.Inquiry;
+import com.ll.eitcharge.domain.review.review.dto.ReviewDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +21,7 @@ import com.ll.eitcharge.domain.review.review.repository.ReviewRepository;
 import com.ll.eitcharge.global.rsData.RsData;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,9 +29,10 @@ import lombok.RequiredArgsConstructor;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ChargingStationService chargingStationService;
+    private final UploadedFilesService uploadedFilesService;
 
     @Transactional
-    public RsData<Review> write(Member member, String chargingStationId, String content, int rating) {
+    public RsData<Review> write(Member member, String chargingStationId, String content, int rating, List<MultipartFile> files) {
 
         Review review = Review.builder()
                 .chargingStation(chargingStationService.findById(chargingStationId))
@@ -31,7 +41,10 @@ public class ReviewService {
                 .rating(rating)
                 .build();
 
-        reviewRepository.save(review);
+        Review savedReview =  reviewRepository.saveAndFlush(review);
+
+        Long relId = savedReview.getId();
+        uploadedFilesService.upload(files, "Review", relId);
 
         return RsData.of("200", "%d번 후기가 작성되었습니다.".formatted(review.getId()), review);
     }
@@ -54,6 +67,11 @@ public class ReviewService {
 
     @Transactional
     public void deleteById(long id) {
+        Review review = findById(id).get();
+
+        List<UploadedFiles> files = uploadedFilesService.findByRel(review);
+
+        uploadedFilesService.delete(files);
         reviewRepository.deleteById(id);
     }
 
@@ -63,8 +81,36 @@ public class ReviewService {
     }
 
 
-    public List<Review> findByStatId(String statId) {
-        return reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
-    }
+    public List<ReviewDto> findByStatId(String statId) {
 
+//        List<UploadedFiles> files = uploadedFilesService.findByRel(inquiry);
+//        List<String> urllist = new ArrayList<>();
+//        uploadedFilesService.findByRel();
+
+        List<Review> list = reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
+        List<ReviewDto> list2 = new ArrayList<>();
+
+        for(Review review : list) {
+
+            List<UploadedFiles> files = uploadedFilesService.findByRel(review);
+
+            List<String> urllist = new ArrayList<>();
+
+            for (UploadedFiles file : files)
+                urllist.add(file.getFileUrl());
+
+            review.updateUrl(urllist);
+
+            System.out.println("리뷰url들 보여줘" + review.getId() + " : " + review.getS3fileUrl());
+
+            ReviewDto reviewDto = new ReviewDto(review);
+            list2.add(reviewDto);
+        }
+        return list2;
+    }
 }
+
+//    public List<Review> findByStatId(String statId) {
+//        return reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
+//    }
+
