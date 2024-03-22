@@ -11,6 +11,7 @@ import com.ll.eitcharge.domain.base.uploadedfiles.service.UploadedFilesService;
 import com.ll.eitcharge.domain.inquiry.inquiry.dto.InquiryResponseDto;
 import com.ll.eitcharge.domain.inquiry.inquiry.entity.Inquiry;
 import com.ll.eitcharge.domain.review.review.dto.ReviewDto;
+import com.ll.eitcharge.domain.review.review.dto.ReviewFileDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,32 +82,24 @@ public class ReviewService {
     }
 
 
-    public List<ReviewDto> findByStatId(String statId) {
-
-//        List<UploadedFiles> files = uploadedFilesService.findByRel(inquiry);
-//        List<String> urllist = new ArrayList<>();
-//        uploadedFilesService.findByRel();
+    public List<ReviewFileDto> findByStatId(String statId) {
 
         List<Review> list = reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
-        List<ReviewDto> list2 = new ArrayList<>();
+        List<ReviewFileDto> reviewFileDtos = new ArrayList<>();
 
         for(Review review : list) {
 
             List<UploadedFiles> files = uploadedFilesService.findByRel(review);
-
             List<String> urllist = new ArrayList<>();
 
             for (UploadedFiles file : files)
                 urllist.add(file.getFileUrl());
 
-            review.updateUrl(urllist);
+            ReviewFileDto reviewFileDto = new ReviewFileDto(review, urllist);
 
-            System.out.println("리뷰url들 보여줘" + review.getId() + " : " + review.getS3fileUrl());
-
-            ReviewDto reviewDto = new ReviewDto(review);
-            list2.add(reviewDto);
+            reviewFileDtos.add(reviewFileDto);
         }
-        return list2;
+        return reviewFileDtos;
     }
 }
 

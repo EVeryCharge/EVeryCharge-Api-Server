@@ -56,12 +56,12 @@ public class ReviewController {
 
     @Getter
     public static class GetStatReviewResponseBody {
-        private final List<ReviewDto> items;
+        private final List<ReviewFileDto> items;
 
-        public GetStatReviewResponseBody(List<ReviewDto> reviews) {
+        public GetStatReviewResponseBody(List<ReviewFileDto> reviews) {
             this.items = reviews
                     .stream()
-//                    .map(ReviewDto::new)
+//                    .map(ReviewFileDto::new)
                     .toList();
 
         }
@@ -80,7 +80,6 @@ public class ReviewController {
 
     @GetMapping("/{statId}")
     public RsData<GetStatReviewResponseBody> getStatReviews(@PathVariable String statId){
-        System.out.println("API호출됨");
         return RsData.of(
                 "200",
                 "성공",

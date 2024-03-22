@@ -38,10 +38,5 @@ public class Review extends BaseTime {
     @Builder.Default
     private int rating = 0; // 평점 속성 추가
 
-    @ElementCollection
-    private List<String> s3fileUrl;
 
-    public void updateUrl(List<String> url){
-        this.s3fileUrl = url;
-    }
 }
