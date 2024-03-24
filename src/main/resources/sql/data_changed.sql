@@ -48,3 +48,7 @@ SET bnm = '투이스이브이씨', is_primary = 'Y' WHERE busi_id = 'SS'; # 삼�
 
 UPDATE operating_company
 SET bnm = '이브이시스', is_primary = 'Y' WHERE busi_id = 'JA'; # 중앙제어 → 이브이시스
+
+# 03.24. 삭제 여부 및 삭제 사유 필드 충전소 -> 충전기 테이블로 칼럼 이동 (칼럼 인서트는 hibernate에 의해 실행)
+alter table charging_station drop column del_yn;
+alter table charging_station drop column del_detail;
