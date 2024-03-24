@@ -29,4 +29,8 @@ public interface ChargerRepository extends JpaRepository<Charger, Long> {
         "    c.nowTsdt = :#{#charger.nowTsdt} " +
         "WHERE c.chgerId = :#{#charger.chgerId} AND c.chargingStation.statId = :#{#charger.statId}")
     int updateChargerState(@Param("charger") ChargerStateUpdateForm charger);
+
+    @Modifying
+    @Query("DELETE FROM Charger c WHERE c.delYn = 'Y'")
+    void deleteAllDeletedChargers();
 }

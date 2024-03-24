@@ -144,4 +144,10 @@ public class ChargerService {
         }
         return list;
     }
+
+    @Transactional
+    public void deleteAllDeletedChargers() {
+        chargerRepository.deleteAllDeletedChargers();
+        log.info("[DB] : OpenAPI상 삭제 충전기 삭제 완료");
+    }
 }

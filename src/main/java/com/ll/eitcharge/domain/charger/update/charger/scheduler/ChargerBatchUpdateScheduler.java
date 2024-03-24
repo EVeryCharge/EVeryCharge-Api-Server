@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
 import com.ll.eitcharge.domain.charger.update.charger.batch.config.ChargerBatchUpdateConfig;
 import com.ll.eitcharge.domain.charger.update.charger.batch.service.ChargerBatchUpdateService;
 import com.ll.eitcharge.domain.charger.update.chargerState.service.ChargerStateUpdateConfig;
@@ -23,9 +24,10 @@ public class ChargerBatchUpdateScheduler {
 	private final ChargerBatchUpdateService chargerBatchUpdateService;
 	private final ChargerBatchUpdateConfig chargerBatchUpdateConfig;
 	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
+	private final ChargerService chargerService;
 
 	// @Scheduled(cron = "0 0 3 * * *") // 운영용
-	@Scheduled(cron = "0 0 5 * * *") // 개발용
+	@Scheduled(cron = "0 6 * * * *") // 개발용
 	public void updateChargerScheduled() {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
@@ -41,6 +43,7 @@ public class ChargerBatchUpdateScheduler {
 		LocalDateTime startTime = LocalDateTime.now();
 
 		chargerBatchUpdateService.runChargerBatchUpdateJob();
+		chargerService.deleteAllDeletedChargers();
 
 		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
