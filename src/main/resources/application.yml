@@ -19,7 +19,7 @@ spring:
     init:
       mode: always
       continue-on-error: true
-      data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql
+      data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql, classpath:/sql/data4.sql
   jpa:
     hibernate:
       ddl-auto: update

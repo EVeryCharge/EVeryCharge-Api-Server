@@ -43,6 +43,8 @@ public class Member extends BaseTime {
     private String nickname;
     private String profileImgUrl;
 
+    private String carModel;
+
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getAuthoritiesAsStringList()
@@ -88,5 +90,14 @@ public class Member extends BaseTime {
     public void changeNickNameAndProfileImgUrl(String nickname, String profileImgUrl) {
         this.nickname = nickname;
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public void changeUserInfo(String nickname, String newPassword) {
+        this.nickname = nickname;
+        this.password = newPassword;
+    }
+
+    public void carInit(String carModel){
+        this.carModel = carModel;
     }
 }

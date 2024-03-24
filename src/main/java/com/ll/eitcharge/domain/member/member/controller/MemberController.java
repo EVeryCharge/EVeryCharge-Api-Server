@@ -1,15 +1,23 @@
 package com.ll.eitcharge.domain.member.member.controller;
 
+import com.ll.eitcharge.domain.member.member.dto.MemberCarDto;
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
+import com.ll.eitcharge.domain.mypage.car.dto.CarListDto;
+import com.ll.eitcharge.domain.review.review.controller.ReviewController;
+import com.ll.eitcharge.domain.review.review.dto.ReviewDto;
+import com.ll.eitcharge.domain.review.review.entity.Review;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rq.Rq;
 import com.ll.eitcharge.global.rsData.RsData;
 import com.ll.eitcharge.standard.base.Empty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +61,7 @@ public class MemberController {
         );
     }
 
-    public record MeResponseBody(@NonNull MemberDto item) {
+    public record MeResponseBody(@NonNull MemberCarDto item) {
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +69,7 @@ public class MemberController {
     public RsData<MeResponseBody> getMe() {
         return RsData.of(
                 new MeResponseBody(
-                        new MemberDto(rq.getMember())
+                        new MemberCarDto(rq.getMember())
                 )
         );
     }
@@ -92,5 +100,51 @@ public class MemberController {
         } else {
             return true;
         }
+    }
+
+    /////
+
+    @Getter
+    @Setter
+    public static class CarInitRequestBody {
+        private String username;
+        private String carModel;
+    }
+
+    @Getter
+    public static class CarInitResponseBody {
+        private final MemberCarDto item;
+
+        public CarInitResponseBody(Member member) {
+            item = new MemberCarDto(member);
+        }
+    }
+    @Transactional
+    @PutMapping("/carInit")
+    public ResponseEntity<CarInitResponseBody> carInit(
+            @RequestBody CarInitRequestBody requestBody
+    ){
+
+        Member member = memberService.findByUsername(requestBody.username).get();
+        memberService.carInit(member, requestBody.carModel);
+
+        return ResponseEntity.ok(new CarInitResponseBody(member));
+    }
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<MemberCarDto> getUserInfo(
+            @RequestParam(value = "username") String username
+    ) {
+        return ResponseEntity.ok(memberService.getUserInfo(username));
+    }
+
+    public record EditResponseBody(@NonNull MemberDto item) {
+    }
+    public record EditRequestBody(@NotBlank String username, @NotBlank String password, String nickname, String newPassword) {
+    }
+    @PutMapping("/edit")
+    public ResponseEntity<EditResponseBody> edit(@Valid @RequestBody EditRequestBody body){
+        Member member = memberService.authAndEdit(body.username, body.password, body.newPassword, body.nickname);
+        return ResponseEntity.ok(new EditResponseBody(new MemberDto(member)));
     }
 }
