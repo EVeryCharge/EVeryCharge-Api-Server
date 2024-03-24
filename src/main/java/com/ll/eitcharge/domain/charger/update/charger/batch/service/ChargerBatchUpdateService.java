@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ChargerBatchUpdateService {
 	private final JobLauncher jobLauncher;
-	private final Job dataBatchUpdateJob;
+	private final Job chargerApiBatchUpdateJob;
 
 	public void runChargerBatchUpdateJob() {
 		try {
@@ -25,7 +25,7 @@ public class ChargerBatchUpdateService {
 				.addString("execDate", execDate)
 				.toJobParameters();
 
-			jobLauncher.run(dataBatchUpdateJob, parameters);
+			jobLauncher.run(chargerApiBatchUpdateJob, parameters);
 		} catch (Exception e) {
 			log.error("[ERROR] : 배치 업데이트 중 오류 발생, {}", e.getMessage());
 		}

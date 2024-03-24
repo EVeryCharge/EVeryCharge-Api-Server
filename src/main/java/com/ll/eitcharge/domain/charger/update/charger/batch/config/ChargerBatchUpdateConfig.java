@@ -13,16 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
-import com.ll.eitcharge.domain.charger.charger.form.ChargerUpdateForm;
-import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerBatchProcessor;
-import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargingStationBatchProcessor;
-import com.ll.eitcharge.domain.charger.update.charger.batch.processor.CompanyBatchProcessor;
+import com.ll.eitcharge.domain.charger.update.charger.batch.processor.ChargerApiBatchProcessor;
 import com.ll.eitcharge.domain.charger.update.charger.batch.reader.ChargerApiBatchReader;
-import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargerBatchWriter;
-import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargingStationBatchWriter;
-import com.ll.eitcharge.domain.charger.update.charger.batch.writer.CompanyBatchWriter;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.form.ChargingStationUpdateForm;
-import com.ll.eitcharge.domain.operatingCompany.operatingCompany.form.OperatingCompanyUpdateForm;
+import com.ll.eitcharge.domain.charger.update.charger.batch.writer.ChargerApiBatchWriter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,65 +34,81 @@ public class ChargerBatchUpdateConfig {
 	@Bean
 	public Job chargerBatchUpdateJob(
 		JobRepository jobRepository,
+		Step chargerApiBatchUpdateStep,
 		Step companyBatchUpdateStep,
 		Step stationBatchUpdateStep,
 		Step chargerBatchUpdateStep
 	) {
-		return new JobBuilder("dataBatchUpdateJob", jobRepository)
-			.start(companyBatchUpdateStep)
-			.next(stationBatchUpdateStep)
-			.next(chargerBatchUpdateStep)
+		return new JobBuilder("chargerApiBatchUpdateJob", jobRepository)
+			.start(chargerApiBatchUpdateStep)
 			.build();
 	}
 
 	@JobScope
 	@Bean
-	public Step companyBatchUpdateStep(
+	public Step chargerApiBatchUpdateStep(
 		JobRepository jobRepository,
-		ChargerApiBatchReader reader,
-		CompanyBatchProcessor processor,
-		CompanyBatchWriter writer,
-		PlatformTransactionManager manager
+        ChargerApiBatchReader reader,
+        ChargerApiBatchProcessor processor,
+        ChargerApiBatchWriter writer,
+        PlatformTransactionManager manager
 	) {
-		return new StepBuilder("companyBatchUpdateStep", jobRepository)
-			.<List<ChargerApiItemForm>, List<OperatingCompanyUpdateForm>>chunk(CHUNK_SIZE, manager)
+		return new StepBuilder("chargerApiBatchUpdateStep", jobRepository)
+			.<List<ChargerApiItemForm>, List<ChargerApiItemForm>>chunk(CHUNK_SIZE, manager)
 			.reader(reader)
 			.processor(processor)
 			.writer(writer)
 			.build();
 	}
 
-	@JobScope
-	@Bean
-	public Step stationBatchUpdateStep(
-		JobRepository jobRepository,
-		ChargerApiBatchReader reader,
-		ChargingStationBatchProcessor processor,
-		ChargingStationBatchWriter writer,
-		PlatformTransactionManager manager
-	) {
-		return new StepBuilder("stationBatchUpdateStep", jobRepository)
-			.<List<ChargerApiItemForm>, List<ChargingStationUpdateForm>>chunk(CHUNK_SIZE, manager)
-			.reader(reader)
-			.processor(processor)
-			.writer(writer)
-			.build();
-	}
-
-	@JobScope
-	@Bean
-	public Step chargerBatchUpdateStep(
-		JobRepository jobRepository,
-		ChargerApiBatchReader reader,
-		ChargerBatchProcessor processor,
-		ChargerBatchWriter writer,
-		PlatformTransactionManager manager
-	) {
-		return new StepBuilder("chargerBatchUpdateStep", jobRepository)
-			.<List<ChargerApiItemForm>, List<ChargerUpdateForm>>chunk(CHUNK_SIZE, manager)
-			.reader(reader)
-			.processor(processor)
-			.writer(writer)
-			.build();
-	}
+	// @JobScope
+	// @Bean
+	// public Step companyBatchUpdateStep(
+	// 	JobRepository jobRepository,
+	// 	ChargerApiBatchReader reader,
+	// 	CompanyBatchProcessor processor,
+	// 	CompanyBatchWriter writer,
+	// 	PlatformTransactionManager manager
+	// ) {
+	// 	return new StepBuilder("companyBatchUpdateStep", jobRepository)
+	// 		.<List<ChargerApiItemForm>, List<OperatingCompanyUpdateForm>>chunk(CHUNK_SIZE, manager)
+	// 		.reader(reader)
+	// 		.processor(processor)
+	// 		.writer(writer)
+	// 		.build();
+	// }
+	//
+	// @JobScope
+	// @Bean
+	// public Step stationBatchUpdateStep(
+	// 	JobRepository jobRepository,
+	// 	ChargerApiBatchReader reader,
+	// 	ChargingStationBatchProcessor processor,
+	// 	ChargingStationBatchWriter writer,
+	// 	PlatformTransactionManager manager
+	// ) {
+	// 	return new StepBuilder("stationBatchUpdateStep", jobRepository)
+	// 		.<List<ChargerApiItemForm>, List<ChargingStationUpdateForm>>chunk(CHUNK_SIZE, manager)
+	// 		.reader(reader)
+	// 		.processor(processor)
+	// 		.writer(writer)
+	// 		.build();
+	// }
+	//
+	// @JobScope
+	// @Bean
+	// public Step chargerBatchUpdateStep(
+	// 	JobRepository jobRepository,
+	// 	ChargerApiBatchReader reader,
+	// 	ChargerBatchProcessor processor,
+	// 	ChargerBatchWriter writer,
+	// 	PlatformTransactionManager manager
+	// ) {
+	// 	return new StepBuilder("chargerBatchUpdateStep", jobRepository)
+	// 		.<List<ChargerApiItemForm>, List<ChargerUpdateForm>>chunk(CHUNK_SIZE, manager)
+	// 		.reader(reader)
+	// 		.processor(processor)
+	// 		.writer(writer)
+	// 		.build();
+	// }
 }
