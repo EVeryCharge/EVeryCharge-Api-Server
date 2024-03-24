@@ -20,18 +20,24 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ChargerApiBatchReader implements ItemReader<List<ChargerApiItemForm>> {
 	private final ChargerService chargerService;
-	private int currentIndex = 1;
+	private int currentPageNo = 1;
 	private final int numOfRows = 1000;
 	private final String baseUrl = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo";
 	private final String dataType = "JSON";
 
 	@Override
 	public List<ChargerApiItemForm> read() {
-		List<ChargerApiItemForm> list = chargerService.webClientApiGetChargerInfo(baseUrl, apiServiceKey, numOfRows, currentIndex, dataType);
-		log.debug("[Batch] : 현재 페이지 {}", currentIndex);
-		currentIndex++;
+		List<ChargerApiItemForm> list = chargerService.webClientApiGetChargerInfo(
+			baseUrl, apiServiceKey, numOfRows,currentPageNo, dataType);
 
-		if (list.isEmpty()) return null;
+		log.info("[Batch] : 현재 불러온 OpenAPI 데이터 페이지 : {} 페이지", currentPageNo);
+
+		if (list.isEmpty()) {
+			log.info("[Batch] : Step 단위 Reader 불러오기 종료, 총 페이지 : {} 페이지", currentPageNo);
+			return null;
+		}
+
+		currentPageNo++;
 		return list;
 	}
 }

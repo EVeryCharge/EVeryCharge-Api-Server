@@ -36,7 +36,7 @@ public class ChargerBatchUpdateConfig {
 	@Getter
 	@Setter
 	private boolean isBatchUpdateRunning = true;
-	private final int CHUNK_SIZE = 5;
+	private final int CHUNK_SIZE = 1;
 
 	@Bean
 	public Job chargerBatchUpdateJob(
