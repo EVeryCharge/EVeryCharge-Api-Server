@@ -147,7 +147,11 @@ public class ChargerService {
 
     @Transactional
     public void deleteAllDeletedChargers() {
+        Long beforeDeleteChargerCount = chargerRepository.count();
         chargerRepository.deleteAllDeletedChargers();
-        log.info("[DB] : OpenAPI상 삭제 충전기 삭제 완료");
+        Long afterDeleteChargerCount = chargerRepository.count();
+
+        log.info("[DB] : OpenAPI상 삭제 충전기 총 {}건 삭제 완료 / 기존 {}건, 현재 {}건",
+            beforeDeleteChargerCount - afterDeleteChargerCount, beforeDeleteChargerCount, afterDeleteChargerCount);
     }
 }

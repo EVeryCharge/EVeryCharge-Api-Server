@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@Profile("dev")
+@Profile("prod")
 @RequiredArgsConstructor
 public class ChargerBatchUpdateScheduler {
 	private final ChargerBatchUpdateService chargerBatchUpdateService;
@@ -26,9 +26,8 @@ public class ChargerBatchUpdateScheduler {
 	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
 	private final ChargerService chargerService;
 
-	// @Scheduled(cron = "0 0 3 * * *") // 운영용
-	@Scheduled(cron = "0 6 * * * *") // 개발용
-	public void updateChargerScheduled() {
+	@Scheduled(cron = "0 0 2 * * *") // 운영용
+	public void chargerBatchUpdateScheduled() {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
 				Thread.sleep(1000);
