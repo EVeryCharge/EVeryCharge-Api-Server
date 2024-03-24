@@ -45,7 +45,7 @@ public class ChargerApiItemForm {
 		this.statNm = (String)item.get("statNm");
 		this.statId = (String)item.get("statId");
 		this.chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId")));
-		this.chgerType = (String)item.get("chgerType");
+		this.chgerType = String.valueOf(Integer.parseInt((String)item.get("chgerType")));
 		this.addr = (String)item.get("addr");
 		this.location = (String)item.get("location");
 		this.lat = Double.valueOf((String)item.get("lat"));
