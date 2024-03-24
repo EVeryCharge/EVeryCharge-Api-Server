@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.form.ChargingStationUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
 import com.ll.eitcharge.domain.region.regionDetail.entity.RegionDetail;
 import com.ll.eitcharge.domain.report.report.entity.Report;
@@ -70,10 +70,6 @@ public class ChargingStation {
     private String limitYn;
     //이용자 제한 사유
     private String limitDetail;
-    //충전기 정보 삭제 여부 TODO 최근 삭제된 충전기 정보 제공한다고 하니 찾아볼것
-    private String delYn;
-    //충전기 정보 삭제 사유
-    private String delDetail;
     //편의제공여부
     private String trafficYn;
     //충전소 구분 코드
@@ -82,7 +78,7 @@ public class ChargingStation {
     private String kindDetail;
 
     // 배치 활용 로직, 인서트 시 사용 편의 생성자
-    public ChargingStation(ChargingStationUpdateForm item, OperatingCompany company, RegionDetail regionDetail) {
+    public ChargingStation(ChargerApiItemForm item, OperatingCompany company, RegionDetail regionDetail) {
         this.statId = item.getStatId();
         this.statNm = item.getStatNm();
         this.addr = item.getAddr();
@@ -94,8 +90,6 @@ public class ChargingStation {
         this.note = item.getNote();
         this.limitYn = item.getLimitYn();
         this.limitDetail = item.getLimitDetail();
-        this.delYn = item.getDelYn();
-        this.delDetail = item.getDelDetail();
         this.trafficYn = item.getTrafficYn();
         this.kind = item.getKind();
         this.kindDetail = item.getKindDetail();
@@ -104,7 +98,7 @@ public class ChargingStation {
     }
 
     // 배치 활용 로직, 업데이트 시 사용 편의 메소드
-    public void update(ChargingStationUpdateForm item, OperatingCompany company, RegionDetail regionDetail) {
+    public void update(ChargerApiItemForm item, OperatingCompany company, RegionDetail regionDetail) {
         this.statNm = item.getStatNm();
         this.addr = item.getAddr();
         this.location = item.getLocation();
@@ -115,8 +109,6 @@ public class ChargingStation {
         this.note = item.getNote();
         this.limitYn = item.getLimitYn();
         this.limitDetail = item.getLimitDetail();
-        this.delYn = item.getDelYn();
-        this.delDetail = item.getDelDetail();
         this.trafficYn = item.getTrafficYn();
         this.kind = item.getKind();
         this.kindDetail = item.getKindDetail();
