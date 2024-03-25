@@ -80,8 +80,6 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
         setNewPassword2(event.target.value);
     };
 
-
-
     return (
         <React.Fragment>
             <CardContent>
@@ -279,7 +277,6 @@ const My = () => {
 
 
     useEffect(() => {
-
         const sessionUsername = sessionStorage.getItem("username");
         if (sessionUsername === null || sessionUsername === undefined || sessionUsername === "") {
             alert("로그인이 필요한 서비스입니다.");
@@ -333,8 +330,6 @@ const My = () => {
         }
 
     }, [user]);
-
-
     return (
         <div className={classes.root}>
             <h3>마이페이지</h3>

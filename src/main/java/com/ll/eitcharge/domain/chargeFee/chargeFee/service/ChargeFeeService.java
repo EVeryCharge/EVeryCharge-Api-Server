@@ -46,12 +46,14 @@ public class ChargeFeeService {
 		return chargeFeeRepository.findByBnm(bnm);
 	}
 
-
 	@Scheduled(cron = "0 0 2 * * * ")
 	@Transactional
 	public void upsertChargeFeeFromApi() {
+		log.info("[Scheduler] : 기관 요금정보 추가 / 업데이트 시작");
+
 		Workbook workbook = excelDataUtil.getDataFromHttpByWorkbook(CHARGE_FEE_API_URL);
-		if (workbook == null) return;
+		if (workbook == null)
+			return;
 
 		Worksheet worksheet = workbook.getWorksheets().get(0);
 		int lastRow = worksheet.getCells().getMaxDataRow();
@@ -65,16 +67,16 @@ public class ChargeFeeService {
 			}
 			upsertRowData(rowData);
 		}
-		// 요금 미공시 업체 데이터 업데이트(별도 크롤링) TODO 크롤링 방안 마련
+		// 요금 미공시 업체 데이터 업데이트(별도 크롤링)
 		upsertRowData(List.of("한국전력", "급속", "324.4", "324.4"));
 		upsertRowData(List.of("한국전력", "완속", "347.2", "347.2"));
-		upsertRowData(List.of("에스트래픽", "급속", "385.0", "520.0"));
-		upsertRowData(List.of("에스트래픽", "완속", "288.0", "520.0"));
+		upsertRowData(List.of("SK 일렉링크", "급속", "385.0", "520.0"));
+		upsertRowData(List.of("SK 일렉링크", "완속", "288.0", "520.0"));
 
+		log.info("[Scheduler] : 기관 요금정보 추가 / 업데이트 완료");
 		workbook.dispose();
 	}
 
-	@Transactional
 	public void upsertRowData(List<String> rowData) {
 		String bnmData = rowData.get(0);
 		String chgerTypeData = rowData.get(1);
@@ -85,35 +87,36 @@ public class ChargeFeeService {
 		switch (bnmData) {
 			case "GS차지비" -> bnmData = "차지비";
 			case "채비" -> bnmData = "대영채비";
-			case "이브이시스" -> bnmData = "중앙제어";
-			case "투이스이브이씨" -> bnmData = "삼성EVC";
 		}
 
 		Optional<OperatingCompany> opCompany = operatingCompanyService.findByBnmOptional(bnmData);
-		if (opCompany.isEmpty()) return;
+		if (opCompany.isEmpty())
+			return;
 
-		Optional<ChargeFee> opChargeFee = findByBnmAndChgerTypeOptional(bnmData, chgerTypeData);
-		if (opChargeFee.isPresent()) {
-			ChargeFee chargeFee = opChargeFee.get();
-			chargeFee.update(chgerTypeData, memberFeeData, nonMemberFeeData, chargeFee.getMemberFee(),
-				chargeFee.getNonMemberFee());
+		ChargeFee chargeFee = findByBnmAndChgerTypeOptional(bnmData, chgerTypeData).orElse(null);
+		if (chargeFee != null) {
+			chargeFee.update(
+				memberFeeData, nonMemberFeeData, chargeFee.getMemberFee(),chargeFee.getNonMemberFee()
+			);
 		}
-		if (opChargeFee.isEmpty()) {
-			ChargeFee chargeFee = ChargeFee.builder()
+		if (chargeFee == null) {
+			chargeFee = ChargeFee.builder()
 				.operatingCompany(opCompany.get())
 				.bnm(bnmData)
 				.chgerType(chgerTypeData)
 				.memberFee(memberFeeData)
 				.nonMemberFee(nonMemberFeeData)
 				.build();
-			chargeFeeRepository.save(chargeFee);
+			log.info("[Scheduler] : 신규 기관 {} 감지, 요금정보 추가 완료", bnmData);
 		}
+		chargeFeeRepository.save(chargeFee);
 	}
 
 	@Scheduled(cron = "0 0 2 * * * ")
 	public void updateChargeRoamingFeeFileFromApi() {
 		Workbook workbook = excelDataUtil.getDataFromHttpByWorkbook(CHARGE_ROAMING_FEE_API_URL);
-		if (workbook == null) return;
+		if (workbook == null)
+			return;
 		try {
 			workbook.save(CHARGE_ROAMING_FEE_FILE_PATH, SaveFormat.XLSX);
 		} catch (Exception e) {

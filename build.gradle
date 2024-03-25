@@ -87,8 +87,10 @@ dependencies {
     // S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
-    ///
+    /// httpclient
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.1.3' // Apache HttpClient 5.x 의존성 추가
 
 }

@@ -1,5 +1,6 @@
 import {
   Box,
+  Chip,
   Paper,
   Table,
   TableBody,
@@ -87,7 +88,7 @@ const ReportList = () => {
             <TableRow>
               <TableCell>유형</TableCell>
               <TableCell>충전소</TableCell>
-              <TableCell>글 제목</TableCell>
+              <TableCell>제목</TableCell>
               <TableCell>신고자</TableCell>
               <TableCell>작성일</TableCell>
               <TableCell>처리여부</TableCell>
@@ -103,12 +104,25 @@ const ReportList = () => {
                   textDecoration: "none",
                 }}
               >
-                <TableCell>{row.reportType}</TableCell>
-                <TableCell>{row.statNm}</TableCell>
-                <TableCell>{row.title}</TableCell>
-                <TableCell>{row.memberName}</TableCell>
-                <TableCell>{formatDate(row.createDate)}</TableCell>
-                <TableCell style={{ color: getStatusColor(row.completed) }}>
+                <TableCell width="10%">
+                  <Chip
+                    label={row.reportType}
+                    style={{
+                      marginLeft: "5px",
+                      marginRight: "5px",
+                      fontWeight: "bold",
+                      backgroundColor: "skyblue",
+                    }}
+                  ></Chip>
+                </TableCell>
+                <TableCell width="30%">{row.statNm}</TableCell>
+                <TableCell width="30%">{row.title}</TableCell>
+                <TableCell width="10%">{row.memberName}</TableCell>
+                <TableCell width="10%">{formatDate(row.createDate)}</TableCell>
+                <TableCell
+                  width="10%"
+                  style={{ color: getStatusColor(row.completed) }}
+                >
                   {row.completed ? "처리완료" : "처리중"}
                 </TableCell>
               </TableRow>

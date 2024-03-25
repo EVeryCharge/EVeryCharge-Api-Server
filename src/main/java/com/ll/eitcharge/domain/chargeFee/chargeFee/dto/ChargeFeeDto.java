@@ -1,5 +1,7 @@
 package com.ll.eitcharge.domain.chargeFee.chargeFee.dto;
 
+import java.time.LocalDateTime;
+
 import com.ll.eitcharge.domain.chargeFee.chargeFee.entity.ChargeFee;
 
 import lombok.Getter;
@@ -16,6 +18,7 @@ public class ChargeFeeDto {
 	private Double prevNonMemberFee;
 	private Double nonMemberFee;
 	private Double nonMemberFeeChange;
+	private LocalDateTime modifiedDate;
 
 
 	public ChargeFeeDto(ChargeFee chargeFee) {
@@ -27,5 +30,6 @@ public class ChargeFeeDto {
 		this.prevNonMemberFee = chargeFee.getPrevNonMemberFee();
         this.nonMemberFee = chargeFee.getNonMemberFee();
         this.nonMemberFeeChange = chargeFee.getNonMemberFeeChange();
+		this.modifiedDate = chargeFee.getModifiedDate();
 	}
 }

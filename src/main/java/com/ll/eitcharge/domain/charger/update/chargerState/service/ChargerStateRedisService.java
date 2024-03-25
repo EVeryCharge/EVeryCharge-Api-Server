@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.chargerState.service;
+package com.ll.eitcharge.domain.charger.update.chargerState.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class ChargerStateRedisService {
 	public void flushAll() {
 		redisTemplate.execute((RedisCallback<Void>)connection -> {
 			connection.serverCommands().flushAll();
-			log.info("[Redis](init) : redis flushAll 완료");
+			log.info("[Redis] : redis flushAll 완료");
 			return null;
 		});
 	}
