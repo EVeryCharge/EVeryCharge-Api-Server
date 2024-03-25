@@ -33,7 +33,7 @@ public class HyundaiMemberController {
     ) throws IOException {
 
 
-        String requestBody = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + "http://api.eitcharge.site/hyundai";
+        String requestBody = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + "http://localhost:8090/hyundai";
         String tokenResponse = hyundaiTokenService.tokenAPICall(requestBody);
 
         ObjectMapper accessTokenObjectMapper = new ObjectMapper();

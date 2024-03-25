@@ -163,8 +163,8 @@ public class HyundaiTokenService {
 
             // 요청 헤더 설정
             con.setRequestMethod("GET");
-//            con.setRequestProperty("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOiI1N2JkZTc5MS1kODNhLTQ4OTMtYTAzNC0zZDcxZGY4OTVkMTciLCJpc3MiOiJibHVlbGluayIsInBpZCI6IjYyYTk3NmZhYmI4YjVkZTg5YzYzYjhmYiIsImV4cCI6NDEwMjMyNjAwMCwibGF0IjoxNzExMjkyMjkwLCJzaWQiOiI0MjExZjE5OS1lNzk4LTQ1OWItYmM0MS0yNjBjYWIzNmExZWQifQ.AXhUW6k8eLiTDJQAzqalNNU3bfvijdPC7KhvmIvtTP8Iu_g06QLyhg1ZE-rsrpMJGuo10rXRcTRj6Daoh5ybCXNc2rdkmMnoGNFAnQQiO5BfjKnBNw7dP9aG_HXsyrL9KdS8FBqsY_MBfOcreC8poLp-NuSCUl3O0My0--Iipr4sKHDYFNOxAKe8BPQeiHI1YxzrnSrbUSnihwxFLaqaudasJiF5CV8ks65g6Cj4lB4KUQ6a5M3NASsWc5J5yy3KJj6Jxj1VWKZaqAa2mX8pGD6WZKvgRgw8LqoNdfCt_XCEfO5EB3cJxj-RyWK3nkkJjnPaNl4aiLvgw59regSZ0Q");
-            con.setRequestProperty("Authorization", "Bearer " + accessToken);
+            con.setRequestProperty("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOiI1N2JkZTc5MS1kODNhLTQ4OTMtYTAzNC0zZDcxZGY4OTVkMTciLCJpc3MiOiJibHVlbGluayIsInBpZCI6IjYyYTk3NmZhYmI4YjVkZTg5YzYzYjhmYiIsImV4cCI6NDEwMjMyNjAwMCwibGF0IjoxNzExMjkyMjkwLCJzaWQiOiI0MjExZjE5OS1lNzk4LTQ1OWItYmM0MS0yNjBjYWIzNmExZWQifQ.AXhUW6k8eLiTDJQAzqalNNU3bfvijdPC7KhvmIvtTP8Iu_g06QLyhg1ZE-rsrpMJGuo10rXRcTRj6Daoh5ybCXNc2rdkmMnoGNFAnQQiO5BfjKnBNw7dP9aG_HXsyrL9KdS8FBqsY_MBfOcreC8poLp-NuSCUl3O0My0--Iipr4sKHDYFNOxAKe8BPQeiHI1YxzrnSrbUSnihwxFLaqaudasJiF5CV8ks65g6Cj4lB4KUQ6a5M3NASsWc5J5yy3KJj6Jxj1VWKZaqAa2mX8pGD6WZKvgRgw8LqoNdfCt_XCEfO5EB3cJxj-RyWK3nkkJjnPaNl4aiLvgw59regSZ0Q");
+//            con.setRequestProperty("Authorization", "Bearer " + accessToken);
             con.setRequestProperty("Content-Type", "application/json");
 
             int responseCode = con.getResponseCode();
