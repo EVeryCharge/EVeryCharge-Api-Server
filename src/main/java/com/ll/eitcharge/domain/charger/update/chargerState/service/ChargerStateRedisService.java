@@ -73,7 +73,7 @@ public class ChargerStateRedisService {
 	public void flushAll() {
 		redisTemplate.execute((RedisCallback<Void>)connection -> {
 			connection.serverCommands().flushAll();
-			log.info("[Redis](init) : redis flushAll 완료");
+			log.info("[Redis] : redis flushAll 완료");
 			return null;
 		});
 	}

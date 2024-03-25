@@ -33,7 +33,7 @@ public class ChargerStateUpdateService {
 	private final ChargerStateRedisService chargerStateRedisService;
 	private final ChargerRepository chargerRepository;
 
-	public void initChargersToRedis() {
+	public void flushAllRedisData() {
 		chargerStateRedisService.flushAll();
 	}
 
