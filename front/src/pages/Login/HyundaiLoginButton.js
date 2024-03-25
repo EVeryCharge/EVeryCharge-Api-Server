@@ -8,7 +8,7 @@ const HyundaiLoginButton = () => {
 
   const responseType = 'code';
   const clientId = '4211f199-e798-459b-bc41-260cab36a1ed'; // 애플리케이션 등록 시 발급 받은 Client ID를 입력하세요.
-  const redirectUri = encodeURIComponent('http://localhost:8090/hyundai'); // 애플리케이션 등록 시 설정한 Redirect URL을 입력하세요.
+  const redirectUri = encodeURIComponent('http://api.eitcharge.site/hyundai'); // 애플리케이션 등록 시 설정한 Redirect URL을 입력하세요.
   const state = getUserName(); // 상태 토큰 값을 입력하세요. 실제 사용 시에는 매 요청마다 고유한 값을 생성해야 합니다.
 
   // OAuth 인증 페이지 URL 구성
