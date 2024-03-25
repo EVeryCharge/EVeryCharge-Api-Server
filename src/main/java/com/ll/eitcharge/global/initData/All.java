@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 
 import com.ll.eitcharge.domain.chargeFee.chargeFee.service.ChargeFeeService;
-import com.ll.eitcharge.domain.charger.chargerState.service.ChargerStateUpdateService;
+import com.ll.eitcharge.domain.charger.update.chargerState.service.ChargerStateUpdateService;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
 import com.ll.eitcharge.global.app.AppConfig;
 

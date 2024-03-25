@@ -10,14 +10,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
-import com.ll.eitcharge.domain.charger.chargerState.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.charger.charger.form.ChargerStateUpdateForm;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
 @Repository
 public interface ChargerRepository extends JpaRepository<Charger, Long> {
     List<Charger> findByChargingStationStatId(String statId);
 
     //statId와 chrgerId를 기반으로 charger를 찾는 메서드
-    Optional<Charger> findByChargingStationStatIdAndChgerId(String statId, String chgerId);
+    Optional<Charger> findByChargingStationAndChgerId(ChargingStation chargingStation, String chgerId);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Charger c " +
@@ -28,4 +29,8 @@ public interface ChargerRepository extends JpaRepository<Charger, Long> {
         "    c.nowTsdt = :#{#charger.nowTsdt} " +
         "WHERE c.chgerId = :#{#charger.chgerId} AND c.chargingStation.statId = :#{#charger.statId}")
     int updateChargerState(@Param("charger") ChargerStateUpdateForm charger);
+
+    @Modifying
+    @Query("DELETE FROM Charger c WHERE c.delYn = 'Y'")
+    void deleteAllDeletedChargers();
 }

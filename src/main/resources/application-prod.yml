@@ -21,6 +21,7 @@ logging:
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
     org.springframework.transaction.interceptor: INFO
+    org.springframework.data.redis: ERROR
 custom:
   site:
     cookieDomain: "${custom.prod.cookieDomain}"
