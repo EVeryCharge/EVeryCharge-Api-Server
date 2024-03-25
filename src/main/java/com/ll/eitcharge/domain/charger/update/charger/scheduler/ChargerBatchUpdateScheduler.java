@@ -10,6 +10,7 @@ import com.ll.eitcharge.domain.charger.charger.service.ChargerService;
 import com.ll.eitcharge.domain.charger.update.charger.batch.config.ChargerBatchUpdateConfig;
 import com.ll.eitcharge.domain.charger.update.charger.batch.service.ChargerBatchUpdateService;
 import com.ll.eitcharge.domain.charger.update.chargerState.service.ChargerStateUpdateConfig;
+import com.ll.eitcharge.domain.charger.update.chargerState.service.ChargerStateUpdateService;
 import com.ll.eitcharge.global.app.AppConfig;
 import com.ll.eitcharge.standard.util.Ut;
 
@@ -22,11 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ChargerBatchUpdateScheduler {
 	private final ChargerBatchUpdateService chargerBatchUpdateService;
+	private final ChargerStateUpdateService chargerStateUpdateService;
 	private final ChargerBatchUpdateConfig chargerBatchUpdateConfig;
 	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
 	private final ChargerService chargerService;
 
-	@Scheduled(cron = "0 15 14 * * *") // 운영용
+	@Scheduled(cron = "0 30 3 * * *") // 운영용
 	public void chargerBatchUpdateScheduled() {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
@@ -41,8 +43,12 @@ public class ChargerBatchUpdateScheduler {
 		log.info("[Scheduler] : 데이터 배치 전역 업데이트 시작");
 		LocalDateTime startTime = LocalDateTime.now();
 
+		// 배치 업데이트
 		chargerBatchUpdateService.runChargerBatchUpdateJob();
+		// delYn(충전기 삭제 여부) Y인 충전기 모두 삭제
 		chargerService.deleteAllDeletedChargers();
+		// redis flush
+		chargerStateUpdateService.flushAllRedisData();
 
 		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
