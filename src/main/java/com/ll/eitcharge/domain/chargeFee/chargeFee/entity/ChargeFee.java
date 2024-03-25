@@ -35,16 +35,16 @@ public class ChargeFee extends BaseTime {
 	private Double memberFeeChange;
 	private Double nonMemberFeeChange;
 
-	public void update(String chgerType, Double newMemberFee, Double newNonMemberFee, Double prevMemberFee,
-		Double prevNonMemberFee) {
-		this.chgerType = chgerType;
-		this.memberFee = newMemberFee;
-		this.nonMemberFee = newNonMemberFee;
-		if (this.prevMemberFee == null || !this.prevMemberFee.equals(this.memberFee))
-			this.prevMemberFee = this.memberFee;
-		if (this.prevNonMemberFee == null || !this.prevNonMemberFee.equals(this.nonMemberFee))
-			this.prevNonMemberFee = this.nonMemberFee;
-		this.memberFeeChange = newMemberFee - prevMemberFee;
-		this.nonMemberFeeChange = newNonMemberFee - prevNonMemberFee;
+	public void update(Double newMemberFee, Double newNonMemberFee, Double prevMemberFee, Double prevNonMemberFee) {
+		if (!newMemberFee.equals(prevMemberFee)) {
+			this.prevMemberFee = prevMemberFee;
+			this.memberFee = newMemberFee;
+			this.nonMemberFeeChange = newNonMemberFee - prevNonMemberFee;
+		}
+		if (!newNonMemberFee.equals(prevNonMemberFee)) {
+			this.prevNonMemberFee = prevNonMemberFee;
+			this.nonMemberFee = newNonMemberFee;
+			this.memberFeeChange = newMemberFee - prevMemberFee;
+		}
 	}
 }

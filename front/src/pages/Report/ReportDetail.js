@@ -261,6 +261,7 @@ const ReportDetail = () => {
           <Box>
             <Box
               pt={1}
+              pb={1}
               px={1}
               style={{
                 backgroundColor: "whitesmoke",
@@ -296,7 +297,10 @@ const ReportDetail = () => {
                     rows={6}
                     value={reply}
                     onChange={handleReplyChange}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{
+                      width: "100%",
+                      marginTop: "10px",
+                    }}
                   />
                   {error.reply && (
                     <Typography variant="caption" color="error">
