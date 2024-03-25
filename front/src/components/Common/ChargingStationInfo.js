@@ -185,14 +185,14 @@ const ChargingStationInfo = ({ statId }) => {
                     align="center"
                     style={{ borderRight: "1px groove lightgrey" }}
                   >
-                    {row.memberFeeChange !== 0 ? (
+                    {row.memberFeeChange && row.memberFeeChange !== 0 ? (
                       <>
                         {row.memberFeeChange > 0 ? (
                           <span style={{ color: "red" }}>↑ </span>
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {Math.abs(row.memberFeeChange)}
+                        {row.memberFeeChange}
                       </>
                     ) : (
                       "-"
@@ -200,14 +200,14 @@ const ChargingStationInfo = ({ statId }) => {
                   </TableCell>
                   <TableCell align="center">{row.nonMemberFee}</TableCell>
                   <TableCell align="center">
-                    {row.nonMemberFeeChange !== 0 ? (
+                    {row.nonMemberFeeChange && row.nonMemberFeeChange !== 0 ? (
                       <>
                         {row.nonMemberFeeChange > 0 ? (
                           <span style={{ color: "red" }}>↑ </span>
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {Math.abs(row.nonMemberFeeChange)}
+                        {row.nonMemberFeeChange}
                       </>
                     ) : (
                       "-"
