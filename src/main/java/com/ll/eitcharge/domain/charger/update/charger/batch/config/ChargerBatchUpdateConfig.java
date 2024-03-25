@@ -34,10 +34,7 @@ public class ChargerBatchUpdateConfig {
 	@Bean
 	public Job chargerBatchUpdateJob(
 		JobRepository jobRepository,
-		Step chargerApiBatchUpdateStep,
-		Step companyBatchUpdateStep,
-		Step stationBatchUpdateStep,
-		Step chargerBatchUpdateStep
+		Step chargerApiBatchUpdateStep
 	) {
 		return new JobBuilder("chargerApiBatchUpdateJob", jobRepository)
 			.start(chargerApiBatchUpdateStep)

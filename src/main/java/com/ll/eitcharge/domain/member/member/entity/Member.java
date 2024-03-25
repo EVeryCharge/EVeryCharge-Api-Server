@@ -45,8 +45,6 @@ public class Member extends BaseTime {
     private String carModel;
 
 
-    private String carModel;
-
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getAuthoritiesAsStringList()
