@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import CarInit from "./CarInit";
 import {
@@ -29,17 +30,7 @@ import {
 } from "@material-ui/core";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { TextField } from '@material-ui/core';
-const bull = (
-    <Box
-        component="span"
-        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-        •
-    </Box>
-);
-
-
-
+import HyundaiLoginButton from "../Login/HyundaiLoginButton";
 
 
 function CardComponent({ username, nickname, createDate, profileImgUrl }) {
@@ -88,6 +79,8 @@ function CardComponent({ username, nickname, createDate, profileImgUrl }) {
     const handleNewPassword2Change = (event) => {
         setNewPassword2(event.target.value);
     };
+
+
 
     return (
         <React.Fragment>
@@ -286,6 +279,7 @@ const My = () => {
 
 
     useEffect(() => {
+
         const sessionUsername = sessionStorage.getItem("username");
         if (sessionUsername === null || sessionUsername === undefined || sessionUsername === "") {
             alert("로그인이 필요한 서비스입니다.");
@@ -339,6 +333,8 @@ const My = () => {
         }
 
     }, [user]);
+
+
     return (
         <div className={classes.root}>
             <h3>마이페이지</h3>
@@ -361,6 +357,8 @@ const My = () => {
                             <Button variant="outlined" color="Primary" onClick={() => handleModal()} >
                                 등록하기
                             </Button>
+                            <br/>
+                            <HyundaiLoginButton />
                             <CarInit
                                 isOpen={isOpen}
                                 onRequestClose={closeModal}
