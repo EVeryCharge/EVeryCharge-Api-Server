@@ -52,7 +52,7 @@ public class ChargerBatchUpdateScheduler {
 
 		chargerBatchUpdateConfig.setBatchUpdateRunning(false);
 		LocalDateTime endTime = LocalDateTime.now();
-		log.info("[Scheduler] : 데이터 배치 전역 업데이트 종료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
+		log.info("[Scheduler] : 데이터 배치 전역 업데이트 완료 : 메소드 실행시간 {}", Ut.calcDuration(startTime, endTime));
 		Ut.calcHeapMemory();
 	}
 }
