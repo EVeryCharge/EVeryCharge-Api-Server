@@ -6,8 +6,8 @@ spring:
       enabled: always
   datasource:
     url: jdbc:mysql://localhost:3306/eitcharge
-    username: root
-    password: lldj123414
+    username: <NEED_TO_INPUT>
+    password: <NEED_TO_INPUT>
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
