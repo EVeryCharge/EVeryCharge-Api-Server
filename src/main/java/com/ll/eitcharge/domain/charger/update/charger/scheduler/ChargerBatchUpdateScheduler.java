@@ -26,7 +26,7 @@ public class ChargerBatchUpdateScheduler {
 	private final ChargerStateUpdateConfig chargerStateUpdateConfig;
 	private final ChargerService chargerService;
 
-	@Scheduled(cron = "0 0 2 * * *") // 운영용
+	@Scheduled(cron = "0 15 14 * * *") // 운영용
 	public void chargerBatchUpdateScheduled() {
 		while (!AppConfig.isAppInitialized || chargerStateUpdateConfig.isUpdateRunning()) {
 			try {
