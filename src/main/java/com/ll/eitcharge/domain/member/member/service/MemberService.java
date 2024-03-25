@@ -149,6 +149,12 @@ public class MemberService {
         member.carInit(carModel);
     }
 
+    @Transactional
+    public void carDelete(Member member) {
+        member.carInit(null);
+    }
+
+
     public MemberCarDto getUserInfo(String username) {
         return new MemberCarDto(memberRepository.findByUsername(username).get());
     }
