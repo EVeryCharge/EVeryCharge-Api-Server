@@ -42,8 +42,8 @@ public class Member extends BaseTime {
 
     private String nickname;
     private String profileImgUrl;
-
     private String carModel;
+
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {

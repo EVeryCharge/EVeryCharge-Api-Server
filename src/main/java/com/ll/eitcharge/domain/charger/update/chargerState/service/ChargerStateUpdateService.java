@@ -112,7 +112,7 @@ public class ChargerStateUpdateService {
 		if (!items.isEmpty()) {
 			log.info("[OpenAPI] : OpenAPI 데이터 {}건 불러오기 완료", items.size());
 		}
-    
+
     // 레디스와 비교할 오픈 API의 전체 데이터를 담을 리스트 선언
 		List<ChargerStateUpdateForm> apiChargerList =
 			items.stream().map(item -> {
