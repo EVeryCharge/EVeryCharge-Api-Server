@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.ll.eitcharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.global.jpa.entity.BaseTime;
 
@@ -50,4 +51,40 @@ public class Charger extends BaseTime {
     private String output;
     //충전 방식
     private String method;
+    //삭제 여부
+    private String delYn;
+    //삭제 사유
+    private String delDetail;
+
+    // 배치 활용 로직, 인서트 시 사용 편의 생성자
+    public Charger(ChargerApiItemForm item, ChargingStation station) {
+        this.chgerId = item.getChgerId();
+        this.chgerType = item.getChgerType();
+        this.stat = item.getStat();
+        this.statUpdDt = item.getStatUpdDt();
+        this.lastTsdt = item.getLastTsdt();
+        this.lastTedt = item.getLastTedt();
+        this.nowTsdt = item.getNowTsdt();
+        this.method = item.getMethod();
+        this.output = item.getOutput();
+        this.delYn = item.getDelYn();
+        this.delDetail = item.getDelDetail();
+        this.chargingStation = station;
+    }
+
+    // 배치 업데이트 시 사용 편의 메소드
+    public void update(ChargerApiItemForm item, ChargingStation station) {
+        this.chgerId = item.getChgerId();
+        this.chgerType = item.getChgerType();
+        this.stat = item.getStat();
+        this.statUpdDt = item.getStatUpdDt();
+        this.lastTsdt = item.getLastTsdt();
+        this.lastTedt = item.getLastTedt();
+        this.nowTsdt = item.getNowTsdt();
+        this.method = item.getMethod();
+        this.output = item.getOutput();
+        this.delYn = item.getDelYn();
+        this.delDetail = item.getDelDetail();
+        this.chargingStation = station;
+    }
 }
