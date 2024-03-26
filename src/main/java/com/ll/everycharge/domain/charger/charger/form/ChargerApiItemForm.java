@@ -1,4 +1,4 @@
-package com.ll.eitcharge.domain.charger.charger.form;
+package com.ll.everycharge.domain.charger.charger.form;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -73,7 +73,8 @@ public class ChargerApiItemForm {
 		this.output = (String)item.get("output");
 		this.method = (String)item.get("method");
 		this.zcode = (String)item.get("zcode");
-		this.zscode = (String)item.get("zscode");
+		this.zscode = (item.get("zscode") != null && ((String) item.get("zscode")).length() == 5) ?
+			((String) item.get("zscode")).substring(0, 4) + "0" : null;
 		this.kind = (String)item.get("kind");
 		this.kindDetail = (String)item.get("kindDetail");
 		this.parkingFree = (String)item.get("parkingFree");
