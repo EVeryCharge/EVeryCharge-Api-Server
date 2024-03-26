@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,29 +35,30 @@ public class HyundaiMemberController {
     ) throws IOException {
 
 
-        String requestBody = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + "http://localhost:8090/hyundai";
+        String requestBody = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + AppConfig.getSiteBackUrl() +"/hyundai";
         String tokenResponse = hyundaiTokenService.tokenAPICall(requestBody);
 
         ObjectMapper accessTokenObjectMapper = new ObjectMapper();
         JsonNode TokenRoot = accessTokenObjectMapper.readTree(tokenResponse);
         String accessToken = TokenRoot.path("access_token").asText(); // Response에서 AccessToken 값 추출
-//        String refreshToken = TokenRoot.path("refresh_token").asText(); // Response에서 refreshToken 값 추출
 
-        // 유저 정보
-        hyundaiTokenService.userProfile(accessToken);
+        if(accessToken != null){
+            rq.setCookie("HDAccess", accessToken);
+            System.out.println("accessToken = " + accessToken);
+            // 유저 정보
+//        hyundaiTokenService.userProfile(accessToken);
 
-        Map<String, String> carInfo = hyundaiTokenService.getFirstCarInfo(accessToken);
-        String carId = carInfo.get("carId");
-        String carSellname = carInfo.get("carSellname");
+            Map<String, String> carInfo = hyundaiTokenService.getFirstCarInfo(accessToken);
+            String carId = carInfo.get("carId");
+            String carSellname = carInfo.get("carSellname");
 
+            if(carId != null){
+                rq.setCookie("HDCarId", carId);
+                Member member = memberService.findByUsername(state).get();
+                memberService.carInit(member, carSellname);
+            }
+        }
 
-
-        Member member = memberService.findByUsername(state).get();
-        memberService.carInit(member, carSellname);
-
-
-
-        System.out.println("배터리 " +hyundaiTokenService.getBattery(carId, accessToken));
 
         return "redirect:" + AppConfig.getSiteFrontUrl() + "/my";
     }

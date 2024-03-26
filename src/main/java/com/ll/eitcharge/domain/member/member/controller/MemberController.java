@@ -3,11 +3,8 @@ package com.ll.eitcharge.domain.member.member.controller;
 import com.ll.eitcharge.domain.member.member.dto.MemberCarDto;
 import com.ll.eitcharge.domain.member.member.dto.MemberDto;
 import com.ll.eitcharge.domain.member.member.entity.Member;
+import com.ll.eitcharge.domain.member.member.service.HyundaiTokenService;
 import com.ll.eitcharge.domain.member.member.service.MemberService;
-import com.ll.eitcharge.domain.mypage.car.dto.CarListDto;
-import com.ll.eitcharge.domain.review.review.controller.ReviewController;
-import com.ll.eitcharge.domain.review.review.dto.ReviewDto;
-import com.ll.eitcharge.domain.review.review.entity.Review;
 import com.ll.eitcharge.global.exceptions.GlobalException;
 import com.ll.eitcharge.global.rq.Rq;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -28,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final HyundaiTokenService hyundaiTokenService;
     private final Rq rq;
 
     public record LoginRequestBody(@NotBlank String username, @NotBlank String password) {
@@ -49,7 +47,7 @@ public class MemberController {
         rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRs.getData().refreshToken());
         rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().accessToken());
 
-        RsData< LoginResponseBody > loginResponseBodyRsData = authAndMakeTokensRs.newDataOf(
+        RsData<LoginResponseBody> loginResponseBodyRsData = authAndMakeTokensRs.newDataOf(
                 new LoginResponseBody(
                         new MemberDto(authAndMakeTokensRs.getData().member())
                 )
@@ -83,7 +81,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public RsData<Member> signup(@Valid @RequestBody SignupRequestBody body) {
-        if(!body.password1.equals(body.password2))
+        if (!body.password1.equals(body.password2))
             throw new GlobalException("400-1", "두개의 비밀번호가 일치하지 않습니다.");
 
         if (memberService.findByUsername(body.username).isPresent())
@@ -93,7 +91,7 @@ public class MemberController {
     }
 
     @GetMapping("/checkid/{username}")
-    public boolean checkid(@PathVariable String username){
+    public boolean checkid(@PathVariable String username) {
 
         if (memberService.findByUsername(username).isPresent()) {
             return false;
@@ -119,16 +117,40 @@ public class MemberController {
             item = new MemberCarDto(member);
         }
     }
+
     @Transactional
     @PutMapping("/carInit")
     public ResponseEntity<CarInitResponseBody> carInit(
             @RequestBody CarInitRequestBody requestBody
-    ){
+    ) {
 
         Member member = memberService.findByUsername(requestBody.username).get();
         memberService.carInit(member, requestBody.carModel);
 
         return ResponseEntity.ok(new CarInitResponseBody(member));
+    }
+
+    @Transactional
+    @DeleteMapping("/carDelete")
+    public ResponseEntity<CarInitResponseBody> carDelete(
+            @RequestParam(value = "username") String username
+    ) {
+
+        Member member = memberService.findByUsername(username).get();
+        memberService.carDelete(member);
+
+        return ResponseEntity.ok(new CarInitResponseBody(member));
+    }
+
+    @GetMapping("/HDBattery")
+    public String battery() {
+
+        String accessToken = rq.getCookieValue("HDAccess", null);
+        String carId = rq.getCookieValue("HDCarId", null);
+
+        String battery = hyundaiTokenService.getBattery(carId, accessToken);
+
+        return battery;
     }
 
     @GetMapping("/userInfo")
@@ -140,10 +162,13 @@ public class MemberController {
 
     public record EditResponseBody(@NonNull MemberDto item) {
     }
-    public record EditRequestBody(@NotBlank String username, @NotBlank String password, String nickname, String newPassword) {
+
+    public record EditRequestBody(@NotBlank String username, @NotBlank String password, String nickname,
+                                  String newPassword) {
     }
+
     @PutMapping("/edit")
-    public ResponseEntity<EditResponseBody> edit(@Valid @RequestBody EditRequestBody body){
+    public ResponseEntity<EditResponseBody> edit(@Valid @RequestBody EditRequestBody body) {
         Member member = memberService.authAndEdit(body.username, body.password, body.newPassword, body.nickname);
         return ResponseEntity.ok(new EditResponseBody(new MemberDto(member)));
     }
