@@ -31,8 +31,10 @@ import {
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { TextField } from '@material-ui/core';
 import HyundaiLoginButton from "../Login/HyundaiLoginButton";
+
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Cookies from "js-cookie";
+
 
 function CardComponent({ username, nickname, createDate, profileImgUrl }) {
     const [editing, setEditing] = useState(false);
