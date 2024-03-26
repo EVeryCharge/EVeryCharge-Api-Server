@@ -7,7 +7,7 @@ const HyundaiLoginButton = () => {
   const { getUserName} = useAuth();
 
   const responseType = 'code';
-  const clientId = '4211f199-e798-459b-bc41-260cab36a1ed'; // 애플리케이션 등록 시 발급 받은 Client ID를 입력하세요.
+  const clientId = '7876a3ed-63a5-41a4-a0df-a947b593c15c'; // 애플리케이션 등록 시 발급 받은 Client ID를 입력하세요.
 
   const redirectUri = encodeURIComponent(`${process.env.REACT_APP_BACKEND_URL}/hyundai`); // 애플리케이션 등록 시 설정한 Redirect URL을 입력하세요.
 
