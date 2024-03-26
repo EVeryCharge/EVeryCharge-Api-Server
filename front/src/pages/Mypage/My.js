@@ -281,7 +281,7 @@ const My = () => {
     const [showCard, setShowCard] = useState(false);
 
     const handleBatteryClick = () => {
-        
+
         HttpGet("/api/v1/members/HDBattery").then((data) => {
             if (data) {
                 console.log("bbb" + data);
