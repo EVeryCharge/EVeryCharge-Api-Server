@@ -16,7 +16,7 @@ spring:
       password: 1234
 logging:
   level:
-    com.ll.eitcharge: INFO
+    com.ll.everycharge: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
