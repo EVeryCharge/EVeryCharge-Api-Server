@@ -16,7 +16,7 @@ spring:
 #      password: <ON_SECRET>
 logging:
   level:
-    com.ll.eitcharge: INFO
+    com.ll.everycharge: INFO
     org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
@@ -29,6 +29,6 @@ custom:
     backUrl: "${custom.prod.backUrl}"
   aws:
     s3:
-      bucket: prod-bucket-eticharge
+      bucket: prod-bucket-everycharge
       stack.auto: false
       region.static: ap-northeast-2
