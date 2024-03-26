@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -36,11 +34,13 @@ public class HyundaiMemberController {
 
 
         String requestBody = "grant_type=authorization_code&code=" + code + "&redirect_uri=" + AppConfig.getSiteBackUrl() +"/hyundai";
+
         String tokenResponse = hyundaiTokenService.tokenAPICall(requestBody);
 
         ObjectMapper accessTokenObjectMapper = new ObjectMapper();
         JsonNode TokenRoot = accessTokenObjectMapper.readTree(tokenResponse);
         String accessToken = TokenRoot.path("access_token").asText(); // Response에서 AccessToken 값 추출
+
 
         if(accessToken != null){
             rq.setCookie("HDAccess", accessToken);
@@ -58,7 +58,6 @@ public class HyundaiMemberController {
                 memberService.carInit(member, carSellname);
             }
         }
-
 
         return "redirect:" + AppConfig.getSiteFrontUrl() + "/my";
     }
