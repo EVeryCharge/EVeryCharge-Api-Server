@@ -81,7 +81,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                 const response = await HttpPut("/api/v1/members/carInit", {
                     username: getUserName(), // 사용자 이름 설정
                     carModel: selectedCar, // 선택된 차 모델 사용
-                    
+
                 });
 
                 // httpPut 요청이 성공한 후 /my로 리다이렉트
@@ -107,15 +107,15 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                 },
                 content: {
                     width: "70%", // 모달의 너비를 조절합니다.
-                    height: "50%", // 모달의 높이를 조절합니다.
+                    height: "60%", // 모달의 높이를 조절합니다.
                     margin: "auto", // 모달을 화면 중앙에 위치시킵니다.
                 },
             }}
         >
-            <div className={classes.root}>
+            <div className={classes.root} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1>브랜드 선택</h1>
                 <Stack alignItems="center">
-                    {chunkedManuItems(manuItem, 6).map((chunk, index) => (
+                    {chunkedManuItems(manuItem, 4).map((chunk, index) => (
                         <ToggleButtonGroup
                             key={index}
                             value={selectedBrand}
@@ -123,7 +123,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                             aria-label="Button group"
                             sx={{
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(6, 1fr)',
+                                gridTemplateColumns: 'repeat(4, 1fr)',
                                 marginBottom: 2, // 각 ToggleButtonGroup 사이의 마진 추가
                             }}
                             onChange={handleBrandChange}
@@ -133,8 +133,8 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                                     key={option}
                                     value={option}
                                     sx={{
-                                        width: 140,
-                                        height: 60,
+                                        width: 83, // 버튼의 고정된 너비
+                                        height: 50, // 버튼의 고정된 높이
                                     }}
                                 >
                                     {option}

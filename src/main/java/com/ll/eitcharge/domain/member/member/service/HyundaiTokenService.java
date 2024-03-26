@@ -147,8 +147,10 @@ public class HyundaiTokenService {
             e.printStackTrace();
         }
         Map<String, String> carInfo = new HashMap<>();
-        carInfo.put("carId", "6d97337b-eb53-467b-baf4-7faec6d7065e");
-        carInfo.put("carSellname", "아이오닉PHEV");
+
+        carInfo.put("carId", null);
+        carInfo.put("carSellname", null);
+
 
         return carInfo;
     }
