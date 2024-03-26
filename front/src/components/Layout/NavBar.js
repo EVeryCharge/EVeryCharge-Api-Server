@@ -72,7 +72,7 @@ const Navbar = () => {
             <EvStationIcon
               style={{ marginRight: "3px", fontSize: "2rem", color: "#3F51B5" }}
             />
-            전기차 충전소 서비스
+            EVeryCharge
           </Typography>
         </div>
         <div>
