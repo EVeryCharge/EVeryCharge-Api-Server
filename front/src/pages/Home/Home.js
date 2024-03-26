@@ -98,7 +98,7 @@ const Home = () => {
     <>
       <div style={{ display: 'flex', justifyContent: 'center', borderRadius: '50px', marginTop: '50px' }}>
 
-        <Box sx={{ maxWidth: '1200px ', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ maxWidth: '800px ', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <AutoPlaySwipeableViews
             sx={{
               display: 'flex',
@@ -119,7 +119,7 @@ const Home = () => {
                       display: 'block',
                       overflow: 'hidden',
                       width: '100%',
-                      height: '35vh',
+                      height: 'auto',
                       borderRadius: '50px'
                     }}
                     src={step.imgPath}
