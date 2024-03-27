@@ -22,6 +22,7 @@ import {
 } from "../../services/HttpService"; 
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import '../../components/UI/ButtonStyles.css';
 
 const Review = ({ chargingStationId }) => {
   const [files, setFiles] = useState([]); 
@@ -252,7 +253,7 @@ const Review = ({ chargingStationId }) => {
                             key={index}
                             src={imageUrl}
                             alt={`리뷰 이미지 ${index + 1}`}
-                            style={{ width: "100px", height: "100px", objectFit: "cover", marginRight: "10px" }}
+                            style={{ width: "100px", height: "100px", objectFit: "cover", marginRight: "10px", border: "1px solid black"  }}
                             onClick={() => {
                               setActiveReview({ photoIndex: index, isOpen: true, images: reviewItem.s3fileUrl });
                             }}
@@ -368,7 +369,7 @@ const Review = ({ chargingStationId }) => {
           display: "flex",
           justifyContent: "space-between",
           width: "100%",
-          marginBottom: "1px",
+          marginBottom: "20px",
         }}
       >
         <TextField
@@ -414,16 +415,22 @@ const Review = ({ chargingStationId }) => {
           </Button>
         </div>
       </div>
-      <input type="file" onChange={handleFileChange} multiple />
-      <div>
-        총 {previewUrls.length}개의 파일이 선택되었습니다.
-      </div>
+      <label className="input-file-button" for="input-file">
+        업로드
+      </label>
+      <input
+        type="file"
+        id = "input-file"
+        onChange={handleFileChange}
+        multiple
+        style={{ display: 'none'}}
+      />
       <div>
         {previewUrls.map((url, index) => (
           <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
-            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "20px", width: "100px", height: "100px" , border: "5px solid white" }} />
             <button type="button" 
-              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+              style={{ marginTop: "20px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
               onClick={(event) => handleDeleteImage(event, index)}>
               X
             </button>
