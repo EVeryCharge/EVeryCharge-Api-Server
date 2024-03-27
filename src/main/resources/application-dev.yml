@@ -6,8 +6,8 @@ spring:
       enabled: always
   datasource:
     url: jdbc:mysql://localhost:3306/everycharge
-    username: <NEED_TO_INPUT>
-    password: <NEED_TO_INPUT>
+    username: root
+    password: lldj123414
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
@@ -18,7 +18,8 @@ logging:
   level:
     com.ll.everycharge: INFO
     org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: INFO
     org.springframework.transaction.interceptor: TRACE
 custom:
