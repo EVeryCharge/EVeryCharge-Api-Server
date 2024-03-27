@@ -30,22 +30,5 @@ public class UploadedFiles extends BaseTime {
     private String fileUrl; //파일 url
     private String originFileName; //원본 이름
 
-//    public String getUrl(String bucket, String region) {
-//        return "https://" + bucket+ ".s3." + region + ".amazonaws.com/" + "Inquiry/" + getFileName();
-//    }
-
-//    public String getDownloadUrl() {
-//        return "/UploadedFiles/download/" + getFileName();
-//    }
-
-//    public String getFilePath() {
-//        return AppConfig.getGenFileDirPath() + "/" + getFileDir() + "/" + getFileName();
-//    }
-
-//    public void deleteOnDisk() {
-//        String filePath = getFilePath();
-//        new File(filePath).delete();
-//    }
-
 
 }

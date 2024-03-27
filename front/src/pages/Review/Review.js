@@ -20,7 +20,8 @@ import {
   HttpPut,
   HttpPostWithFile
 } from "../../services/HttpService"; 
-import 'react-image-lightbox/style.css'; 
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 const Review = ({ chargingStationId }) => {
   const [files, setFiles] = useState([]); 
@@ -29,8 +30,7 @@ const Review = ({ chargingStationId }) => {
   const { getUserName } = useAuth();
   //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
-  const [isOpen, setIsOpen] = useState(false); // 라이트박스 열림 상태
-  const [photoIndex, setPhotoIndex] = useState(0); // 현재 보여줄 이미지 인덱스
+  const [activeReview, setActiveReview] = useState({ photoIndex: 0, isOpen: false, images: [] });
   
   const fetchData = async () => {
     try {
@@ -243,15 +243,39 @@ const Review = ({ chargingStationId }) => {
                         )}
                         </div>
                         <div style={{ display: "block", display: "flex" ,marginTop: "30px"}}>
-                        {reviewItem.s3fileUrl && reviewItem.s3fileUrl.map((imageUrl, index) => (
-                        <img
-                          key={index}
-                          src={imageUrl}
-                          alt={`리뷰 이미지 ${index + 1}`}
-                          style={{ display : "flex", width: "100px", height: "100px", objectFit: "cover" }}
-                          
-                        />
-                      ))}
+                        {reviewItem.s3fileUrl && reviewItem.s3fileUrl.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} style={{padding: 0}}>
+                      <div style={{ display: "flex", marginTop: "30px" }}>
+                        {reviewItem.s3fileUrl.map((imageUrl, index) => (
+                          <img
+                            key={index}
+                            src={imageUrl}
+                            alt={`리뷰 이미지 ${index + 1}`}
+                            style={{ width: "100px", height: "100px", objectFit: "cover", marginRight: "10px" }}
+                            onClick={() => {
+                              setActiveReview({ photoIndex: index, isOpen: true, images: reviewItem.s3fileUrl });
+                            }}
+                          />
+                        ))}
+                      </div>
+                      {activeReview.isOpen && (
+                      <Lightbox
+                      mainSrc={activeReview.images[activeReview.photoIndex]}
+                      nextSrc={activeReview.images[(activeReview.photoIndex + 1) % activeReview.images.length]} 
+                      prevSrc={activeReview.images[(activeReview.photoIndex + activeReview.images.length - 1) % activeReview.images.length]}
+                      onCloseRequest={() => setActiveReview(prev => ({ ...prev, isOpen: false }))} 
+                      onMovePrevRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + prev.images.length - 1) % prev.images.length }))
+                      }
+                      onMoveNextRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + 1) % prev.images.length }))
+                      }
+                    />
+                    )}
+                    </TableCell>
+                  </TableRow>
+                )}
                       </div>
                       </TableCell>
                       <TableCell style={{ width: "50px" }}>

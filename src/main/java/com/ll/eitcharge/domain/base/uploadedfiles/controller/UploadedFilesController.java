@@ -32,10 +32,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/UploadedFiles")
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Tag(name = "UploadedFilesController", description = "파일 다운로드 등 다양한 기능 제공")
+@Tag(name = "UploadedFilesController", description = "파일 서비스 기능 제공")
 public class UploadedFilesController {
     private final AmazonS3 amazonS3;
-
 
     @GetMapping("/")
     public List<String> listBuckets() {
@@ -54,28 +53,6 @@ public class UploadedFilesController {
 //
 //    }
 
-//    @GetMapping("/download/{fileName}")
-//    @Operation(summary = "파일 다운로드")
-//    public ResponseEntity<Resource> download(
-//            @PathVariable String fileName, HttpServletRequest request
-//    ) throws FileNotFoundException {
-//        UploadedFiles UploadedFiles = UploadedFilesService.findByFileName(fileName).orElseThrow(
-//                GlobalException.E404::new
-//        );
-//        String filePath = UploadedFiles.getFilePath();
-//
-//        Resource resource = new InputStreamResource(new FileInputStream(filePath));
-//
-//        String contentType = request.getServletContext().getMimeType(new File(filePath).getAbsolutePath());
-//
-//        if (contentType == null) contentType = "application/octet-stream";
-//
-//        String downloadFileName = Ut.url.encode(UploadedFiles.getOriginFileName()).replace("%20", " ");
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadFileName + "\"")
-//                .contentType(MediaType.parseMediaType(contentType)).body(resource);
-//    }
 }
 
 

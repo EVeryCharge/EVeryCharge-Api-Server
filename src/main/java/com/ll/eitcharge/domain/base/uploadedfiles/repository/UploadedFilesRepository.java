@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface UploadedFilesRepository extends JpaRepository<UploadedFiles, Long> {
     List<UploadedFiles> findByRelTypeCodeAndRelId(String relTypeCode, long relId);
 
-    Optional<UploadedFiles> findByFileName(String fileName);
 
 
 }
