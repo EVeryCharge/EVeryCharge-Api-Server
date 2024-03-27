@@ -19,7 +19,8 @@ import {
   HttpDelete,
   HttpPut,
   HttpPostWithFile
-} from "../../services/HttpService"; // 유틸리티 파일 경로를 업데이트하세요
+} from "../../services/HttpService"; 
+import 'react-image-lightbox/style.css'; 
 
 const Review = ({ chargingStationId }) => {
   const [files, setFiles] = useState([]); 
@@ -28,6 +29,8 @@ const Review = ({ chargingStationId }) => {
   const { getUserName } = useAuth();
   //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
+  const [isOpen, setIsOpen] = useState(false); // 라이트박스 열림 상태
+  const [photoIndex, setPhotoIndex] = useState(0); // 현재 보여줄 이미지 인덱스
   
   const fetchData = async () => {
     try {
@@ -44,8 +47,8 @@ const Review = ({ chargingStationId }) => {
     const newSelectedFiles = Array.from(e.target.files); // 새롭게 선택된 파일들을 배열로 변환
     const selectedFiles = [...files, ...newSelectedFiles]; // 기존 파일들과 새로운 파일들을 합친 배열
 
-    if ((files.length + newSelectedFiles.length) > 5) {
-      alert(`최대 5개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
+    if ((files.length + newSelectedFiles.length) > 3) {
+      alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
       return;
     }
     
@@ -221,6 +224,7 @@ const Review = ({ chargingStationId }) => {
                       <TableCell
                         style={{ width: "500px", wordWrap: "break-word" }}
                       >
+                        <div style={{ display: "block", marginTop: "30px" }}> {/* 후기 내용 컨테이너 */}
                         {isEditing && editReviewId === reviewItem.id ? (
                           <TextField
                             label="후기 수정"
@@ -237,19 +241,18 @@ const Review = ({ chargingStationId }) => {
                         ) : (
                           reviewItem.content || "내용이 없습니다."
                         )}
-                      </TableCell>
-                      <TableCell
-                        style={{ width: "530px", wordWrap: "break-word" }}
-                      >
-                      {/* 이미지 프리뷰 표시 */}
-                      {reviewItem.s3fileUrl && reviewItem.s3fileUrl.map((imageUrl, index) => (
+                        </div>
+                        <div style={{ display: "block", display: "flex" ,marginTop: "30px"}}>
+                        {reviewItem.s3fileUrl && reviewItem.s3fileUrl.map((imageUrl, index) => (
                         <img
                           key={index}
                           src={imageUrl}
                           alt={`리뷰 이미지 ${index + 1}`}
-                          style={{ width: "100px", height: "100px", objectFit: "cover" }} // 스타일은 필요에 맞게 조정
+                          style={{ display : "flex", width: "100px", height: "100px", objectFit: "cover" }}
+                          
                         />
                       ))}
+                      </div>
                       </TableCell>
                       <TableCell style={{ width: "50px" }}>
                         <div style={{ fontSize: "11px" }}>
