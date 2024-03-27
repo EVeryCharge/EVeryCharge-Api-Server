@@ -1,23 +1,5 @@
 package com.ll.everycharge.domain.chargingStation.chargingStation.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.everycharge.domain.chargeFee.chargeFee.entity.ChargeFee;
@@ -36,11 +18,30 @@ import com.ll.everycharge.domain.chargingStation.chargingStation.repository.Char
 import com.ll.everycharge.domain.operatingCompany.operatingCompany.service.OperatingCompanyService;
 import com.ll.everycharge.domain.region.regionDetail.service.RegionDetailService;
 import com.ll.everycharge.domain.region.service.RegionService;
+import com.ll.everycharge.domain.review.review.service.ReviewService;
 import com.ll.everycharge.global.app.AppConfig;
 import com.ll.everycharge.global.exceptions.GlobalException;
 import com.ll.everycharge.global.rsData.RsData;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -54,6 +55,10 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
+	@Autowired
+	@Lazy
+	private ReviewService reviewService;
+
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -184,9 +189,9 @@ public class ChargingStationService {
 	) {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-		return chargingStationSearchRepository.searchBaseDistance(
-			chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
-		);
+		return setDtoUrl(chargingStationSearchRepository.searchBaseDistance(
+				chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
+		));
 	}
 
 	public ChargingStationInfoResponseDto infoSearch(String statId) {
@@ -195,4 +200,16 @@ public class ChargingStationService {
 
 		return new ChargingStationInfoResponseDto(chargingStation, chargeFeeList);
 	}
+
+
+	public Page<ChargingStationSearchBaseDistanceResponseDto> setDtoUrl(Page<ChargingStationSearchBaseDistanceResponseDto> page){
+
+		for(ChargingStationSearchBaseDistanceResponseDto dto : page){
+			List<String> allurl = reviewService.getallurl(dto.getStatId());
+			dto.setFileurls(allurl);
+		}
+
+		return page;
+	}
+
 }

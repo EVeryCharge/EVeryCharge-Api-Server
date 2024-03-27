@@ -1,10 +1,14 @@
 package com.ll.everycharge.domain.inquiry.inquiry.entity;
 
+
 import com.ll.everycharge.domain.inquiry.comment.entity.Comment;
 import com.ll.everycharge.domain.inquiry.inquiry.dto.InquiryRequestDto;
 import com.ll.everycharge.domain.member.member.entity.Member;
 import com.ll.everycharge.global.jpa.entity.BaseTime;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,15 +34,13 @@ public class Inquiry extends BaseTime {
     private int viewCount;
     private Boolean isPublished;
     @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL)
-    private List< Comment > comments;
-    private String S3fileUrl;
+    private List<Comment> comments;
 
     public void update(InquiryRequestDto inquiryRequestDto) {
         this.title = inquiryRequestDto.getTitle();
         this.content = inquiryRequestDto.getContent();
         this.inquiryType = inquiryRequestDto.getInquiryType();
         this.isPublished = inquiryRequestDto.getIsPublished();
-        // this.S3fileUrl = inquiryRequestDto.getS3fileUrl(); -> 나중에 구현
     }
 
     public void increaseViewCount(){

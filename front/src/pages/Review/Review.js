@@ -18,21 +18,70 @@ import {
   HttpPost,
   HttpDelete,
   HttpPut,
-} from "../../services/HttpService"; // 유틸리티 파일 경로를 업데이트하세요
+  HttpPostWithFile
+} from "../../services/HttpService"; 
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 const Review = ({ chargingStationId }) => {
+  const [files, setFiles] = useState([]); 
+  const [previewUrls, setPreviewUrls] = useState([]); 
   //접속자 userName
   const { getUserName } = useAuth();
   //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
+  const [activeReview, setActiveReview] = useState({ photoIndex: 0, isOpen: false, images: [] });
+  
   const fetchData = async () => {
     try {
       const response = await HttpGet(`api/v1/review/${chargingStationId}`);
       setReview(response || { data: { items: [] } });
+      console.log("어떤데이터들이 들어왔는지 볼래" ,response.data);
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
     }
   };
+
+  const handleFileChange = (e) => {
+
+    const newSelectedFiles = Array.from(e.target.files); // 새롭게 선택된 파일들을 배열로 변환
+    const selectedFiles = [...files, ...newSelectedFiles]; // 기존 파일들과 새로운 파일들을 합친 배열
+
+    if ((files.length + newSelectedFiles.length) > 3) {
+      alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
+      return;
+    }
+    
+    setFiles(selectedFiles);
+
+    Promise.all(newSelectedFiles.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => {
+          resolve({url: event.target.result});
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    })).then(results => {
+      // 모든 파일이 로드되었을 때 실행
+      const urls = results.map(result => result.url);
+  
+      setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+
+    }).catch(error => {
+      console.error("파일 로드 중 오류가 발생했습니다.", error);
+    });
+
+  };
+
+  const handleDeleteImage = (event, indexToDelete) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
+    setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToDelete)); // 파일 목록에서도 삭제
+  };
+
 
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
@@ -62,8 +111,8 @@ const Review = ({ chargingStationId }) => {
       return;
     }
     if (loginUserName == reviewUserName) {
-      await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
-      console.log("삭제");
+      const response = await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
+      console.log("삭제" + response);
 
       fetchData();
     }
@@ -92,15 +141,25 @@ const Review = ({ chargingStationId }) => {
       alert("로그인 해주세요.");
       return;
     }
+    
+    const data = {
+      content: newReviewContent,
+      rating: newReviewRating,
+    };
+
+    const responseData = await HttpPostWithFile(`api/v1/review/${chargingStationId}`, data, files);
+      console.log("서버 응답 데이터:", responseData);    
 
     try {
-      await HttpPost(`api/v1/review/${chargingStationId}`, {
-        content: newReviewContent,
-        rating: newReviewRating,
-      });
+      // await HttpPost(`api/v1/review/${chargingStationId}`, {
+      //   content: newReviewContent,
+      //   rating: newReviewRating,
+      // });
 
       fetchData();
       setNewReviewContent("");
+      setFiles([]); 
+      setPreviewUrls([]); 
     } catch (error) {
       console.error("후기를 작성하는 중 오류 발생:", error);
     }
@@ -165,6 +224,7 @@ const Review = ({ chargingStationId }) => {
                       <TableCell
                         style={{ width: "500px", wordWrap: "break-word" }}
                       >
+                        <div style={{ display: "block", marginTop: "30px" }}> {/* 후기 내용 컨테이너 */}
                         {isEditing && editReviewId === reviewItem.id ? (
                           <TextField
                             label="후기 수정"
@@ -181,6 +241,42 @@ const Review = ({ chargingStationId }) => {
                         ) : (
                           reviewItem.content || "내용이 없습니다."
                         )}
+                        </div>
+                        <div style={{ display: "block", display: "flex" ,marginTop: "30px"}}>
+                        {reviewItem.s3fileUrl && reviewItem.s3fileUrl.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} style={{padding: 0}}>
+                      <div style={{ display: "flex", marginTop: "30px" }}>
+                        {reviewItem.s3fileUrl.map((imageUrl, index) => (
+                          <img
+                            key={index}
+                            src={imageUrl}
+                            alt={`리뷰 이미지 ${index + 1}`}
+                            style={{ width: "100px", height: "100px", objectFit: "cover", marginRight: "10px" }}
+                            onClick={() => {
+                              setActiveReview({ photoIndex: index, isOpen: true, images: reviewItem.s3fileUrl });
+                            }}
+                          />
+                        ))}
+                      </div>
+                      {activeReview.isOpen && (
+                      <Lightbox
+                      mainSrc={activeReview.images[activeReview.photoIndex]}
+                      nextSrc={activeReview.images[(activeReview.photoIndex + 1) % activeReview.images.length]} 
+                      prevSrc={activeReview.images[(activeReview.photoIndex + activeReview.images.length - 1) % activeReview.images.length]}
+                      onCloseRequest={() => setActiveReview(prev => ({ ...prev, isOpen: false }))} 
+                      onMovePrevRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + prev.images.length - 1) % prev.images.length }))
+                      }
+                      onMoveNextRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + 1) % prev.images.length }))
+                      }
+                    />
+                    )}
+                    </TableCell>
+                  </TableRow>
+                )}
+                      </div>
                       </TableCell>
                       <TableCell style={{ width: "50px" }}>
                         <div style={{ fontSize: "11px" }}>
@@ -317,6 +413,22 @@ const Review = ({ chargingStationId }) => {
             작성
           </Button>
         </div>
+      </div>
+      <input type="file" onChange={handleFileChange} multiple />
+      <div>
+        총 {previewUrls.length}개의 파일이 선택되었습니다.
+      </div>
+      <div>
+        {previewUrls.map((url, index) => (
+          <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+            <button type="button" 
+              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+              onClick={(event) => handleDeleteImage(event, index)}>
+              X
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

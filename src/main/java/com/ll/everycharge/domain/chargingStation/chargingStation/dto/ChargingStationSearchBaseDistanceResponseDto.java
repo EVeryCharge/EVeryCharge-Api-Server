@@ -25,6 +25,7 @@ public class ChargingStationSearchBaseDistanceResponseDto {
 	private Long totalChger;
 	private BigDecimal availableChger;
 	private List<String> chgerTypes;
+	private List<String> fileurls;
 
 	public ChargingStationSearchBaseDistanceResponseDto(
 		String statId, double distance, String statNm, String addr, double lat, double lng, String bnm,

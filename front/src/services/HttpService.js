@@ -9,6 +9,11 @@ const apiInstance = axios.create({
   withCredentials: true,
 });
 
+const apiInstance2 = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_URL,
+  withCredentials: true,
+});
+
 export const HttpGet = async (url, params = null) => {
   try {
     const response = await apiInstance.get(url, { params });
@@ -50,6 +55,29 @@ export const HttpDelete = async (url, params = null) => {
 
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const HttpPostWithFile = async (url, jsonData, files) => {
+  try {
+    const formData = new FormData();
+
+    const dataBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+    formData.append('data', dataBlob);
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    const response = await apiInstance2.post(url, formData);
+
+    console.log("POST request (with file) sent to:", response.config.url);
+    console.log("Response Data:", response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
     throw error;
   }
 };

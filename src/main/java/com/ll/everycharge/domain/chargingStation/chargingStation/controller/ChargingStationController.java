@@ -154,4 +154,13 @@ public class ChargingStationController {
                 chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
 
+    //    @GetMapping("/search/images")
+//    public ResponseEntity<List<ChargingStationImagesDTO>> getImagesUrl(
+//            @RequestParam(value = "idlist") List<String> idlist
+//    ) {
+//        return ResponseEntity.ok(chargingStationService.getListImagesDto(idlist));
+//    }
+//
+//}
+
 }

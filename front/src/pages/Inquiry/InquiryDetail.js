@@ -99,9 +99,9 @@ const InquiryDetail = ({  }) => {
             <Typography className={classes.writer} align="right">
                 작성자 : {inquiry.writer}
             </Typography>
-            {inquiry.s3fileUrl && (
-            <img src={inquiry.s3fileUrl} alt="Inquiry" style={{ maxWidth: "800px", maxHeight: "800px", width: "auto", height: "auto" }}/>
-            )}
+            {inquiry.s3fileUrl && inquiry.s3fileUrl.map((url, index) => (
+                <img key={index} src={url} alt={`Inquiry ${index}`} style={{ maxWidth: "800px", maxHeight: "800px", width: "auto", height: "auto" }}/>
+            ))}
             {sessionUsername === inquiry.writer && (
                 <div>
                     <Button onClick={handleUpdate}>수정</Button>
