@@ -9,11 +9,11 @@ spring:
     username: <NEED_TO_INPUT>
     password: <NEED_TO_INPUT>
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
-#      password: <NEED_TO_INPUT>
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 1234
 logging:
   level:
     com.ll.everycharge: INFO
