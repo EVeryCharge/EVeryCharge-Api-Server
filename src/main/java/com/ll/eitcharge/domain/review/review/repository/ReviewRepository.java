@@ -15,4 +15,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r JOIN FETCH r.chargingStation cs JOIN FETCH r.member m WHERE cs.statId = :statId ORDER BY r.id DESC")
     List<Review> findByChargingStationStatIdOrderByIdDesc(@Param("statId") String statId);
 
+    @Query("SELECT r.id FROM Review r JOIN r.chargingStation cs WHERE cs.statId = :statId ORDER BY r.id DESC")
+    List<Long> findIdsByChargingStationStatId(@Param("statId") String statId);
+
 }

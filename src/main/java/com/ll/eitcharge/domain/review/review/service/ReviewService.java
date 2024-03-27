@@ -81,7 +81,6 @@ public class ReviewService {
         return reviewRepository.findFirst10ByOrderByIdDesc();
     }
 
-
     public List<ReviewFileDto> findByStatId(String statId) {
 
         List<Review> list = reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
@@ -101,9 +100,16 @@ public class ReviewService {
         }
         return reviewFileDtos;
     }
+
+    public List<String> getallurl(String statId){
+        List<Long> idlist = reviewRepository.findIdsByChargingStationStatId(statId);
+
+        List<String> urllist = new ArrayList<>();
+        for(Long relId : idlist){
+            List<String> list = uploadedFilesService.getUrllist("Review", relId);
+            urllist.addAll(list);
+        }
+
+        return urllist;
+    }
 }
-
-//    public List<Review> findByStatId(String statId) {
-//        return reviewRepository.findByChargingStationStatIdOrderByIdDesc(statId);
-//    }
-
