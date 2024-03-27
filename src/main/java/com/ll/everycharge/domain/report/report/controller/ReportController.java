@@ -48,10 +48,6 @@ public class ReportController {
 		ReportPageResponseDto responseDto = reportService.getList(page, pageSize);
 		responseDto.getPage().getContent().forEach(this::loadReportAccess);
 		loadReportAccess(responseDto);
-		//todo 디버그용 log, 지우기
-		log.info("[Test] : 신고 리스트 요청");
-		log.info("[Test] : 현재 사용중인 스레드, {}", Thread.currentThread());
-		log.info("[Test] : 현재 활성화된 스레드 개수 {}개", Thread.activeCount());
 		return RsData.of("200", "ok", responseDto);
 	}
 

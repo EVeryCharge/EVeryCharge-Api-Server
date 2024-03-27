@@ -18,7 +18,8 @@ logging:
   level:
     com.ll.everycharge: INFO
     org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: INFO
     org.springframework.transaction.interceptor: TRACE
 custom:
