@@ -6,13 +6,23 @@ import { Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import ChargeFeeInfo from "./ChargeFeeInfo";
 import ChargeRoamingFeeInfo from "./ChargeRoamingFeeInfo";
+import { ClickAwayListener } from "@material-ui/core";
 
 const ChargeFee = () => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [tooltipOpen, setToolTipOpen] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleTooltipClose = () => {
+    setToolTipOpen(false);
+  };
+
+  const handleTooltipOpen = () => {
+    setToolTipOpen(true);
   };
 
   return (
@@ -20,18 +30,36 @@ const ChargeFee = () => {
       <h1>전기차 충전요금 정보</h1>
       <div className={classes.callout}>
         <Info />
-        <Typography variant="body1" style={{ marginLeft: "5px" }}>
-          업체별 회원 / 비회원, 로밍 전기차 충전 요금을 조회할 수 있습니다.
+        <Typography variant="body2" style={{ marginLeft: "5px" }}>
+          업체별 전기차 충전요금 공시 정보를 제공합니다. <br />
+          (회원 / 비회원, 로밍사업 요금)
         </Typography>
       </div>
       <Typography variant="body2" className={classes.disclaimer}>
-        전기차 충전요금 정보는 일일단위로 업데이트됩니다.
-        <Tooltip
-          placement="right-start"
-          title="요금 정보는 공시 데이터를 바탕으로 하며, 업체별 프로모션 등 기타 정책에 의해 공시된 요금과 상이할 수 있습니다."
-        >
-          <Help />
-        </Tooltip>
+        전기차 충전요금 정보는 일일단위 갱신됩니다.
+        <ClickAwayListener onClickAway={handleTooltipClose}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip
+              placement="left-start"
+              title={
+                <Typography style={{ fontSize: "9px" }}>
+                  요금 정보는 공시 데이터를 바탕으로 하며,
+                  <br />
+                  업체별 프로모션 등 기타 정책에 의해
+                  <br />
+                  공시된 요금과 상이할 수 있습니다.
+                </Typography>
+              }
+              open={tooltipOpen}
+              onClose={handleTooltipClose}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
+            >
+              <Help onClick={handleTooltipOpen} />
+            </Tooltip>
+          </div>
+        </ClickAwayListener>
       </Typography>
       <div className={classes.tabContainer}>
         <Tabs
@@ -41,8 +69,24 @@ const ChargeFee = () => {
           indicatorColor="primary"
           variant="fullWidth"
         >
-          <Tab label="업체별 회원 / 비회원 충전요금 비교" />
-          <Tab label="업체별 로밍사업자 충전요금 비교" />
+          <Tab
+            label={
+              <Typography variant="body2">
+                업체별 충전요금
+                <br />
+                (회원 / 비회원)
+              </Typography>
+            }
+          />
+          <Tab
+            label={
+              <Typography variant="body2">
+                업체별 충전요금
+                <br />
+                (로밍사업 요금)
+              </Typography>
+            }
+          />
         </Tabs>
         {value === 0 && <ChargeFeeInfo />}
         {value === 1 && <ChargeRoamingFeeInfo />}

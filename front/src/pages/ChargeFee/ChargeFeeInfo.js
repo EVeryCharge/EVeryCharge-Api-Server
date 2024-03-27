@@ -179,7 +179,7 @@ const ChargeFeeInfo = () => {
               `${from} ~ ${to} / 총 ${count}건`
             }
           />
-          <Table>
+          <Table style={{ minWidth: "100vh" }}>
             <TableHead>
               <TableRow
                 style={{

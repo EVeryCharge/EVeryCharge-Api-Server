@@ -73,8 +73,8 @@ public class ChargerApiItemForm {
 		this.output = (String)item.get("output");
 		this.method = (String)item.get("method");
 		this.zcode = (String)item.get("zcode");
-		this.zscode = (item.get("zscode") != null && ((String) item.get("zscode")).length() == 5) ?
-			((String) item.get("zscode")).substring(0, 4) + "0" : null;
+		String _zscode = (String)item.get("zcode");
+		this.zscode = _zscode.length() == 5 ? _zscode.substring(0, 4)+"0" : _zscode;
 		this.kind = (String)item.get("kind");
 		this.kindDetail = (String)item.get("kindDetail");
 		this.parkingFree = (String)item.get("parkingFree");
