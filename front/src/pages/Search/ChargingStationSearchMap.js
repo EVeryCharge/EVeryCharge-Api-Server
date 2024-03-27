@@ -293,7 +293,7 @@ const ChargingStationSearchMap = ({
             backgroundColor: "white",
             color: "black",
             bottom: "10px",
-            right: "40px",
+            right: "10px",
             justifyContent: "center",
             borderRadius: "20px",
           }}
@@ -322,7 +322,7 @@ const ChargingStationSearchMap = ({
         size="large"
         onClick={researchMapCenter}
       >
-        <Refresh style={{ marginRight: "3px" }} />현 위치에서 재검색
+        <Refresh style={{ marginRight: "3px" }} />현 위치 검색
       </Button>
     </div>
   );

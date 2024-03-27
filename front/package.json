@@ -33,12 +33,16 @@
     "axios": "^1.6.5",
     "js-cookie": "^3.0.5",
     "qrcode.react": "^3.1.0",
+    "react-image-lightbox": "^5.1.4",
     "react-modal": "^3.16.1",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.21.2",
+    "react-slick": "^0.30.2",
     "react-swipeable-views": "^0.14.0",
     "recoil": "^0.7.7",
-    "redux": "^5.0.1"
+    "redux": "^5.0.1",
+    "slick-carousel": "^1.8.1",
+    "swiper": "^11.0.7"
   },
   "scripts": {
     "start": "react-scripts start",

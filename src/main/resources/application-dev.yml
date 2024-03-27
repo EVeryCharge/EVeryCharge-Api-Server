@@ -24,6 +24,6 @@ logging:
 custom:
   aws:
     s3:
-      bucket: dev-bucket-eticharge-1
+      bucket: dev-bucket-everycharge-1
       stack.auto: false
       region.static: ap-northeast-2

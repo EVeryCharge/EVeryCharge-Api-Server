@@ -1,25 +1,34 @@
 package com.ll.everycharge.domain.review.review.dto;
 
 import com.ll.everycharge.domain.review.review.entity.Review;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-public class ReviewDto {
-    private final Long id;
-    private final Long userId;
-    private final String userName;
-    private final String chargingStationId;
-    private final int rating;
-    private final LocalDateTime createDate;
-    private final LocalDateTime modifyDate;
-    private final LocalDateTime deleteDate;
-    private final boolean isDeleted;
-    private final String content;
+@Setter
+@NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PROTECTED)
+public class ReviewFileDto {
 
-    public ReviewDto(Review review) {
+    private Long id;
+    private Long userId;
+    private String userName;
+    private String chargingStationId;
+    private int rating;
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
+    private LocalDateTime deleteDate;
+    private boolean isDeleted;
+    private String content;
+    private List<String> s3fileUrl;
+
+    public ReviewFileDto(Review review, List<String> url) {
         this.id = review.getId();
         this.userId = review.getMember().getId();
         this.userName = review.getMember().getUsername();
@@ -30,7 +39,6 @@ public class ReviewDto {
         this.deleteDate = review.getDeletedDate();
         this.isDeleted = review.isDeleted();
         this.content = review.getContent();
+        this.s3fileUrl = url;
     }
-
-
 }

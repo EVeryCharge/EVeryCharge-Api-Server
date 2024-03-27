@@ -3,19 +3,25 @@ package com.ll.everycharge.domain.review.review.controller;
 import com.ll.everycharge.domain.member.member.entity.Member;
 import com.ll.everycharge.domain.member.member.service.MemberService;
 import com.ll.everycharge.domain.review.review.dto.ReviewDto;
+import com.ll.everycharge.domain.review.review.dto.ReviewFileDto;
 import com.ll.everycharge.domain.review.review.entity.Review;
 import com.ll.everycharge.domain.review.review.service.ReviewService;
 import com.ll.everycharge.global.rq.Rq;
 import com.ll.everycharge.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/review")
 @RequiredArgsConstructor
@@ -46,16 +52,27 @@ public class ReviewController {
 
     @Getter
     public static class GetStatReviewResponseBody {
-        private final List<ReviewDto> items;
+        private final List<ReviewFileDto> items;
 
-        public GetStatReviewResponseBody(List<Review> reviews) {
+        public GetStatReviewResponseBody(List<ReviewFileDto> reviews) {
             this.items = reviews
                     .stream()
-                    .map(ReviewDto::new)
+//                    .map(ReviewFileDto::new)
                     .toList();
 
         }
     }
+
+//    @GetMapping("/all")
+//    public ResponseEntity< List<CommentResponseDto>> findAll(@RequestParam("inquiryId") Long inquiryId){
+//        List< CommentResponseDto > responseDtoList = commentService.findAll(inquiryId);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
+//    }
+
+//    @GetMapping("/{statId}")
+//    public ResponseEntity<List<Review>> getStatReviews(@PathVariable String statId){
+//        return ResponseEntity.ok(reviewService.findByStatId(statId));
+//    }
 
     @GetMapping("/{statId}")
     public RsData<GetStatReviewResponseBody> getStatReviews(@PathVariable String statId){
@@ -85,24 +102,41 @@ public class ReviewController {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @PostMapping("{chargingStationId}")
-    public RsData<WriteReviewResponseBody> writeReview(
-            @PathVariable String chargingStationId,
-            @RequestBody WriteReviewRequestBody requestBody
+    public ResponseEntity<ReviewFileDto> writeReview(@RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                                       @RequestPart(value = "data") @Valid ReviewFileDto reviewFileDto,
+                                                       @PathVariable String chargingStationId
     ) {
+
         Member member = rq.getMember();
-        int rating = requestBody.getRating();
+        int rating = reviewFileDto.getRating();
 
-        Review review = reviewService.write(member, chargingStationId, requestBody.getContent(), rating).getData();
+        Review review = reviewService.write(member, chargingStationId, reviewFileDto.getContent(), rating, files).getData();
 
+        return ResponseEntity.ok(reviewFileDto);
 
-        return RsData.of(
-                "200",
-                "성공",
-                new WriteReviewResponseBody(
-                        review
-                )
-        );
     }
+
+//    @Transactional
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("{chargingStationId}")
+//    public RsData<WriteReviewResponseBody> writeReview(
+//            @PathVariable String chargingStationId,
+//            @RequestBody WriteReviewRequestBody requestBody
+//    ) {
+//        Member member = rq.getMember();
+//        int rating = requestBody.getRating();
+//
+//        Review review = reviewService.write(member, chargingStationId, requestBody.getContent(), rating).getData();
+//
+//
+//        return RsData.of(
+//                "200",
+//                "성공",
+//                new WriteReviewResponseBody(
+//                        review
+//                )
+//        );
+//    }
 
     @Getter
     @Setter
@@ -154,14 +188,12 @@ public class ReviewController {
     public RsData<RemoveReviewResponseBody> removeReview(
             @PathVariable long id
     ) {
-        Review review = reviewService.findById(id).get();
 
         reviewService.deleteById(id);
 
         return RsData.of(
                 "200",
-                "성공",
-                new RemoveReviewResponseBody(review)
+                "성공"
         );
     }
 }
