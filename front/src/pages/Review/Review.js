@@ -45,8 +45,16 @@ const Review = ({ chargingStationId }) => {
 
   const handleFileChange = (e) => {
 
-    const newSelectedFiles = Array.from(e.target.files); // 새롭게 선택된 파일들을 배열로 변환
-    const selectedFiles = [...files, ...newSelectedFiles]; // 기존 파일들과 새로운 파일들을 합친 배열
+    const newSelectedFiles = Array.from(e.target.files);
+
+    const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+
+    if (oversizedFiles.length > 0) {
+        alert("파일 크기는 10MB를 초과할 수 없습니다.");
+        return;
+    }
+
+    const selectedFiles = [...files, ...newSelectedFiles];
 
     if ((files.length + newSelectedFiles.length) > 3) {
       alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
