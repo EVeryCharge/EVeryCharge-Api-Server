@@ -5,7 +5,7 @@ spring:
     ansi:
       enabled: always
   datasource:
-    url: jdbc:mysql://localhost:3306/eitcharge
+    url: jdbc:mysql://localhost:3306/everycharge
     username: <NEED_TO_INPUT>
     password: <NEED_TO_INPUT>
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,7 +16,7 @@ spring:
 #      password: <NEED_TO_INPUT>
 logging:
   level:
-    com.ll.eitcharge: INFO
+    com.ll.everycharge: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.orm.jdbc.extract: INFO
@@ -24,6 +24,6 @@ logging:
 custom:
   aws:
     s3:
-      bucket: dev-bucket-eticharge-1
+      bucket: dev-bucket-everycharge-1
       stack.auto: false
       region.static: ap-northeast-2
