@@ -4,6 +4,7 @@ import static org.springframework.util.MimeTypeUtils.*;
 
 import java.util.List;
 
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.service.ChargingStationService;
 import com.ll.eitcharge.global.rsData.RsData;
@@ -140,8 +137,17 @@ public class ChargingStationController {
             // 반경 제한 (m 단위, defaultValue: 2000km (전국 단위))
             @RequestParam(value = "range", defaultValue = "2000000") int range
     ) {
+
         return ResponseEntity.ok(chargingStationService.searchBaseDistance(
                 chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, page, pageSize, lng, lat, range));
     }
-
 }
+
+//    @GetMapping("/search/images")
+//    public ResponseEntity<List<ChargingStationImagesDTO>> getImagesUrl(
+//            @RequestParam(value = "idlist") List<String> idlist
+//    ) {
+//        return ResponseEntity.ok(chargingStationService.getListImagesDto(idlist));
+//    }
+//
+//}

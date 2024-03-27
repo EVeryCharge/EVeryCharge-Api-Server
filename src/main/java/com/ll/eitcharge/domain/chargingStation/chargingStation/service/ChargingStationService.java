@@ -9,6 +9,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ll.eitcharge.domain.base.uploadedfiles.service.UploadedFilesService;
+import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.*;
+import com.ll.eitcharge.domain.review.review.entity.Review;
+import com.ll.eitcharge.domain.review.review.repository.ReviewRepository;
+import com.ll.eitcharge.domain.review.review.service.ReviewService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,10 +35,6 @@ import com.ll.eitcharge.domain.charger.charger.dto.ChargerStateDto;
 import com.ll.eitcharge.domain.charger.charger.entity.Charger;
 import com.ll.eitcharge.domain.charger.charger.entity.ChargerType;
 import com.ll.eitcharge.domain.charger.charger.repository.ChargerRepository;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationInfoResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchBaseDistanceResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchItemResponseDto;
-import com.ll.eitcharge.domain.chargingStation.chargingStation.dto.ChargingStationSearchResponseDto;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationRepository;
 import com.ll.eitcharge.domain.chargingStation.chargingStation.repository.ChargingStationSearchRepository;
@@ -55,6 +58,10 @@ public class ChargingStationService {
 	private final OperatingCompanyService operatingCompanyService;
 	private final ChargingStationRepository chargingStationRepository;
 	private final ChargingStationSearchRepository chargingStationSearchRepository;
+	@Autowired
+	@Lazy
+	private ReviewService reviewService;
+
 
 	// 엔티티 조회용
 	public ChargingStation findById(String id) {
@@ -179,9 +186,9 @@ public class ChargingStationService {
 	) {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-		return chargingStationSearchRepository.searchBaseDistance(
-			chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
-		);
+		return setDtoUrl(chargingStationSearchRepository.searchBaseDistance(
+				chargeable, limitYn, parkingFree, zcode, zscode, isPrimary, busiIds, chgerTypes, kw, lat, lng, range, pageable
+		));
 	}
 
 	public ChargingStationInfoResponseDto infoSearch(String statId) {
@@ -190,4 +197,16 @@ public class ChargingStationService {
 
 		return new ChargingStationInfoResponseDto(chargingStation, chargeFeeList);
 	}
+
+
+	public Page<ChargingStationSearchBaseDistanceResponseDto> setDtoUrl(Page<ChargingStationSearchBaseDistanceResponseDto> page){
+
+		for(ChargingStationSearchBaseDistanceResponseDto dto : page){
+			List<String> allurl = reviewService.getallurl(dto.getStatId());
+			dto.setFileurls(allurl);
+		}
+
+		return page;
+	}
+
 }

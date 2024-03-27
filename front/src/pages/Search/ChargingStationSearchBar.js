@@ -21,6 +21,13 @@ import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
 import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+
+
 
 /**
  * 작성자 : 이상제
@@ -47,6 +54,8 @@ const ChargingStationSearchBar = ({
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
   const [baseItem, setBaseItem] = useState(null);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -549,7 +558,9 @@ const ChargingStationSearchBar = ({
                 className={classes.ListItemContainer}
                 onClick={() => handleMapMove(data.lat, data.lng)}
               >
-                <div className={classes.ListItemInfo}>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                <div className={classes.ListItemInfo} style={{ display: 'flex', justifyContent: 'space-between' }}></div>
+                {/* <div className={classes.ListItemInfo}> */}
                   <Typography
                     variant="subtitle1"
                     style={{ fontWeight: "bold" }}
@@ -596,6 +607,23 @@ const ChargingStationSearchBar = ({
                       />
                     ))}
                   </div>
+                {data.fileurls && data.fileurls.length > 0 && (
+                <Swiper
+                spaceBetween={5} 
+                slidesPerView={3} 
+                navigation={true} 
+                modules={[Navigation]} 
+                style={{ width: '340px', height: '100px' }}
+              >
+                {data.fileurls.map((url, index) => (
+                  <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
+                  </div>
+                </SwiperSlide>
+                ))}
+              </Swiper>
+                )}
                 </div>
                 <Chip
                   label="이동"
@@ -605,8 +633,9 @@ const ChargingStationSearchBar = ({
                   color="secondary"
                   clickable
                   onClick={() => handleMapMove(data.lat, data.lng)}
-                />
-              </ListItem>
+                />                
+                
+              </ListItem>            
             ))}
         </List>
         {searchResult && searchResult.content.length > 0 && (
