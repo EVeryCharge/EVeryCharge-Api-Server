@@ -115,7 +115,9 @@ const ChargingStationSearch = () => {
             }}
           />
         )}
-        <Box sx={{ zIndex: 2, position: "fixed" }}>
+        <Box id="pre" sx={{ zIndex: 2, position: "fixed" }} style={{
+          transform: !showSearchBar ? "translateX(-100%)" : "translateX(0)",
+        }}>
           <ChargingStationSearchBar
             onSearch={fetchSearchResult}
             searchResult={searchResult}

@@ -218,14 +218,16 @@ const ChargingStationSearchBar = ({
 
   return (
 
-    <Grid container id="parentGrid" justifyContent="left" style={{ width: "100%"}}>
+    <Grid container id="parentGrid" justifyContent="left" style={{
+      maxWidth: "430px",
+    }}>
       <Grid item xs={12} md={5} xl={5} lg={5}>
         <Card
           variant="outlined"
           className={classes.baseLayer}
           style={{
-            transform: !showSearchBar ? "translateX(-100%)" : "translateX(0)",
-             minWidth: "360px"
+            minWidth: "360px",
+            maxWidth: "430px"
           }}
         >
           <Grid container >
@@ -469,7 +471,7 @@ const ChargingStationSearchBar = ({
                 )}
               </Box>
               <Box className={classes.comboContainer}>
-              <Divider />
+                <Divider />
                 {baseItem && (
                   <>
                     <Box>
@@ -576,7 +578,7 @@ const ChargingStationSearchBar = ({
                 )}
               </Box>
             </Grid>
-            <Grid container className={classes.ListContainer} style={{height: parentHeight}}>
+            <Grid container className={classes.ListContainer} style={{ height: parentHeight }}>
               <Grid item xs={12} xl={12} >
                 <List>
                   {searchResult && searchResult.content.length === 0 && (
@@ -639,23 +641,23 @@ const ChargingStationSearchBar = ({
                               />
                             ))}
                           </div>
-                            {data.fileurls && data.fileurls.length > 0 && (
-                                <Swiper
-                                    spaceBetween={5}
-                                    slidesPerView={2}
-                                    navigation={true}
-                                    modules={[Navigation]}
-                                    style={{ width: '240px', height: '100px' }}
-                                >
-                                    {data.fileurls.map((url, index) => (
-                                        <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                            <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
-                                            </div>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                            )}
+                          {data.fileurls && data.fileurls.length > 0 && (
+                            <Swiper
+                              spaceBetween={5}
+                              slidesPerView={2}
+                              navigation={true}
+                              modules={[Navigation]}
+                              style={{ width: '240px', height: '100px' }}
+                            >
+                              {data.fileurls.map((url, index) => (
+                                <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                  <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
+                                  </div>
+                                </SwiperSlide>
+                              ))}
+                            </Swiper>
+                          )}
                         </div>
                         <Chip
                           label="이동"
