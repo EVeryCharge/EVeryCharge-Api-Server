@@ -25,9 +25,10 @@ const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
           zIndex: 1000, // 모달 배경의 z-index
         },
         content: {
-          width: "50%", // 모달의 너비를 조절합니다.
+          width: "98%", // 모달의 너비를 조절합니다.
           height: "60%", // 모달의 높이를 조절합니다.
           margin: "auto", // 모달을 화면 중앙에 위치시킵니다.
+          marginLeft: "-40px"
         },
       }}
     >
