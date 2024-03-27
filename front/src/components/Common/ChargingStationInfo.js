@@ -1,4 +1,5 @@
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -8,9 +9,13 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { HttpGet } from "../../services/HttpService";
 import { Help } from "@material-ui/icons";
+import { ContentCopy } from "@mui/icons-material";
+import React, { useCallback, useEffect, useState } from "react";
+import { HttpGet } from "../../services/HttpService";
+import CopyButton from "./CopyButton";
+import NaverMapButton from "./NaverMapButton";
+import KakaoMapButton from "./KakaoMapButton";
 
 const ChargingStationInfo = ({ statId }) => {
   const [chargingStationData, setChargingStationData] = useState({});
@@ -53,6 +58,9 @@ const ChargingStationInfo = ({ statId }) => {
         >
           {" "}
           {chargingStationData.addr}
+          <CopyButton addr={chargingStationData.addr} />
+          <NaverMapButton addr={chargingStationData.addr} />
+          <KakaoMapButton addr={chargingStationData.addr} />
         </Typography>
       </div>
 
@@ -177,14 +185,14 @@ const ChargingStationInfo = ({ statId }) => {
                     align="center"
                     style={{ borderRight: "1px groove lightgrey" }}
                   >
-                    {row.memberFeeChange !== 0 ? (
+                    {row.memberFeeChange && row.memberFeeChange !== 0 ? (
                       <>
                         {row.memberFeeChange > 0 ? (
                           <span style={{ color: "red" }}>↑ </span>
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {Math.abs(row.memberFeeChange)}
+                        {row.memberFeeChange}
                       </>
                     ) : (
                       "-"
@@ -192,14 +200,14 @@ const ChargingStationInfo = ({ statId }) => {
                   </TableCell>
                   <TableCell align="center">{row.nonMemberFee}</TableCell>
                   <TableCell align="center">
-                    {row.nonMemberFeeChange !== 0 ? (
+                    {row.nonMemberFeeChange && row.nonMemberFeeChange !== 0 ? (
                       <>
                         {row.nonMemberFeeChange > 0 ? (
                           <span style={{ color: "red" }}>↑ </span>
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {Math.abs(row.nonMemberFeeChange)}
+                        {row.nonMemberFeeChange}
                       </>
                     ) : (
                       "-"

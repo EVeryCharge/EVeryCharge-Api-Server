@@ -1,18 +1,19 @@
 import {
   AppBar,
   Button,
-  Toolbar,
-  Typography,
+  Fade,
+  Hidden,
   IconButton,
   Menu,
   MenuItem,
-  Hidden,
+  Toolbar,
+  Typography,
 } from "@material-ui/core";
-import { Menu as MenuIcon } from "@material-ui/icons";
+import { EvStation, Menu as MenuIcon } from "@material-ui/icons";
+import { ElectricCar } from "@mui/icons-material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
-import EvStationIcon from "@mui/icons-material/EvStation";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -46,7 +47,6 @@ const Navbar = () => {
         borderBottom: "1px solid grey",
         boxShadow: "none",
         display: "flex",
-        justifyContent: "center",
       }}
     >
       <Toolbar
@@ -55,9 +55,9 @@ const Navbar = () => {
           justifyContent: "space-between",
           padding: "24px",
           maxWidth: "1200px",
-          margin: "auto",
         }}
       >
+        <div style={{ width: "55px" }} />
         <div onClick={goToHome} style={{ cursor: "pointer" }}>
           <Typography
             variant="h5"
@@ -69,241 +69,252 @@ const Navbar = () => {
               marginRight: "20px",
             }}
           >
-            <EvStationIcon
+            <ElectricCar
               style={{ marginRight: "3px", fontSize: "2rem", color: "#3F51B5" }}
             />
-            전기차 충전소 서비스
+            EVeryCharge
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{
+              fontWeight: "bold",
+              display: "flex",
+              justifyContent: "flex-end",
+              color: "#3F51B5",
+              marginRight: "20px",
+            }}
+          >
+            전기차 충전 정보 제공 서비스
           </Typography>
         </div>
+
         <div>
-          <Hidden mdUp style={{ display: "flex", justifyContent: "flex-end" }}>
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              aria-controls="nav-menu"
-              aria-haspopup="true"
-              onClick={handleMenuClick}
-              style={{ color: "black" }} // 햄버거 아이콘의 색상을 검은색으로 지정
-              marginLeft
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="nav-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              {[
-                <MenuItem
-                  key="serviceInfo"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/chargingServiceInfo"
-                >
-                  서비스 안내
-                </MenuItem>,
-                <MenuItem
-                  key="report"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/report/list"
-                >
-                  신고하기
-                </MenuItem>,
-                <MenuItem
-                  key="map"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/map"
-                >
-                  충전소 지도
-                </MenuItem>,
-                <MenuItem
-                  key="map"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/fee"
-                >
-                  요금 정보
-                </MenuItem>,
-                <MenuItem
-                  key="inquiry"
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/inquiry"
-                >
-                  1대1 문의
-                </MenuItem>,
-                isLogin() ? (
+          {/* for mobile */}
+          <div>
+            <Hidden mdUp>
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                aria-controls="nav-menu"
+                aria-haspopup="true"
+                onClick={handleMenuClick}
+                style={{ color: "black" }}
+              >
+                <MenuIcon style={{ fontSize: "2rem" }} />
+              </IconButton>
+              <Menu
+                id="nav-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                TransitionComponent={Fade}
+                PaperProps={{
+                  style: {
+                    boxShadow: "none",
+                    marginTop: "84px",
+                    marginLeft: "20px",
+                    border: "1px solid lightgrey",
+                  },
+                }}
+              >
+                {[
                   <MenuItem
-                    key="logout"
-                    onClick={[handleMenuClose, handleLogout]}
+                    key="report"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/report/list"
                   >
-                    로그아웃
-                  </MenuItem>
-                ) : (
-                  <>
-                    <MenuItem
-                      key="signup"
-                      onClick={handleMenuClose}
-                      component={Link}
-                      to="/signup"
-                    >
-                      회원가입
-                    </MenuItem>
-                    ,
-                    <MenuItem
-                      key="login"
-                      onClick={handleMenuClose}
-                      component={Link}
-                      to="/login"
-                    >
-                      로그인
-                    </MenuItem>
-                  </>
-                ),
-              ]}
-            </Menu>
+                    신고하기
+                  </MenuItem>,
+                  <MenuItem
+                    key="map"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/map"
+                  >
+                    충전소 지도
+                  </MenuItem>,
+                  <MenuItem
+                    key="map"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/fee"
+                  >
+                    요금 정보
+                  </MenuItem>,
+                  <MenuItem
+                    key="inquiry"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/inquiry"
+                  >
+                    1대1 문의
+                  </MenuItem>,
+                  isLogin() ? (
+                    <>
+                      <MenuItem
+                        key="my"
+                        onClick={[handleMenuClose]}
+                        component={Link}
+                        to="/my"
+                      >
+                        마이페이지
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleMenuClose();
+                          handleLogout();
+                        }}
+                      >
+                        로그아웃
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem
+                        key="signup"
+                        onClick={handleMenuClose}
+                        component={Link}
+                        to="/signup"
+                      >
+                        회원가입
+                      </MenuItem>
+                      <MenuItem
+                        key="login"
+                        onClick={handleMenuClose}
+                        component={Link}
+                        to="/login"
+                      >
+                        로그인
+                      </MenuItem>
+                    </>
+                  ),
+                ]}
+              </Menu>
+            </Hidden>
+          </div>
+
+          {/* for web */}
+          <Hidden mdDown>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/report/list"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              신고하기
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/map"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              충전소 지도
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/fee"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              요금 정보
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/inquiry"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              1대1 문의
+            </Button>
+            {isLogin() ? (
+              <>
+                <Button
+                  component={Link}
+                  to="/my"
+                  style={{
+                    fontSize: "20px",
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginLeft: "12px",
+                    marginRight: "12px",
+                  }}
+                >
+                  마이페이지
+                </Button>
+                <Button
+                  color="inherit"
+                  onClick={handleLogout}
+                  style={{
+                    fontSize: "20px",
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginLeft: "12px",
+                    marginRight: "12px",
+                  }}
+                >
+                  로그아웃
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/signup"
+                  style={{
+                    fontSize: "20px",
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginLeft: "12px",
+                    marginRight: "12px",
+                  }}
+                >
+                  회원가입
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/login"
+                  style={{
+                    fontSize: "20px",
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginLeft: "12px",
+                  }}
+                >
+                  로그인
+                </Button>
+              </>
+            )}
           </Hidden>
         </div>
-
-        <Hidden mdDown>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/chargingServiceInfo"
-            style={{
-              fontSize: "20px",
-              color: "gray",
-              fontWeight: "bold",
-              marginLeft: "12px",
-              marginRight: "12px",
-            }}
-          >
-            서비스 안내
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/report/list"
-            style={{
-              fontSize: "20px",
-              color: "gray",
-              fontWeight: "bold",
-              marginLeft: "12px",
-              marginRight: "12px",
-            }}
-          >
-            신고하기
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/map"
-            style={{
-              fontSize: "20px",
-              color: "gray",
-              fontWeight: "bold",
-              marginLeft: "12px",
-              marginRight: "12px",
-            }}
-          >
-            충전소 지도
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/fee"
-            style={{
-              fontSize: "20px",
-              color: "gray",
-              fontWeight: "bold",
-              marginLeft: "12px",
-              marginRight: "12px",
-            }}
-          >
-            요금 정보
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/inquiry"
-            style={{
-              fontSize: "20px",
-              color: "gray",
-              fontWeight: "bold",
-              marginLeft: "12px",
-              marginRight: "12px",
-            }}
-          >
-            1대1 문의
-          </Button>
-          {isLogin() ? (
-            <>
-              <Button
-                color="inherit"
-                onClick={handleLogout}
-                style={{
-                  fontSize: "20px",
-                  color: "gray",
-                  fontWeight: "bold",
-                  marginLeft: "12px",
-                  marginRight: "10px",
-                }}
-              >
-                로그아웃
-              </Button>
-              <Typography
-                variant="body1"
-                style={{
-                  fontSize: "20px",
-                  color: "black",
-                  marginLeft: "5px",
-                  fontWeight: "bold",
-                  textAlign: "right",
-                }}
-              >
-                {!getUserName().startsWith("KAKAO")
-                  ? getUserName()
-                  : getUserNickname()}
-                님
-              </Typography>
-            </>
-          ) : (
-            <>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/signup"
-                style={{
-                  fontSize: "20px",
-                  color: "gray",
-                  fontWeight: "bold",
-                  marginLeft: "12px",
-                  marginRight: "12px",
-                }}
-              >
-                회원가입
-              </Button>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/login"
-                style={{
-                  fontSize: "20px",
-                  color: "gray",
-                  fontWeight: "bold",
-                  marginLeft: "12px",
-                }}
-              >
-                로그인
-              </Button>
-            </>
-          )}
-        </Hidden>
       </Toolbar>
     </AppBar>
   );

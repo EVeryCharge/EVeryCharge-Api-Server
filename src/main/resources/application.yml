@@ -48,27 +48,32 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
 custom:
   dev:
     cookieDomain: localhost
     frontUrl: "http://${custom.dev.cookieDomain}:3000"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain: eitcharge.site
+    cookieDomain: everycharge.me
     frontUrl: "https://${custom.prod.cookieDomain}"
     backUrl: "https://api.${custom.prod.cookieDomain}"
   site:
     cookieDomain: "${custom.dev.cookieDomain}"
     frontUrl: "${custom.dev.frontUrl}"
     backUrl: "${custom.dev.backUrl}"
-    name: eitcharge
+    name: everycharge
   jwt:
     secretKey: <ON_SECRET>
   accessToken:
     expirationSec: '#{60*60}'
   temp:
-    dirPath: c:/temp/eitcharge_dev/temp
+    dirPath: c:/temp/everycharge_dev/temp
   genFile:
-    dirPath: c:/temp/eitcharge_dev
+    dirPath: c:/temp/everycharge_dev
   api:
     serviceKey: <ON_SECRET>

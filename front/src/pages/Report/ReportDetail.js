@@ -1,9 +1,11 @@
-import { Box, Button, TextField, Typography } from "@material-ui/core";
+import { Box, Button, Chip, TextField, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HttpDelete, HttpGet, HttpPut } from "../../services/HttpService";
 import ErrorPage from "../Error/ErrorPage";
 import ReportHeader from "./ReportHeader";
+import { EvStation, Person } from "@material-ui/icons";
+import { AdminPanelSettings, BuildCircleOutlined } from "@mui/icons-material";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
@@ -170,20 +172,77 @@ const ReportDetail = () => {
             isEditPage={false}
           />
 
-          <Box alignItems="center" my={2} px={2}>
-            <Typography variant="subtitle2">{`[유형] 충전소: [${data.reportType}] ${data.statNm}`}</Typography>
-            <Typography variant="subtitle2">{`위치: ${data.addr}`}</Typography>
-            <Typography variant="subtitle2">{`신고자: ${data.memberName}`}</Typography>
+          <Box alignItems="center">
             <Typography
-              variant="subtitle2"
-              style={{ marginBottom: "5px" }}
-            >{`작성일: ${formatDate(data.createDate)}`}</Typography>
-            <Typography
-              variant="subtitle1"
-              style={{ fontWeight: "bold" }}
-            >{`제목: ${data.title}`}</Typography>
+              variant="subtitle3"
+              style={{
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Chip
+                label={data.reportType}
+                style={{
+                  marginLeft: "5px",
+                  marginRight: "5px",
+                  fontWeight: "bold",
+                  backgroundColor: "skyblue",
+                }}
+              ></Chip>
+              <Typography variant="subtitle3" style={{ fontWeight: "bold" }}>
+                {`${data.title}`}
+              </Typography>
+            </Typography>
+            <Box
+              py={1}
+              mt={1}
+              style={{
+                backgroundColor: "whitesmoke",
+                borderTop: "1.5px solid #3f51b5",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                style={{
+                  display: "flex",
+                  marginTop: "5px",
+                  marginLeft: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <EvStation />
+                {data.statNm}
+                <Typography
+                  variant="subtitle2"
+                  style={{
+                    paddingLeft: "6px",
+                    color: "grey",
+                  }}
+                >
+                  {`${data.addr}`}
+                </Typography>
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                style={{
+                  display: "flex",
+                  marginTop: "5px",
+                  marginLeft: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <Person />
+                <Typography variant="subtitle2">{data.memberName}</Typography>
+                <Typography
+                  variant="subtitle2"
+                  style={{ paddingLeft: "6px", color: "grey" }}
+                >
+                  {`${formatDate(data.createDate)}`}
+                </Typography>
+              </Typography>
+            </Box>
           </Box>
-          <hr />
 
           <Box alignItems="center" my={2} px={2} height={200}>
             <Typography
@@ -197,60 +256,92 @@ const ReportDetail = () => {
               {data.content}
             </Typography>
           </Box>
-          <hr />
 
-          <Box my={2} px={2}>
-            <Typography variant="subtitle2">
-              {`신고결과: `}
-              <span
-                style={{
-                  color: data.completed ? "#008000" : "#FFA500",
-                  fontWeight: "bold",
-                }}
+          {/* 신고 컨테이너 */}
+          <Box>
+            <Box
+              pt={1}
+              pb={1}
+              px={1}
+              style={{
+                backgroundColor: "whitesmoke",
+                borderTop: "1.5px solid #3f51b5",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                style={{ display: "flex", alignItems: "center" }}
               >
-                {data.completed ? "처리완료" : "처리중"}
-              </span>
-            </Typography>
+                <Chip label="신고결과" style={{ fontWeight: "bold" }} />
+                <span
+                  style={{
+                    marginLeft: "6px",
+                    color: data.completed ? "#008000" : "#FFA500",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {data.completed ? "처리완료" : "처리중"}
+                </span>
+              </Typography>
 
-            {/* 유지보수자 신고 처리 결과 입력 */}
-            {!data.completed && data.actorCanComplete && (
-              <>
-                <TextField
-                  label="답변"
-                  placeholder="처리 후 답변을 입력해주세요.(200자 이내)"
-                  helperText={`${reply.length} / 200`}
-                  inputProps={{ maxLength: 200 }}
-                  rowsMin={6}
-                  multiline
-                  rows={6}
-                  value={reply}
-                  onChange={handleReplyChange}
-                  style={{ width: "100%", marginTop: "10px" }}
-                />
-                {error.reply && (
-                  <Typography variant="caption" color="error">
-                    {error.reply}
+              {/* 유지보수자 신고 처리 결과 입력 */}
+              {!data.completed && data.actorCanComplete && (
+                <>
+                  <TextField
+                    label="답변"
+                    placeholder="처리 후 답변을 입력해주세요.(200자 이내)"
+                    helperText={`${reply.length} / 200`}
+                    inputProps={{ maxLength: 200 }}
+                    rowsMin={6}
+                    multiline
+                    rows={6}
+                    value={reply}
+                    onChange={handleReplyChange}
+                    style={{
+                      width: "100%",
+                      marginTop: "10px",
+                    }}
+                  />
+                  {error.reply && (
+                    <Typography variant="caption" color="error">
+                      {error.reply}
+                    </Typography>
+                  )}
+                </>
+              )}
+
+              {/* 신고 처리 결과 */}
+              <Box mt={1}>
+                {data.completed && data.replierName && (
+                  <Typography style={{ display: "flex", alignItems: "center" }}>
+                    <BuildCircleOutlined />
+                    <Typography variant="subtitle2">{`${data.replierName}`}</Typography>
+                    {data.replyCreatedDate && (
+                      <Typography
+                        variant="subtitle2"
+                        style={{ paddingLeft: "6px", color: "grey" }}
+                      >
+                        {`${formatDate(data.replyCreatedDate)}`}
+                      </Typography>
+                    )}
                   </Typography>
                 )}
-              </>
-            )}
-
-            {/* 신고 처리 결과 */}
-            {data.completed && (
-              <Box>
-                {data.replierName && (
-                  <Typography variant="subtitle2">{`처리자: ${data.replierName}`}</Typography>
-                )}
-                {data.replyCreatedDate && (
-                  <Typography variant="subtitle2">{`처리일: ${formatDate(
-                    data.replyCreatedDate
-                  )}`}</Typography>
-                )}
-                {data.reply && (
-                  <Typography variant="subtitle2">{`${data.reply}`}</Typography>
-                )}
               </Box>
-            )}
+            </Box>
+            <Box>
+              {data.completed && data.reply && (
+                <Typography
+                  variant="subtitle2"
+                  style={{
+                    paddingLeft: "13px",
+                    paddingRight: "10px",
+                    paddingTop: "25px",
+                  }}
+                >
+                  {`${data.reply}`}
+                </Typography>
+              )}
+            </Box>
           </Box>
 
           {/* 등록, 수정 버튼 */}
@@ -261,7 +352,7 @@ const ReportDetail = () => {
                 justifyContent: "flex-end",
                 alignItems: "flex-end",
                 marginRight: "20px",
-                marginTop: "-30px",
+                marginTop: "5px",
               }}
             >
               {data.actorCanComplete && (

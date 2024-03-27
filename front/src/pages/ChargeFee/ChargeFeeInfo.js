@@ -179,7 +179,7 @@ const ChargeFeeInfo = () => {
               `${from} ~ ${to} / 총 ${count}건`
             }
           />
-          <Table>
+          <Table style={{ minWidth: "100vh" }}>
             <TableHead>
               <TableRow
                 style={{
@@ -199,14 +199,21 @@ const ChargeFeeInfo = () => {
                   colSpan={2}
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  현재 기준가 (원 / kW)
+                  회원 (원 / kW)
                 </TableCell>
                 <TableCell
                   align="center"
                   colSpan={2}
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  과거 기준가 (원 / kW)
+                  비회원 (원 / kW)
+                </TableCell>
+                <TableCell
+                  align="center"
+                  rowSpan={2}
+                  style={{ border: "1.5px solid grey", fontWeight: "bold" }}
+                >
+                  갱신일자
                 </TableCell>
               </TableRow>
               <TableRow
@@ -232,25 +239,25 @@ const ChargeFeeInfo = () => {
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  회원가 (등락폭)
+                  현재 기준가
                 </TableCell>
                 <TableCell
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  비회원가 (등락폭)
+                  이전 기준가
                 </TableCell>
                 <TableCell
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  회원가
+                  현재 기준가
                 </TableCell>
                 <TableCell
                   align="center"
                   style={{ border: "1.5px solid grey", fontWeight: "bold" }}
                 >
-                  비회원가
+                  이전 기준가
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -283,12 +290,18 @@ const ChargeFeeInfo = () => {
                     }}
                   >
                     {row.memberFee} (
-                    {row.memberFeeChange !== 0.0
+                    {row.memberFeeChange !== 0.0 && row.memberFeeChange !== null
                       ? `${row.memberFeeChange > 0 ? "+" : ""}${
                           row.memberFeeChange
                         }`
                       : "-"}
                     )
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    style={{ border: "1px groove lightGrey" }}
+                  >
+                    {row.prevMemberFee ? row.prevMemberFee : "정보 없음"}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -304,7 +317,8 @@ const ChargeFeeInfo = () => {
                     }}
                   >
                     {row.nonMemberFee} (
-                    {row.nonMemberFeeChange !== 0.0
+                    {row.nonMemberFeeChange !== 0.0 &&
+                    row.nonMemberFeeChange !== null
                       ? `${row.nonMemberFeeChange > 0 ? "+" : ""}${
                           row.nonMemberFeeChange
                         }`
@@ -315,13 +329,15 @@ const ChargeFeeInfo = () => {
                     align="center"
                     style={{ border: "1px groove lightGrey" }}
                   >
-                    {row.prevMemberFee ? row.prevMemberFee : "정보 없음"}
+                    {row.prevNonMemberFee ? row.prevNonMemberFee : "정보 없음"}
                   </TableCell>
                   <TableCell
                     align="center"
                     style={{ border: "1px groove lightGrey" }}
                   >
-                    {row.prevNonMemberFee ? row.prevNonMemberFee : "정보 없음"}
+                    {row.modifiedDate && row.modifiedDate !== "null"
+                      ? row.modifiedDate.split("T")[0]
+                      : "-"}
                   </TableCell>
                 </TableRow>
               ))}

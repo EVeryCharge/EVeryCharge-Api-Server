@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
   makeStyles,
+  Grid
 } from "@material-ui/core";
 import { ErrorOutline, Search } from "@material-ui/icons";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
@@ -54,8 +55,6 @@ const ChargingStationSearchBar = ({
   const [kw, setKw] = useState("");
   const [page, setPage] = useState(1);
   const [baseItem, setBaseItem] = useState(null);
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -194,462 +193,498 @@ const ChargingStationSearchBar = ({
     setKw("");
   };
 
+  const [parentHeight, setParentHeight] = useState(0);
+
+  useEffect(() => {
+    function handleResize() {
+      const parentGrid = document.getElementById('parentGrid');
+      if (parentGrid) {
+        const height = parentGrid.clientHeight - 240; // 부모 그리드의 높이에서 20px 빼기
+        setParentHeight(height);
+      }
+    }
+
+    // 초기 실행
+    handleResize();
+
+    // resize 이벤트 리스너 추가
+    window.addEventListener('resize', handleResize);
+
+    // cleanup 함수
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // 빈 배열은 처음 한 번만 실행됨을 의미
+
   return (
-    <Card
-      variant="outlined"
-      className={classes.baseLayer}
-      style={{
-        transform: !showSearchBar ? "translateX(-100%)" : "translateX(0)",
-      }}
-    >
-      <Box className={classes.searchBarAndToggleContainer}>
-        <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-          <FormControl fullWidth>
-            <TextField
-              size="small"
-              sx={{ fontSize: "11px" }}
-              label="충전소 검색"
-              placeholder="검색어를 입력해주세요."
-              variant="outlined"
-              color="primary"
-              value={kw}
-              onKeyPress={handleKeyPress}
-              onChange={handleKwChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="primary" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-          <FormControl>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginLeft: "3px" }}
-              onClick={handleSearch}
-            >
-              검색
-            </Button>
-          </FormControl>
-        </Box>
-        <Box className={classes.toggleContainer}>
-          <Button
-            size="small"
-            variant="outlined"
-            style={{ fontSize: "12px", marginRight: "10px" }}
-            color="secondary"
-            onClick={handleReset}
-          >
-            조건 초기화
-          </Button>
-          <ToggleButton
-            size="small"
-            color="primary"
-            sx={{
-              fontSize: "12px",
-              mr: "10px",
-              "&.Mui-selected": {
-                borderColor: "blue",
-                borderWidth: "1px",
-                color: "blue",
-                fontWeight: "bold",
-              },
-            }}
-            value="chargeable"
-            selected={chargeable}
-            onChange={handleChargeableChange}
-          >
-            충전가능
-          </ToggleButton>
-          <ToggleButton
-            size="small"
-            color="primary"
-            sx={{
-              fontSize: "12px",
-              mr: "10px",
-              "&.Mui-selected": {
-                borderColor: "blue",
-                borderWidth: "1px",
-                color: "blue",
-                fontWeight: "bold",
-              },
-            }}
-            value="parkingFree"
-            selected={parkingFree}
-            onChange={handleParkingFreeChange}
-          >
-            무료주차
-          </ToggleButton>
-          <ToggleButton
-            size="small"
-            color="primary"
-            sx={{
-              fontSize: "12px",
-              mr: "10px",
-              "&.Mui-selected": {
-                borderColor: "blue",
-                borderWidth: "1px",
-                color: "blue",
-                fontWeight: "bold",
-              },
-            }}
-            value="isOpen"
-            selected={isOpen}
-            onChange={handleOpenChange}
-          >
-            상시개방
-          </ToggleButton>
-        </Box>
-      </Box>
 
-      <Box className={classes.comboContainer}>
-        {baseItem && (
-          <>
-            <Box>
-              <InputLabel
-                className={classes.inputLabelStyle}
-                style={{
-                  color: range !== "" ? "blue" : undefined,
-                }}
-              >
-                반경 단위
-              </InputLabel>
-              <Select
-                size="small"
-                sx={{
-                  fontSize: "12px",
-                  mr: "10px",
-                  width: "100px",
-                  border: range !== "" ? "1px solid blue" : "1px solid grey",
-                  color: range !== "" ? "blue" : undefined,
-                  fontWeight: range !== "" ? "bold" : undefined,
-                }}
-                value={range}
-                displayEmpty
-                onChange={handleRangeChange}
-                className={classes.selectEmpty}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 190,
-                    },
-                  },
-                }}
-              >
-                <MenuItem value="">전국</MenuItem>
-                {baseItem.ranges.map((code, index) => (
-                  <MenuItem key={index} value={code}>
-                    {baseItem.rangeNames[index]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            <Box>
-              <InputLabel
-                className={classes.inputLabelStyle}
-                style={{
-                  color: zcode !== "" ? "blue" : undefined,
-                }}
-              >
-                지역 단위
-              </InputLabel>
-              <Select
-                size="small"
-                sx={{
-                  fontSize: "12px",
-                  mr: "10px",
-                  width: "140px",
-                  border: zcode !== "" ? "1px solid blue" : "1px solid grey",
-                  color: zcode !== "" ? "blue" : undefined,
-                  fontWeight: zcode !== "" ? "bold" : undefined,
-                }}
-                value={zcode}
-                onChange={handleZcodeChange}
-                displayEmpty
-                className={classes.selectEmpty}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 190,
-                    },
-                  },
-                }}
-              >
-                <MenuItem value="">전체</MenuItem>
-                {baseItem.zcodes.map((code, index) => (
-                  <MenuItem key={index} value={code}>
-                    {baseItem.regionNames[index]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            <Box>
-              <InputLabel
-                className={classes.inputLabelStyle}
-                style={{
-                  color: zscode !== "" ? "blue" : undefined,
-                }}
-              >
-                세부 지역
-              </InputLabel>
-              <Select
-                size="small"
-                sx={{
-                  fontSize: "12px",
-                  mr: "10px",
-                  width: "100px",
-                  border: zscode !== "" ? "1px solid blue" : "1px solid grey",
-                  color: zscode !== "" ? "blue" : undefined,
-                  fontWeight: zscode !== "" ? "bold" : undefined,
-                }}
-                value={zscode}
-                onChange={handleZscodeChange}
-                displayEmpty
-                className={classes.selectEmpty}
-                disabled={
-                  !baseItem || baseItem.zscodes === null || zcode === ""
-                }
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 190,
-                    },
-                  },
-                }}
-              >
-                <MenuItem value="">전체</MenuItem>
-                {baseItem &&
-                  baseItem.zscodes &&
-                  baseItem.zscodes.map((code, index) => (
-                    <MenuItem key={index} value={code}>
-                      {baseItem.regionDetailNames[index]}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </Box>
-          </>
-        )}
-      </Box>
-      <Box className={classes.comboContainer}>
-        {baseItem && (
-          <>
-            <Box>
-              <InputLabel
-                className={classes.inputLabelStyle}
-                style={{
-                  color: busiId.length > 0 ? "blue" : undefined,
-                }}
-              >
-                운영기관
-              </InputLabel>
-              <Select
-                size="small"
-                multiple
-                value={busiId}
-                onChange={handleBusiIdChange}
-                displayEmpty
-                sx={{
-                  fontSize: "12px",
-                  mr: "10px",
-                  width: "130px",
-                  border:
-                    busiId.length > 0 ? "1px solid blue" : "1px solid grey",
-                }}
-                className={classes.selectEmpty}
-                renderValue={(selected) => (
-                  <div
-                    style={{
-                      color: selected.length === 0 ? "black" : "blue",
-                      fontWeight: selected.length === 0 ? undefined : "bold",
-                    }}
-                  >
-                    {selected.length === 0
-                      ? "전체"
-                      : `${selected.length}개 선택됨`}
-                  </div>
-                )}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 190,
-                    },
-                  },
-                }}
-              >
-                {baseItem.busiIds.map((code, index) => (
-                  <MenuItem key={index} value={code}>
-                    {baseItem.bnms[index]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            <Box>
-              <InputLabel
-                className={classes.inputLabelStyle}
-                style={{
-                  color: chgerId.length > 0 ? "blue" : undefined,
-                }}
-              >
-                충전기 타입
-              </InputLabel>
-              <Select
-                size="small"
-                multiple
-                value={chgerId}
-                onChange={handleChgerIdChange}
-                displayEmpty
-                sx={{
-                  fontSize: "12px",
-                  mr: "10px",
-                  width: "220px",
-                  border:
-                    chgerId.length > 0 ? "1px solid blue" : "1px solid grey",
-                }}
-                className={classes.selectEmpty}
-                renderValue={(selected) => (
-                  <div
-                    style={{
-                      color: selected.length === 0 ? "black" : "blue",
-                      fontWeight: selected.length === 0 ? undefined : "bold",
-                    }}
-                  >
-                    {selected.length === 0
-                      ? "전체"
-                      : `${selected.length}개 선택됨`}
-                  </div>
-                )}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 190,
-                    },
-                  },
-                }}
-              >
-                {baseItem.chgerIds.map((code, index) => (
-                  <MenuItem key={index} value={code}>
-                    {baseItem.chgerTypes[index]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-          </>
-        )}
-      </Box>
-      <Divider />
-      {/* 검색 결과 리스트 */}
-      <Box className={classes.ListContainer}>
-        <List>
-          {searchResult && searchResult.content.length === 0 && (
-            <Box className={classes.NoSearchResultContainer}>
-              <ErrorOutline style={{ marginRight: "5px" }} />
-              <Typography variant="body1">검색 결과가 없습니다.</Typography>
-            </Box>
-          )}
-
-          {searchResult &&
-            searchResult.content &&
-            searchResult.content.map((data, index) => (
-              <ListItem
-                key={index}
-                className={classes.ListItemContainer}
-                onClick={() => handleMapMove(data.lat, data.lng)}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                <div className={classes.ListItemInfo} style={{ display: 'flex', justifyContent: 'space-between' }}></div>
-                {/* <div className={classes.ListItemInfo}> */}
-                  <Typography
-                    variant="subtitle1"
-                    style={{ fontWeight: "bold" }}
-                  >
-                    {data.statNm}
-                  </Typography>
-                  <Typography variant="subtitle2">{data.bnm}</Typography>{" "}
-                  <div style={{ display: "flex" }}>
-                    <Typography
-                      variant="subtitle2"
-                      style={{ fontWeight: "bold", marginRight: "5px" }}
+    <Grid container id="parentGrid" justifyContent="left" style={{ width: "100%"}}>
+      <Grid item xs={12} md={5} xl={5} lg={5}>
+        <Card
+          variant="outlined"
+          className={classes.baseLayer}
+          style={{
+            transform: !showSearchBar ? "translateX(-100%)" : "translateX(0)",
+             minWidth: "360px"
+          }}
+        >
+          <Grid container >
+            <Grid item xs={12} xl={12}>
+              <Box className={classes.searchBarAndToggleContainer}>
+                <Box sx={{ display: "flex", width: "90%", alignItems: "center" }}>
+                  <FormControl fullWidth>
+                    <TextField
+                      size="small"
+                      sx={{ fontSize: "11px" }}
+                      label="충전소 검색"
+                      placeholder="검색어를 입력해주세요."
+                      variant="outlined"
+                      color="primary"
+                      value={kw}
+                      onKeyPress={handleKeyPress}
+                      onChange={handleKwChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search color="primary" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ marginLeft: "3px" }}
+                      onClick={handleSearch}
                     >
-                      {data.distance}
-                    </Typography>
-                    <Typography variant="subtitle2">{data.addr}</Typography>{" "}
-                  </div>
-                  <div className={classes.ListItemYnContainer}>
-                    {data.parkingFree ? (
-                      <Chip
-                        label="무료주차"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    ) : (
-                      <Chip label="유료주차" variant="outlined" />
-                    )}
-                    {data.limitYn ? (
-                      <Chip label="비개방" variant="outlined" />
-                    ) : (
-                      <Chip label="개방" color="primary" variant="outlined" />
-                    )}
-                  </div>
-                  <div className={classes.ListChargerTypeContainer}>
-                    {data.chgerTypes.map((chgerType, index) => (
-                      <Chip
-                        key={index}
-                        icon={<ElectricCarIcon />}
-                        label={`${
-                          baseItem.chgerTypes[
-                            baseItem.chgerIds.indexOf(chgerType)
-                          ]
-                        }`}
-                        style={{ marginBottom: "5px", marginRight: "5px" }}
-                      />
-                    ))}
-                  </div>
-                {data.fileurls && data.fileurls.length > 0 && (
-                <Swiper
-                spaceBetween={5} 
-                slidesPerView={3} 
-                navigation={true} 
-                modules={[Navigation]} 
-                style={{ width: '340px', height: '100px' }}
-              >
-                {data.fileurls.map((url, index) => (
-                  <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
-                  </div>
-                </SwiperSlide>
-                ))}
-              </Swiper>
+                      검색
+                    </Button>
+                  </FormControl>
+                </Box>
+                <Box className={classes.toggleContainer}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    style={{
+                      fontSize: "12px", marginRight: "10px", minWidth: "90px"
+                    }}
+                    color="secondary"
+                    onClick={handleReset}
+
+                  >
+                    조건 초기화
+                  </Button>
+                  <ToggleButton
+                    size="big"
+                    color="primary"
+                    sx={{
+                      fontSize: "12px",
+                      mr: "10px",
+                      "&.Mui-selected": {
+                        borderColor: "blue",
+                        borderWidth: "1px",
+                        color: "blue",
+                        fontWeight: "bold",
+                        minWidth: "80px"
+                      },
+                    }}
+                    value="chargeable"
+                    selected={chargeable}
+                    onChange={handleChargeableChange}
+                  >
+                    충전가능
+                  </ToggleButton>
+                  <ToggleButton
+                    size="small"
+                    color="primary"
+                    sx={{
+                      fontSize: "12px",
+                      mr: "10px",
+                      "&.Mui-selected": {
+                        borderColor: "blue",
+                        borderWidth: "1px",
+                        color: "blue",
+                        fontWeight: "bold",
+                        minWidth: "80px"
+                      },
+                    }}
+                    value="parkingFree"
+                    selected={parkingFree}
+                    onChange={handleParkingFreeChange}
+                  >
+                    무료주차
+                  </ToggleButton>
+                  <ToggleButton
+                    size="small"
+                    color="primary"
+                    sx={{
+                      fontSize: "12px",
+                      mr: "10px",
+                      "&.Mui-selected": {
+                        borderColor: "blue",
+                        borderWidth: "1px",
+                        color: "blue",
+                        fontWeight: "bold",
+
+                      },
+                    }}
+                    value="isOpen"
+                    selected={isOpen}
+                    onChange={handleOpenChange}
+                  >
+                    상시개방
+                  </ToggleButton>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} xl={12}>
+              <Box className={classes.comboContainer}>
+                {baseItem && (
+                  <>
+                    <Box>
+                      <InputLabel
+                        className={classes.inputLabelStyle}
+                        style={{
+                          color: range !== "" ? "blue" : undefined,
+                        }}
+                      >
+                        반경 단위
+                      </InputLabel>
+                      <Select
+                        size="small"
+                        sx={{
+                          fontSize: "12px",
+                          mr: "10px",
+                          width: "80px",
+                          border: range !== "" ? "1px solid blue" : "1px solid grey",
+                          color: range !== "" ? "blue" : undefined,
+                          fontWeight: range !== "" ? "bold" : undefined,
+                        }}
+                        value={range}
+                        displayEmpty
+                        onChange={handleRangeChange}
+                        className={classes.selectEmpty}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 190,
+                            },
+                          },
+                        }}
+                      >
+                        <MenuItem value="">전국</MenuItem>
+                        {baseItem.ranges.map((code, index) => (
+                          <MenuItem key={index} value={code}>
+                            {baseItem.rangeNames[index]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                    <Box>
+                      <InputLabel
+                        className={classes.inputLabelStyle}
+                        style={{
+                          color: zcode !== "" ? "blue" : undefined,
+                        }}
+                      >
+                        지역 단위
+                      </InputLabel>
+                      <Select
+                        size="small"
+                        sx={{
+                          fontSize: "12px",
+                          mr: "10px",
+                          width: "120px",
+                          border: zcode !== "" ? "1px solid blue" : "1px solid grey",
+                          color: zcode !== "" ? "blue" : undefined,
+                          fontWeight: zcode !== "" ? "bold" : undefined,
+                        }}
+                        value={zcode}
+                        onChange={handleZcodeChange}
+                        displayEmpty
+                        className={classes.selectEmpty}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 190,
+                            },
+                          },
+                        }}
+                      >
+                        <MenuItem value="">전체</MenuItem>
+                        {baseItem.zcodes.map((code, index) => (
+                          <MenuItem key={index} value={code}>
+                            {baseItem.regionNames[index]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                    <Box>
+                      <InputLabel
+                        className={classes.inputLabelStyle}
+                        style={{
+                          color: zscode !== "" ? "blue" : undefined,
+                        }}
+                      >
+                        세부 지역
+                      </InputLabel>
+                      <Select
+                        size="small"
+                        sx={{
+                          fontSize: "12px",
+                          mr: "10px",
+                          width: "120px",
+                          border: zscode !== "" ? "1px solid blue" : "1px solid grey",
+                          color: zscode !== "" ? "blue" : undefined,
+                          fontWeight: zscode !== "" ? "bold" : undefined,
+                        }}
+                        value={zscode}
+                        onChange={handleZscodeChange}
+                        displayEmpty
+                        className={classes.selectEmpty}
+                        disabled={
+                          !baseItem || baseItem.zscodes === null || zcode === ""
+                        }
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 190,
+                            },
+                          },
+                        }}
+                      >
+                        <MenuItem value="">전체</MenuItem>
+                        {baseItem &&
+                          baseItem.zscodes &&
+                          baseItem.zscodes.map((code, index) => (
+                            <MenuItem key={index} value={code}>
+                              {baseItem.regionDetailNames[index]}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </Box>
+                  </>
                 )}
-                </div>
-                <Chip
-                  label="이동"
-                  style={{
-                    fontWeight: "bold",
-                  }}
-                  color="secondary"
-                  clickable
-                  onClick={() => handleMapMove(data.lat, data.lng)}
-                />                
-                
-              </ListItem>            
-            ))}
-        </List>
-        {searchResult && searchResult.content.length > 0 && (
-          <Box className={classes.PaginationContainer}>
-            <Pagination
-              count={searchResult.totalPages}
-              onChange={handlePageMove}
-              page={page}
-              color="primary"
-            />
-          </Box>
-        )}
-      </Box>
-    </Card>
+              </Box>
+              <Box className={classes.comboContainer}>
+              <Divider />
+                {baseItem && (
+                  <>
+                    <Box>
+                      <InputLabel
+                        className={classes.inputLabelStyle}
+                        style={{
+                          color: busiId.length > 0 ? "blue" : undefined,
+                        }}
+                      >
+                        운영기관
+                      </InputLabel>
+                      <Select
+                        size="small"
+                        multiple
+                        value={busiId}
+                        onChange={handleBusiIdChange}
+                        displayEmpty
+                        sx={{
+                          fontSize: "12px",
+                          mr: "10px",
+                          width: "165px",
+                          border:
+                            busiId.length > 0 ? "1px solid blue" : "1px solid grey",
+                        }}
+                        className={classes.selectEmpty}
+                        renderValue={(selected) => (
+                          <div
+                            style={{
+                              color: selected.length === 0 ? "black" : "blue",
+                              fontWeight: selected.length === 0 ? undefined : "bold",
+                            }}
+                          >
+                            {selected.length === 0
+                              ? "전체"
+                              : `${selected.length}개 선택됨`}
+                          </div>
+                        )}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 190,
+                            },
+                          },
+                        }}
+                      >
+                        {baseItem.busiIds.map((code, index) => (
+                          <MenuItem key={index} value={code}>
+                            {baseItem.bnms[index]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                    <Box>
+                      <InputLabel
+                        className={classes.inputLabelStyle}
+                        style={{
+                          color: chgerId.length > 0 ? "blue" : undefined,
+                        }}
+                      >
+                        충전기 타입
+                      </InputLabel>
+                      <Select
+                        size="small"
+                        multiple
+                        value={chgerId}
+                        onChange={handleChgerIdChange}
+                        displayEmpty
+                        sx={{
+                          fontSize: "12px",
+                          mr: "10px",
+                          width: "165px",
+                          border:
+                            chgerId.length > 0 ? "1px solid blue" : "1px solid grey",
+                        }}
+                        className={classes.selectEmpty}
+                        renderValue={(selected) => (
+                          <div
+                            style={{
+                              color: selected.length === 0 ? "black" : "blue",
+                              fontWeight: selected.length === 0 ? undefined : "bold",
+                            }}
+                          >
+                            {selected.length === 0
+                              ? "전체"
+                              : `${selected.length}개 선택됨`}
+                          </div>
+                        )}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 190,
+                            },
+                          },
+                        }}
+                      >
+                        {baseItem.chgerIds.map((code, index) => (
+                          <MenuItem key={index} value={code}>
+                            {baseItem.chgerTypes[index]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                  </>
+                )}
+              </Box>
+            </Grid>
+            <Grid container className={classes.ListContainer} style={{height: parentHeight}}>
+              <Grid item xs={12} xl={12} >
+                <List>
+                  {searchResult && searchResult.content.length === 0 && (
+                    <Box className={classes.NoSearchResultContainer}>
+                      <ErrorOutline style={{ marginRight: "5px" }} />
+                      <Typography variant="body1">검색 결과가 없습니다.</Typography>
+                    </Box>
+                  )}
+                  {searchResult &&
+                    searchResult.content &&
+                    searchResult.content.map((data, index) => (
+                      <ListItem
+                        key={index}
+                        className={classes.ListItemContainer}
+                        onClick={() => handleMapMove(data.lat, data.lng)}
+                      >
+                        <div className={classes.ListItemInfo}>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            {data.statNm}
+                          </Typography>
+                          <Typography variant="subtitle2">{data.bnm}</Typography>{" "}
+                          <div style={{ display: "flex" }}>
+                            <Typography
+                              variant="subtitle2"
+                              style={{ fontWeight: "bold", marginRight: "5px" }}
+                            >
+                              {data.distance}
+                            </Typography>
+                            <Typography variant="subtitle2">{data.addr}</Typography>{" "}
+                          </div>
+                          <div className={classes.ListItemYnContainer}>
+                            {data.parkingFree ? (
+                              <Chip
+                                label="무료주차"
+                                color="primary"
+                                variant="outlined"
+                              />
+                            ) : (
+                              <Chip label="유료주차" variant="outlined" />
+                            )}
+                            {data.limitYn ? (
+                              <Chip label="비개방" variant="outlined" />
+                            ) : (
+                              <Chip label="개방" color="primary" variant="outlined" />
+                            )}
+                          </div>
+                          <div className={classes.ListChargerTypeContainer}>
+                            {data.chgerTypes.map((chgerType, index) => (
+                              <Chip
+                                key={index}
+                                icon={<ElectricCarIcon />}
+                                label={`${baseItem.chgerTypes[
+                                  baseItem.chgerIds.indexOf(chgerType)
+                                ]
+                                  }`}
+                                style={{ marginBottom: "5px", marginRight: "5px" }}
+                              />
+                            ))}
+                          </div>
+                            {data.fileurls && data.fileurls.length > 0 && (
+                                <Swiper
+                                    spaceBetween={5}
+                                    slidesPerView={2}
+                                    navigation={true}
+                                    modules={[Navigation]}
+                                    style={{ width: '240px', height: '100px' }}
+                                >
+                                    {data.fileurls.map((url, index) => (
+                                        <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
+                                            </div>
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            )}
+                        </div>
+                        <Chip
+                          label="이동"
+                          style={{
+                            fontWeight: "bold",
+                          }}
+                          color="secondary"
+                          clickable
+                          onClick={() => handleMapMove(data.lat, data.lng)}
+                        />
+                      </ListItem>
+                    ))}
+                </List>
+                {searchResult && searchResult.content.length > 0 && (
+                  <Box className={classes.PaginationContainer}>
+                    <Pagination
+                      count={searchResult.totalPages}
+                      onChange={handlePageMove}
+                      page={page}
+                      color="primary"
+                    />
+                  </Box>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+    </Grid>
   );
 };
 
@@ -658,9 +693,7 @@ export default ChargingStationSearchBar;
 const useStyles = makeStyles({
   baseLayer: {
     display: "flex",
-    flexDirection: "column",
     backgroundColor: "#EFF8FB",
-    width: "420px",
     height: "60vh",
     padding: "20px",
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.4)",
@@ -672,7 +705,6 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "flex-start",
     maxWidth: "100%",
-    width: "100%",
   },
   toggleContainer: {
     display: "flex",
@@ -692,6 +724,19 @@ const useStyles = makeStyles({
   },
   ListContainer: {
     overflowY: "auto",
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#f1f1f1',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#888',
+      borderRadius: '10px',
+    },
+    '&::-webkit-scrollbar-button': {
+      display: 'none',
+    },
   },
   ListItemContainer: {
     borderBottom: "1px groove grey",
@@ -706,7 +751,7 @@ const useStyles = makeStyles({
     "&:hover": {
       backgroundColor: "#f0f0f0",
     },
-    fontSize: "11px",
+    fontSize: "16px",
   },
   ListItemInfo: {
     display: "flex",
@@ -727,7 +772,6 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "200px",
     color: "gray",
   },
   PaginationContainer: {
