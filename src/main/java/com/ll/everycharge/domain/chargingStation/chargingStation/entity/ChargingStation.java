@@ -6,6 +6,8 @@ import static lombok.AccessLevel.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.locationtech.jts.geom.Point;
+
 import com.ll.everycharge.domain.charger.charger.entity.Charger;
 import com.ll.everycharge.domain.charger.charger.form.ChargerApiItemForm;
 import com.ll.everycharge.domain.operatingCompany.operatingCompany.entity.OperatingCompany;
@@ -62,6 +64,8 @@ public class ChargingStation {
     private double lat;
     //경도
     private double lng;
+    // 위도, 경도 point
+    private Point point;
     //주차료여부
     private String parkingFree;
     //충전소 안내
