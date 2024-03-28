@@ -59,27 +59,46 @@ const ChargingStationInfo = ({ statId }) => {
           padding: "3px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between", // 요소들을 좌우로 배치합니다.
           backgroundColor: "lightblue",
         }}
       >
-        <Typography
-          variant="subtitle1"
-          style={{ fontWeight: "bold", marginRight: "5px" }}
-        >
-          {chargingStationData.statNm}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          style={{ color: "grey", marginTop: "2px" }}
-        >
-          {" "}
-          {chargingStationData.addr}
-        </Typography>
-        <CopyButton addr={chargingStationData.addr} />
-        <NaverMapButton addr={chargingStationData.addr} />
-        <KakaoMapButton addr={chargingStationData.addr} />
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "left",
+          maxWidth: "70%", // 최대 너비 제한
+        }}>
+          <Typography
+            variant="subtitle1"
+            style={{
+              fontWeight: "bold",
+              marginBottom: "5px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {chargingStationData.statNm}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{
+              color: "grey",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {chargingStationData.addr}
+          </Typography>
+        </div>
+        <div style={{ minWidth: "102px" }}>
+          <CopyButton addr={chargingStationData.addr} />
+          <NaverMapButton addr={chargingStationData.addr} />
+          <KakaoMapButton addr={chargingStationData.addr} />
+        </div>
       </div>
-
       {/* 충전소 기본정보 */}
       <TableContainer >
         <Table style={{ border: "1px groove lightgrey" }}>
