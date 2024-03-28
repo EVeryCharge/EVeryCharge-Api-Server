@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChargerBatchUpdateConfig {
 	@Getter
 	@Setter
-	private boolean isBatchUpdateRunning = true;
+	private boolean isBatchUpdateRunning = false;
 	private final int CHUNK_SIZE = 1;
 
 	@Bean
