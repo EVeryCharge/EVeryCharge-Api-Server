@@ -596,12 +596,19 @@ const ChargingStationSearchBar = ({
                         onClick={() => handleMapMove(data.lat, data.lng)}
                       >
                         <div className={classes.ListItemInfo}>
-                          <Typography
-                            variant="subtitle1"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            {data.statNm}
-                          </Typography>
+                          <div style={{ maxWidth: "220px" }}>
+                            <Typography
+                              variant="subtitle1"
+                              style={{
+                                fontWeight: "bold",
+                                overflow: "hidden", // 내용이 넘치면 숨깁니다.
+                                textOverflow: "ellipsis", // 넘치는 텍스트를 말줄임표로 표시합니다.
+                                whiteSpace: "nowrap", // 텍스트를 한 줄로 표시합니다.
+                              }}
+                            >
+                              {data.statNm}
+                            </Typography>
+                          </div>
                           <Typography variant="subtitle2">{data.bnm}</Typography>{" "}
                           <div style={{ display: "flex" }}>
                             <Typography
@@ -610,7 +617,19 @@ const ChargingStationSearchBar = ({
                             >
                               {data.distance}
                             </Typography>
-                            <Typography variant="subtitle2">{data.addr}</Typography>{" "}
+                            <div style={{ maxWidth: "210px" }}>
+                              <Typography
+                                variant="subtitle2"
+                                style={{
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                  flexShrink: 1, // 필요한 경우 축소를 허용
+                                }}
+                              >
+                                {data.addr}
+                              </Typography>{" "}
+                            </div>
                           </div>
                           <div className={classes.ListItemYnContainer}>
                             {data.parkingFree ? (

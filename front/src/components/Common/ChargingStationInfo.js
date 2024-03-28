@@ -63,21 +63,37 @@ const ChargingStationInfo = ({ statId }) => {
           backgroundColor: "lightblue",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "left" }}>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "left",
+          maxWidth: "70%", // 최대 너비 제한
+        }}>
           <Typography
             variant="subtitle1"
-            style={{ fontWeight: "bold", marginBottom: "5px" }} // 마진을 아래쪽에 추가하여 간격을 조절합니다.
+            style={{
+              fontWeight: "bold",
+              marginBottom: "5px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
           >
             {chargingStationData.statNm}
           </Typography>
           <Typography
             variant="subtitle2"
-            style={{ color: "grey" }}
+            style={{
+              color: "grey",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
           >
             {chargingStationData.addr}
           </Typography>
         </div>
-        <div style={{minWidth: "102px"}}>
+        <div style={{ minWidth: "102px" }}>
           <CopyButton addr={chargingStationData.addr} />
           <NaverMapButton addr={chargingStationData.addr} />
           <KakaoMapButton addr={chargingStationData.addr} />

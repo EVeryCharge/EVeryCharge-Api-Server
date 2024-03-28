@@ -204,7 +204,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                 <br />
 
                 <Button
-                    variant="contained" // 변경된 variant로 더 돋보이는 버튼 스타일 적용
+                    variant="outlined" // 변경된 variant로 더 돋보이는 버튼 스타일 적용
                     color="primary"
                     onClick={handleSubmit}
                     sx={{
