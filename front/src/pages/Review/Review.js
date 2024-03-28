@@ -264,7 +264,7 @@ const Review = ({ chargingStationId }) => {
                         <TableCell style={{
                           width: "50px", borderBottom: "none"
                         }}>
-                          <div style={{ fontSize: "11px" }}>
+                          <div style={{ fontSize: "11px", width: "64px" }}>
                             {new Date(reviewItem.createDate).toLocaleString(undefined, {
                               year: 'numeric', month: 'numeric', day: 'numeric',
                               hour: 'numeric', minute: 'numeric'
