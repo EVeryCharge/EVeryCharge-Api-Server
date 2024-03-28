@@ -137,10 +137,10 @@ const ChargingStationMap = () => {
       });
   };
 
-  // 지도 고정 시 3000ms 마다 서버에 요청
+  // 지도 고정 시 1500ms 마다 서버에 요청
   const fetchDataFromServerRangeQueryDebounced = debounce(
     fetchDataFromServerRangeQuery,
-    3000
+    1500
   );
 
   const setMarkerAndCustomOverlay = (items) => {
