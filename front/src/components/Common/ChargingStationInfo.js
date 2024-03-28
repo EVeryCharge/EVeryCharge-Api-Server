@@ -59,27 +59,30 @@ const ChargingStationInfo = ({ statId }) => {
           padding: "3px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between", // 요소들을 좌우로 배치합니다.
           backgroundColor: "lightblue",
         }}
       >
-        <Typography
-          variant="subtitle1"
-          style={{ fontWeight: "bold", marginRight: "5px" }}
-        >
-          {chargingStationData.statNm}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          style={{ color: "grey", marginTop: "2px" }}
-        >
-          {" "}
-          {chargingStationData.addr}
-        </Typography>
-        <CopyButton addr={chargingStationData.addr} />
-        <NaverMapButton addr={chargingStationData.addr} />
-        <KakaoMapButton addr={chargingStationData.addr} />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "left" }}>
+          <Typography
+            variant="subtitle1"
+            style={{ fontWeight: "bold", marginBottom: "5px" }} // 마진을 아래쪽에 추가하여 간격을 조절합니다.
+          >
+            {chargingStationData.statNm}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{ color: "grey" }}
+          >
+            {chargingStationData.addr}
+          </Typography>
+        </div>
+        <div style={{minWidth: "102px"}}>
+          <CopyButton addr={chargingStationData.addr} />
+          <NaverMapButton addr={chargingStationData.addr} />
+          <KakaoMapButton addr={chargingStationData.addr} />
+        </div>
       </div>
-
       {/* 충전소 기본정보 */}
       <TableContainer >
         <Table style={{ border: "1px groove lightgrey" }}>
