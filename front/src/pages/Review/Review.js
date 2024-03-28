@@ -33,12 +33,11 @@ const Review = ({ chargingStationId }) => {
   //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
   const [activeReview, setActiveReview] = useState({ photoIndex: 0, isOpen: false, images: [] });
-
+  
   const fetchData = async () => {
     try {
       const response = await HttpGet(`api/v1/review/${chargingStationId}`);
       setReview(response || { data: { items: [] } });
-      console.log("어떤데이터들이 들어왔는지 볼래", response.data);
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
     }
@@ -61,7 +60,7 @@ const Review = ({ chargingStationId }) => {
       alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
       return;
     }
-
+    
     setFiles(selectedFiles);
 
     Promise.all(newSelectedFiles.map(file => {
@@ -168,8 +167,8 @@ const Review = ({ chargingStationId }) => {
 
       fetchData();
       setNewReviewContent("");
-      setFiles([]);
-      setPreviewUrls([]);
+      setFiles([]); 
+      setPreviewUrls([]); 
     } catch (error) {
       console.error("후기를 작성하는 중 오류 발생:", error);
     }
