@@ -26,7 +26,7 @@ const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
           marginLeft: "-41px"
         },
         content: {
-          maxWidth: "1200px", // 최대 너비 설정
+          maxWidth: "700px", // 최대 너비 설정
           width: "89%", // 모달의 너비를 조절합니다.
           height: "60%", // 모달의 높이를 조절합니다.
           display: "flex",
