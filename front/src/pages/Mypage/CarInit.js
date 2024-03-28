@@ -104,16 +104,21 @@ const CarInit = ({ isOpen, onRequestClose }) => {
             style={{
                 overlay: {
                     zIndex: 1000, // 모달 배경의 z-index
+                    marginLeft: "-71px"
                 },
                 content: {
-                    width: "70%", // 모달의 너비를 조절합니다.
+                    maxWidth: "500px", // 최대 너비 설정
+                    width: "89%", // 모달의 너비를 조절합니다.
                     height: "60%", // 모달의 높이를 조절합니다.
-                    margin: "auto", // 모달을 화면 중앙에 위치시킵니다.
+                    display: "flex",
+                    justifyContent: "center", // 수평 가운데 정렬
+                    margin: "auto",
+                    marginTop: "15vh",
                 },
             }}
         >
             <div className={classes.root} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h1>브랜드 선택</h1>
+                <h1 style={{ marginBottom: '20px', color: '#1976d2' }}>브랜드 선택</h1>
                 <Stack alignItems="center">
                     {chunkedManuItems(manuItem, 4).map((chunk, index) => (
                         <ToggleButtonGroup
@@ -125,6 +130,19 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(4, 1fr)',
                                 marginBottom: 2, // 각 ToggleButtonGroup 사이의 마진 추가
+                                '& .MuiToggleButton-root': { // 모든 토글 버튼에 적용될 스타일
+                                    border: '1px solid ',
+                                    '&.Mui-selected': {
+                                        backgroundColor: '#1976d2',
+                                        color: '#fff',
+                                        '&:hover': {
+                                            backgroundColor: '#115293',
+                                        },
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: '#f0f0f0',
+                                    },
+                                },
                             }}
                             onChange={handleBrandChange}
                         >
@@ -133,7 +151,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                                     key={option}
                                     value={option}
                                     sx={{
-                                        width: 83, // 버튼의 고정된 너비
+                                        width: 100, // 버튼의 고정된 너비
                                         height: 50, // 버튼의 고정된 높이
                                     }}
                                 >
@@ -143,24 +161,39 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                         </ToggleButtonGroup>
                     ))}
                 </Stack>
-                <h1>모델 선택</h1>
-
+                <h1 style={{ marginTop: '40px', marginBottom: '20px', color: '#1976d2' }}>모델 선택</h1>
                 <Stack alignItems="center">
                     <ToggleButtonGroup
                         orientation="vertical"
                         value={selectedCar}
                         onChange={handleBrandChange2}
-                        exclusive  // 한 번에 하나의 버튼만 선택 가능하도록 exclusive 속성 추가
+                        exclusive
                         aria-label="Button group"
+                        sx={{
+                            '& .MuiToggleButton-root': {
+                                maxWidth: '450px',
+                                minWidth: '360px',
+                                height: 70,
+                                justifyContent: 'flex-start',
+                                paddingLeft: '20px',
+                                border: '1px solid ',
+                                '&.Mui-selected': {
+                                    backgroundColor: '#1976d2',
+                                    color: '#fff',
+                                    '&:hover': {
+                                        backgroundColor: '#115293',
+                                    },
+                                },
+                                '&:hover': {
+                                    backgroundColor: '#f0f0f0',
+                                },
+                            },
+                        }}
                     >
                         {carItem.map(car => (
                             <ToggleButton
                                 value={car.carModel}
                                 key={car.carModel}
-                                sx={{
-                                    width: 600,
-                                    height: 70,
-                                }}
                             >
                                 {car.carModel}
                             </ToggleButton>
@@ -171,9 +204,17 @@ const CarInit = ({ isOpen, onRequestClose }) => {
                 <br />
 
                 <Button
-                    variant="outlined"
+                    variant="outlined" // 변경된 variant로 더 돋보이는 버튼 스타일 적용
                     color="primary"
                     onClick={handleSubmit}
+                    sx={{
+                        marginTop: '30px',
+                        padding: '10px 20px',
+                        backgroundColor: '#1976d2',
+                        '&:hover': {
+                            backgroundColor: '#115293',
+                        },
+                    }}
                 >
                     등록
                 </Button>

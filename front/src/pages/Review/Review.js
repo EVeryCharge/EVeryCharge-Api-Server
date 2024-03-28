@@ -357,7 +357,9 @@ const Review = ({ chargingStationId }) => {
 
 
                 {reviewItem.s3fileUrl && reviewItem.s3fileUrl.length > 0 && (
-                  <div colSpan={3} style={{ display: "block", display: "flex", marginBottom: "20px", marginLeft: "10%" }}>
+
+                  <div colSpan={3} style={{ display: "block", display: "flex", marginBottom: "20px", marginLeft: "10px" }}>
+
                     <div style={{ display: "flex", marginTop: "0px" }}>
                       {reviewItem.s3fileUrl.map((imageUrl, index) => (
                         <img

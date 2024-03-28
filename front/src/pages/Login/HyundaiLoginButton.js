@@ -4,10 +4,10 @@ import hyundaiLoginImage from '../../assets/image/hyundai_login.png';
 import { useAuth } from "../../utils/AuthContext";
 
 const HyundaiLoginButton = () => {
-  const { getUserName} = useAuth();
+  const { getUserName } = useAuth();
 
   const responseType = 'code';
-  const clientId = '7876a3ed-63a5-41a4-a0df-a947b593c15c'; // 애플리케이션 등록 시 발급 받은 Client ID를 입력하세요.
+  const clientId = '4211f199-e798-459b-bc41-260cab36a1ed'; // 애플리케이션 등록 시 발급 받은 Client ID를 입력하세요.
 
   const redirectUri = encodeURIComponent(`${process.env.REACT_APP_BACKEND_URL}/hyundai`); // 애플리케이션 등록 시 설정한 Redirect URL을 입력하세요.
 
@@ -21,12 +21,20 @@ const HyundaiLoginButton = () => {
 
   return (
     <Button
-      style={{ marginTop: '20px', backgroundColor: '#FFFFFF', color: 'black', padding: 0, minWidth: 'auto' }} // 버튼 스타일 수정
-      variant="contained"
-
+      variant="outlined"
+      color="primary"
       href={authUrl}
+      style={{
+        borderColor: '#1976d2',
+        color: '#fff',
+        padding: '8px 20px',
+        textTransform: 'none',
+        fontSize: '16px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+        background: '#0D66AC',
+      }}
     >
-      <img src={hyundaiLoginImage} alt="현대" style={{ width: '100px', height: '40px' }} />
+      현대 블루링크로 연동
     </Button>
   );
 }
