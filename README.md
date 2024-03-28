@@ -1,5 +1,5 @@
 ![image](https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/addb4701-1241-4c1c-9b77-75254e699877)
-
+<img width="500" height="400" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/addb4701-1241-4c1c-9b77-75254e699877">
 
 
 ## EveryCharge
@@ -30,14 +30,19 @@
 
 
 ### 사용 기술 스택
-
 ![image](https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/fa41191b-c2ae-4ed6-8907-50873c35b00f)
 
+### 주요 기능 소개🗂
+|충전소 검색|충전기 요금 상태 정보 조회|
+|---|---|
+|움짤1|움짤2|
+|- 위치 기반 충전소 검색<br/> -필터를 통해 원하는 조건으로 검색| - 충전소 운영 기관 및 충전 요금 정보 제공<br/> - 충전기 상태 및 사용 여부 제공<br/> - 이용 후기를 통해 관련 사진 업로드 및 실 사용 경험 제공|
 
+|파일 서비스|내 차 등록 서비스|
+|---|---|
+|움짤1|움짤2|
+|- 충전소 이용 후기 등록시 첨부한 충전소 이미지 조회<br/> -문의 게시판 등 다양한 도메인에서 파일 서비스 사용 가능| - 내 차 등록을 통해 맞춤형 정보 제공<br/> - 현대차 등록 서비스 제공|
 
-### Member
-* 🔰 김효준 / `gimyojun` / [@Github](https://github.com/gimyojun)
-* 👦 권성민 / `SeoungminKwon` / [@Github](https://github.com/SeoungminKwon)
-* 👦 이상제 / `Bi3a` / [@Github](https://github.com/Bisi3asi)
-* 👦 임지원 / `i-am-jiwon` / [@Github](https://github.com/i-am-jiwon)
-* 👦 임재욱 / `jaeuklim` / [@Github](https://github.com/jaeuklim)
+### 시연영상 🎥
+- [1차 시연 영상](https://youtu.be/0Az4CP7YrKY&t=2s)
+- [2차 시연 영상](https://youtu.be/0Az4CP7YrKY&t=2s)
