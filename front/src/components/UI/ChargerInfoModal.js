@@ -37,7 +37,7 @@ const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
         },
       }}
     >
-      <Box style={{ maxWidth: "1000px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box style={{ width: "90%", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <ChargingStationInfo statId={getStatId()} />
         <ChargingStationStateTable statId={getStatId()} />
         <Review chargingStationId={getStatId()}></Review>

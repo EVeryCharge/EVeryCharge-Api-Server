@@ -108,7 +108,7 @@ const ChargingStationStateTable = ({ statId }) => {
             {chargingStationData.map((row, index) => (
               <TableRow key={index}>
                 <TableCell style={tableCellStyle2}>{ChargerType[row.chgerType]}</TableCell>
-                <TableCell style={{ color: ChargerState[row.stat]?.color, padding: "4px" }}>
+                <TableCell style={{ color: ChargerState[row.stat]?.color, padding: "4px" ,textAlign: "center"}}>
                   {ChargerState[row.stat].description}
                 </TableCell>
                 <TableCell style={tableCellStyle2}>

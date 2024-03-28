@@ -84,7 +84,7 @@ const ChargingStationInfo = ({ statId }) => {
       <TableContainer >
         <Table style={{ border: "1px groove lightgrey" }}>
           <TableHead>
-            <TableRow style={{ borderBottom: "1.5px solid grey"}}>
+            <TableRow style={{ borderBottom: "1.5px solid grey" }}>
               <TableCell style={tableCellStyle}>충전소ID</TableCell>
               <TableCell style={tableCellStyle}>운영기관</TableCell>
               <TableCell style={tableCellStyle}>
@@ -106,6 +106,10 @@ const ChargingStationInfo = ({ statId }) => {
                 align="center"
                 style={{
                   color: chargingStationData.limitYn === "Y" ? "green" : "red",
+                  padding: "4px",
+                  textAlign: "center", // 글자를 가운데 정렬합니다.
+                  paddingTop: "13px",
+                  paddingBottom: "13px",
                 }}
               >
                 {chargingStationData.limitYn === "Y" ? "O" : "X"}
