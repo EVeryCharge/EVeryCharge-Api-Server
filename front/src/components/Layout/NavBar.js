@@ -52,8 +52,9 @@ const Navbar = () => {
       <Toolbar
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center", // 가운데 정렬
           padding: "24px",
+          margin: "auto", // 좌우 여백을 자동으로 설정하여 화면 중앙에 배치
           maxWidth: "1200px",
         }}
       >
