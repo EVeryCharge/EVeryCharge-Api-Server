@@ -299,6 +299,9 @@ const My = () => {
     };
 
     const handleDeletelick = () => {
+        document.cookie = 'HDAccess=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'HDCarId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
         HttpDelete("/api/v1/members/carDelete", {
             username: getUserName()
         }).then((response) => {
@@ -409,11 +412,26 @@ const My = () => {
                                     아래 버튼을 눌러 등록해 보세요.
                                     <br />
                                     <br />
-                                    <Button variant="outlined" color="Primary" onClick={() => handleModal()} >
-                                        등록하기
-                                    </Button>
-                                    <br />
-                                    <HyundaiLoginButton />
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={() => handleModal()}
+                                            style={{
+                                                borderColor: '#1976d2', // Primary 색상에 맞는 테두리 색상
+                                                color: '#1976d2', // 버튼 내 글자 색상
+                                                padding: '8px 35px', // 버튼 내부 패딩
+                                                textTransform: 'none', // 글자 대문자 자동 변환 해제
+                                                fontSize: '15px', // 글자 크기
+                                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', // 그림자 효과
+
+                                            }}
+                                        >
+                                            수동으로 차량 등록
+                                        </Button>
+
+                                        <HyundaiLoginButton />
+                                    </div>
                                     <CarInit
                                         isOpen={isOpen}
                                         onRequestClose={closeModal}
@@ -516,13 +534,42 @@ const My = () => {
                                 <React.Fragment>
                                     <CardContent>
                                         <Grid container spacing={3} justifyContent="center" alignItems="center">
-                                            <Grid item xs={12} sm={3} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>                        {/* 프로필 이미지 */}
-                                                <Button size="small" color="primary" onClick={handleBatteryClick}>
-                                                    내 배터리 확인
+                                            <Grid item xs={12} sm={3} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: "100px" }}>                        {/* 프로필 이미지 */}
+                                                <Button
+                                                    size="small"
+                                                    color="primary"
+                                                    onClick={handleBatteryClick}
+                                                    style={{
+                                                        width: "60px",
+                                                        fontSize: "14px",
+                                                        backgroundColor: "#4CAF50", // 녹색 계열의 버튼 배경색
+                                                        color: "white", // 버튼 내 글자 색상
+                                                        border: "none", // 테두리 제거
+                                                        borderRadius: "4px", // 둥근 모서리 효과
+                                                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)", // 그림자 효과
+                                                        transition: "all 0.3s ease", // 부드러운 전환 효과
+                                                    }}
+                                                >
+                                                    배터리
                                                 </Button>
+
                                                 {/* 상태에 저장된 데이터가 있으면 표시 */}
                                                 {batteryData && (
-                                                    <span>: {batteryData} %</span>
+                                                    <span
+                                                        style={{
+                                                            width: "60px",
+                                                            fontSize: "14px",
+                                                            display: "inline-block",
+                                                            backgroundColor: "#f2f2f2", // 배경색
+                                                            color: "#333", // 글자 색상
+                                                            textAlign: "center", // 텍스트 중앙 정렬
+                                                            borderRadius: "4px", // 둥근 모서리 효과
+                                                            padding: "2px 0", // 상하 패딩
+                                                            marginLeft: "10px", // 버튼과의 간격
+                                                        }}
+                                                    >
+                                                        {batteryData} %
+                                                    </span>
                                                 )}
                                             </Grid>
                                         </Grid>
