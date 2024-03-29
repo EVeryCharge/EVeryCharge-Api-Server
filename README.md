@@ -1,6 +1,6 @@
-
-<img width="80%" height="60%" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/addb4701-1241-4c1c-9b77-75254e699877">
-
+<p align="center">
+  <img width="60%" height="60%" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/addb4701-1241-4c1c-9b77-75254e699877">
+</p>
 
 ## EveryCharge
 ### 공공 데이터 포탈에서 제공하는 공공 데이터를 활용한 전기차 충전소 위치 및 충전기 상태 여부를 제공하는 서비스 입니다.
@@ -22,9 +22,10 @@
 - 
 ---
 ### MEMBER🎨
+
 |김효준(BE)|이상제(BE)|임지원(BE)|임재욱(BE)|
 |------|---|---|---|
-|<img width="300" height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/629b242d-56c9-4feb-a763-646eaed302ef">|<img width="300" height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/4efcb10d-f8c7-4e26-99f8-8e0ea1b5b140">|<img width="300" height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/e2b93a1f-d116-47fe-8f40-450747672dbf">|<img width="300" height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/ec451484-fbfa-43ff-8adf-33f336d30f03">|
+|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/629b242d-56c9-4feb-a763-646eaed302ef"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/4efcb10d-f8c7-4e26-99f8-8e0ea1b5b140"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/e2b93a1f-d116-47fe-8f40-450747672dbf"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/ec451484-fbfa-43ff-8adf-33f336d30f03"></p>|
 |- PWA 기반 WEB APP, 앱 퍼블리싱<br/>- 클라우드 워치 도입|- 요금정보 공시 서비스<br/>- 충전기 상태 전역 업데이트|- CI / CD 파이프라인 구축, 무중단 배포<br/>- 마이페이지 · 차량정보 등록, UI 개선|- 파일서비스 구축<br/>- 이미지 뷰 UI 개선|
 |`gimyojun`<br/>[@Github](https://github.com/gimyojun)|`Bi3a`<br/>[@Github](https://github.com/Bisi3asi)|`i-am-jiwon`<br/>[@Github](https://github.com/i-am-jiwon)|`jaeuklim`<br/>[@Github](https://github.com/jaeuklim)| 
 
@@ -38,12 +39,13 @@
 |충전소 검색|충전기 요금 상태 정보 조회|
 |---|---|
 |움짤1|움짤2|
-|- 위치 기반 충전소 검색<br/> -필터를 통해 원하는 조건으로 검색| - 충전소 운영 기관 및 충전 요금 정보 제공<br/> - 충전기 상태 및 사용 여부 제공<br/> - 이용 후기를 통해 관련 사진 업로드 및 실 사용 경험 제공|  
+|- 위치 기반 충전소 검색<br/> -필터를 통해 원하는 조건으로 검색| - 충전소 운영 기관 및 충전 요금<br/> &nbsp;&nbsp;&nbsp;정보 제공<br/> - 충전기 상태 및 사용 여부 제공<br/> - 이용 후기를 통해 관련 사진 업로드<br/> &nbsp;&nbsp;&nbsp;및 실 사용 경험 제공|  
 
 |파일 서비스|내 차 등록 서비스|
 |---|---|
 |움짤1|움짤2|
-|- 충전소 이용 후기 등록시 첨부한 충전소 이미지 조회<br/> -문의 게시판 등 다양한 도메인에서 파일 서비스 사용 가능| - 내 차 등록을 통해 맞춤형 정보 제공<br/> - 현대차 등록 서비스 제공|  
+|- 충전소 이용 후기 등록시 첨부한<br/> &nbsp;&nbsp;&nbsp;충전소 이미지 조회<br/> -문의 게시판 등 다양한 도메인에서<br/> &nbsp;&nbsp;&nbsp;파일 서비스 사용 가능| - 내 차 등록을 통해 맞춤형 정보 제공<br/> - 현대차 등록 서비스 제공|  
+
 
 ---
 ### 시연영상 🎥
