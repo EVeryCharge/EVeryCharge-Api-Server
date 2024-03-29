@@ -29,8 +29,8 @@ function InquiryForm() {
     }
 
 
-    if ((files.length + newSelectedFiles.length) > 10) {
-      alert(`최대 10개의 파일만 업로드할 수 있습니다. `);
+    if ((files.length + newSelectedFiles.length) > 5) {
+      alert(`최대 5개의 파일만 업로드할 수 있습니다. `);
       return;
     }
     
