@@ -18,15 +18,15 @@
   - 데이터 조회 속도 및 검색 속도 개선
   - 90개 이상의 충전기 운영기관별 충전요금 제공
   - 내 차 정보 등록을 통해 맞춤 형 전기차 충전소 서비스 제공
-- 개발 기간 : ``24.01.15. ~  ``
-- 
+- 개발 기간 : ``24.01.15. ~ 24-03-29. ``
+  
 ---
 ### MEMBER🎨
 
 |김효준(BE)|이상제(BE)|임지원(BE)|임재욱(BE)|
 |------|---|---|---|
 |<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/629b242d-56c9-4feb-a763-646eaed302ef"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/4efcb10d-f8c7-4e26-99f8-8e0ea1b5b140"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/e2b93a1f-d116-47fe-8f40-450747672dbf"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/ec451484-fbfa-43ff-8adf-33f336d30f03"></p>|
-|- PWA 기반 WEB APP, 앱 퍼블리싱<br/>- 클라우드 워치 도입|- 요금정보 공시 서비스<br/>- 충전기 상태 전역 업데이트|- CI / CD 파이프라인 구축, 무중단 배포<br/>- 마이페이지 · 차량정보 등록, UI 개선|- 파일서비스 구축<br/>- 이미지 뷰 UI 개선|
+|- PWA 기반 WEB APP, 앱 퍼블리싱<br/>- 클라우드 워치 도입|- 요금정보 공시 서비스<br/>- 충전기 상태 전역 업데이트|- 무중단 CI/CD<br/>- 마이페이지 · 차량 등록<br/> - UI 개선|- 파일서비스 구축<br/>- 이미지 뷰 UI 개선|
 |`gimyojun`<br/>[@Github](https://github.com/gimyojun)|`Bi3a`<br/>[@Github](https://github.com/Bisi3asi)|`i-am-jiwon`<br/>[@Github](https://github.com/i-am-jiwon)|`jaeuklim`<br/>[@Github](https://github.com/jaeuklim)| 
 
 
