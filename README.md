@@ -1,6 +1,7 @@
 <p align="center">
-  <img width="60%" height="60%" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/addb4701-1241-4c1c-9b77-75254e699877">
+  <img width="70%" heught="70%" alt="image" src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FeLX59z%2FbtsGf985HlB%2FIleQYILzBybtNbehUzaaWK%2Fimg.png">
 </p>
+<br/>
 
 ## EveryCharge 🚗
  > 전기차 충전기 API 활용 충전소 7만건 · 충전기 데이터 30만건 활용 정보 제공 서비스    
