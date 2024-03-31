@@ -41,7 +41,7 @@ public class ChargingStationSearchRepository {
 
 		String nativeQuery =
 			"SELECT CS.stat_id AS statId, "
-				+ "ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) AS distance, "
+				+ "ST_DISTANCE_SPHERE (CS.point, ST_POINTFROMTEXT(CONCAT('POINT(', :lat, ' ', :lng, ')'), 4326)) AS distance, "
 				+ "CS.stat_nm AS statNm, "
 				+ "CS.addr AS addr, "
 				+ "CS.lat AS lat, "
@@ -57,11 +57,11 @@ public class ChargingStationSearchRepository {
 				+ "JOIN region_detail AS RD ON CS.zscode = RD.zscode "
 				+ "JOIN region AS R ON R.zcode = RD.zcode "
 				+ "JOIN operating_company AS OC ON OC.busi_id = CS.busi_id "
-					+ "WHERE (:parkingFree is null or CS.parking_free = :parkingFree) "
-					+ "AND (:limitYn is null or CS.limit_yn = :limitYn) "
-					+ "AND (:zscode is null or RD.zscode = :zscode) " + "AND (:zcode is null or R.zcode = :zcode) "
-					+ "AND (:isPrimary is null or OC.is_primary = :isPrimary) "
-					+ "AND (ST_DISTANCE_SPHERE (POINT(CS.lng, CS.lat), POINT (:lng, :lat)) <= :range) ";
+				+ "WHERE (:parkingFree is null or CS.parking_free = :parkingFree) "
+				+ "AND (:limitYn is null or CS.limit_yn = :limitYn) "
+				+ "AND (:zscode is null or RD.zscode = :zscode) " + "AND (:zcode is null or R.zcode = :zcode) "
+				+ "AND (:isPrimary is null or OC.is_primary = :isPrimary) "
+				+ "AND (ST_CONTAINS ((ST_BUFFER (ST_POINTFROMTEXT(CONCAT('POINT(', :lat, ' ', :lng, ')'), 4326), :range)), CS.point)) ";
 
 		// null에 따른 쿼리 추가
 		if (kw != null) {
@@ -90,6 +90,7 @@ public class ChargingStationSearchRepository {
 			.setParameter("lng", lng)
 			.setParameter("range", range);
 
+
 		// null 에 따른 파라미터 추가
 		if (kw != null) {
 			query.setParameter("kw", "%" + kw + "%");
@@ -108,9 +109,7 @@ public class ChargingStationSearchRepository {
 		int start = (int)pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), resultList.size());
 		Page<ChargingStationSearchBaseDistanceResponseDto> page = new PageImpl<>(
-			resultList.subList(start, end),
-			pageable,
-			resultList.size()
+			resultList.subList(start, end), pageable, resultList.size()
 		);
 
 		return page;

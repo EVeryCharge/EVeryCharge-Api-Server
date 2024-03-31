@@ -30,6 +30,11 @@ public class ChargerApiBatchReader implements ItemReader<List<ChargerApiItemForm
 		List<ChargerApiItemForm> list = chargerService.webClientApiGetChargerInfo(
 			baseUrl, apiServiceKey, numOfRows,currentPageNo, dataType);
 
+		// 오류로 인해 API 데이터가 받아지지 않는 경우
+		if (list == null) {
+			return List.of(new ChargerApiItemForm());
+		}
+
 		log.info("[Batch] : 현재 불러온 OpenAPI 데이터 페이지 : {} 페이지", currentPageNo);
 
 		if (list.isEmpty()) {

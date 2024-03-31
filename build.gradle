@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // REDIS
@@ -93,6 +94,8 @@ dependencies {
     /// httpclient
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.1.3' // Apache HttpClient 5.x 의존성 추가
 
+    // hibernate spatial
+    implementation 'org.hibernate:hibernate-spatial:6.4.1.Final'
 }
 
 tasks.named('test') {
