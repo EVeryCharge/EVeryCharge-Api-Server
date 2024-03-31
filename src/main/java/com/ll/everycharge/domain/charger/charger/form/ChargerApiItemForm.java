@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ChargerApiItemForm {
 	private String statNm;
 	private String statId;
@@ -44,8 +46,10 @@ public class ChargerApiItemForm {
 	public ChargerApiItemForm(Map<String, Object> item, DateTimeFormatter formatter) {
 		this.statNm = (String)item.get("statNm");
 		this.statId = (String)item.get("statId");
-		this.chgerId = String.valueOf(Integer.parseInt((String)item.get("chgerId")));
-		this.chgerType = String.valueOf(Integer.parseInt((String)item.get("chgerType")));
+		String _chgerId = (String) item.get("chgerId");
+		this.chgerId = !_chgerId.isEmpty() ?
+			String.valueOf(Integer.parseInt(_chgerId)) : _chgerId;
+		this.chgerType = (String)item.get("chgerType");
 		this.addr = (String)item.get("addr");
 		this.location = (String)item.get("location");
 		this.lat = Double.valueOf((String)item.get("lat"));
@@ -73,7 +77,7 @@ public class ChargerApiItemForm {
 		this.output = (String)item.get("output");
 		this.method = (String)item.get("method");
 		this.zcode = (String)item.get("zcode");
-		String _zscode = (String)item.get("zcode");
+		String _zscode = (String)item.get("zscode");
 		this.zscode = _zscode.length() == 5 ? _zscode.substring(0, 4)+"0" : _zscode;
 		this.kind = (String)item.get("kind");
 		this.kindDetail = (String)item.get("kindDetail");
