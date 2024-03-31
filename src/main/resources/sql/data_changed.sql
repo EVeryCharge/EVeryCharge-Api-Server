@@ -52,3 +52,41 @@ SET bnm = '이브이시스', is_primary = 'Y' WHERE busi_id = 'JA'; # 중앙제�
 # 03.24. 삭제 여부 및 삭제 사유 필드 충전소 -> 충전기 테이블로 칼럼 이동 (칼럼 인서트는 hibernate에 의해 실행)
 alter table charging_station drop column del_yn;
 alter table charging_station drop column del_detail;
+
+# 03.29. 공간 인덱스 도입
+# hibernate update로 스키마 구성 시 공간 인덱스가 걸리지 않음 (spatial Index)
+# 따라서 실행 전 charging_station 포함 연관관계 매핑되어 있는 모든 테이블을 삭제
+# charging_station은 아래의 스키마를 통해 테이블 재구성, 인덱스 생성
+# 그 외의 테이블은 기존과 동일하게 hibernate ddl update로 생성
+
+# charging_station과 연관 테이블 드랍
+drop table review;
+drop table report;
+drop table charger;
+drop table technical_manager;
+drop table charging_station;
+
+# charging_station 스키마 재생성, 공간 인덱스 생성
+CREATE TABLE charging_station (
+  stat_id VARCHAR(255) NOT NULL PRIMARY KEY,
+  zscode VARCHAR(255),
+  busi_id VARCHAR(255),
+  stat_nm VARCHAR(255),
+  addr VARCHAR(255),
+  location VARCHAR(255),
+  use_time VARCHAR(255),
+  lat DOUBLE NOT NULL,
+  lng DOUBLE NOT NULL,
+  parking_free VARCHAR(255),
+  note VARCHAR(255),
+  limit_yn VARCHAR(255),
+  limit_detail VARCHAR(255),
+  traffic_yn VARCHAR(255),
+  kind VARCHAR(255),
+  kind_detail VARCHAR(255),
+  point POINT NOT NULL SRID 4326,
+  CONSTRAINT fk_zscode FOREIGN KEY (zscode) REFERENCES region_detail (zscode),
+  CONSTRAINT fk_busi_id FOREIGN KEY (busi_id) REFERENCES operating_company (busi_id)
+);
+
+create spatial index idx_point on charging_station (point);
