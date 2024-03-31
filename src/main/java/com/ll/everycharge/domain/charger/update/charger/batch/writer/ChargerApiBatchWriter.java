@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -32,6 +33,7 @@ public class ChargerApiBatchWriter implements ItemWriter<List<ChargerApiItemForm
 	private final OperatingCompanyRepository companyRepository;
 	private final ChargingStationRepository stationRepository;
 	private final ChargerRepository chargerRepository;
+	private final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
 	public void write(Chunk<? extends List<ChargerApiItemForm>> chunk) {
@@ -47,6 +49,8 @@ public class ChargerApiBatchWriter implements ItemWriter<List<ChargerApiItemForm
 
 		try {
 			for (List<ChargerApiItemForm> items : chunk) {
+				if (items.isEmpty()) continue;
+
 				for (ChargerApiItemForm item : items) {
 					RegionDetail region = regionMap.get(item.getZscode());
 					OperatingCompany company = companyMap.get(item.getBusiId());
@@ -56,10 +60,14 @@ public class ChargerApiBatchWriter implements ItemWriter<List<ChargerApiItemForm
 					ChargingStation station = stationRepository.findById(item.getStatId()).orElse(null);
 					if (station != null) {
 						station.update(item, company, region);
+						station.setPoint(GEOMETRY_FACTORY, station);
+
 						updatingStationList.add(station);
 						updateStationCnt++;
 					} else {
 						station = new ChargingStation(item, company, region);
+						station.setPoint(GEOMETRY_FACTORY, station);
+
 						stationRepository.saveAndFlush(station);
 						insertStationCnt++;
 					}

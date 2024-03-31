@@ -89,7 +89,7 @@ public class ChargerService {
         } catch (JsonProcessingException e) {
             log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
         } catch(Exception e) {
-            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생(시간초과) {}", e.getMessage());
+            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생) {}", e.getMessage());
         }
         return hashMap;
     }
@@ -131,8 +131,10 @@ public class ChargerService {
             apiDataMap = objectMapper.readValue(response, HashMap.class);
         } catch (JsonProcessingException e) {
             log.error("[ERROR] : OpenAPI 데이터 JSON 파싱 오류 {}", e.getMessage());
+            return null;
         } catch(Exception e) {
-            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생(시간초과) {}", e.getMessage());
+            log.error("[ERROR] : OpenAPI 데이터 불러오기 중 에러 발생 {}", e.getMessage());
+            return null;
         }
 
         List<Map<String, Object>> items = (List<Map<String, Object>>)((Map<String, Object>)apiDataMap.get("items")).get("item");

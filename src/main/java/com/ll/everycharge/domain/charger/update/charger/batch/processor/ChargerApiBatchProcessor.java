@@ -46,6 +46,7 @@ public class ChargerApiBatchProcessor implements ItemProcessor<List<ChargerApiIt
 					.build()
 			)
 			.toList();
+
 		if (!newCompanyList.isEmpty()) {
 			log.info("[Batch] : 신규 기관 {}개 감지 및 저장 완료", newCompanyList.size());
 			companyRepository.saveAll(newCompanyList);
