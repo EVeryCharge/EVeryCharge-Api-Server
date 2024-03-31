@@ -6,6 +6,8 @@ import static lombok.AccessLevel.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import com.ll.everycharge.domain.charger.charger.entity.Charger;
@@ -118,5 +120,13 @@ public class ChargingStation {
         this.kindDetail = item.getKindDetail();
         this.operatingCompany = company;
         this.regionDetail = regionDetail;
+    }
+
+    // MySQL Spatial Index를 위한 Point 칼럼 set
+    public void setPoint(GeometryFactory factory, ChargingStation chargingStation){
+        Point newPoint = factory.createPoint(
+            new Coordinate(chargingStation.getLng(), chargingStation.getLat()));
+        newPoint.setSRID(4326);
+        this.point = newPoint;
     }
 }
