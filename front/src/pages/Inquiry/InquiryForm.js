@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { HttpPostWithFile } from '../../services/HttpService';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import '../../components/UI/ButtonStyles.css';
 
 function InquiryForm() {
   const [title, setTitle] = useState(null);
@@ -11,18 +12,25 @@ function InquiryForm() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]); 
   const [previewUrls, setPreviewUrls] = useState([]); 
-
+ 
   useEffect(() => {
     console.log("등록된 파일 실 개수는: " + files.length);
   }, [files]);  
 
   const handleFileChange = (e) => {
 
-    const newSelectedFiles = Array.from(e.target.files); // 새롭게 선택된 파일들을 배열로 변환
-    const selectedFiles = [...files, ...newSelectedFiles]; // 기존 파일들과 새로운 파일들을 합친 배열
+    const newSelectedFiles = Array.from(e.target.files);
+    const selectedFiles = [...files, ...newSelectedFiles]; 
+    const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
 
-    if ((files.length + newSelectedFiles.length) > 10) {
-      alert(`최대 10개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
+    if (oversizedFiles.length > 0) {
+        alert("파일 크기는 10MB를 초과할 수 없습니다.");
+        return;
+    }
+
+
+    if ((files.length + newSelectedFiles.length) > 5) {
+      alert(`최대 5개의 파일만 업로드할 수 있습니다. `);
       return;
     }
     
@@ -36,7 +44,8 @@ function InquiryForm() {
         };
         reader.onerror = error => reject(error);
         reader.readAsDataURL(file);
-      });
+      });      
+
     })).then(results => {
       // 모든 파일이 로드되었을 때 실행
       const urls = results.map(result => result.url);
@@ -46,7 +55,7 @@ function InquiryForm() {
       console.error("파일 로드 중 오류가 발생했습니다.", error);
     });
 
-  };
+  };  
 
   const handleDeleteImage = (event, indexToDelete) => {
     event.preventDefault();
@@ -117,16 +126,22 @@ function InquiryForm() {
         value={content}
         onChange={e => setContent(e.target.value)}
       />
-      <input type="file" onChange={handleFileChange} multiple />
-      <div>
-        총 {previewUrls.length}개의 파일이 선택되었습니다.
-      </div>
+      <label className="input-file-button" for="input-file">
+        업로드
+      </label>
+      <input
+        type="file"
+        id = "input-file"
+        onChange={handleFileChange}
+        multiple
+        style={{ display: 'none' }}
+      />
       <div>
         {previewUrls.map((url, index) => (
           <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
-            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ width: "100px", height: "100px" }} />
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "20px", width: "100px", height: "100px", border: "10px solid white" }} />
             <button type="button" 
-              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+              style={{ marginTop: "20px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
               onClick={(event) => handleDeleteImage(event, index)}>
               X
             </button>
@@ -146,3 +161,4 @@ function InquiryForm() {
 }
 
 export default InquiryForm;
+

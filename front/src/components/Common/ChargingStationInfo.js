@@ -30,66 +30,105 @@ const ChargingStationInfo = ({ statId }) => {
       });
   }, []);
 
+  const tableCellStyle = {
+    padding: "4px",
+    textAlign: "center", // 글자를 가운데 정렬합니다.
+    fontWeight: "bold",
+    paddingTop: "13px",
+    paddingBottom: "13px",
+  };
+  const tableCellStyle2 = {
+    padding: "4px",
+    textAlign: "center", // 글자를 가운데 정렬합니다.
+    paddingTop: "13px",
+    paddingBottom: "13px",
+  };
+
   return (
     <div
       style={{
         marginBottom: "20px",
-        padding: "5px",
+        marginLeft: "-21.5px",
+        marginRight: "10px",
+        width: "102.5%"
       }}
     >
       <div
         style={{
-          marginBottom: "3px",
+          marginBottom: "px",
           padding: "3px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between", // 요소들을 좌우로 배치합니다.
           backgroundColor: "lightblue",
         }}
       >
-        <Typography
-          variant="subtitle1"
-          style={{ fontWeight: "bold", marginRight: "5px" }}
-        >
-          {chargingStationData.statNm} 충전소{" "}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          style={{ color: "grey", marginTop: "2px" }}
-        >
-          {" "}
-          {chargingStationData.addr}
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "left",
+          maxWidth: "70%", // 최대 너비 제한
+        }}>
+          <Typography
+            variant="subtitle1"
+            style={{
+              fontWeight: "bold",
+              marginBottom: "5px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {chargingStationData.statNm}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            style={{
+              color: "grey",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {chargingStationData.addr}
+          </Typography>
+        </div>
+        <div style={{ minWidth: "102px" }}>
           <CopyButton addr={chargingStationData.addr} />
           <NaverMapButton addr={chargingStationData.addr} />
           <KakaoMapButton addr={chargingStationData.addr} />
-        </Typography>
+        </div>
       </div>
-
       {/* 충전소 기본정보 */}
-      <TableContainer>
+      <TableContainer >
         <Table style={{ border: "1px groove lightgrey" }}>
           <TableHead>
             <TableRow style={{ borderBottom: "1.5px solid grey" }}>
-              <TableCell style={{ fontWeight: "bold" }}>충전소ID</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>운영기관</TableCell>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
+              <TableCell style={tableCellStyle}>충전소ID</TableCell>
+              <TableCell style={tableCellStyle}>운영기관</TableCell>
+              <TableCell style={tableCellStyle}>
                 주차가능
               </TableCell>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
+              <TableCell style={tableCellStyle}>
                 개방여부
               </TableCell>
-              <TableCell align="center" style={{ fontWeight: "bold" }}>
+              <TableCell style={tableCellStyle}>
                 제한사항
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>{chargingStationData.statId}</TableCell>
-              <TableCell>{chargingStationData.bnm}</TableCell>
+              <TableCell style={tableCellStyle2}>{chargingStationData.statId}</TableCell>
+              <TableCell style={tableCellStyle2}>{chargingStationData.bnm}</TableCell>
               <TableCell
                 align="center"
                 style={{
                   color: chargingStationData.limitYn === "Y" ? "green" : "red",
+                  padding: "4px",
+                  textAlign: "center", // 글자를 가운데 정렬합니다.
+                  paddingTop: "13px",
+                  paddingBottom: "13px",
                 }}
               >
                 {chargingStationData.limitYn === "Y" ? "O" : "X"}
@@ -103,7 +142,7 @@ const ChargingStationInfo = ({ statId }) => {
               >
                 {chargingStationData.parkingFree === "Y" ? "O" : "X"}
               </TableCell>
-              <TableCell align="center">
+              <TableCell style={tableCellStyle2}>
                 {chargingStationData.limitDetail}
               </TableCell>
             </TableRow>
@@ -112,7 +151,7 @@ const ChargingStationInfo = ({ statId }) => {
       </TableContainer>
       <div
         style={{
-          marginTop: "5px",
+          marginTop: "20px",
           marginBottom: "3px",
           padding: "3px",
           display: "flex",

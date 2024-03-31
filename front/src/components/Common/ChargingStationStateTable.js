@@ -58,11 +58,27 @@ const ChargingStationStateTable = ({ statId }) => {
       });
   }, []);
 
+  const tableCellStyle = {
+    padding: "4px",
+    textAlign: "center", // 글자를 가운데 정렬합니다.
+    fontWeight: "bold",
+    paddingTop: "13px",
+    paddingBottom: "13px",
+  };
+  const tableCellStyle2 = {
+    padding: "4px",
+    textAlign: "center", // 글자를 가운데 정렬합니다.
+    paddingTop: "13px",
+    paddingBottom: "13px",
+  };
+
   return (
     <div
       style={{
         marginBottom: "20px",
-        padding: "5px",
+        marginLeft: "-22.5px",
+        marginRight: "10px",
+        width: "102.5%"
       }}
     >
       <Typography
@@ -81,25 +97,25 @@ const ChargingStationStateTable = ({ statId }) => {
         <Table style={{ border: "1px groove lightgrey" }}>
           <TableHead>
             <TableRow style={{ borderBottom: "1.5px solid grey" }}>
-              <TableCell style={{ fontWeight: "bold" }}>타입</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>상태</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>용량</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>이용시간</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>최근이용</TableCell>
+              <TableCell style={tableCellStyle}>타입</TableCell>
+              <TableCell style={tableCellStyle}>상태</TableCell>
+              <TableCell style={tableCellStyle}>용량</TableCell>
+              <TableCell style={tableCellStyle}>이용시간</TableCell>
+              <TableCell style={tableCellStyle}>최근이용</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {chargingStationData.map((row, index) => (
               <TableRow key={index}>
-                <TableCell>{ChargerType[row.chgerType]}</TableCell>
-                <TableCell style={{ color: ChargerState[row.stat]?.color }}>
+                <TableCell style={tableCellStyle2}>{ChargerType[row.chgerType]}</TableCell>
+                <TableCell style={{ color: ChargerState[row.stat]?.color, padding: "4px" ,textAlign: "center"}}>
                   {ChargerState[row.stat].description}
                 </TableCell>
-                <TableCell>
+                <TableCell style={tableCellStyle2}>
                   {row.output ? row.output + "kW" : "확인불가"}
                 </TableCell>
-                <TableCell>{row.useTime}</TableCell>
-                <TableCell>
+                <TableCell style={tableCellStyle2}>{row.useTime}</TableCell>
+                <TableCell style={tableCellStyle2}>
                   {row.lastTedt ? formatDate(row.lastTedt) : "-"}
                 </TableCell>
               </TableRow>

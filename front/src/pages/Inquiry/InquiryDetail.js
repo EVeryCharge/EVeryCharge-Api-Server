@@ -3,6 +3,8 @@ import { HttpDelete, HttpGet, HttpPut } from '../../services/HttpService';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, Typography, Grid, makeStyles } from '@material-ui/core';
 import InqueryComment from '../Inquiry/InqueryComment';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 const useStyles = makeStyles({
     type: {
@@ -33,6 +35,7 @@ const InquiryDetail = ({  }) => {
     const {id} = useParams();
     const navigate = useNavigate();
     const sessionUsername = sessionStorage.getItem("username");
+    const [activeReview, setActiveReview] = useState({ photoIndex: 0, isOpen: false, images: []});
 
     const handleUpdate = () => {
         navigate(`/modify/${id}`, { 
@@ -99,9 +102,35 @@ const InquiryDetail = ({  }) => {
             <Typography className={classes.writer} align="right">
                 작성자 : {inquiry.writer}
             </Typography>
+            <div style={{ display: "flex", flexWrap: "wrap", marginTop: "20px" }}>
             {inquiry.s3fileUrl && inquiry.s3fileUrl.map((url, index) => (
-                <img key={index} src={url} alt={`Inquiry ${index}`} style={{ maxWidth: "800px", maxHeight: "800px", width: "auto", height: "auto" }}/>
+                <img 
+                key={index} 
+                src={url} 
+                alt={`Inquiry ${index}`} 
+                style={{ 
+                    maxWidth: "600px", maxHeight: "500px", width: "350px", height: "250px", marginRight: "10px", marginBottom: "20px"
+                }}
+                onClick={() => {
+                    setActiveReview({ photoIndex: index, isOpen: true, images: inquiry.s3fileUrl});
+                }}
+                />
             ))}
+            </div>
+                {activeReview.isOpen && (
+                <Lightbox
+                    mainSrc={activeReview.images[activeReview.photoIndex]}
+                    nextSrc={activeReview.images[(activeReview.photoIndex + 1) % activeReview.images.length]}
+                    prevSrc={activeReview.images[(activeReview.photoIndex + activeReview.images.length - 1) % activeReview.images.length]}
+                    onCloseRequest={() => setActiveReview(prev => ({ ...prev, isOpen: false }))}
+                    onMovePrevRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + prev.images.length - 1) % prev.images.length }))
+                    }
+                    onMoveNextRequest={() =>
+                        setActiveReview(prev => ({ ...prev, photoIndex: (prev.photoIndex + 1) % prev.images.length }))
+                    }
+                />
+                )}
             {sessionUsername === inquiry.writer && (
                 <div>
                     <Button onClick={handleUpdate}>수정</Button>
