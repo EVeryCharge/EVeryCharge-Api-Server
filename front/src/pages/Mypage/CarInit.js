@@ -47,7 +47,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
             try {
                 const data = await HttpGet(`/api/v1/car/findByManu?manu=${selectedBrand}`);
                 setCarItem([...data.carDtoList]);
-                console.log(data.carDtoList);
+                // console.log(data.carDtoList);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -91,7 +91,7 @@ const CarInit = ({ isOpen, onRequestClose }) => {
             }
         } else {
             // 사용자가 알림창에서 '취소'를 누르면 아무것도 하지 않음
-            console.log("사용자가 작업을 취소했습니다.");
+            // console.log("사용자가 작업을 취소했습니다.");
         }
     };
 

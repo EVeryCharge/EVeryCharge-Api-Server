@@ -23,6 +23,7 @@ const ChargingStationMap = () => {
   const [selectedMarker, setSelectedMarker] = useState([]);
   const [customOverlays, setCustomOverlays] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
+  const [switchChecked, setSwitchChecked] = useState(false);
 
   // 위치 정보 동의 시 접속 위치를 고정
   useEffect(() => {
@@ -252,7 +253,7 @@ const ChargingStationMap = () => {
         position: "relative",
       }}
     >
-      <ChargingStationSearchSwitch />
+      <ChargingStationSearchSwitch checked={switchChecked} />
       <div
         id="map"
         sx={{

@@ -106,7 +106,7 @@ const Review = ({ chargingStationId }) => {
         rating: editedReviewRating,
       });
 
-      console.log("후기 수정 성공");
+      // console.log("후기 수정 성공");
       fetchData();
       setIsEditing(false);
       setEditReviewId(null);
@@ -121,7 +121,7 @@ const Review = ({ chargingStationId }) => {
     }
     if (loginUserName == reviewUserName) {
       const response = await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
-      console.log("삭제" + response);
+      // console.log("삭제" + response);
 
       fetchData();
     }
@@ -157,7 +157,7 @@ const Review = ({ chargingStationId }) => {
     };
 
     const responseData = await HttpPostWithFile(`api/v1/review/${chargingStationId}`, data, files);
-    console.log("서버 응답 데이터:", responseData);
+    // console.log("서버 응답 데이터:", responseData);
 
     try {
       // await HttpPost(`api/v1/review/${chargingStationId}`, {

@@ -119,7 +119,7 @@ const ReportForm = () => {
 
         if (response.statusCode === 200) {
           if (mode === "MODIFY") {
-            console.log("신고내역이 성공적으로 수정되었습니다.");
+            // console.log("신고내역이 성공적으로 수정되었습니다.");
             alert("신고내역이 성공적으로 수정되었습니다.");
             navigate(`/report/${propId}`);
             return;
@@ -128,7 +128,7 @@ const ReportForm = () => {
             navigate(`/report/${response.data.id}`);
             return;
           } else {
-            console.log("신고 저장 실패");
+            // console.log("신고 저장 실패");
           }
         }
       } catch (error) {
