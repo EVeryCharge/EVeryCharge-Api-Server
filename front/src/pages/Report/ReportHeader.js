@@ -55,7 +55,7 @@ const ReportHeader = ({
             신고하기
           </Button>
         )}
-        <GoBackButton isEditPage={isEditPage} />
+        <GoBackButton isEditPage={isEditPage} link={"/"} />
       </Box>
       <hr />
     </Box>
