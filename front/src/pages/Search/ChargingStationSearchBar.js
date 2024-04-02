@@ -5,6 +5,7 @@ import {
   Chip,
   Divider,
   FormControl,
+  Grid,
   InputAdornment,
   InputLabel,
   List,
@@ -13,7 +14,6 @@ import {
   TextField,
   Typography,
   makeStyles,
-  Grid
 } from "@material-ui/core";
 import { ErrorOutline, Search } from "@material-ui/icons";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
@@ -21,14 +21,11 @@ import { Pagination } from "@mui/material";
 import Select from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
 import React, { useEffect, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { HttpGet } from "../../services/HttpService";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-
-
-
 
 /**
  * 작성자 : 이상제
@@ -197,7 +194,7 @@ const ChargingStationSearchBar = ({
 
   useEffect(() => {
     function handleResize() {
-      const parentGrid = document.getElementById('parentGrid');
+      const parentGrid = document.getElementById("parentGrid");
       if (parentGrid) {
         const height = parentGrid.clientHeight - 240; // 부모 그리드의 높이에서 20px 빼기
         setParentHeight(height);
@@ -208,32 +205,38 @@ const ChargingStationSearchBar = ({
     handleResize();
 
     // resize 이벤트 리스너 추가
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // cleanup 함수
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []); // 빈 배열은 처음 한 번만 실행됨을 의미
 
   return (
-
-    <Grid container id="parentGrid" justifyContent="left" style={{
-      maxWidth: "430px",
-    }}>
+    <Grid
+      container
+      id="parentGrid"
+      justifyContent="flex-start"
+      style={{
+        maxWidth: "430px",
+      }}
+    >
       <Grid item xs={12} md={5} xl={5} lg={5}>
         <Card
           variant="outlined"
           className={classes.baseLayer}
           style={{
             minWidth: "360px",
-            maxWidth: "430px"
+            maxWidth: "430px",
           }}
         >
-          <Grid container >
+          <Grid container>
             <Grid item xs={12} xl={12}>
               <Box className={classes.searchBarAndToggleContainer}>
-                <Box sx={{ display: "flex", width: "90%", alignItems: "center" }}>
+                <Box
+                  sx={{ display: "flex", width: "90%", alignItems: "center" }}
+                >
                   <FormControl fullWidth>
                     <TextField
                       size="small"
@@ -270,11 +273,12 @@ const ChargingStationSearchBar = ({
                     size="small"
                     variant="outlined"
                     style={{
-                      fontSize: "12px", marginRight: "10px", minWidth: "90px"
+                      fontSize: "12px",
+                      marginRight: "10px",
+                      minWidth: "90px",
                     }}
                     color="secondary"
                     onClick={handleReset}
-
                   >
                     조건 초기화
                   </Button>
@@ -289,7 +293,6 @@ const ChargingStationSearchBar = ({
                         borderWidth: "1px",
                         color: "blue",
                         fontWeight: "bold",
-                        minWidth: "80px"
                       },
                     }}
                     value="chargeable"
@@ -309,7 +312,6 @@ const ChargingStationSearchBar = ({
                         borderWidth: "1px",
                         color: "blue",
                         fontWeight: "bold",
-                        minWidth: "80px"
                       },
                     }}
                     value="parkingFree"
@@ -329,7 +331,6 @@ const ChargingStationSearchBar = ({
                         borderWidth: "1px",
                         color: "blue",
                         fontWeight: "bold",
-
                       },
                     }}
                     value="isOpen"
@@ -360,7 +361,8 @@ const ChargingStationSearchBar = ({
                           fontSize: "12px",
                           mr: "10px",
                           width: "80px",
-                          border: range !== "" ? "1px solid blue" : "1px solid grey",
+                          border:
+                            range !== "" ? "1px solid blue" : "1px solid grey",
                           color: range !== "" ? "blue" : undefined,
                           fontWeight: range !== "" ? "bold" : undefined,
                         }}
@@ -399,7 +401,8 @@ const ChargingStationSearchBar = ({
                           fontSize: "12px",
                           mr: "10px",
                           width: "120px",
-                          border: zcode !== "" ? "1px solid blue" : "1px solid grey",
+                          border:
+                            zcode !== "" ? "1px solid blue" : "1px solid grey",
                           color: zcode !== "" ? "blue" : undefined,
                           fontWeight: zcode !== "" ? "bold" : undefined,
                         }}
@@ -438,7 +441,8 @@ const ChargingStationSearchBar = ({
                           fontSize: "12px",
                           mr: "10px",
                           width: "120px",
-                          border: zscode !== "" ? "1px solid blue" : "1px solid grey",
+                          border:
+                            zscode !== "" ? "1px solid blue" : "1px solid grey",
                           color: zscode !== "" ? "blue" : undefined,
                           fontWeight: zscode !== "" ? "bold" : undefined,
                         }}
@@ -494,14 +498,17 @@ const ChargingStationSearchBar = ({
                           mr: "10px",
                           width: "165px",
                           border:
-                            busiId.length > 0 ? "1px solid blue" : "1px solid grey",
+                            busiId.length > 0
+                              ? "1px solid blue"
+                              : "1px solid grey",
                         }}
                         className={classes.selectEmpty}
                         renderValue={(selected) => (
                           <div
                             style={{
                               color: selected.length === 0 ? "black" : "blue",
-                              fontWeight: selected.length === 0 ? undefined : "bold",
+                              fontWeight:
+                                selected.length === 0 ? undefined : "bold",
                             }}
                           >
                             {selected.length === 0
@@ -544,14 +551,17 @@ const ChargingStationSearchBar = ({
                           mr: "10px",
                           width: "165px",
                           border:
-                            chgerId.length > 0 ? "1px solid blue" : "1px solid grey",
+                            chgerId.length > 0
+                              ? "1px solid blue"
+                              : "1px solid grey",
                         }}
                         className={classes.selectEmpty}
                         renderValue={(selected) => (
                           <div
                             style={{
                               color: selected.length === 0 ? "black" : "blue",
-                              fontWeight: selected.length === 0 ? undefined : "bold",
+                              fontWeight:
+                                selected.length === 0 ? undefined : "bold",
                             }}
                           >
                             {selected.length === 0
@@ -578,13 +588,19 @@ const ChargingStationSearchBar = ({
                 )}
               </Box>
             </Grid>
-            <Grid container className={classes.ListContainer} style={{ height: parentHeight }}>
-              <Grid item xs={12} xl={12} >
+            <Grid
+              container
+              className={classes.ListContainer}
+              style={{ height: parentHeight }}
+            >
+              <Grid item xs={12} xl={12}>
                 <List>
                   {searchResult && searchResult.content.length === 0 && (
                     <Box className={classes.NoSearchResultContainer}>
                       <ErrorOutline style={{ marginRight: "5px" }} />
-                      <Typography variant="body1">검색 결과가 없습니다.</Typography>
+                      <Typography variant="body1">
+                        검색 결과가 없습니다.
+                      </Typography>
                     </Box>
                   )}
                   {searchResult &&
@@ -609,7 +625,9 @@ const ChargingStationSearchBar = ({
                               {data.statNm}
                             </Typography>
                           </div>
-                          <Typography variant="subtitle2">{data.bnm}</Typography>{" "}
+                          <Typography variant="subtitle2">
+                            {data.bnm}
+                          </Typography>{" "}
                           <div style={{ display: "flex" }}>
                             <Typography
                               variant="subtitle2"
@@ -644,7 +662,11 @@ const ChargingStationSearchBar = ({
                             {data.limitYn ? (
                               <Chip label="비개방" variant="outlined" />
                             ) : (
-                              <Chip label="개방" color="primary" variant="outlined" />
+                              <Chip
+                                label="개방"
+                                color="primary"
+                                variant="outlined"
+                              />
                             )}
                           </div>
                           <div className={classes.ListChargerTypeContainer}>
@@ -652,11 +674,15 @@ const ChargingStationSearchBar = ({
                               <Chip
                                 key={index}
                                 icon={<ElectricCarIcon />}
-                                label={`${baseItem.chgerTypes[
-                                  baseItem.chgerIds.indexOf(chgerType)
-                                ]
-                                  }`}
-                                style={{ marginBottom: "5px", marginRight: "5px" }}
+                                label={`${
+                                  baseItem.chgerTypes[
+                                    baseItem.chgerIds.indexOf(chgerType)
+                                  ] || "확인불가"
+                                }`}
+                                style={{
+                                  marginBottom: "5px",
+                                  marginRight: "5px",
+                                }}
                               />
                             ))}
                           </div>
@@ -666,12 +692,33 @@ const ChargingStationSearchBar = ({
                               slidesPerView={2}
                               navigation={true}
                               modules={[Navigation]}
-                              style={{ width: '240px', height: '100px' }}
+                              style={{ width: "240px", height: "100px" }}
                             >
                               {data.fileurls.map((url, index) => (
-                                <SwiperSlide key={index} style={{ width: '100px', height: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                  <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <img src={url} alt="preview" style={{ width: '100%', height: '100%' }} />
+                                <SwiperSlide
+                                  key={index}
+                                  style={{
+                                    width: "100px",
+                                    height: "100px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <img
+                                      src={url}
+                                      alt="preview"
+                                      style={{ width: "100%", height: "100%" }}
+                                    />
                                   </div>
                                 </SwiperSlide>
                               ))}
@@ -745,18 +792,18 @@ const useStyles = makeStyles({
   },
   ListContainer: {
     overflowY: "auto",
-    '&::-webkit-scrollbar': {
-      width: '8px',
+    "&::-webkit-scrollbar": {
+      width: "8px",
     },
-    '&::-webkit-scrollbar-track': {
-      background: '#f1f1f1',
+    "&::-webkit-scrollbar-track": {
+      background: "#f1f1f1",
     },
-    '&::-webkit-scrollbar-thumb': {
-      background: '#888',
-      borderRadius: '10px',
+    "&::-webkit-scrollbar-thumb": {
+      background: "#888",
+      borderRadius: "10px",
     },
-    '&::-webkit-scrollbar-button': {
-      display: 'none',
+    "&::-webkit-scrollbar-button": {
+      display: "none",
     },
   },
   ListItemContainer: {

@@ -20,7 +20,7 @@ const Signup = () => {
   const handleCheckid = async () => {
     try {
       HttpGet(`/api/v1/members/checkid/${username}`).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response) {
           alert("사용 가능한 ID 입니다");
           setCheckId(true);
@@ -29,7 +29,7 @@ const Signup = () => {
           setCheckId(false);
         }
 
-        console.log(checkId);
+        // console.log(checkId);
       });
     } catch (error) {
       console.error(error);
@@ -44,7 +44,7 @@ const Signup = () => {
         password2: password2,
       }).then((response) => {
         // 회원가입 성공시 처리
-        console.log("Signup successful:", response);
+        // console.log("Signup successful:", response);
         alert("회원 가입 성공!");
         navigate("/login");
       });

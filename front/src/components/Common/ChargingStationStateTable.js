@@ -12,14 +12,13 @@ import React, { useEffect, useState } from "react";
 import { HttpGet } from "../../services/HttpService";
 
 const ChargerType = {
-  1: "DC차데모",
-  2: "AC완속",
-  3: "DC차데모+AC3상",
-  4: "DC콤보",
-  5: "DC차데모+DC콤보",
-  6: "DC차데모+AC상+DC콤보",
-  7: "AC상",
-  8: "DC콤보(완속)",
+  "01": "DC차데모",
+  "02": "AC완속",
+  "03": "DC차데모 + AC3상",
+  "04": "DC콤보",
+  "05": "DC차데모 + DC콤보",
+  "06": "DC차데모 + AC상 + DC콤보",
+  "07": "AC상",
 };
 
 const ChargerState = {
@@ -78,7 +77,7 @@ const ChargingStationStateTable = ({ statId }) => {
         marginBottom: "20px",
         marginLeft: "-22.5px",
         marginRight: "10px",
-        width: "102.5%"
+        width: "102.5%",
       }}
     >
       <Typography
@@ -107,8 +106,16 @@ const ChargingStationStateTable = ({ statId }) => {
           <TableBody>
             {chargingStationData.map((row, index) => (
               <TableRow key={index}>
-                <TableCell style={tableCellStyle2}>{ChargerType[row.chgerType]}</TableCell>
-                <TableCell style={{ color: ChargerState[row.stat]?.color, padding: "4px" ,textAlign: "center"}}>
+                <TableCell style={tableCellStyle2}>
+                  {ChargerType[row.chgerType] || "확인불가"}
+                </TableCell>
+                <TableCell
+                  style={{
+                    color: ChargerState[row.stat]?.color,
+                    padding: "4px",
+                    textAlign: "center",
+                  }}
+                >
                   {ChargerState[row.stat].description}
                 </TableCell>
                 <TableCell style={tableCellStyle2}>

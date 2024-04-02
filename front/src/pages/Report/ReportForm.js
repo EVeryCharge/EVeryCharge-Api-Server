@@ -119,7 +119,7 @@ const ReportForm = () => {
 
         if (response.statusCode === 200) {
           if (mode === "MODIFY") {
-            console.log("신고내역이 성공적으로 수정되었습니다.");
+            // console.log("신고내역이 성공적으로 수정되었습니다.");
             alert("신고내역이 성공적으로 수정되었습니다.");
             navigate(`/report/${propId}`);
             return;
@@ -128,7 +128,7 @@ const ReportForm = () => {
             navigate(`/report/${response.data.id}`);
             return;
           } else {
-            console.log("신고 저장 실패");
+            // console.log("신고 저장 실패");
           }
         }
       } catch (error) {
@@ -352,9 +352,8 @@ const ReportForm = () => {
           placeholder="내용을 입력하세요(200자 이내)"
           helperText={`${content.length} / 200`}
           inputProps={{ maxLength: 200 }}
-          rowsMin={10}
           multiline
-          rows={10}
+          minRows={10}
           value={content}
           onChange={handleContentChange}
           style={{ width: "100%", marginBottom: "10px" }}
