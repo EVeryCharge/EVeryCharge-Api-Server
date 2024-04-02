@@ -1,5 +1,6 @@
-import React from "react";
 import { Typography } from "@material-ui/core";
+import { TaxiAlert } from "@mui/icons-material";
+import React from "react";
 import GoBackButton from "../../components/Common/GoBackButton";
 
 const ErrorPage = ({ errorCode, errorTitle, errorDescription }) => {
@@ -9,18 +10,21 @@ const ErrorPage = ({ errorCode, errorTitle, errorDescription }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        height: "80vh",
       }}
     >
       <div>
-        <Typography variant="h3">{errorCode}</Typography>
+        <Typography variant="h3">
+          <TaxiAlert style={{ fontSize: "64px" }} />
+          {errorCode}
+        </Typography>
         <p />
         <Typography variant="h4" style={{ marginBottom: "20px" }}>
           {errorTitle}
           <br />
           {errorDescription}
         </Typography>
-        <GoBackButton />
+        <GoBackButton link={"/"} />
       </div>
     </div>
   );

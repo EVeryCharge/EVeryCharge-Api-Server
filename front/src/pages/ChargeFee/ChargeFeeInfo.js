@@ -52,7 +52,7 @@ const ChargeFeeInfo = () => {
         chgerType: chgerType.length > 0 ? chgerType : undefined,
       });
       setSearchResult(response.chargeFeeDtoList);
-      console.log("searchResult", searchResult);
+      // console.log("searchResult", searchResult);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
