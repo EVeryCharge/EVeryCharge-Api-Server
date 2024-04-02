@@ -109,7 +109,7 @@ const ChargingStationSearchMap = ({
 
   useEffect(() => {
     if (mapCenterLoc.lat != null) {
-      console.log("mapCenterLoc" + mapCenterLoc.lat);
+      // console.log("mapCenterLoc" + mapCenterLoc.lat);
       setMapLoc({
         lat: mapCenterLoc.lat,
         lng: mapCenterLoc.lng,

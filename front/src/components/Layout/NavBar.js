@@ -9,7 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import { EvStation, Menu as MenuIcon } from "@material-ui/icons";
+import { Menu as MenuIcon } from "@material-ui/icons";
 import { ElectricCar } from "@mui/icons-material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -121,28 +121,28 @@ const Navbar = () => {
               >
                 {[
                   <MenuItem
+                    key="search"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/search"
+                  >
+                    충전소 지도
+                  </MenuItem>,
+                  <MenuItem
+                    key="fee"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/fee"
+                  >
+                    요금 정보
+                  </MenuItem>,
+                  <MenuItem
                     key="report"
                     onClick={handleMenuClose}
                     component={Link}
                     to="/report/list"
                   >
                     신고하기
-                  </MenuItem>,
-                  <MenuItem
-                    key="map"
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/map"
-                  >
-                    충전소 지도
-                  </MenuItem>,
-                  <MenuItem
-                    key="map"
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/fee"
-                  >
-                    요금 정보
                   </MenuItem>,
                   <MenuItem
                     key="inquiry"
@@ -152,45 +152,44 @@ const Navbar = () => {
                   >
                     1대1 문의
                   </MenuItem>,
-                  isLogin() ? (
-                    <>
-                      <MenuItem
-                        key="my"
-                        onClick={[handleMenuClose]}
-                        component={Link}
-                        to="/my"
-                      >
-                        마이페이지
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          handleMenuClose();
-                          handleLogout();
-                        }}
-                      >
-                        로그아웃
-                      </MenuItem>
-                    </>
-                  ) : (
-                    <>
-                      <MenuItem
-                        key="signup"
-                        onClick={handleMenuClose}
-                        component={Link}
-                        to="/signup"
-                      >
-                        회원가입
-                      </MenuItem>
-                      <MenuItem
-                        key="login"
-                        onClick={handleMenuClose}
-                        component={Link}
-                        to="/login"
-                      >
-                        로그인
-                      </MenuItem>
-                    </>
-                  ),
+                  isLogin()
+                    ? [
+                        <MenuItem
+                          key="my"
+                          onClick={handleMenuClose}
+                          component={Link}
+                          to="/my"
+                        >
+                          마이페이지
+                        </MenuItem>,
+                        <MenuItem
+                          key="logout"
+                          onClick={() => {
+                            handleMenuClose();
+                            handleLogout();
+                          }}
+                        >
+                          로그아웃
+                        </MenuItem>,
+                      ]
+                    : [
+                        <MenuItem
+                          key="signup"
+                          onClick={handleMenuClose}
+                          component={Link}
+                          to="/signup"
+                        >
+                          회원가입
+                        </MenuItem>,
+                        <MenuItem
+                          key="login"
+                          onClick={handleMenuClose}
+                          component={Link}
+                          to="/login"
+                        >
+                          로그인
+                        </MenuItem>,
+                      ],
                 ]}
               </Menu>
             </Hidden>
@@ -201,21 +200,7 @@ const Navbar = () => {
             <Button
               color="inherit"
               component={Link}
-              to="/report/list"
-              style={{
-                fontSize: "20px",
-                color: "gray",
-                fontWeight: "bold",
-                marginLeft: "12px",
-                marginRight: "12px",
-              }}
-            >
-              신고하기
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/map"
+              to="/search"
               style={{
                 fontSize: "20px",
                 color: "gray",
@@ -239,6 +224,20 @@ const Navbar = () => {
               }}
             >
               요금 정보
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/report/list"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              신고하기
             </Button>
             <Button
               color="inherit"

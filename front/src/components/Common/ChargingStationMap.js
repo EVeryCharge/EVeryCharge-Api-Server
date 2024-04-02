@@ -23,6 +23,7 @@ const ChargingStationMap = () => {
   const [selectedMarker, setSelectedMarker] = useState([]);
   const [customOverlays, setCustomOverlays] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
+  const [switchChecked, setSwitchChecked] = useState(false);
 
   // 위치 정보 동의 시 접속 위치를 고정
   useEffect(() => {
@@ -152,10 +153,11 @@ const ChargingStationMap = () => {
       overlay.setMap(null);
     });
 
-    const newCustomOverlays = items.map((item) => {
+    const newCustomOverlays = items.map((item, index) => {
       const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
       const contentBeforeRender = (
         <MapOverlayContent
+          key={index}
           bnm={item.bnm}
           availableChger={item.availableChger}
           totalChger={item.totalChger}
@@ -252,7 +254,7 @@ const ChargingStationMap = () => {
         position: "relative",
       }}
     >
-      <ChargingStationSearchSwitch />
+      <ChargingStationSearchSwitch checked={switchChecked} />
       <div
         id="map"
         sx={{

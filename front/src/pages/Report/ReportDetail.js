@@ -1,11 +1,11 @@
 import { Box, Button, Chip, TextField, Typography } from "@material-ui/core";
+import { EvStation, Person } from "@material-ui/icons";
+import { BuildCircleOutlined } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HttpDelete, HttpGet, HttpPut } from "../../services/HttpService";
 import ErrorPage from "../Error/ErrorPage";
 import ReportHeader from "./ReportHeader";
-import { EvStation, Person } from "@material-ui/icons";
-import { AdminPanelSettings, BuildCircleOutlined } from "@mui/icons-material";
 
 const ReportDetail = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const ReportDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    console.log("Data received:", data);
+    // console.log("Data received:", data);
   }, [data]);
 
   if (loading) {
@@ -49,7 +49,7 @@ const ReportDetail = () => {
 
         if (response.statusCode === 200) {
           alert("신고내역이 성공적으로 삭제되었습니다.");
-          console.log("신고내역이 성공적으로 삭제되었습니다.");
+          // console.log("신고내역이 성공적으로 삭제되었습니다.");
           navigate("/report/list");
         } else {
           console.error(`신고 삭제 실패 : ${response.msg}`);
@@ -79,7 +79,7 @@ const ReportDetail = () => {
           );
 
           if (response.statusCode === 200) {
-            console.log("신고내역 처리 완료, 처리답변 등록이 완료되었습니다.");
+            // console.log("신고내역 처리 완료, 처리답변 등록이 완료되었습니다.");
             alert("신고내역 처리 완료, 처리 답변 등록이 완료되었습니다.");
             await fetchReportDetail();
             navigate(window.location.pathname);
@@ -174,7 +174,7 @@ const ReportDetail = () => {
 
           <Box alignItems="center">
             <Typography
-              variant="subtitle3"
+              variant="subtitle1"
               style={{
                 fontWeight: "bold",
                 display: "flex",

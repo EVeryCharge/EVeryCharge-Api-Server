@@ -22,8 +22,9 @@ import InquiryDetail from "./pages/Inquiry/InquiryDetail";
 import InquiryModifyform from "./pages/Inquiry/InquiryModifyform";
 import ChargeFee from "./pages/ChargeFee/ChargeFee";
 import My from "./pages/Mypage/My";
-import CarInit from "./pages/Mypage/CarInit"
-import Edit from "./pages/Mypage/Edit"
+import CarInit from "./pages/Mypage/CarInit";
+import Edit from "./pages/Mypage/Edit";
+import ErrorPage from "./pages/Error/ErrorPage";
 
 function App() {
   return (
@@ -54,6 +55,16 @@ function App() {
             <Route path="/my" element={<My />} />
             <Route path="/carInit" element={<CarInit />} />
             <Route path="/edit" element={<Edit />} />
+            <Route
+              path="*"
+              element={
+                <ErrorPage
+                  errorCode="404 NOT FOUND"
+                  errorTitle="요청하신 페이지를 찾을 수 없습니다."
+                  errorDescription="입력하신 주소가 정확한지 확인해주세요."
+                />
+              }
+            />
           </Routes>
           <Footer />
         </SelectedItemsProvider>

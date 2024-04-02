@@ -32,7 +32,7 @@ public class ChargingStationSearchItemResponseDto {
 		this.busiIds = busiIds;
 		this.bnms = bnms;
 		this.chgerIds = Arrays.stream(chgerTypes)
-			.map(c -> Integer.toString(c.getNumber()))
+			.map(ChargerType::getNumber)
 			.toList();
 		this.chgerTypes = Arrays.stream(chgerTypes)
 			.map(ChargerType::getValue)

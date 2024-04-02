@@ -16,7 +16,7 @@ import ReportHeader from "../Report/ReportHeader";
 import { HttpGet, HttpPost } from "../../services/HttpService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
-import LockIcon from '@mui/icons-material/Lock'; // Lock 아이콘 임포트
+import LockIcon from "@mui/icons-material/Lock"; // Lock 아이콘 임포트
 
 const Inquiry = () => {
   const [data, setData] = React.useState({
@@ -37,27 +37,22 @@ const Inquiry = () => {
   }, [page, rowsPerPage]);
 
   React.useEffect(() => {
-    console.log("Data received:", data);
+    // console.log("Data received:", data);
   }, [data]);
 
   // 신고 리스트 API GET
   const fetchData = async (currentPage, pageSize) => {
     try {
-      const response = await HttpGet(
-        `/api/v1/inquiry/list`,
-        {
-          page: currentPage,
-          pageSize: pageSize,
-        }
-      );
+      const response = await HttpGet(`/api/v1/inquiry/list`, {
+        page: currentPage,
+        pageSize: pageSize,
+      });
 
-
-      console.log("전송확인");
-      console.log("fetch data 확인", response);
+      // console.log("전송확인");
+      // console.log("fetch data 확인", response);
       setData(response);
     } catch (error) {
       console.error("Error fetching data:", error);
-
     }
   };
 
@@ -116,12 +111,16 @@ const Inquiry = () => {
                 }}
                 onClick={(e) => {
                   // 조건 검사 로직
-                  console.log("공개여부:", row.isPublished);
+                  // console.log("공개여부:", row.isPublished);
 
-                  if (row.isPublished == false && getUserName() !== "admin" && getUserName() !== row.writer) {
+                  if (
+                    row.isPublished == false &&
+                    getUserName() !== "admin" &&
+                    getUserName() !== row.writer
+                  ) {
                     alert("작성자와 관리자만 볼 수 있습니다");
-                    console.log("현재 사용자:", getUserName());
-                    console.log("글 작성자:", row.writer);
+                    // console.log("현재 사용자:", getUserName());
+                    // console.log("글 작성자:", row.writer);
                   } else {
                     // 조건이 충족될 때만 이동
                     navigate(`/inquiry/${row.id}`);
@@ -131,13 +130,25 @@ const Inquiry = () => {
                 <TableCell>{row.id}</TableCell>
                 <TableCell
                   style={{
-                    color: row.inquiryState === "답변완료" ? "blue" : row.inquiryState === "답변대기" ? "red" : "black",
+                    color:
+                      row.inquiryState === "답변완료"
+                        ? "blue"
+                        : row.inquiryState === "답변대기"
+                        ? "red"
+                        : "black",
                   }}
-                >{row.inquiryState}</TableCell>
+                >
+                  {row.inquiryState}
+                </TableCell>
                 <TableCell>{row.inquiryType}</TableCell>
                 <TableCell>
                   {row.title}
-                  {!row.isPublished && <LockIcon fontSize="small" style={{ verticalAlign: "middle", marginRight: 5 }} />}
+                  {!row.isPublished && (
+                    <LockIcon
+                      fontSize="small"
+                      style={{ verticalAlign: "middle", marginRight: 5 }}
+                    />
+                  )}
                 </TableCell>
                 <TableCell>{row.writer}</TableCell>
                 <TableCell>{formatDate(row.createdDate)}</TableCell>
@@ -148,7 +159,6 @@ const Inquiry = () => {
         </Table>
       </TableContainer>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-
         <TablePagination
           rowsPerPageOptions={[5, 10]}
           component="div"
@@ -158,18 +168,17 @@ const Inquiry = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {isLogin()?(
+        {isLogin() ? (
           <Button
-          variant="contained"
-          color="primary"
-          size="medium"
-          sx={{ marginLeft: "auto" }}
-          href="/inquiry/form"
-        >
-          새 글쓰기
-        </Button>
-
-        ):null}
+            variant="contained"
+            color="primary"
+            size="medium"
+            sx={{ marginLeft: "auto" }}
+            href="/inquiry/form"
+          >
+            새 글쓰기
+          </Button>
+        ) : null}
       </Box>
     </Box>
   );
