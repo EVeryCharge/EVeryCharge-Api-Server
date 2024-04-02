@@ -217,7 +217,7 @@ const ChargingStationSearchBar = ({
     <Grid
       container
       id="parentGrid"
-      justifyContent="left"
+      justifyContent="flex-start"
       style={{
         maxWidth: "430px",
       }}

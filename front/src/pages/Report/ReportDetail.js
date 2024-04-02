@@ -174,7 +174,7 @@ const ReportDetail = () => {
 
           <Box alignItems="center">
             <Typography
-              variant="subtitle3"
+              variant="subtitle1"
               style={{
                 fontWeight: "bold",
                 display: "flex",

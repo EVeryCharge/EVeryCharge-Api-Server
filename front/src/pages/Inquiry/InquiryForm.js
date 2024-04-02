@@ -148,7 +148,7 @@ function InquiryForm() {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <label className="input-file-button" for="input-file">
+      <label className="input-file-button" htmlFor="input-file">
         업로드
       </label>
       <input

@@ -12,6 +12,9 @@ const ChargerInfoModal = ({ isOpen, onRequestClose }) => {
     onRequestClose();
   };
 
+  useEffect(() => {
+    Modal.setAppElement("#root");
+  }, []);
   useEffect(() => {}, [isOpen]);
 
   return (

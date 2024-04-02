@@ -352,9 +352,8 @@ const ReportForm = () => {
           placeholder="내용을 입력하세요(200자 이내)"
           helperText={`${content.length} / 200`}
           inputProps={{ maxLength: 200 }}
-          rowsMin={10}
           multiline
-          rows={10}
+          minRows={10}
           value={content}
           onChange={handleContentChange}
           style={{ width: "100%", marginBottom: "10px" }}

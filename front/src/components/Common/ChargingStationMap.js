@@ -153,10 +153,11 @@ const ChargingStationMap = () => {
       overlay.setMap(null);
     });
 
-    const newCustomOverlays = items.map((item) => {
+    const newCustomOverlays = items.map((item, index) => {
       const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng);
       const contentBeforeRender = (
         <MapOverlayContent
+          key={index}
           bnm={item.bnm}
           availableChger={item.availableChger}
           totalChger={item.totalChger}
