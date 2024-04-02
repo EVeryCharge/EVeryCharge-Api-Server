@@ -121,28 +121,28 @@ const Navbar = () => {
               >
                 {[
                   <MenuItem
+                    key="search"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/search"
+                  >
+                    충전소 지도
+                  </MenuItem>,
+                  <MenuItem
+                    key="fee"
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/fee"
+                  >
+                    요금 정보
+                  </MenuItem>,
+                  <MenuItem
                     key="report"
                     onClick={handleMenuClose}
                     component={Link}
                     to="/report/list"
                   >
                     신고하기
-                  </MenuItem>,
-                  <MenuItem
-                    key="map"
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/map"
-                  >
-                    충전소 지도
-                  </MenuItem>,
-                  <MenuItem
-                    key="map"
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/fee"
-                  >
-                    요금 정보
                   </MenuItem>,
                   <MenuItem
                     key="inquiry"
@@ -201,21 +201,7 @@ const Navbar = () => {
             <Button
               color="inherit"
               component={Link}
-              to="/report/list"
-              style={{
-                fontSize: "20px",
-                color: "gray",
-                fontWeight: "bold",
-                marginLeft: "12px",
-                marginRight: "12px",
-              }}
-            >
-              신고하기
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/map"
+              to="/search"
               style={{
                 fontSize: "20px",
                 color: "gray",
@@ -239,6 +225,20 @@ const Navbar = () => {
               }}
             >
               요금 정보
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/report/list"
+              style={{
+                fontSize: "20px",
+                color: "gray",
+                fontWeight: "bold",
+                marginLeft: "12px",
+                marginRight: "12px",
+              }}
+            >
+              신고하기
             </Button>
             <Button
               color="inherit"
