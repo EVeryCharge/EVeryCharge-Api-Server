@@ -1,37 +1,83 @@
 import React, { useState } from 'react';
-import { HttpPut } from '../../services/HttpService';
+import { HttpPutWithFile } from '../../services/HttpService';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import '../../components/UI/ButtonStyles.css';
 
 function InquiryModifyform() {
     const location = useLocation();
-    const {title, content, inquiryType, isPublished } = location.state;
+    const {title, content, inquiryType, isPublished, s3fileUrl } = location.state;
     const navigate = useNavigate();
-
-    // 이제 title, content, inquiryType, isPublished 변수를 사용하여 수정 폼을 구성하면 됩니다.
-    // 예를 들어, useState 훅을 사용하여 각 필드의 상태를 관리할 수 있습니다.
     const [inputTitle, setInputTitle] = useState(title);
     const [inputContent, setInputContent] = useState(content);
     const [inputInquiryType, setInputInquiryType] = useState(inquiryType);
     const [inputIsPublished, setInputIsPublished] = useState(isPublished);
+    const [previewUrls, setPreviewUrls] = useState(s3fileUrl); 
+    const [files, setFiles] = useState([]); 
     const {id} = useParams();
 
-    const handleSubmit = async () => {
+    const handleFileChange = (e) => {
+      const newSelectedFiles = Array.from(e.target.files);
+      const selectedFiles = [...files, ...newSelectedFiles]; 
+      const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+  
+      if (oversizedFiles.length > 0) {
+          alert("파일 크기는 10MB를 초과할 수 없습니다.");
+          return;
+      }
+  
+      if ((files.length + newSelectedFiles.length) > 5) {
+        alert(`최대 5개의 파일만 업로드할 수 있습니다. `);
+        return;
+      }
+      
+      setFiles(selectedFiles);
+  
+      Promise.all(newSelectedFiles.map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = event => {
+            resolve({url: event.target.result});
+          };
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });      
+  
+      })).then(results => {
+        const urls = results.map(result => result.url);
+    
+        setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+      }).catch(error => {
+        console.error("파일 로드 중 오류가 발생했습니다.", error);
+      });
+  
+    };  
+  
+    const handleDeleteImage = (event, indexToDelete) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
+      setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToDelete));
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
         try {
-        const response = await HttpPut(
-            `/api/v1/inquiry/${id}`,
-            {
+          const data = {
             title: inputTitle,
+            writer : "",
             content: inputContent,
-            inquiryType : inputInquiryType,
-            isPublished: inputIsPublished
-            }
-        );
+            inquiryType: inputInquiryType,
+            isPublished: inputIsPublished,
+            s3fileNames : previewUrls
+          };
+          console.log("1데이터: ", data);
+          console.log("2데이터: ", files);
 
-
-        console.log('수정 완료' ,response);
-        alert("수정 완료");
-        navigate(`/inquiry/${id}`);
+          const responseData = await HttpPutWithFile(`/api/v1/inquiry/${id}`, data, files);
+          console.log("서버 응답 데이터:", responseData); 
+          alert("수정 완료");
+          navigate(`/inquiry/${id}`);
         } catch (error) {
         
         if(title === null){
@@ -80,6 +126,28 @@ function InquiryModifyform() {
           value={inputContent}
           onChange={e => setInputContent(e.target.value)}
         />
+        <label className="input-file-button" for="input-file">
+        업로드
+      </label>
+      <input
+        type="file"
+        id = "input-file"
+        onChange={handleFileChange}
+        multiple
+        style={{ display: 'none' }}
+      />
+      <div>
+        {previewUrls.map((url, index) => (
+          <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "20px", width: "100px", height: "100px", border: "10px solid white" }} />
+            <button type="button" 
+              style={{ marginTop: "20px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+              onClick={(event) => handleDeleteImage(event, index)}>
+              X
+            </button>
+          </div>
+        ))}
+      </div>
         <FormControlLabel
           control={
             <Checkbox
@@ -89,7 +157,7 @@ function InquiryModifyform() {
           }
           label="공개"
         />
-        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2 }}>
+        <Button variant="contained" type="submit" sx={{ mt: 2 }}>
           수정
         </Button>
     </form>

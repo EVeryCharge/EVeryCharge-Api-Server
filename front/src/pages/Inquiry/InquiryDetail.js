@@ -44,7 +44,8 @@ const InquiryDetail = ({  }) => {
                 title: inquiry.title,
                 content: inquiry.content,
                 inquiryType: inquiry.inquiryType,
-                isPublished : inquiry.isPublished            
+                isPublished : inquiry.isPublished,
+                s3fileUrl : inquiry.s3fileUrl
             }
         });
     };
