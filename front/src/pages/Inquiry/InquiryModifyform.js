@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HttpPutWithFile } from '../../services/HttpService';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
@@ -13,10 +13,12 @@ function InquiryModifyform() {
     const [inputInquiryType, setInputInquiryType] = useState(inquiryType);
     const [inputIsPublished, setInputIsPublished] = useState(isPublished);
     const [previewUrls, setPreviewUrls] = useState(s3fileUrl); 
-    const [files, setFiles] = useState([]); 
+    const [files, setFiles] = useState(Array(s3fileUrl.length).fill(null)); 
     const {id} = useParams();
+    
 
     const handleFileChange = (e) => {
+
       const newSelectedFiles = Array.from(e.target.files);
       const selectedFiles = [...files, ...newSelectedFiles]; 
       const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
@@ -25,8 +27,8 @@ function InquiryModifyform() {
           alert("파일 크기는 10MB를 초과할 수 없습니다.");
           return;
       }
-  
-      if ((files.length + newSelectedFiles.length) > 5) {
+
+      if ((files.length + newSelectedFiles.length) > 5 || previewUrls.length >= 5) {
         alert(`최대 5개의 파일만 업로드할 수 있습니다. `);
         return;
       }
@@ -71,8 +73,6 @@ function InquiryModifyform() {
             isPublished: inputIsPublished,
             s3fileNames : previewUrls
           };
-          console.log("1데이터: ", data);
-          console.log("2데이터: ", files);
 
           const responseData = await HttpPutWithFile(`/api/v1/inquiry/${id}`, data, files);
           console.log("서버 응답 데이터:", responseData); 
@@ -91,7 +91,6 @@ function InquiryModifyform() {
         }
         
     };
-
 
     return (
         <form onSubmit={handleSubmit} style={{maxWidth: '95%', margin: 'auto', display: 'block'}}>
