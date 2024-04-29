@@ -16,9 +16,8 @@ import Rating from "@mui/material/Rating";
 import { useAuth } from "../../utils/AuthContext";
 import {
   HttpGet,
-  HttpPost,
   HttpDelete,
-  HttpPut,
+  HttpPutWithFile,
   HttpPostWithFile
 } from "../../services/HttpService";
 import Lightbox from 'react-image-lightbox';
@@ -56,7 +55,7 @@ const Review = ({ chargingStationId }) => {
 
     const selectedFiles = [...files, ...newSelectedFiles];
 
-    if ((files.length + newSelectedFiles.length) > 3) {
+    if ((files.length + newSelectedFiles.length) > 3 || editpreviewUrls.length > 3) {
       alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
       return;
     }
@@ -76,7 +75,12 @@ const Review = ({ chargingStationId }) => {
       // 모든 파일이 로드되었을 때 실행
       const urls = results.map(result => result.url);
   
-      setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+      if(isEditing){
+        setEditPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+      }
+      else{
+        setPreviewUrls(prevUrls => [...prevUrls, ...urls]);
+      }
 
     }).catch(error => {
       console.error("파일 로드 중 오류가 발생했습니다.", error);
@@ -84,9 +88,10 @@ const Review = ({ chargingStationId }) => {
 
   };
 
-  const handleDeleteImage = (event, indexToDelete) => {
+  const handleDeleteImage = (event, indexToDelete, length) => {
     event.preventDefault();
     event.stopPropagation();
+    setEditPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
     setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
     setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToDelete)); // 파일 목록에서도 삭제
   };
@@ -94,23 +99,28 @@ const Review = ({ chargingStationId }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
-  const handleUpdate = async (reviewId) => {
+  const [editpreviewUrls, setEditPreviewUrls] = useState([]);
+  const handleUpdate = async (id) => {
     if (!editedReviewContent || !editedReviewContent.trim()) {
       alert("후기 내용을 입력해주세요.");
       return;
     }
 
     try {
-      await HttpPut(`api/v1/review/${chargingStationId}/${reviewId}`, {
+      const data = {
         content: editedReviewContent,
         rating: editedReviewRating,
-      });
+        s3fileUrl : editpreviewUrls
+      }
+      const respose = await HttpPutWithFile(`api/v1/review/${chargingStationId}/${id}`, data, files);
 
       console.log("후기 수정 성공");
       fetchData();
       setIsEditing(false);
       setEditReviewId(null);
       setEditedReviewContent("");
+      setEditPreviewUrls([]);
+      setFiles([]);
     } catch (error) {
       console.error("후기를 수정하는 중 오류 발생:", error);
     }
@@ -132,12 +142,19 @@ const Review = ({ chargingStationId }) => {
     setIsEditing(false);
     setEditReviewId(null);
     setEditedReviewContent("");
+    setFiles([]); 
+    setEditPreviewUrls([]);
+    
   };
-  const handleEdit = (reviewId, content) => {
+  const handleEdit = (reviewId, content, s3fileUrl) => {
     setIsEditing(true);
     setEditReviewId(reviewId);
     setEditedReviewContent(content);
+    setEditPreviewUrls(s3fileUrl);
+    const nullFilesToAdd = Array(s3fileUrl.length).fill(null);
+    setFiles(prevFiles => [...prevFiles, ...nullFilesToAdd]);
   };
+
   const [newReviewContent, setNewReviewContent] = useState("");
   const { isLogin } = useAuth();
   const handleSubmit = async () => {
@@ -207,12 +224,10 @@ const Review = ({ chargingStationId }) => {
           .map((reviewItem) => (
             <React.Fragment>
 
-
-
-              <Card style={{ borderBottom: "1px solid lightGray" }}>
-                <TableContainer>
-                  <Table>
-                    <TableBody>
+              <Card style={{ borderBottom: "1px solid lightGray"}}>
+                <TableContainer >
+                  <Table >
+                    <TableBody >
                       <TableRow style={{ borderBottom: "none" }}>
                         <TableCell
                           style={{
@@ -233,6 +248,7 @@ const Review = ({ chargingStationId }) => {
                                 reviewItem.rating = newValue;
                               }}
                             />
+                            
                           ) : (
                             <Rating
                               name="read-only"
@@ -306,8 +322,9 @@ const Review = ({ chargingStationId }) => {
                                     style={{ fontSize: "12px" }}
                                   >
                                     취소
-                                  </Button>
+                                  </Button>                              
                                 </div>
+                                
                               ) : (
                                 <div
                                   style={{
@@ -323,7 +340,8 @@ const Review = ({ chargingStationId }) => {
                                     onClick={() =>
                                       handleEdit(
                                         reviewItem.id,
-                                        reviewItem.content
+                                        reviewItem.content,
+                                        reviewItem.s3fileUrl
                                       )
                                     }
                                     style={{ fontSize: "12px", marginBottom: "4px" }} // 버튼 간격 조절을 위한 marginBottom 추가
@@ -354,12 +372,35 @@ const Review = ({ chargingStationId }) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-
-
-                {reviewItem.s3fileUrl && reviewItem.s3fileUrl.length > 0 && (
-
-                  <div colSpan={3} style={{ display: "block", display: "flex", marginBottom: "20px", marginLeft: "10px" }}>
-
+                {isEditing && editReviewId === reviewItem.id ? (
+                  <>
+                          <div style={{ display: "flex", marginLeft: "10px", marginBottom: "10px" }}>
+                          <label className="input-file-button" for="input-file">
+                            업로드
+                          </label>
+                          <input
+                            type="file"
+                            id = "input-file"
+                            onChange={handleFileChange}
+                            multiple
+                            style={{ display: 'none' }}
+                          />
+                          </div>
+                          <div>
+                            {editpreviewUrls.map((url, index) => (
+                              <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
+                                <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "10px", width: "100px", height: "100px", border: "5px solid white" }} />
+                                <button type="button" 
+                                  style={{ marginTop: "10px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
+                                  onClick={(event) => handleDeleteImage(event, index, files.length)}>
+                                  X
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          </>                            
+                          ) : (
+                            <div colSpan={3} style={{ display: "block", display: "flex", marginBottom: "20px", marginLeft: "10px" }}>
                     <div style={{ display: "flex", marginTop: "0px" }}>
                       {reviewItem.s3fileUrl.map((imageUrl, index) => (
                         <img
@@ -387,8 +428,13 @@ const Review = ({ chargingStationId }) => {
                         }
                       />
                     )}
-                  </div>
+                  </div>                    
+
+                  
                 )}
+
+
+                
 
               </Card>
 
@@ -448,6 +494,7 @@ const Review = ({ chargingStationId }) => {
           </Button>
         </div>
       </div>
+      <div style={{ display: "flex", marginBottom: "20px" }}>
       <label className="input-file-button" for="input-file">
         업로드
       </label>
@@ -458,13 +505,14 @@ const Review = ({ chargingStationId }) => {
         multiple
         style={{ display: 'none'}}
       />
+      </div>
       <div>
         {previewUrls.map((url, index) => (
           <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
-            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "20px", width: "100px", height: "100px", border: "5px solid white"  }} />
+            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "0px", width: "100px", height: "100px", border: "5px solid white"  }} />
             <button type="button"
-              style={{ marginTop: "20px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
-              onClick={(event) => handleDeleteImage(event, index)}>
+              style={{ marginTop: "0px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
+              onClick={(event) => handleDeleteImage(event, index, 0)}>
               X
             </button>
           </div>
