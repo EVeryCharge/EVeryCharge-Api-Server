@@ -283,7 +283,7 @@ const My = () => {
     const handleBatteryClick = () => {
         HttpGet("/api/v1/members/HDBattery").then((data) => {
             if (data) {
-                console.log("bbb" + data);
+                // console.log("bbb" + data);
                 setBatteryData(data); // 받은 데이터를 상태에 저장
             }
         });
@@ -325,13 +325,13 @@ const My = () => {
                     setCar(data.data.item.carModel)
                     setCreateDate(data.data.item.createDate)
                     setProfileImgUrl(data.data.item.profileImgUrl)
-                    console.log('car ' + data.data.item.car)
-                    console.log('cd ' + createDate)
-                    console.log('p ' + profileImgUrl)
+                    // console.log('car ' + data.data.item.car)
+                    // console.log('cd ' + createDate)
+                    // console.log('p ' + profileImgUrl)
                 }
             });
 
-        console.log('car2 ' + car)
+        // console.log('car2 ' + car)
 
         // 쿠키에서 HDAccess 및 HDCarId 값을 가져옴
         const hdAccess = Cookies.get("HDAccess");
@@ -354,9 +354,9 @@ const My = () => {
                     setCar(data.data.item.carModel)
                     setCreateDate(data.data.item.createDate)
                     setProfileImgUrl(data.data.item.profileImgUrl)
-                    console.log('car ' + data.data.item.car)
-                    console.log('cd ' + createDate)
-                    console.log('p ' + profileImgUrl)
+                    // console.log('car ' + data.data.item.car)
+                    // console.log('cd ' + createDate)
+                    // console.log('p ' + profileImgUrl)
                 }
             });
     }, [refresh]);
@@ -369,7 +369,7 @@ const My = () => {
             }).then((data2) => {
                 if (data2) {
                     setCarInfo(data2);
-                    console.log("m " + data2.imgUrl)
+                    // console.log("m " + data2.imgUrl)
                 }
             }).catch(error => {
                 // 요청이 실패한 경우 여기에 도달합니다.

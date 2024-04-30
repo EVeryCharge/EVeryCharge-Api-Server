@@ -20,9 +20,9 @@ import {
   HttpPutWithFile,
   HttpPostWithFile
 } from "../../services/HttpService";
-import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css';
-import '../../components/UI/ButtonStyles.css';
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
+import "../../components/UI/ButtonStyles.css";
 
 const Review = ({ chargingStationId }) => {
   const [files, setFiles] = useState([]);
@@ -31,8 +31,12 @@ const Review = ({ chargingStationId }) => {
   const { getUserName } = useAuth();
   //리뷰 가져오기
   const [review, setReview] = useState({ data: { items: [] } });
-  const [activeReview, setActiveReview] = useState({ photoIndex: 0, isOpen: false, images: [] });
-  
+  const [activeReview, setActiveReview] = useState({
+    photoIndex: 0,
+    isOpen: false,
+    images: [],
+  });
+
   const fetchData = async () => {
     try {
       const response = await HttpGet(`api/v1/review/${chargingStationId}`);
@@ -43,14 +47,15 @@ const Review = ({ chargingStationId }) => {
   };
 
   const handleFileChange = (e) => {
-
     const newSelectedFiles = Array.from(e.target.files);
 
-    const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+    const oversizedFiles = newSelectedFiles.filter(
+      (file) => file.size > 10 * 1024 * 1024
+    );
 
     if (oversizedFiles.length > 0) {
-        alert("파일 크기는 10MB를 초과할 수 없습니다.");
-        return;
+      alert("파일 크기는 10MB를 초과할 수 없습니다.");
+      return;
     }
 
     const selectedFiles = [...files, ...newSelectedFiles];
@@ -59,7 +64,7 @@ const Review = ({ chargingStationId }) => {
       alert(`최대 3개의 파일만 업로드할 수 있습니다. 다시 선택해 주세요`);
       return;
     }
-    
+
     setFiles(selectedFiles);
 
     Promise.all(newSelectedFiles.map(file => {
@@ -88,7 +93,7 @@ const Review = ({ chargingStationId }) => {
 
   };
 
-  const handleDeleteImage = (event, indexToDelete, length) => {
+  const handleDeleteImage = (event, indexToDelete) => {
     event.preventDefault();
     event.stopPropagation();
     setEditPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToDelete));
@@ -112,9 +117,8 @@ const Review = ({ chargingStationId }) => {
         rating: editedReviewRating,
         s3fileUrl : editpreviewUrls
       }
-      const respose = await HttpPutWithFile(`api/v1/review/${chargingStationId}/${id}`, data, files);
+      await HttpPutWithFile(`api/v1/review/${chargingStationId}/${id}`, data, files);
 
-      console.log("후기 수정 성공");
       fetchData();
       setIsEditing(false);
       setEditReviewId(null);
@@ -130,8 +134,10 @@ const Review = ({ chargingStationId }) => {
       return;
     }
     if (loginUserName == reviewUserName) {
-      const response = await HttpDelete(`api/v1/review/${chargingStationId}/${reviewId}`);
-      console.log("삭제" + response);
+      const response = await HttpDelete(
+        `api/v1/review/${chargingStationId}/${reviewId}`
+      );
+      // console.log("삭제" + response);
 
       fetchData();
     }
@@ -142,9 +148,9 @@ const Review = ({ chargingStationId }) => {
     setIsEditing(false);
     setEditReviewId(null);
     setEditedReviewContent("");
-    setFiles([]); 
+    setFiles([]);
     setEditPreviewUrls([]);
-    
+
   };
   const handleEdit = (reviewId, content, s3fileUrl) => {
     setIsEditing(true);
@@ -167,14 +173,18 @@ const Review = ({ chargingStationId }) => {
       alert("로그인 해주세요.");
       return;
     }
-    
+
     const data = {
       content: newReviewContent,
       rating: newReviewRating,
     };
 
-    const responseData = await HttpPostWithFile(`api/v1/review/${chargingStationId}`, data, files);
-    console.log("서버 응답 데이터:", responseData);
+    const responseData = await HttpPostWithFile(
+      `api/v1/review/${chargingStationId}`,
+      data,
+      files
+    );
+    // console.log("서버 응답 데이터:", responseData);
 
     try {
       // await HttpPost(`api/v1/review/${chargingStationId}`, {
@@ -184,8 +194,8 @@ const Review = ({ chargingStationId }) => {
 
       fetchData();
       setNewReviewContent("");
-      setFiles([]); 
-      setPreviewUrls([]); 
+      setFiles([]);
+      setPreviewUrls([]);
     } catch (error) {
       console.error("후기를 작성하는 중 오류 발생:", error);
     }
@@ -198,12 +208,14 @@ const Review = ({ chargingStationId }) => {
   }, [chargingStationId]);
 
   return (
-    <div style={{
-      marginBottom: "20px",
-      marginLeft: "-21.5px",
-      marginRight: "10px",
-      width: "102%"
-    }}>
+    <div
+      style={{
+        marginBottom: "20px",
+        marginLeft: "-21.5px",
+        marginRight: "10px",
+        width: "102%",
+      }}
+    >
       <Typography
         variant="subtitle1"
         style={{
@@ -248,7 +260,7 @@ const Review = ({ chargingStationId }) => {
                                 reviewItem.rating = newValue;
                               }}
                             />
-                            
+
                           ) : (
                             <Rating
                               name="read-only"
@@ -322,9 +334,9 @@ const Review = ({ chargingStationId }) => {
                                     style={{ fontSize: "12px" }}
                                   >
                                     취소
-                                  </Button>                              
+                                  </Button>
                                 </div>
-                                
+
                               ) : (
                                 <div
                                   style={{
@@ -390,15 +402,15 @@ const Review = ({ chargingStationId }) => {
                             {editpreviewUrls.map((url, index) => (
                               <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
                                 <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "10px", width: "100px", height: "100px", border: "5px solid white" }} />
-                                <button type="button" 
-                                  style={{ marginTop: "10px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }} 
-                                  onClick={(event) => handleDeleteImage(event, index, files.length)}>
+                                <button type="button"
+                                  style={{ marginTop: "10px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
+                                  onClick={(event) => handleDeleteImage(event, index)}>
                                   X
                                 </button>
                               </div>
                             ))}
                           </div>
-                          </>                            
+                          </>
                           ) : (
                             <div colSpan={3} style={{ display: "block", display: "flex", marginBottom: "20px", marginLeft: "10px" }}>
                     <div style={{ display: "flex", marginTop: "0px" }}>
@@ -428,13 +440,13 @@ const Review = ({ chargingStationId }) => {
                         }
                       />
                     )}
-                  </div>                    
+                  </div>
 
-                  
+
                 )}
 
 
-                
+
 
               </Card>
 
@@ -500,19 +512,39 @@ const Review = ({ chargingStationId }) => {
       </label>
       <input
         type="file"
-        id = "input-file"
+        id="input-file"
         onChange={handleFileChange}
         multiple
-        style={{ display: 'none'}}
+        style={{ display: "none" }}
       />
       </div>
       <div>
         {previewUrls.map((url, index) => (
-          <div key={index} style={{ position: 'relative', display: 'inline-block' }}>
-            <img src={url} alt={`이미지 프리뷰 ${index}`} style={{ marginTop: "0px", width: "100px", height: "100px", border: "5px solid white"  }} />
-            <button type="button"
-              style={{ marginTop: "0px", position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
-              onClick={(event) => handleDeleteImage(event, index, 0)}>
+          <div
+            key={index}
+            style={{ position: "relative", display: "inline-block" }}
+          >
+            <img
+              src={url}
+              alt={`이미지 프리뷰 ${index}`}
+              style={{
+                marginTop: "20px",
+                width: "100px",
+                height: "100px",
+                border: "5px solid white",
+              }}
+            />
+            <button
+              type="button"
+              style={{
+                marginTop: "20px",
+                position: "absolute",
+                top: 0,
+                right: 0,
+                cursor: "pointer",
+              }}
+              onClick={(event) => handleDeleteImage(event, index)}
+            >
               X
             </button>
           </div>

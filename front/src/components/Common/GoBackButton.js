@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const GoBackButton = ({ isEditPage }) => {
+const GoBackButton = ({ isEditPage, link }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -14,7 +14,7 @@ const GoBackButton = ({ isEditPage }) => {
         navigate(-1);
       }
     } else {
-      navigate(-1);
+      navigate(link);
     }
   };
 

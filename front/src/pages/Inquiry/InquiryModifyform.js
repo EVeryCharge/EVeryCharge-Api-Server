@@ -75,7 +75,6 @@ function InquiryModifyform() {
           };
 
           const responseData = await HttpPutWithFile(`/api/v1/inquiry/${id}`, data, files);
-          console.log("서버 응답 데이터:", responseData); 
           alert("수정 완료");
           navigate(`/inquiry/${id}`);
         } catch (error) {
