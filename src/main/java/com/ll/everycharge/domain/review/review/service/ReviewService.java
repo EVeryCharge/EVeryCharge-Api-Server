@@ -51,10 +51,28 @@ public class ReviewService {
     }
 
     @Transactional
-    public void modify(Review review,String content, int rating) {
-        review.setContent(content);
-        review.setRating(rating);
+    public ReviewFileDto modify(ReviewFileDto reviewFileDto, Long id, List<MultipartFile> files) {
+
+        Review review = findById(id).get();
+        review.setContent(reviewFileDto.getContent());
+        review.setRating(reviewFileDto.getRating());
+
+        uploadedFilesService.update(files, "Review", id, reviewFileDto.getS3fileUrl());
+        List<String> urllist = uploadedFilesService.getUrllist("Review", id);
+
+        return new ReviewFileDto(review, urllist);
     }
+
+//    Inquiry inquiry = inquiryRepository.findById(id)
+//            .orElseThrow(() -> new IllegalArgumentException("해당 글이 없습니다. id=" + id));
+//
+//        if (!inquiry.getWriter().getUsername().equals(username)) {
+//        throw new GlobalException("수정권한이 없습니다.");
+//    }
+//        inquiry.update(inquiryRequestDto);
+//        uploadedFilesService.update(files, "Inquiry", id, inquiryRequestDto.getS3fileNames());
+//
+//        return new InquiryResponseDto(inquiry);
 
     public List<Review> findAll() {
         return reviewRepository.findAll();

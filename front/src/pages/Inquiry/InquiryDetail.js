@@ -48,17 +48,18 @@ const InquiryDetail = ({}) => {
     images: [],
   });
 
-  const handleUpdate = () => {
-    navigate(`/modify/${id}`, {
-      state: {
-        id: inquiry.id,
-        title: inquiry.title,
-        content: inquiry.content,
-        inquiryType: inquiry.inquiryType,
-        isPublished: inquiry.isPublished,
-      },
-    });
-  };
+    const handleUpdate = () => {
+        navigate(`/modify/${id}`, {
+            state: {
+                id : inquiry.id,
+                title: inquiry.title,
+                content: inquiry.content,
+                inquiryType: inquiry.inquiryType,
+                isPublished : inquiry.isPublished,
+                s3fileUrl : inquiry.s3fileUrl
+            }
+        });
+    };
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");

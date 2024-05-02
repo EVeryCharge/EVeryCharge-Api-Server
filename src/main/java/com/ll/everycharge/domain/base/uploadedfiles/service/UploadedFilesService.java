@@ -65,6 +65,21 @@ public class UploadedFilesService {
     }
 
     @Transactional
+    public void update(List<MultipartFile> files, String relType, Long relId, List<String> urllist) {
+        List<UploadedFiles> uploadedFiles = uploadedFilesRepository.findByRelTypeCodeAndRelId(relType, relId);
+        List<UploadedFiles> deletedFiles = new ArrayList<>();
+
+        for(UploadedFiles uploadedfile : uploadedFiles){
+            if(!urllist.contains(uploadedfile.getFileUrl()))
+                deletedFiles.add(uploadedfile);
+        }
+
+        delete(deletedFiles);
+        upload(files, relType, relId);
+
+    }
+
+    @Transactional
     public void delete(List<UploadedFiles> files) {
 
         for(UploadedFiles file : files){
@@ -81,6 +96,4 @@ public class UploadedFilesService {
             urllist.add(file.getFileUrl());
         return urllist;
     }
-
-
 }
