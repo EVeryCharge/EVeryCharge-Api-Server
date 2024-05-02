@@ -27,6 +27,7 @@ function InquiryForm() {
   }, [files]);
 
   const handleFileChange = (e) => {
+
     const newSelectedFiles = Array.from(e.target.files);
     const selectedFiles = [...files, ...newSelectedFiles];
     const oversizedFiles = newSelectedFiles.filter(

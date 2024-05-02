@@ -10,7 +10,7 @@ import {
   Typography,
   TextField,
   Button,
-  Card
+  Card,
 } from "@material-ui/core";
 import Rating from "@mui/material/Rating";
 import { useAuth } from "../../utils/AuthContext";
@@ -101,7 +101,6 @@ const Review = ({ chargingStationId }) => {
     setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToDelete)); // 파일 목록에서도 삭제
   };
 
-
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [editpreviewUrls, setEditPreviewUrls] = useState([]);
@@ -119,6 +118,7 @@ const Review = ({ chargingStationId }) => {
       }
       await HttpPutWithFile(`api/v1/review/${chargingStationId}/${id}`, data, files);
 
+      // console.log("후기 수정 성공");
       fetchData();
       setIsEditing(false);
       setEditReviewId(null);

@@ -74,9 +74,6 @@ export const HttpPostWithFile = async (url, jsonData, files) => {
 
     const response = await apiInstance2.post(url, formData);
 
-    // console.log("POST request (with file) sent to:", response.config.url);
-    // console.log("Response Data:", response.data);
-
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -88,17 +85,16 @@ export const HttpPutWithFile = async (url, jsonData, files) => {
   try {
     const formData = new FormData();
 
-    const dataBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
-    formData.append('data', dataBlob);
+    const dataBlob = new Blob([JSON.stringify(jsonData)], {
+      type: "application/json",
+    });
+    formData.append("data", dataBlob);
 
     files.forEach((file) => {
-      formData.append('files', file);
+      formData.append("files", file);
     });
 
     const response = await apiInstance2.put(url, formData);
-
-    console.log("PUT request (with file) sent to:", response.config.url);
-    console.log("Response Data:", response.data);
 
     return response.data;
   } catch (error) {
