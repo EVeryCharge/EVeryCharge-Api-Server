@@ -21,10 +21,10 @@ function InquiryModifyform() {
 
       const newSelectedFiles = Array.from(e.target.files);
       const selectedFiles = [...files, ...newSelectedFiles]; 
-      const oversizedFiles = newSelectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+      const oversizedFiles = newSelectedFiles.filter(file => file.size > 3 * 1024 * 1024);
   
       if (oversizedFiles.length > 0) {
-          alert("파일 크기는 10MB를 초과할 수 없습니다.");
+          alert("파일 크기는 3MB를 초과할 수 없습니다.");
           return;
       }
 
