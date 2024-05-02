@@ -24,5 +24,4 @@ public class UploadedFiles extends BaseTime {
     private String fileUrl; //파일 url
     private String originFileName; //원본 이름
 
-
 }
