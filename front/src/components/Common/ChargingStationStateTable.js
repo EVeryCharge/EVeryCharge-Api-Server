@@ -59,14 +59,14 @@ const ChargingStationStateTable = ({ statId }) => {
 
   const tableCellStyle = {
     padding: "4px",
-    textAlign: "center", // 글자를 가운데 정렬합니다.
+    textAlign: "center",
     fontWeight: "bold",
     paddingTop: "13px",
     paddingBottom: "13px",
   };
   const tableCellStyle2 = {
     padding: "4px",
-    textAlign: "center", // 글자를 가운데 정렬합니다.
+    textAlign: "center", 
     paddingTop: "13px",
     paddingBottom: "13px",
   };
