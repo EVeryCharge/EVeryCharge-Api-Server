@@ -44,7 +44,7 @@ public class ChargeFee extends BaseTime {
 		if (!newNonMemberFee.equals(prevNonMemberFee)) {
 			this.prevNonMemberFee = prevNonMemberFee;
 			this.nonMemberFee = newNonMemberFee;
-			this.memberFeeChange = newMemberFee - prevMemberFee;
+			this.memberFeeChange = Math.round(newMemberFee - prevMemberFee * 10) / 10.0;
 		}
 	}
 }
