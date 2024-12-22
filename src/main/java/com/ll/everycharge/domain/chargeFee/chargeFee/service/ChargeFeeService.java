@@ -68,10 +68,10 @@ public class ChargeFeeService {
 			upsertRowData(rowData);
 		}
 		// 요금 미공시 업체 데이터 업데이트(별도 크롤링)
-		upsertRowData(List.of("한국전력", "급속", "324.4", "324.4"));
-		upsertRowData(List.of("한국전력", "완속", "347.2", "347.2"));
-		upsertRowData(List.of("SK 일렉링크", "급속", "385.0", "520.0"));
-		upsertRowData(List.of("SK 일렉링크", "완속", "288.0", "520.0"));
+		// upsertRowData(List.of("한국전력", "급속", "324.4", "324.4"));
+		// upsertRowData(List.of("한국전력", "완속", "347.2", "347.2"));
+		// upsertRowData(List.of("SK 일렉링크", "급속", "385.0", "520.0"));
+		// upsertRowData(List.of("SK 일렉링크", "완속", "288.0", "520.0"));
 
 		log.info("[Scheduler] : 기관 요금정보 추가 / 업데이트 완료");
 		workbook.dispose();
@@ -107,7 +107,7 @@ public class ChargeFeeService {
 				.memberFee(memberFeeData)
 				.nonMemberFee(nonMemberFeeData)
 				.build();
-			log.info("[Scheduler] : 신규 기관 {} 감지, 요금정보 추가 완료", bnmData);
+			log.info("[Scheduler] : 신규 기관 {} 요금 감지, 요금 정보 추가 완료", bnmData);
 		}
 		chargeFeeRepository.save(chargeFee);
 	}

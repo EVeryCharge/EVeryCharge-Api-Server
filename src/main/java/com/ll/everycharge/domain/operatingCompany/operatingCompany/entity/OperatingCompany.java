@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.ll.everycharge.domain.chargingStation.chargingStation.entity.ChargingStation;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -25,6 +26,7 @@ public class OperatingCompany {
     //기관 아이디
     private String busiId;
     //기관명
+    @Column(unique = true)
     private String bnm;
     //점유율 상위 15개 기관 여부
     private String isPrimary;

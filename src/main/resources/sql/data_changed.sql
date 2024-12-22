@@ -91,6 +91,15 @@ CREATE TABLE charging_station (
 
 CREATE SPATIAL INDEX idx_point ON charging_station (point);
 
-# 12.22. 충전소 요금변동 시 소수점 한자리수로 보정
+# 12.22. 충전소 요금변동 시 소수점 한자리수로 보정    ========================================================
 UPDATE charge_fee SET member_fee_change = ROUND(member_fee_change, 1);
 UPDATE charge_fee SET non_member_fee_change = ROUND(member_fee_change, 1);
+
+# 12.22. 충전기관 이름 중복 사유 일부 기관코드 제거 및 수정  ==================================================
+DELETE FROM operating_company WHERE busi_id = 'KI';
+DELETE FROM operating_company WHERE busi_id = 'GK';
+update operating_company set bnm = '광주시(G1)' where busi_id = 'G1';
+update operating_company set bnm = '광주시(G2)' where busi_id = 'G2';
+
+# 12.22. 충전기관 업데이트 간 중복 방지
+ALTER TABLE operating_company add constraint unique_bnm UNIQUE (bnm);
