@@ -14,6 +14,11 @@ spring:
       host: localhost
       port: 6379
       password: 1234
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:/sql/data1.sql, classpath:/sql/data2.sql, classpath:/sql/data3.sql
 logging:
   level:
     com.ll.everycharge: INFO
