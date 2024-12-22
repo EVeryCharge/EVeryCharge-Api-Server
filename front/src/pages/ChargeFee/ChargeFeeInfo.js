@@ -291,9 +291,9 @@ const ChargeFeeInfo = () => {
                   >
                     {row.memberFee} (
                     {row.memberFeeChange !== 0.0 && row.memberFeeChange !== null
-                      ? `${
-                          row.memberFeeChange > 0 ? "+" : ""
-                        }${row.memberFeeChange.toFixed(1)}`
+                      ? `${row.memberFeeChange > 0 ? "+" : ""}${
+                          row.memberFeeChange
+                        }`
                       : "-"}
                     )
                   </TableCell>
@@ -319,9 +319,9 @@ const ChargeFeeInfo = () => {
                     {row.nonMemberFee} (
                     {row.nonMemberFeeChange !== 0.0 &&
                     row.nonMemberFeeChange !== null
-                      ? `${
-                          row.nonMemberFeeChange > 0 ? "+" : ""
-                        }${row.nonMemberFeeChange.toFixed(1)}`
+                      ? `${row.nonMemberFeeChange > 0 ? "+" : ""}${
+                          row.nonMemberFeeChange
+                        }`
                       : "-"}
                     )
                   </TableCell>
