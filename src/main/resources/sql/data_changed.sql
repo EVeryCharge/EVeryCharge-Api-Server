@@ -5,7 +5,7 @@ INSERT INTO region (zcode, region_name)
 VALUES
     ('52', '전북특별자치도');
 
-# 03.19. 전북특별자치도 소속지역 추가
+# 03.19. 전북특별자치도 소속지역 추가    ===================================================================
 INSERT INTO region_detail (zcode, zscode, region_detail_name)
 VALUES
     ('52', '52110', '전주시'),
@@ -23,7 +23,7 @@ VALUES
     ('52', '52790', '고창군'),
     ('52', '52800', '부안군');
 
-# 03.19. 신규 기관 추가
+# 03.19. 신규 기관 추가   ===============================================================================
 INSERT INTO operating_company (busi_id, bnm, is_primary)
 VALUES
     ('AP', '애플망고', 'N'),
@@ -36,7 +36,7 @@ VALUES
     ('TH', '태현교통', 'N'),
     ('TV', '아이토브', 'N');
 
-# 03.19. 기관명 일부 수정
+# 03.19. 기관명 일부 수정  ===============================================================================
 UPDATE operating_company
 SET bnm = 'SK일렉링크', is_primary = 'Y' WHERE busi_id = 'ST'; # 에스트래픽 → SK일렉링크
 
@@ -49,11 +49,11 @@ SET bnm = '투이스이브이씨', is_primary = 'Y' WHERE busi_id = 'SS'; # 삼�
 UPDATE operating_company
 SET bnm = '이브이시스', is_primary = 'Y' WHERE busi_id = 'JA'; # 중앙제어 → 이브이시스
 
-# 03.24. 삭제 여부 및 삭제 사유 필드 충전소 -> 충전기 테이블로 칼럼 이동 (칼럼 인서트는 hibernate에 의해 실행)
+# 03.24. 삭제 여부 및 삭제 사유 필드 충전소 -> 충전기 테이블로 칼럼 이동 (칼럼 인서트는 hibernate에 의해 실행)  =====
 alter table charging_station drop column del_yn;
 alter table charging_station drop column del_detail;
 
-# 03.29. 공간 인덱스 도입
+# 03.29. 공간 인덱스 도입  ===============================================================================
 # hibernate update로 스키마 구성 시 공간 인덱스가 걸리지 않음 (spatial Index)
 # 따라서 실행 전 charging_station 포함 연관관계 매핑되어 있는 모든 테이블을 삭제
 # charging_station은 아래의 스키마를 통해 테이블 재구성, 인덱스 생성
@@ -89,4 +89,8 @@ CREATE TABLE charging_station (
   CONSTRAINT fk_busi_id FOREIGN KEY (busi_id) REFERENCES operating_company (busi_id)
 );
 
-create spatial index idx_point on charging_station (point);
+CREATE SPATIAL INDEX idx_point ON charging_station (point);
+
+# 12.22. 충전소 요금변동 시 소수점 한자리수로 보정
+UPDATE charge_fee SET member_fee_change = ROUND(member_fee_change, 1);
+UPDATE charge_fee SET non_member_fee_change = ROUND(member_fee_change, 1);
