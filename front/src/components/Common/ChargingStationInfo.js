@@ -50,7 +50,7 @@ const ChargingStationInfo = ({ statId }) => {
         marginBottom: "20px",
         marginLeft: "-21.5px",
         marginRight: "10px",
-        width: "102.5%"
+        width: "102.5%",
       }}
     >
       <div
@@ -63,12 +63,14 @@ const ChargingStationInfo = ({ statId }) => {
           backgroundColor: "lightblue",
         }}
       >
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "left",
-          maxWidth: "70%", // 최대 너비 제한
-        }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "left",
+            maxWidth: "70%", // 최대 너비 제한
+          }}
+        >
           <Typography
             variant="subtitle1"
             style={{
@@ -100,27 +102,25 @@ const ChargingStationInfo = ({ statId }) => {
         </div>
       </div>
       {/* 충전소 기본정보 */}
-      <TableContainer >
+      <TableContainer>
         <Table style={{ border: "1px groove lightgrey" }}>
           <TableHead>
             <TableRow style={{ borderBottom: "1.5px solid grey" }}>
               <TableCell style={tableCellStyle}>충전소ID</TableCell>
               <TableCell style={tableCellStyle}>운영기관</TableCell>
-              <TableCell style={tableCellStyle}>
-                주차가능
-              </TableCell>
-              <TableCell style={tableCellStyle}>
-                개방여부
-              </TableCell>
-              <TableCell style={tableCellStyle}>
-                제한사항
-              </TableCell>
+              <TableCell style={tableCellStyle}>주차가능</TableCell>
+              <TableCell style={tableCellStyle}>개방여부</TableCell>
+              <TableCell style={tableCellStyle}>제한사항</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell style={tableCellStyle2}>{chargingStationData.statId}</TableCell>
-              <TableCell style={tableCellStyle2}>{chargingStationData.bnm}</TableCell>
+              <TableCell style={tableCellStyle2}>
+                {chargingStationData.statId}
+              </TableCell>
+              <TableCell style={tableCellStyle2}>
+                {chargingStationData.bnm}
+              </TableCell>
               <TableCell
                 align="center"
                 style={{
@@ -231,7 +231,7 @@ const ChargingStationInfo = ({ statId }) => {
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {row.memberFeeChange.toFixed(1)}
+                        {row.memberFeeChange}
                       </>
                     ) : (
                       "-"
@@ -246,7 +246,7 @@ const ChargingStationInfo = ({ statId }) => {
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {row.nonMemberFeeChange.toFixed(1)}
+                        {row.nonMemberFeeChange}
                       </>
                     ) : (
                       "-"
