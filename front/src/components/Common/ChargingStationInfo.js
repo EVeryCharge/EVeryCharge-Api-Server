@@ -231,7 +231,7 @@ const ChargingStationInfo = ({ statId }) => {
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {row.memberFeeChange}
+                        {row.memberFeeChange.toFixed(1)}
                       </>
                     ) : (
                       "-"
@@ -246,7 +246,7 @@ const ChargingStationInfo = ({ statId }) => {
                         ) : (
                           <span style={{ color: "blue" }}>↓ </span>
                         )}
-                        {row.nonMemberFeeChange}
+                        {row.nonMemberFeeChange.toFixed(1)}
                       </>
                     ) : (
                       "-"
