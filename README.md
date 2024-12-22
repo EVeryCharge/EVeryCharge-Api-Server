@@ -33,8 +33,6 @@
 ## MEMBER 🎨
 |🔰김효준(BE)|👦이상제(BE)|👦임지원(BE)|👦임재욱(BE)|
 |------|---|---|---|
-|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/629b242d-56c9-4feb-a763-646eaed302ef"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/4efcb10d-f8c7-4e26-99f8-8e0ea1b5b140"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/e2b93a1f-d116-47fe-8f40-450747672dbf"></p>|<p align="center"><img height="150" alt="image" src="https://github.com/EVeryCharge/EVeryCharge-Api-Server/assets/81687612/ec451484-fbfa-43ff-8adf-33f336d30f03"></p>|
-|- PWA 웹앱 퍼블리싱<br/>- 충전소 모달 · 마커 서비스<br/>- 프로젝트 매니징|- 요금정보 공시 서비스<br/>- 충전기 상태 전역 업데이트<br/>- 충전소 검색 로직|- CI / CD 무중단 배포<br/>- 마이 데이터 · 차량정보 등록<br/>- UI 개선|- 파일서비스, 이미지 뷰 UI 개선<br/>- 회원가입, 로그인<br/> - 1:1 문의 서비스|
 |`gimyojun`<br/>[@Github](https://github.com/gimyojun)|`Bi3a`<br/>[@Github](https://github.com/Bisi3asi)|`i-am-jiwon`<br/>[@Github](https://github.com/i-am-jiwon)|`jaeuklim`<br/>[@Github](https://github.com/jaeuklim)| 
 <br/>  
   

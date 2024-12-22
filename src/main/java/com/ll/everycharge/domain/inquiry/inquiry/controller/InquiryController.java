@@ -58,11 +58,12 @@ public class InquiryController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<InquiryResponseDto> modify(
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @PathVariable Long id,
-            @RequestBody InquiryRequestDto inquiryRequestDto,
+            @RequestPart(value = "data") @Valid  InquiryRequestDto inquiryRequestDto,
             Principal principal) {
 
-        return ResponseEntity.ok(inquiryService.modify(id, inquiryRequestDto, principal.getName()));
+        return ResponseEntity.ok(inquiryService.modify(files, id, inquiryRequestDto, principal.getName()));
     }
 
     @PreAuthorize("isAuthenticated()")

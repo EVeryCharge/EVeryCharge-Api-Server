@@ -154,24 +154,53 @@ public class ReviewController {
         }
     }
 
+//    @Transactional
+//    @PreAuthorize("isAuthenticated()")
+//    @PutMapping("/{chargingStationId}/{id}")
+//    public RsData<ModifyReviewResponseBody> modifyReview(
+//            @PathVariable long id,
+//            @RequestBody ModifyReviewRequestBody requestBody
+//    ) {
+//        Review review = reviewService.findById(id).get();
+//
+//        int rating = requestBody.getRating();
+//        reviewService.modify(review, requestBody.getContent(), rating);
+//
+//        return RsData.of(
+//                "200",
+//                "성공",
+//                new ModifyReviewResponseBody(review)
+//        );
+//    }
+
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{chargingStationId}/{id}")
-    public RsData<ModifyReviewResponseBody> modifyReview(
-            @PathVariable long id,
-            @RequestBody ModifyReviewRequestBody requestBody
+    public ReviewFileDto modifyReview(
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "data") @Valid ReviewFileDto reviewFileDto,
+            @PathVariable long id
     ) {
-        Review review = reviewService.findById(id).get();
 
-        int rating = requestBody.getRating();
-        reviewService.modify(review, requestBody.getContent(), rating);
-
-        return RsData.of(
-                "200",
-                "성공",
-                new ModifyReviewResponseBody(review)
-        );
+        return reviewService.modify(reviewFileDto, id, files);
     }
+
+//    @Transactional
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("{chargingStationId}")
+//    public ResponseEntity<ReviewFileDto> writeReview(@RequestPart(value = "files", required = false) List<MultipartFile> files,
+//                                                     @RequestPart(value = "data") @Valid ReviewFileDto reviewFileDto,
+//                                                     @PathVariable String chargingStationId
+//    ) {
+//
+//        Member member = rq.getMember();
+//        int rating = reviewFileDto.getRating();
+//
+//        Review review = reviewService.write(member, chargingStationId, reviewFileDto.getContent(), rating, files).getData();
+//
+//        return ResponseEntity.ok(reviewFileDto);
+//
+//    }
 
     @Getter
     public static class RemoveReviewResponseBody {
